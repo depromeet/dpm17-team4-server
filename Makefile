@@ -9,7 +9,7 @@ PID_FILE := .server.pid
 LOG_DIR := logs
 LOG_FILE := $(LOG_DIR)/server.log
 
-.PHONY: help build build-no-test jar run start stop restart status logs test clean curl
+.PHONY: help build build-no-test jar run start stop restart status logs test clean curl format format-check
 
 help:
 	@echo "Available targets:"
@@ -25,6 +25,8 @@ help:
 	@echo "  make test            - Run tests"
 	@echo "  make clean           - Clean build artifacts"
 	@echo "  make curl            - Curl sample endpoint (/api/hello)"
+	@echo "  make format          - Auto-format code (Spotless)"
+	@echo "  make format-check    - Check formatting only (fails if changes needed)"
 	@echo ""
 	@echo "Variables:"
 	@echo "  PORT=<int>                 (default: 8080)"
@@ -100,6 +102,12 @@ logs:
 
 test:
 	$(GRADLE) test
+
+format:
+	$(GRADLE) spotlessApply
+
+format-check:
+	$(GRADLE) spotlessCheck
 
 clean:
 	$(GRADLE) clean
