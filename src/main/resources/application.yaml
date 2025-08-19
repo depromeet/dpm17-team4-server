@@ -1,3 +1,6 @@
 spring:
   application:
     name: server
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
