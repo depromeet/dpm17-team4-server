@@ -1,7 +1,7 @@
 SHELL := /bin/sh
 
 PORT ?= 8080
-SPRING_PROFILES ?=
+SPRING_PROFILES ?= dev
 EXTRA_ARGS ?=
 
 GRADLE := ./gradlew
@@ -30,7 +30,7 @@ help:
 	@echo ""
 	@echo "Variables:"
 	@echo "  PORT=<int>                 (default: 8080)"
-	@echo "  SPRING_PROFILES=<profiles> (e.g., dev,local)"
+	@echo "  SPRING_PROFILES=<profiles> (default: dev; e.g., dev,local)"
 	@echo "  EXTRA_ARGS=\"--key=val\"    (extra Spring Boot args)"
 
 build:
