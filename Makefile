@@ -1,7 +1,7 @@
 SHELL := /bin/sh
 
 PORT ?= 8080
-SPRING_PROFILES ?= dev
+SPRING_PROFILES ?= dev # pg
 EXTRA_ARGS ?=
 
 GRADLE := ./gradlew

@@ -3,7 +3,7 @@ spring:
     name: server
   profiles:
     group:
-      postgres:
+      pg:
         - dev
         - postgres
   flyway:
