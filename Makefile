@@ -9,7 +9,7 @@ PID_FILE := .server.pid
 LOG_DIR := logs
 LOG_FILE := $(LOG_DIR)/server.log
 
-.PHONY: help build build-no-test jar run start stop restart status logs test clean curl format format-check
+.PHONY: help build build-no-test jar run start stop restart status logs test clean curl format format-check clear-h2
 
 help:
 	@echo "Available targets:"
@@ -27,6 +27,7 @@ help:
 	@echo "  make curl            - Curl sample endpoint (/api/hello)"
 	@echo "  make format          - Auto-format code (Spotless)"
 	@echo "  make format-check    - Check formatting only (fails if changes needed)"
+	@echo "  make clear-h2        - Remove local H2 files (.h2/)"
 	@echo ""
 	@echo "Variables:"
 	@echo "  PORT=<int>                 (default: 8080)"
@@ -112,6 +113,11 @@ format-check:
 clean:
 	$(GRADLE) clean
 	@rm -f "$(PID_FILE)"
+
+clear-h2:
+	@echo "Removing local H2 files at .h2/ ..."; \
+	rm -rf .h2 || true; \
+	echo "Done."
 
 curl:
 	@echo "GET http://localhost:$(PORT)/api/hello"; \
