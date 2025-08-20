@@ -59,7 +59,7 @@ start: jar
 		exit 0; \
 	fi; \
 	echo "Starting $$JAR_FILE on port $(PORT)..."; \
-	nohup java -Dlogging.file.name=logs/server.log -jar "$$JAR_FILE" --server.port=$(PORT) $(if $(SPRING_PROFILES),--spring.profiles.active=$(SPRING_PROFILES)) $(EXTRA_ARGS) >> "$(LOG_FILE)" 2>&1 & echo $$! > "$(PID_FILE)"; \
+	nohup java -jar "$$JAR_FILE" --server.port=$(PORT) $(if $(SPRING_PROFILES),--spring.profiles.active=$(SPRING_PROFILES)) $(EXTRA_ARGS) > /dev/null 2>&1 & echo $$! > "$(PID_FILE)"; \
 	echo "Started with PID $$(cat $(PID_FILE)). Logs: logs/server.log (app), logs/access*.log (access)"
 
 stop:
