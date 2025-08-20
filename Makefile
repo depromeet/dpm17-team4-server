@@ -49,7 +49,7 @@ run:
 # Background run using the built JAR
 start: jar
 	@mkdir -p $(LOG_DIR)
-	@JAR_FILE="$$((ls -1 build/libs/*SNAPSHOT.jar 2>/dev/null || true) | grep -v -- '-plain\\.jar' | head -n1)"; \
+	@JAR_FILE="$$(ls -1t build/libs/*SNAPSHOT*.jar 2>/dev/null | grep -v -- '-plain\\.jar' | head -n1)"; \
 	if [ -z "$$JAR_FILE" ]; then \
 		echo "No JAR found under build/libs. Run 'make jar' first."; \
 		exit 1; \
