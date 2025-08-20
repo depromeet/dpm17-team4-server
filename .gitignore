@@ -1,3 +1,6 @@
+.server.pid
+logs/
+
 # Compiled class file
 *.class
 

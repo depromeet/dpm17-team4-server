@@ -22,5 +22,23 @@ jwt:
 
 logging:
   level:
-    depromeet.lessonfour: DEBUG
-    org.springframework.security: DEBUG
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+  file:
+    name: logs/server.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 7
+      total-size-cap: 200MB
+      file-name-pattern: logs/server-%d{yyyy-MM-dd}.%i.log.gz
+server:
+  tomcat:
+    basedir: .
+    accesslog:
+      enabled: true
+      directory: logs
+      prefix: access
+      suffix: .log
+      file-date-format: .yyyy-MM-dd
+      rotate: true
+      pattern: common
