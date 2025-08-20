@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.5.4'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'org.flywaydb.flyway' version '10.17.0'
+    id 'com.diffplug.spotless' version '6.25.0'
 }
 
 group = 'depromeet.lessonfour'
@@ -40,9 +41,27 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.rest-assured:rest-assured'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 test {
     useJUnitPlatform()
+}
+
+spotless {
+    java {
+        target 'src/**/*.java'
+        googleJavaFormat('1.17.0')
+        importOrder 'java', 'javax', 'org', 'com', ''
+        removeUnusedImports()
+        formatAnnotations()
+    }
+    // Optional: format Gradle files too
+    format('gradle') {
+        target '*.gradle'
+        indentWithSpaces(4)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
 }
