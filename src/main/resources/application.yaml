@@ -2,10 +2,10 @@ spring:
   application:
     name: server
   datasource:
-    url: ${ DB_URL:jdbc:postgresql://localhost:5432/lessonfour }
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/lessonfour}
     driver-class-name: org.postgresql.Driver
-    username: ${ DB_USERNAME:root }
-    password: ${ DB_PASSWORD:root }
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
 
   jpa:
     hibernate:
