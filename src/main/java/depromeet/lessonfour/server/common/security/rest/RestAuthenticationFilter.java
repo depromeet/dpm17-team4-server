@@ -1,9 +1,7 @@
 package depromeet.lessonfour.server.common.security.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import depromeet.lessonfour.server.common.security.rest.dto.LoginRequestDto;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -12,7 +10,11 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import java.io.IOException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import depromeet.lessonfour.server.common.security.rest.dto.LoginRequestDto;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class RestAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
