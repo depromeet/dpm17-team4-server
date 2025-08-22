@@ -1,5 +1,8 @@
 package depromeet.lessonfour.server.common.exception;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -8,9 +11,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import depromeet.lessonfour.server.auth.exception.DuplicateEmailException;
 import depromeet.lessonfour.server.auth.exception.DuplicateNicknameException;
-
-import java.util.HashMap;
-import java.util.Map;
 
 // TODO : GlobalExceptionHandler 추가 후 통합
 @RestControllerAdvice

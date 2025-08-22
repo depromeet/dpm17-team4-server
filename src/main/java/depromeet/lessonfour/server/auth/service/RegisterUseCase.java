@@ -23,11 +23,11 @@ public class RegisterUseCase {
     if (userRepository.existsByEmail(dto.email())) {
       throw new DuplicateEmailException(dto.email());
     }
-    
+
     if (userRepository.existsByNickname(dto.nickname())) {
       throw new DuplicateNicknameException(dto.nickname());
     }
-    
+
     String encodedPassword = passwordEncoder.encode(dto.password());
     User user = User.register(dto.email(), dto.nickname(), encodedPassword);
     userRepository.save(user);
