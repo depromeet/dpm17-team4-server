@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -15,6 +16,9 @@ import static java.util.Optional.empty;
 @Component
 @Slf4j
 public class HttpServletUtils {
+
+  public static final Duration REFRESH_TOKEN_EXPIRATION = Duration.ofDays(7);
+  public static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
 
   private static final String BEARER_PREFIX = "Bearer ";
   private static final String AUTHORIZATION_HEADER = "Authorization";
@@ -51,8 +55,8 @@ public class HttpServletUtils {
     response.addHeader(name, value);
   }
 
-  public void addCookie(HttpServletResponse response, String name, String value, int seconds) {
-    addCookie(response, name, value, seconds, CookieOptions.secure());
+  public void addCookie(HttpServletResponse response, String name, String value, Duration duration) {
+    addCookie(response, name, value, (int) duration.getSeconds(), CookieOptions.secure());
   }
 
   public void addCookie(
