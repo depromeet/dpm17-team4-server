@@ -1,5 +1,11 @@
 package depromeet.lessonfour.server.auth.api;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import depromeet.lessonfour.server.auth.api.dto.request.ReIssueRequestDto;
 import depromeet.lessonfour.server.auth.api.dto.request.RegisterRequestDto;
 import depromeet.lessonfour.server.auth.api.dto.response.AccessTokenResponseDto;
@@ -10,11 +16,6 @@ import depromeet.lessonfour.server.common.utils.HttpServletUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,10 +33,15 @@ public class AuthController {
   }
 
   @PostMapping("/reissue")
-  public ResponseEntity<?> reIssue(@Valid @RequestBody ReIssueRequestDto dto, HttpServletResponse response) {
+  public ResponseEntity<?> reIssue(
+      @Valid @RequestBody ReIssueRequestDto dto, HttpServletResponse response) {
     ReIssueResult result = reIssueTokenUseCase.reIssue(dto);
 
-    servletUtils.addCookie(response, HttpServletUtils.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken(), HttpServletUtils.REFRESH_TOKEN_EXPIRATION);
+    servletUtils.addCookie(
+        response,
+        HttpServletUtils.REFRESH_TOKEN_COOKIE_NAME,
+        result.refreshToken(),
+        HttpServletUtils.REFRESH_TOKEN_EXPIRATION);
 
     return ResponseEntity.ok(new AccessTokenResponseDto(result.accessToken()));
   }

@@ -1,11 +1,11 @@
 package depromeet.lessonfour.server.auth.persist.jpa.entity;
 
+import java.util.UUID;
+
 import depromeet.lessonfour.server.common.persist.jpa.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
-import java.util.UUID;
 
 @Entity
 @Table(name = "users")

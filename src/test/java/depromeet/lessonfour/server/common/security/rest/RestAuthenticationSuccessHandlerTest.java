@@ -1,12 +1,14 @@
 package depromeet.lessonfour.server.common.security.rest;
 
-import depromeet.lessonfour.server.auth.config.jwt.JwtTokenGenerator;
-import depromeet.lessonfour.server.auth.config.rest.handler.RestAuthenticationSuccessHandler;
-import depromeet.lessonfour.server.auth.config.userdetails.AccountContext;
-import depromeet.lessonfour.server.auth.service.UserUpdateService;
-import depromeet.lessonfour.server.common.utils.HttpServletUtils;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.time.Duration;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,14 +17,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.time.Duration;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import depromeet.lessonfour.server.auth.config.jwt.JwtTokenGenerator;
+import depromeet.lessonfour.server.auth.config.rest.handler.RestAuthenticationSuccessHandler;
+import depromeet.lessonfour.server.auth.config.userdetails.AccountContext;
+import depromeet.lessonfour.server.auth.service.UserUpdateService;
+import depromeet.lessonfour.server.common.utils.HttpServletUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @ExtendWith(MockitoExtension.class)
 class RestAuthenticationSuccessHandlerTest {
@@ -47,7 +48,9 @@ class RestAuthenticationSuccessHandlerTest {
 
   @BeforeEach
   void setUp() throws Exception {
-    successHandler = new RestAuthenticationSuccessHandler(jwtTokenGenerator, httpServletUtils, userUpdateService);
+    successHandler =
+        new RestAuthenticationSuccessHandler(
+            jwtTokenGenerator, httpServletUtils, userUpdateService);
     stringWriter = new StringWriter();
     printWriter = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(printWriter);
@@ -100,6 +103,7 @@ class RestAuthenticationSuccessHandlerTest {
     // then
     verify(jwtTokenGenerator).generateRefreshToken(accountContext);
     verify(httpServletUtils)
-        .addCookie(eq(response), eq("refreshToken"), eq("mock-refresh-token"), eq(Duration.ofDays(7)));
+        .addCookie(
+            eq(response), eq("refreshToken"), eq("mock-refresh-token"), eq(Duration.ofDays(7)));
   }
 }
