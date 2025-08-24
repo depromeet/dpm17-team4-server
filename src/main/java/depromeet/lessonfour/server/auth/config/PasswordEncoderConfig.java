@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.security;
+package depromeet.lessonfour.server.auth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
