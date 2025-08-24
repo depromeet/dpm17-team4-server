@@ -1,11 +1,11 @@
 package depromeet.lessonfour.server.auth.persist.jpa.entity;
 
-import java.util.UUID;
-
 import depromeet.lessonfour.server.common.persist.jpa.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -36,7 +36,8 @@ public class User extends BaseTimeEntity {
 
   private String providerUserId;
 
-  @Column private String refreshToken;
+  @Column(length = 512)
+  private String refreshToken;
 
   public static User register(String email, String nickname, String password) {
     return User.builder()
