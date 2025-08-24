@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.security.rest;
+package depromeet.lessonfour.server.auth.config.rest;
 
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import depromeet.lessonfour.server.common.security.domain.AccountContext;
+import depromeet.lessonfour.server.auth.config.userdetails.AccountContext;
 import lombok.RequiredArgsConstructor;
 
 @Component

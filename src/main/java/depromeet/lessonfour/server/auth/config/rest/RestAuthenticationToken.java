@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.security.rest;
+package depromeet.lessonfour.server.auth.config.rest;
 
 import java.util.Collection;
 

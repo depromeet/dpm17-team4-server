@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.security.rest.handler;
+package depromeet.lessonfour.server.auth.config.rest.handler;
 
 import java.io.IOException;
 

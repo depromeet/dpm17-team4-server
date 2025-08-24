@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.security.rest;
+package depromeet.lessonfour.server.auth.config.rest;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import depromeet.lessonfour.server.common.security.rest.dto.LoginRequestDto;
+import depromeet.lessonfour.server.auth.api.dto.request.LoginRequestDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 

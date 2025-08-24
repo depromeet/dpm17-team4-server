@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 
+import depromeet.lessonfour.server.auth.config.rest.handler.RestAuthenticationSuccessHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -26,16 +27,13 @@ class RestAuthenticationSuccessHandlerTest {
 
   @Mock private Authentication authentication;
 
-  private depromeet.lessonfour.server.common.security.rest.handler.RestAuthenticationSuccessHandler
-      successHandler;
+  private RestAuthenticationSuccessHandler successHandler;
   private StringWriter stringWriter;
   private PrintWriter printWriter;
 
   @BeforeEach
   void setUp() throws Exception {
-    successHandler =
-        new depromeet.lessonfour.server.common.security.rest.handler
-            .RestAuthenticationSuccessHandler();
+    successHandler = new RestAuthenticationSuccessHandler();
     stringWriter = new StringWriter();
     printWriter = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(printWriter);

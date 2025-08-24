@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.security.domain;
+package depromeet.lessonfour.server.auth.config.userdetails;
 
 import java.util.ArrayList;
 import java.util.Collection;

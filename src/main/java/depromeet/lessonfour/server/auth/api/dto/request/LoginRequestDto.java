@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.security.rest.dto;
+package depromeet.lessonfour.server.auth.api.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
