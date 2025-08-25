@@ -11,6 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 import java.io.IOException;
 
@@ -25,10 +26,7 @@ public class RestAuthenticationFilter extends AbstractAuthenticationProcessingFi
       AuthenticationSuccessHandler successHandler,
       AuthenticationFailureHandler failureHandler,
       ObjectMapper objectMapper) {
-    super(
-        request ->
-            LOGIN_URL.equals(request.getServletPath())
-                && HttpMethod.POST.matches(request.getMethod()));
+    super(PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, LOGIN_URL));
     this.setAuthenticationManager(authenticationManager);
     this.setAuthenticationSuccessHandler(successHandler);
     this.setAuthenticationFailureHandler(failureHandler);
