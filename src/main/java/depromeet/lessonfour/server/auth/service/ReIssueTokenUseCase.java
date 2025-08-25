@@ -1,6 +1,5 @@
 package depromeet.lessonfour.server.auth.service;
 
-import depromeet.lessonfour.server.auth.api.dto.request.ReIssueRequestDto;
 import depromeet.lessonfour.server.auth.config.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.auth.config.jwt.JwtTokenValidator;
 import depromeet.lessonfour.server.auth.config.userdetails.AccountContext;
@@ -23,18 +22,18 @@ public class ReIssueTokenUseCase {
     private final JwtTokenValidator jwtTokenValidator;
     private final JwtTokenGenerator jwtTokenGenerator;
 
-    public ReIssueResult reIssue(ReIssueRequestDto dto) {
-        validateRefreshToken(dto);
+    public ReIssueResult reIssue(String refreshToken) {
+        validateRefreshToken(refreshToken);
 
-        String userId = jwtTokenValidator.extractSubject(dto.refreshToken());
+        String userId = jwtTokenValidator.extractSubject(refreshToken);
         User user = findUserById(userId);
-        compareWithStoredToken(user, dto.refreshToken());
+        compareWithStoredToken(user, refreshToken);
 
         return generateNewToken(user);
     }
 
-    private void validateRefreshToken(ReIssueRequestDto dto) {
-        if (!jwtTokenValidator.isValidToken(dto.refreshToken())) {
+    private void validateRefreshToken(String refreshToken) {
+        if (!jwtTokenValidator.isValidToken(refreshToken)) {
             throw new BadCredentialsException("Invalid refresh token");
         }
     }

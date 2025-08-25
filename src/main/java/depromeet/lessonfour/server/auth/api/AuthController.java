@@ -1,6 +1,5 @@
 package depromeet.lessonfour.server.auth.api;
 
-import depromeet.lessonfour.server.auth.api.dto.request.ReIssueRequestDto;
 import depromeet.lessonfour.server.auth.api.dto.request.RegisterRequestDto;
 import depromeet.lessonfour.server.auth.api.dto.response.AccessTokenResponseDto;
 import depromeet.lessonfour.server.auth.service.ReIssueTokenUseCase;
@@ -10,11 +9,10 @@ import depromeet.lessonfour.server.common.utils.HttpServletUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,8 +30,13 @@ public class AuthController {
   }
 
   @PostMapping("/reissue")
-  public ResponseEntity<?> reIssue(@Valid @RequestBody ReIssueRequestDto dto, HttpServletResponse response) {
-    ReIssueResult result = reIssueTokenUseCase.reIssue(dto);
+  public ResponseEntity<?> reIssue(@CookieValue(value = HttpServletUtils.REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken, HttpServletResponse response) {
+
+    if (refreshToken == null || refreshToken.isBlank()) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token not found");
+    }
+
+    ReIssueResult result = reIssueTokenUseCase.reIssue(refreshToken);
 
     servletUtils.addCookie(response, HttpServletUtils.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken(), HttpServletUtils.REFRESH_TOKEN_EXPIRATION);
 
