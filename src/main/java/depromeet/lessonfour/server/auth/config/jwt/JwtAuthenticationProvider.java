@@ -21,7 +21,9 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-    String token = (String) authentication.getCredentials();
+    isAuthenticationNull(authentication);
+
+    final String token = authentication.getCredentials().toString();
 
     if (!jwtTokenValidator.isValidToken(token)) {
       throw new BadCredentialsException("Invalid JWT Token");
@@ -31,6 +33,14 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
     return new JwtAuthenticationToken(userDetails, userDetails.getAuthorities(), token);
+  }
+
+  private static void isAuthenticationNull(Authentication authentication) {
+    if (authentication == null
+        || authentication.getCredentials() == null
+        || authentication.getCredentials().toString().isBlank()) {
+      throw new BadCredentialsException("Missing JWT Token");
+    }
   }
 
   @Override

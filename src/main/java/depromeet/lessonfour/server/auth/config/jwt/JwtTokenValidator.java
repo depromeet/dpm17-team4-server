@@ -40,13 +40,12 @@ public class JwtTokenValidator {
   /** JWT 토큰에서 사용자 ID 추출 */
   public UUID extractUserId(String token) {
     Claims claims = parseTokenClaims(token);
-    Object userIdObject = claims.get("userId");
-    if (userIdObject instanceof String) {
-      return UUID.fromString((String) userIdObject);
-    } else if (userIdObject instanceof UUID) {
-      return (UUID) userIdObject;
+    String subject = claims.getSubject();
+    try {
+      return UUID.fromString(subject);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Invalid subject format for userId", e);
     }
-    throw new IllegalArgumentException("Invalid userId claim format");
   }
 
   /** JWT 토큰에서 이메일 추출 */
