@@ -3,6 +3,7 @@ package depromeet.lessonfour.server.auth.config.rest.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import depromeet.lessonfour.server.auth.config.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.auth.config.userdetails.AccountContext;
+import depromeet.lessonfour.server.auth.service.UserUpdateService;
 import depromeet.lessonfour.server.common.utils.HttpServletUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ public class RestAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
   private final JwtTokenGenerator jwtTokenGenerator;
   private final HttpServletUtils httpServletUtils;
+  private final UserUpdateService userUpdateService;
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
@@ -38,9 +40,12 @@ public class RestAuthenticationSuccessHandler implements AuthenticationSuccessHa
     String accessToken = jwtTokenGenerator.generateAccessToken(accountContext);
     String refreshToken = jwtTokenGenerator.generateRefreshToken(accountContext);
 
+    // Refresh token을 DB에 저장
+    userUpdateService.updateRefreshToken(accountContext.getId(), refreshToken);
+
     // Refresh token을 HttpOnly 쿠키에 저장
     httpServletUtils.addCookie(
-        response, "refreshToken", refreshToken, (int) REFRESH_TOKEN_EXPIRATION.getSeconds());
+        response, "refreshToken", refreshToken, REFRESH_TOKEN_EXPIRATION);
 
     // Access token을 JSON 응답 body에 포함
     Map<String, Object> responseBody = Map.of("accessToken", accessToken);

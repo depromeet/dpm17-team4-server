@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Duration;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -92,15 +93,15 @@ class HttpServletUtilsTest {
   class AddCookieTest {
 
     @Test
-    @DisplayName("기본 보안 쿠키를 올바르게 생성한다")
-    void whenAddSecureCookie_thenCreateCorrectCookie() {
+    @DisplayName("Duration을 사용한 기본 보안 쿠키를 올바르게 생성한다")
+    void whenAddSecureCookieWithDuration_thenCreateCorrectCookie() {
       // given
       String cookieName = "sessionId";
       String cookieValue = "test-session-123";
-      int maxAge = 3600;
+      Duration duration = Duration.ofHours(1);
 
       // when
-      httpServletUtils.addCookie(response, cookieName, cookieValue, maxAge);
+      httpServletUtils.addCookie(response, cookieName, cookieValue, duration);
 
       // then
       verify(response)
@@ -136,10 +137,10 @@ class HttpServletUtilsTest {
       // given
       String invalidName = "invalid name with spaces";
       String cookieValue = "value";
-      int maxAge = 3600;
+      Duration duration = Duration.ofHours(1);
 
       // when
-      httpServletUtils.addCookie(response, invalidName, cookieValue, maxAge);
+      httpServletUtils.addCookie(response, invalidName, cookieValue, duration);
 
       // then
       verify(response, never()).addHeader(eq("Set-Cookie"), any(String.class));
@@ -148,11 +149,15 @@ class HttpServletUtilsTest {
     @Test
     @DisplayName("null 파라미터가 있을 때 쿠키를 생성하지 않는다")
     void whenNullParameters_thenDoNotCreateCookie() {
+      // given
+      Duration duration = Duration.ofHours(1);
+      Duration negativeDuration = Duration.ofSeconds(-1);
+      
       // when & then
-      httpServletUtils.addCookie(null, "name", "value", 3600);
-      httpServletUtils.addCookie(response, null, "value", 3600);
-      httpServletUtils.addCookie(response, "name", null, 3600);
-      httpServletUtils.addCookie(response, "name", "value", -1);
+      httpServletUtils.addCookie(null, "name", "value", duration);
+      httpServletUtils.addCookie(response, null, "value", duration);
+      httpServletUtils.addCookie(response, "name", null, duration);
+      httpServletUtils.addCookie(response, "name", "value", negativeDuration);
 
       verify(response, never()).addHeader(eq("Set-Cookie"), any(String.class));
     }
