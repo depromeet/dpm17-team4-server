@@ -9,6 +9,7 @@ import depromeet.lessonfour.server.common.utils.HttpServletUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,9 @@ public class AuthController {
 
     servletUtils.addCookie(response, HttpServletUtils.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken(), HttpServletUtils.REFRESH_TOKEN_EXPIRATION);
 
-    return ResponseEntity.ok(new AccessTokenResponseDto(result.accessToken()));
+    return ResponseEntity
+            .ok()
+            .cacheControl(CacheControl.noCache())
+            .body(new AccessTokenResponseDto(result.accessToken()));
   }
 }
