@@ -1,5 +1,6 @@
 package depromeet.lessonfour.server.auth.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -27,6 +28,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+  private final ObjectMapper objectMapper;
+
   @Bean
   @Order(1)
   public SecurityFilterChain loginFilterChain(
@@ -53,7 +56,8 @@ public class SecurityConfig {
             new RestAuthenticationFilter(
                 authenticationManager,
                 restAuthenticationSuccessHandler,
-                restAuthenticationFailureHandler),
+                restAuthenticationFailureHandler,
+                objectMapper),
             UsernamePasswordAuthenticationFilter.class)
         .authenticationManager(authenticationManager)
         .build();
@@ -62,7 +66,9 @@ public class SecurityConfig {
   @Bean
   @Order(2)
   public SecurityFilterChain apiFilterChain(
-      HttpSecurity http, JwtAuthenticationProvider jwtAuthenticationProvider) throws Exception {
+      HttpSecurity http, JwtAuthenticationProvider jwtAuthenticationProvider,
+      JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+      JwtAccessDeniedHandler jwtAccessDeniedHandler) throws Exception {
 
     AuthenticationManagerBuilder authenticationManagerBuilder =
         http.getSharedObject(AuthenticationManagerBuilder.class);
@@ -87,8 +93,8 @@ public class SecurityConfig {
         .exceptionHandling(
             exception ->
                 exception
-                    .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
-                    .accessDeniedHandler(new JwtAccessDeniedHandler()));
+                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                    .accessDeniedHandler(jwtAccessDeniedHandler));
 
     return http.build();
   }

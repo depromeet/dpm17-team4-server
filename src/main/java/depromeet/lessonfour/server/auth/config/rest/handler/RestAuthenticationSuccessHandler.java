@@ -27,7 +27,7 @@ public class RestAuthenticationSuccessHandler implements AuthenticationSuccessHa
   private final JwtTokenGenerator jwtTokenGenerator;
   private final HttpServletUtils httpServletUtils;
   private final UserUpdateService userUpdateService;
-  private final ObjectMapper objectMapper = new ObjectMapper();
+  private final ObjectMapper objectMapper;
 
   @Override
   public void onAuthenticationSuccess(
