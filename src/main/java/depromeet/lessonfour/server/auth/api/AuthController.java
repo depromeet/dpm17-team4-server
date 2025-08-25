@@ -15,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import static depromeet.lessonfour.server.auth.config.jwt.JwtConstants.REFRESH_TOKEN_COOKIE_NAME;
+import static depromeet.lessonfour.server.auth.config.jwt.JwtConstants.REFRESH_TOKEN_EXPIRATION;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
@@ -31,7 +34,7 @@ public class AuthController {
   }
 
   @PostMapping("/reissue")
-  public ResponseEntity<?> reIssue(@CookieValue(value = HttpServletUtils.REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken, HttpServletResponse response) {
+  public ResponseEntity<?> reIssue(@CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken, HttpServletResponse response) {
 
     if (refreshToken == null || refreshToken.isBlank()) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token not found");
@@ -39,7 +42,7 @@ public class AuthController {
 
     ReIssueResult result = reIssueTokenUseCase.reIssue(refreshToken);
 
-    servletUtils.addCookie(response, HttpServletUtils.REFRESH_TOKEN_COOKIE_NAME, result.refreshToken(), HttpServletUtils.REFRESH_TOKEN_EXPIRATION);
+    servletUtils.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, result.refreshToken(), REFRESH_TOKEN_EXPIRATION);
 
     return ResponseEntity
             .ok()

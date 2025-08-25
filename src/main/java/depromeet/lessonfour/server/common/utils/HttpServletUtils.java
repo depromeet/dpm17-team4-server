@@ -3,6 +3,7 @@ package depromeet.lessonfour.server.common.utils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -11,17 +12,13 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static depromeet.lessonfour.server.auth.config.jwt.JwtConstants.AUTHORIZATION_HEADER;
+import static depromeet.lessonfour.server.auth.config.jwt.JwtConstants.BEARER_PREFIX;
 import static java.util.Optional.empty;
 
 @Component
 @Slf4j
 public class HttpServletUtils {
-
-  public static final Duration REFRESH_TOKEN_EXPIRATION = Duration.ofDays(7);
-  public static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
-
-  private static final String BEARER_PREFIX = "Bearer ";
-  private static final String AUTHORIZATION_HEADER = "Authorization";
 
   public Optional<String> getAccessToken(HttpServletRequest request) {
     if (request == null) {
@@ -170,6 +167,7 @@ public class HttpServletUtils {
     }
   }
 
+  @Getter
   public enum SameSite {
     STRICT("Strict"),
     LAX("Lax"),
@@ -181,8 +179,5 @@ public class HttpServletUtils {
       this.value = value;
     }
 
-    public String getValue() {
-      return value;
-    }
   }
 }
