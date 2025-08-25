@@ -1,6 +1,15 @@
 spring:
   application:
     name: server
+  profiles:
+    group:
+      pg:
+        - dev
+        - postgres
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
 logging:
   level:
     org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
