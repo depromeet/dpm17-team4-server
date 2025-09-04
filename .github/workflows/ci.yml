@@ -61,10 +61,21 @@ jobs:
       - name: Run Tests
         run: ./gradlew test -Dspring.profiles.active=test
 
+  docker-login:
+    name: Login to Docker Hub
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
   build:
     name: Build Application
     runs-on: ubuntu-latest
-    needs: [ quality-checks, test ]
+    needs: [ quality-checks, test, docker-login ]
     if: always() && (needs.quality-checks.result == 'success' && needs.test.result == 'success')
     steps:
       - uses: actions/checkout@v4
@@ -96,6 +107,13 @@ jobs:
       - name: Set up Docker Build
         if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master')
         uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master')
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: Build & Push Docker Image (dev)
         if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
