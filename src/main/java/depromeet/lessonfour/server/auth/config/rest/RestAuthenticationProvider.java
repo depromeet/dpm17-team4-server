@@ -33,7 +33,7 @@ public class RestAuthenticationProvider implements AuthenticationProvider {
 
   @Override
   public boolean supports(Class<?> authentication) {
-    return authentication.isAssignableFrom(RestAuthenticationToken.class);
+    return RestAuthenticationToken.class.isAssignableFrom(authentication);
   }
 
   private void validatePassword(String password, AccountContext userDetails) {
