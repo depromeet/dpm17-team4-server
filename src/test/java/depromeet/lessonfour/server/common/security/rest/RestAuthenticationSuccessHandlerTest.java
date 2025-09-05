@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Duration;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +23,7 @@ import depromeet.lessonfour.server.auth.config.rest.handler.RestAuthenticationSu
 import depromeet.lessonfour.server.auth.config.userdetails.AccountContext;
 import depromeet.lessonfour.server.auth.service.UserUpdateService;
 import depromeet.lessonfour.server.common.utils.HttpServletUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -42,6 +44,8 @@ class RestAuthenticationSuccessHandlerTest {
 
   @Mock private AccountContext accountContext;
 
+  @Mock private ObjectMapper objectMapper;
+
   private RestAuthenticationSuccessHandler successHandler;
   private StringWriter stringWriter;
   private PrintWriter printWriter;
@@ -50,7 +54,7 @@ class RestAuthenticationSuccessHandlerTest {
   void setUp() throws Exception {
     successHandler =
         new RestAuthenticationSuccessHandler(
-            jwtTokenGenerator, httpServletUtils, userUpdateService);
+            jwtTokenGenerator, httpServletUtils, userUpdateService, objectMapper);
     stringWriter = new StringWriter();
     printWriter = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(printWriter);
@@ -59,6 +63,9 @@ class RestAuthenticationSuccessHandlerTest {
         .thenReturn("mock-access-token");
     when(jwtTokenGenerator.generateRefreshToken(any(AccountContext.class)))
         .thenReturn("mock-refresh-token");
+    when(objectMapper.writeValueAsString(any()))
+        .thenReturn("{\"accessToken\":\"mock-access-token\"}");
+    when(accountContext.getId()).thenReturn(UUID.randomUUID());
   }
 
   @Test
