@@ -31,6 +31,16 @@ public class SecurityConfig {
 
   private final ObjectMapper objectMapper;
 
+  /** 문서 조회 API에 대한 필터 체인 */
+  @Bean
+  @Order(0)
+  public SecurityFilterChain docsFilterChain(HttpSecurity http) throws Exception {
+    return http.securityMatcher("/swagger-ui/**", "/v3/api-docs/**")
+        .csrf(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+        .build();
+  }
+
   /** 로컬 로그인 API 요청에 대한 필터 체인 */
   @Bean
   @Order(1)
@@ -84,12 +94,7 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers(
-                        "/swagger-ui/**",
-                        "/v3/api-docs/**",
-                        "/api/auth/register",
-                        "/api/auth/reissue",
-                        "/api/echo/**")
+                auth.requestMatchers("/api/auth/register", "/api/auth/reissue", "/api/echo/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
