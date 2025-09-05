@@ -29,6 +29,7 @@ spring:
 jwt:
   secret: mySecretKeyForJWTWhichShouldBeAtLeast256BitsLongToEnsureSecurityAndCompliance
   expiration: 86400 # 24 hours
+  refresh-expiration: 604800 # days
 
 logging:
   level:

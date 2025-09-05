@@ -16,13 +16,24 @@ import lombok.Getter;
 public class JwtSecretKeyProvider {
 
   @Getter(AccessLevel.NONE)
-  @Value("${jwt.secret:myDefaultSecretKeyForJWTWhichShouldBeAtLeast256BitsLong}")
+  @Value("${jwt.secret}")
   private String secretKeyString;
 
   @Getter private SecretKey secretKey;
 
   @PostConstruct
   void initializeSecretKey() {
-    this.secretKey = Keys.hmacShaKeyFor(secretKeyString.getBytes(StandardCharsets.UTF_8));
+    if (secretKeyString == null || secretKeyString.isBlank()) {
+      throw new IllegalStateException("Missing required property 'jwt.secret'.");
+    }
+    try {
+      this.secretKey = Keys.hmacShaKeyFor(secretKeyString.getBytes(StandardCharsets.UTF_8));
+    } catch (IllegalArgumentException e) {
+      throw new IllegalStateException(
+          "Invalid 'jwt.secret': HMAC key must be at least 256 bits.", e);
+    } finally {
+      // 힙 메모리에서 key값 제거
+      this.secretKeyString = null;
+    }
   }
 }

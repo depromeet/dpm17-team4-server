@@ -18,12 +18,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import depromeet.lessonfour.server.auth.config.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.auth.config.rest.handler.RestAuthenticationSuccessHandler;
 import depromeet.lessonfour.server.auth.config.userdetails.AccountContext;
 import depromeet.lessonfour.server.auth.service.UserUpdateService;
 import depromeet.lessonfour.server.common.utils.HttpServletUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
