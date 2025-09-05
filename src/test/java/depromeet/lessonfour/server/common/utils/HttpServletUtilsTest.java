@@ -109,7 +109,7 @@ class HttpServletUtilsTest {
           .addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("sessionId=test-session-123"));
       verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("HttpOnly"));
       verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Secure"));
-      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("SameSite=None"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("SameSite=Strict"));
     }
 
     @Test
