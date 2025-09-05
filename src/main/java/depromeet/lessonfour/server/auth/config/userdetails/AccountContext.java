@@ -18,8 +18,6 @@ import lombok.Builder;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccountContext implements UserDetails {
 
-  private static final String ROLE_PREFIX = "ROLE_";
-
   private UUID id;
   private String email;
   private String password;
@@ -39,7 +37,7 @@ public class AccountContext implements UserDetails {
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     List<GrantedAuthority> authorities = new ArrayList<>();
-    authorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + role));
+    authorities.add(new SimpleGrantedAuthority(role));
     return authorities;
   }
 
