@@ -4,11 +4,13 @@ import java.io.IOException;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,10 +41,13 @@ public class RestAuthenticationFilter extends AbstractAuthenticationProcessingFi
   public Authentication attemptAuthentication(
       HttpServletRequest request, HttpServletResponse response)
       throws AuthenticationException, IOException {
-    LoginRequestDto dto = objectMapper.readValue(request.getReader(), LoginRequestDto.class);
-
-    RestAuthenticationToken token = new RestAuthenticationToken(dto.email(), dto.password());
-
-    return getAuthenticationManager().authenticate(token);
+    try {
+      LoginRequestDto dto = objectMapper.readValue(request.getInputStream(), LoginRequestDto.class);
+      RestAuthenticationToken token = new RestAuthenticationToken(dto.email(), dto.password());
+      token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+      return getAuthenticationManager().authenticate(token);
+    } catch (IOException e) {
+      throw new AuthenticationServiceException("Invalid login payload", e);
+    }
   }
 }
