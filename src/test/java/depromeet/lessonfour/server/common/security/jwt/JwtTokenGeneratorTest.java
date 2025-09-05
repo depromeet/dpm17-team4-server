@@ -138,7 +138,7 @@ class JwtTokenGeneratorTest {
     }
 
     @Test
-    @DisplayName("Refresh Token에는 7일의 만료 시간이 설정된다")
+    @DisplayName("Refresh Token에는 환경변수로 등록된 만료 시간이 설정된다")
     void givenValidUser_whenGenerateRefreshToken_thenExpirationTimeIsSevenDays() {
       // given
       User user = User.register("test@example.com", "testuser", "password123");
