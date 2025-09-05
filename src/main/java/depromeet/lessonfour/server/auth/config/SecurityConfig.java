@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+  /** 로컬 로그인 API 요청에 대한 필터 체인 */
   @Bean
   @Order(1)
   public SecurityFilterChain loginFilterChain(
@@ -59,6 +60,7 @@ public class SecurityConfig {
         .build();
   }
 
+  /** 일반 API 요청에 대한 필터 체인 */
   @Bean
   @Order(2)
   public SecurityFilterChain apiFilterChain(
@@ -69,11 +71,12 @@ public class SecurityConfig {
     authenticationManagerBuilder.authenticationProvider(jwtAuthenticationProvider);
     AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 
-    http.securityMatcher("/api/**") // 그 외 API 요청은 전부 여기서 JWT 검증
+    http.securityMatcher("/api/**")
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api/auth/register")
+                auth.requestMatchers(
+                        "/swagger-ui/**", "/v3/api-docs/**", "/api/auth/register", "/api/echo/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
