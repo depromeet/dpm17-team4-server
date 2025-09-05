@@ -1,5 +1,7 @@
 package depromeet.lessonfour.server.auth;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -14,11 +16,17 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequestMapping("/api/auth")
 public class AuthController {
 
+  private final KakaoAuthService kakaoAuthService;
+
   @Value("${kakao.client-id}")
   private String kakaoClientId;
 
   @Value("${kakao.redirect-uri}")
   private String kakaoRedirectUri;
+
+  public AuthController(KakaoAuthService kakaoAuthService) {
+    this.kakaoAuthService = kakaoAuthService;
+  }
 
   @GetMapping("/kakao/login")
   public ResponseEntity<Void> kakaoLogin() {
@@ -51,7 +59,13 @@ public class AuthController {
     
     if (code != null) {
       System.out.println("Received code: " + code);
-      return ResponseEntity.ok("Code received: " + code);
+      try {
+        Map<String, Object> tokenResponse = kakaoAuthService.getToken(code);
+        return ResponseEntity.ok("Token received: " + tokenResponse);
+      } catch (Exception e) {
+        System.out.println("Failed to get token: " + e.getMessage());
+        return ResponseEntity.badRequest().body("Failed to get token: " + e.getMessage());
+      }
     }
     
     System.out.println("No code or error received");

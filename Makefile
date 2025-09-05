@@ -38,6 +38,7 @@ help:
 	@echo "  SPRING_PROFILES=<profiles> (default: dev; e.g., dev,local)"
 	@echo "  EXTRA_ARGS=\"--key=val\"    (extra Spring Boot args)"
 	@echo "  KAKAO_CLIENT_ID=<id>       (default: your-kakao-client-id)"
+	@echo "  KAKAO_CLIENT_SECRET=<secret> (default: your-kakao-client-secret)"
 	@echo "  KAKAO_REDIRECT_URI=<uri>   (default: http://localhost:8080/api/auth/kakao/callback)"
 
 build:
@@ -51,7 +52,7 @@ jar:
 
 # Foreground run using Gradle (good for development)
 run:
-	KAKAO_CLIENT_ID=$(KAKAO_CLIENT_ID) KAKAO_REDIRECT_URI=$(KAKAO_REDIRECT_URI) $(GRADLE) bootRun --args="--server.port=$(PORT) $(if $(SPRING_PROFILES),--spring.profiles.active=$(SPRING_PROFILES)) $(EXTRA_ARGS)"
+	KAKAO_CLIENT_ID=$(KAKAO_CLIENT_ID) KAKAO_CLIENT_SECRET=$(KAKAO_CLIENT_SECRET) KAKAO_REDIRECT_URI=$(KAKAO_REDIRECT_URI) $(GRADLE) bootRun --args="--server.port=$(PORT) $(if $(SPRING_PROFILES),--spring.profiles.active=$(SPRING_PROFILES)) $(EXTRA_ARGS)"
 
 # Background run using the built JAR
 start: jar
@@ -66,7 +67,7 @@ start: jar
 		exit 0; \
 	fi; \
 	echo "Starting $$JAR_FILE on port $(PORT)..."; \
-	KAKAO_CLIENT_ID=$(KAKAO_CLIENT_ID) KAKAO_REDIRECT_URI=$(KAKAO_REDIRECT_URI) nohup java -jar "$$JAR_FILE" --server.port=$(PORT) $(if $(SPRING_PROFILES),--spring.profiles.active=$(SPRING_PROFILES)) $(EXTRA_ARGS) > /dev/null 2>&1 & echo $$! > "$(PID_FILE)"; \
+	KAKAO_CLIENT_ID=$(KAKAO_CLIENT_ID) KAKAO_CLIENT_SECRET=$(KAKAO_CLIENT_SECRET) KAKAO_REDIRECT_URI=$(KAKAO_REDIRECT_URI) nohup java -jar "$$JAR_FILE" --server.port=$(PORT) $(if $(SPRING_PROFILES),--spring.profiles.active=$(SPRING_PROFILES)) $(EXTRA_ARGS) > /dev/null 2>&1 & echo $$! > "$(PID_FILE)"; \
 	echo "Started with PID $$(cat $(PID_FILE)). Logs: logs/server.log (app), logs/access*.log (access)"
 
 stop:
