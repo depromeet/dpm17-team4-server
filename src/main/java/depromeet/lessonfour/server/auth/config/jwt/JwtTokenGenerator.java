@@ -1,13 +1,14 @@
 package depromeet.lessonfour.server.auth.config.jwt;
 
-import depromeet.lessonfour.server.auth.persist.jpa.entity.User;
-import io.jsonwebtoken.Jwts;
-import lombok.RequiredArgsConstructor;
+import java.util.Date;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.UUID;
+import depromeet.lessonfour.server.auth.persist.jpa.entity.User;
+import io.jsonwebtoken.Jwts;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
