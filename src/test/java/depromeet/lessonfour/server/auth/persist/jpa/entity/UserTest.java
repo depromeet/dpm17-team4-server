@@ -28,7 +28,7 @@ class UserTest {
 
   @Autowired private UserRepository userRepository;
 
-  @Autowired private Validator validator;
+  private Validator validator;
 
   @BeforeEach
   void setup() {
