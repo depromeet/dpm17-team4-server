@@ -155,7 +155,7 @@ public class HttpServletUtils {
 
     // 보안 쿠키 옵션 (HTTPS 환경용)
     public static CookieOptions secure() {
-      return new CookieOptions("/", true, true, SameSite.NONE);
+      return new CookieOptions("/", true, true, SameSite.STRICT);
     }
 
     // 개발 환경용 쿠키 옵션 (HTTP 허용)
