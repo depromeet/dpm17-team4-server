@@ -1,20 +1,21 @@
 package depromeet.lessonfour.server.common.utils;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import static depromeet.lessonfour.server.auth.config.jwt.JwtConstants.AUTHORIZATION_HEADER;
+import static depromeet.lessonfour.server.auth.config.jwt.JwtConstants.BEARER_PREFIX;
+import static java.util.Optional.empty;
 
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static depromeet.lessonfour.server.auth.config.jwt.JwtConstants.AUTHORIZATION_HEADER;
-import static depromeet.lessonfour.server.auth.config.jwt.JwtConstants.BEARER_PREFIX;
-import static java.util.Optional.empty;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
@@ -52,7 +53,8 @@ public class HttpServletUtils {
     response.addHeader(name, value);
   }
 
-  public void addCookie(HttpServletResponse response, String name, String value, Duration duration) {
+  public void addCookie(
+      HttpServletResponse response, String name, String value, Duration duration) {
     addCookie(response, name, value, (int) duration.getSeconds(), CookieOptions.secure());
   }
 
@@ -178,6 +180,5 @@ public class HttpServletUtils {
     SameSite(String value) {
       this.value = value;
     }
-
   }
 }

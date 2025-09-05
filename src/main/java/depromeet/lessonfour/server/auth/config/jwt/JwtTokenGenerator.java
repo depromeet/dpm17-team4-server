@@ -1,13 +1,15 @@
 package depromeet.lessonfour.server.auth.config.jwt;
 
-import depromeet.lessonfour.server.auth.config.userdetails.AccountContext;
-import io.jsonwebtoken.Jwts;
-import lombok.RequiredArgsConstructor;
+import java.time.Instant;
+import java.util.Date;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.UUID;
+import depromeet.lessonfour.server.auth.config.userdetails.AccountContext;
+import io.jsonwebtoken.Jwts;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -40,6 +42,33 @@ public class JwtTokenGenerator {
         .id(UUID.randomUUID().toString()) // jti
         .issuedAt(new Date())
         .expiration(new Date(System.currentTimeMillis() + expirationMillis))
+        .signWith(secretKeyProvider.getSecretKey())
+        .compact();
+  }
+
+  // 테스트용 오버로드 메서드들
+  public String generateAccessToken(UUID userId, String email, String nickname, String role) {
+    long expirationMillis = accessTokenExpirationSeconds * 1000L;
+    return Jwts.builder()
+        .subject(String.valueOf(userId))
+        .issuedAt(new Date())
+        .expiration(new Date(System.currentTimeMillis() + expirationMillis))
+        .claim("role", role)
+        .claim("email", email)
+        .claim("nickname", nickname)
+        .signWith(secretKeyProvider.getSecretKey())
+        .compact();
+  }
+
+  public String generateAccessToken(
+      UUID userId, String email, String nickname, String role, Instant expiration) {
+    return Jwts.builder()
+        .subject(String.valueOf(userId))
+        .issuedAt(new Date())
+        .expiration(Date.from(expiration))
+        .claim("role", role)
+        .claim("email", email)
+        .claim("nickname", nickname)
         .signWith(secretKeyProvider.getSecretKey())
         .compact();
   }

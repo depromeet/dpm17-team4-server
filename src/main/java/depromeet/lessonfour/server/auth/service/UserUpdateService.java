@@ -1,22 +1,26 @@
 package depromeet.lessonfour.server.auth.service;
 
-import depromeet.lessonfour.server.auth.persist.jpa.UserRepository;
-import lombok.RequiredArgsConstructor;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
+import depromeet.lessonfour.server.auth.persist.jpa.UserRepository;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class UserUpdateService {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    public void updateRefreshToken(UUID userId, String newRefreshToken) {
-        userRepository.findById(userId).ifPresent(user -> {
-            user.storeRefreshToken(newRefreshToken);
-        });
-    }
+  public void updateRefreshToken(UUID userId, String newRefreshToken) {
+    userRepository
+        .findById(userId)
+        .ifPresent(
+            user -> {
+              user.storeRefreshToken(newRefreshToken);
+            });
+  }
 }

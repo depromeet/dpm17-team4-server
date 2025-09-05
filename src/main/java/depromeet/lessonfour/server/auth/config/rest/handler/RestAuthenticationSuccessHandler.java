@@ -1,6 +1,16 @@
 package depromeet.lessonfour.server.auth.config.rest.handler;
 
+import java.io.IOException;
+import java.time.Duration;
+import java.util.Map;
+
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import depromeet.lessonfour.server.auth.config.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.auth.config.userdetails.AccountContext;
 import depromeet.lessonfour.server.auth.service.UserUpdateService;
@@ -9,14 +19,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.time.Duration;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -44,8 +46,7 @@ public class RestAuthenticationSuccessHandler implements AuthenticationSuccessHa
     userUpdateService.updateRefreshToken(accountContext.getId(), refreshToken);
 
     // Refresh token을 HttpOnly 쿠키에 저장
-    httpServletUtils.addCookie(
-        response, "refreshToken", refreshToken, REFRESH_TOKEN_EXPIRATION);
+    httpServletUtils.addCookie(response, "refreshToken", refreshToken, REFRESH_TOKEN_EXPIRATION);
 
     // Access token을 JSON 응답 body에 포함
     Map<String, Object> responseBody = Map.of("accessToken", accessToken);

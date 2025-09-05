@@ -1,12 +1,13 @@
 package depromeet.lessonfour.server.common.security.jwt;
 
-import depromeet.lessonfour.server.auth.config.jwt.JwtSecretKeyProvider;
-import depromeet.lessonfour.server.auth.config.jwt.JwtTokenGenerator;
-import depromeet.lessonfour.server.auth.config.userdetails.AccountContext;
-import depromeet.lessonfour.server.auth.persist.jpa.entity.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.lenient;
+
+import java.util.Date;
+import java.util.UUID;
+
+import javax.crypto.SecretKey;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,12 +18,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.crypto.SecretKey;
-import java.util.Date;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.lenient;
+import depromeet.lessonfour.server.auth.config.jwt.JwtSecretKeyProvider;
+import depromeet.lessonfour.server.auth.config.jwt.JwtTokenGenerator;
+import depromeet.lessonfour.server.auth.config.userdetails.AccountContext;
+import depromeet.lessonfour.server.auth.persist.jpa.entity.User;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 
 @ExtendWith(MockitoExtension.class)
 class JwtTokenGeneratorTest {

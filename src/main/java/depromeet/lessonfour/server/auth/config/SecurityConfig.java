@@ -1,6 +1,5 @@
 package depromeet.lessonfour.server.auth.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -12,6 +11,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import depromeet.lessonfour.server.auth.config.jwt.JwtAuthenticationFilter;
 import depromeet.lessonfour.server.auth.config.jwt.JwtAuthenticationProvider;
@@ -30,6 +31,7 @@ public class SecurityConfig {
 
   private final ObjectMapper objectMapper;
 
+  /** 로컬 로그인 API 요청에 대한 필터 체인 */
   @Bean
   @Order(1)
   public SecurityFilterChain loginFilterChain(
@@ -63,23 +65,31 @@ public class SecurityConfig {
         .build();
   }
 
+  /** 일반 API 요청에 대한 필터 체인 */
   @Bean
   @Order(2)
   public SecurityFilterChain apiFilterChain(
-      HttpSecurity http, JwtAuthenticationProvider jwtAuthenticationProvider,
+      HttpSecurity http,
+      JwtAuthenticationProvider jwtAuthenticationProvider,
       JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-      JwtAccessDeniedHandler jwtAccessDeniedHandler) throws Exception {
+      JwtAccessDeniedHandler jwtAccessDeniedHandler)
+      throws Exception {
 
     AuthenticationManagerBuilder authenticationManagerBuilder =
         http.getSharedObject(AuthenticationManagerBuilder.class);
     authenticationManagerBuilder.authenticationProvider(jwtAuthenticationProvider);
     AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 
-    http.securityMatcher("/api/**") // 그 외 API 요청은 전부 여기서 JWT 검증
+    http.securityMatcher("/api/**")
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api/auth/register", "/api/auth/reissue")
+                auth.requestMatchers(
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/api/auth/register",
+                        "/api/auth/reissue",
+                        "/api/echo/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
