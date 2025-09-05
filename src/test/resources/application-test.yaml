@@ -12,3 +12,7 @@ spring:
 logging:
   level:
     org.springframework.web: DEBUG
+
+kakao:
+  client-id: test-client-id
+  redirect-uri: http://localhost:8080/api/auth/kakao/callback

@@ -29,3 +29,6 @@ logging:
   level:
     org.flywaydb: info
 
+kakao:
+  client-id: ${KAKAO_CLIENT_ID:dev-client-id}
+  redirect-uri: ${KAKAO_REDIRECT_URI:http://localhost:8080/api/auth/kakao/callback}

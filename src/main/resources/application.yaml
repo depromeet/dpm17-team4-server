@@ -32,3 +32,7 @@ server:
       file-date-format: .yyyy-MM-dd
       rotate: true
       pattern: common
+
+kakao:
+  client-id: ${KAKAO_CLIENT_ID:your-kakao-client-id}
+  redirect-uri: ${KAKAO_REDIRECT_URI:http://localhost:8080/api/auth/kakao/callback}
