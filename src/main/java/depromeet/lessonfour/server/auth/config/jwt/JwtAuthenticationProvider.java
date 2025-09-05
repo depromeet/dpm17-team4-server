@@ -36,7 +36,9 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
   }
 
   private static void isAuthenticationNull(Authentication authentication) {
-    if (authentication == null || authentication.getCredentials() == null || authentication.getCredentials().toString().isBlank()) {
+    if (authentication == null
+        || authentication.getCredentials() == null
+        || authentication.getCredentials().toString().isBlank()) {
       throw new BadCredentialsException("Missing JWT Token");
     }
   }

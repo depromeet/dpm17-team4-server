@@ -1,25 +1,24 @@
 package depromeet.lessonfour.server.auth.config.userdetails;
 
-import depromeet.lessonfour.server.auth.persist.jpa.entity.User;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import depromeet.lessonfour.server.auth.persist.jpa.entity.User;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccountContext implements UserDetails {
-
-  private static final String ROLE_PREFIX = "ROLE_";
 
   private UUID id;
   private String email;
@@ -40,7 +39,7 @@ public class AccountContext implements UserDetails {
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     List<GrantedAuthority> authorities = new ArrayList<>();
-    authorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + role));
+    authorities.add(new SimpleGrantedAuthority(role));
     return authorities;
   }
 

@@ -1,6 +1,16 @@
 package depromeet.lessonfour.server.auth.config.rest.handler;
 
+import java.io.IOException;
+import java.time.Duration;
+import java.util.Map;
+
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import depromeet.lessonfour.server.auth.config.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.auth.config.userdetails.AccountContext;
 import depromeet.lessonfour.server.common.utils.HttpServletUtils;
@@ -8,14 +18,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.time.Duration;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor

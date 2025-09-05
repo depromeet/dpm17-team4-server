@@ -41,7 +41,7 @@ public class SecurityConfig {
     authenticationManagerBuilder.authenticationProvider(restAuthenticationProvider);
     AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 
-    return http.securityMatcher("/api/auth/login", "/api/hello/**") // 로그인 및 테스트용 API 처리
+    return http.securityMatcher("/api/auth/login")
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
         .sessionManagement(
