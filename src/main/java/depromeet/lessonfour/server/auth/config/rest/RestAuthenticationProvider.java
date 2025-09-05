@@ -21,6 +21,12 @@ public class RestAuthenticationProvider implements AuthenticationProvider {
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
+    if (authentication == null
+        || authentication.getCredentials() == null
+        || ((String) authentication.getCredentials()).isBlank()) {
+      throw new BadCredentialsException("Invalid credentials");
+    }
+
     String loginId = authentication.getName();
     String password = (String) authentication.getCredentials();
 
