@@ -62,7 +62,8 @@ public class AuthController {
       System.out.println("Received code: " + code);
       try {
         Map<String, Object> tokenResponse = kakaoAuthService.getToken(code);
-        kakaoAuthService.validateOidcToken(tokenResponse.get("id_token").toString());
+        Map<String, Object> claims = kakaoAuthService.validateOidcToken(tokenResponse.get("id_token").toString());
+        System.out.println("Final Claims: " + claims);
         return ResponseEntity.ok("Token received: " + tokenResponse);
       } catch (Exception e) {
         System.out.println("Failed to get token: " + e.getMessage());
