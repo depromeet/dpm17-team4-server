@@ -2,6 +2,7 @@ package depromeet.lessonfour.server.auth;
 
 import java.security.Key;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -15,6 +16,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import depromeet.lessonfour.server.user.User;
+import depromeet.lessonfour.server.user.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Locator;
@@ -23,6 +26,7 @@ import io.jsonwebtoken.Locator;
 public class KakaoAuthService {
 
   private final RestTemplate restTemplate;
+  private final UserRepository userRepository;
   private final String clientId;
   private final String clientSecret;
   private final String redirectUri;
@@ -30,10 +34,12 @@ public class KakaoAuthService {
 
   public KakaoAuthService(
       RestTemplate restTemplate,
+      UserRepository userRepository,
       @Value("${kakao.client-id}") String clientId,
       @Value("${kakao.client-secret}") String clientSecret,
       @Value("${kakao.redirect-uri}") String redirectUri) {
     this.restTemplate = restTemplate;
+    this.userRepository = userRepository;
     this.clientId = clientId;
     this.clientSecret = clientSecret;
     this.redirectUri = redirectUri;
@@ -112,4 +118,57 @@ public class KakaoAuthService {
       throw new RuntimeException("Failed to verify OIDC token: " + e.getMessage(), e);
     }
   }
+
+  public User processOidcToken(String token) {
+    // OIDC 토큰 검증
+    Map<String, Object> claims = validateOidcToken(token);
+    
+    // 사용자 정보 추출
+    String email = (String) claims.get("email");
+    String nickname = (String) claims.get("nickname");
+    String picture = (String) claims.get("picture");
+    String sub = (String) claims.get("sub");
+    
+    if (email == null) {
+      throw new RuntimeException("Email is required for OIDC authentication");
+    }
+    
+    // 1. provider + externalId로 먼저 찾기 (같은 Kakao 계정)
+    User user = userRepository.findByProviderAndExternalId("kakao", sub)
+        .orElseGet(() -> {
+          // 2. 없으면 이메일로 찾기
+          Optional<User> existingUser = userRepository.findByEmail(email);
+          if (existingUser.isPresent()) {
+            // 3. 이메일이 있지만 다른 provider로 가입된 경우 가입 거부
+            User foundUser = existingUser.get();
+            if (!"kakao".equals(foundUser.getProvider())) {
+              throw new RuntimeException("Email already registered with different provider: " + foundUser.getProvider());
+            }
+            return foundUser;
+          } else {
+            // 4. 완전히 새로운 사용자 생성
+            System.out.println("Creating new user: " + email + " " + nickname + " " + picture + " " + sub);
+            return createNewUser(email, nickname, picture, "kakao", sub);
+          }
+        });
+    
+    // 사용자 정보 업데이트
+    user.setUsername(nickname);
+    user.setProfileImage(picture);
+    user.setProvider("kakao");
+    user.setExternalId(sub);
+    
+    return userRepository.save(user);
+  }
+
+  private User createNewUser(String email, String nickname, String picture, String provider, String externalId) {
+    User newUser = new User();
+    newUser.setEmail(email);
+    newUser.setUsername(nickname);
+    newUser.setProfileImage(picture);
+    newUser.setProvider(provider);
+    newUser.setExternalId(externalId);
+    return userRepository.save(newUser);
+  }
+
 }

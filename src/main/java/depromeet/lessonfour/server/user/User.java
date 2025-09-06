@@ -1,10 +1,13 @@
 package depromeet.lessonfour.server.user;
 
+import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -19,6 +22,23 @@ public class User {
 
   @Column(length = 255)
   private String username;
+
+  @Column(length = 500)
+  private String profileImage;
+
+  @Column(length = 50)
+  private String provider;
+
+  @Column(length = 255)
+  private String externalId;
+
+  @Column(name = "created_at")
+  private Instant createdAt;
+
+  @PrePersist
+  protected void onCreate() {
+    createdAt = Instant.now();
+  }
 
   public Long getId() {
     return id;
@@ -38,5 +58,37 @@ public class User {
 
   public void setUsername(String username) {
     this.username = username;
+  }
+
+  public String getProfileImage() {
+    return profileImage;
+  }
+
+  public void setProfileImage(String profileImage) {
+    this.profileImage = profileImage;
+  }
+
+  public String getProvider() {
+    return provider;
+  }
+
+  public void setProvider(String provider) {
+    this.provider = provider;
+  }
+
+  public String getExternalId() {
+    return externalId;
+  }
+
+  public void setExternalId(String externalId) {
+    this.externalId = externalId;
+  }
+
+  public Instant getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Instant createdAt) {
+    this.createdAt = createdAt;
   }
 }
