@@ -60,15 +60,13 @@ public class AuthController {
 
     if (error != null) {
       System.out.println("OAuth error: " + error);
-      String errorUrl = UriComponentsBuilder
-          .fromUriString("http://localhost:3000")
-          .queryParam("error", "OAuth error: " + error)
-          .encode(StandardCharsets.UTF_8)
-          .build()
-          .toUriString();
-      return ResponseEntity.status(302)
-          .header("Location", errorUrl)
-          .build();
+      String errorUrl =
+          UriComponentsBuilder.fromUriString("http://localhost:3000")
+              .queryParam("error", "OAuth error: " + error)
+              .encode(StandardCharsets.UTF_8)
+              .build()
+              .toUriString();
+      return ResponseEntity.status(302).header("Location", errorUrl).build();
     }
 
     if (code != null) {
@@ -78,54 +76,53 @@ public class AuthController {
         User user = kakaoAuthService.processOidcToken(tokenResponse.get("id_token").toString());
         String accessToken = "access_token_" + UUID.randomUUID().toString();
         String refreshToken = "refresh_token_" + UUID.randomUUID().toString();
-        ResponseCookie refreshTokenCookie = ResponseCookie.from("refresh_token", refreshToken)
-            .httpOnly(true)
-            .sameSite("Strict")
-            .maxAge(7 * 24 * 60 * 60) // 7일
-            .path("/")
-            .build();
+        ResponseCookie refreshTokenCookie =
+            ResponseCookie.from("refresh_token", refreshToken)
+                .httpOnly(true)
+                .sameSite("Strict")
+                .maxAge(7 * 24 * 60 * 60) // 7일
+                .path("/")
+                .build();
         // .secure(true) // HTTPS에서만 전송
-        
-        String successUrl = UriComponentsBuilder
-            .fromUriString("http://localhost:3000")
-            .queryParam("access_token", accessToken)
-            .queryParam("user_id", user.getId())
-            .queryParam("username", user.getUsername())
-            .queryParam("profile_image", user.getProfileImage())
-            .encode(StandardCharsets.UTF_8)
-            .build()
-            .toUriString();
-        
-        System.out.println("User authenticated: " + user.getUsername() + " (" + user.getEmail() + ")");
-        
+        System.out.println("Is new user? " + user.isNew());
+        String successUrl =
+            UriComponentsBuilder.fromUriString("http://localhost:3000")
+                .queryParam("access_token", accessToken)
+                .queryParam("user_id", user.getId())
+                .queryParam("username", user.getUsername())
+                .queryParam("profile_image", user.getProfileImage())
+                .queryParam("is_new_user", user.isNew())
+                .encode(StandardCharsets.UTF_8)
+                .build()
+                .toUriString();
+
+        System.out.println(
+            "User authenticated: " + user.getUsername() + " (" + user.getEmail() + ")");
+
         return ResponseEntity.status(302)
             .header("Location", successUrl)
             .header("Set-Cookie", refreshTokenCookie.toString())
             .build();
-            
+
       } catch (Exception e) {
         System.out.println("Failed to get token: " + e.getMessage());
-        String errorUrl = UriComponentsBuilder
-            .fromUriString("http://localhost:3000")
-            .queryParam("error", "Authentication failed: " + e.getMessage())
-            .encode(StandardCharsets.UTF_8)
-            .build()
-            .toUriString();
-        return ResponseEntity.status(302)
-            .header("Location", errorUrl)
-            .build();
+        String errorUrl =
+            UriComponentsBuilder.fromUriString("http://localhost:3000")
+                .queryParam("error", "Authentication failed: " + e.getMessage())
+                .encode(StandardCharsets.UTF_8)
+                .build()
+                .toUriString();
+        return ResponseEntity.status(302).header("Location", errorUrl).build();
       }
     }
 
     System.out.println("No code or error received");
-    String errorUrl = UriComponentsBuilder
-        .fromUriString("http://localhost:3000")
-        .queryParam("error", "No code or error received")
-        .encode(StandardCharsets.UTF_8)
-        .build()
-        .toUriString();
-    return ResponseEntity.status(302)
-        .header("Location", errorUrl)
-        .build();
+    String errorUrl =
+        UriComponentsBuilder.fromUriString("http://localhost:3000")
+            .queryParam("error", "No code or error received")
+            .encode(StandardCharsets.UTF_8)
+            .build()
+            .toUriString();
+    return ResponseEntity.status(302).header("Location", errorUrl).build();
   }
 }

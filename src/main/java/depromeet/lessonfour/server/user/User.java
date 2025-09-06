@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "app_user")
@@ -34,6 +35,8 @@ public class User {
 
   @Column(name = "created_at")
   private Instant createdAt;
+
+  @Transient private boolean isNew = false;
 
   @PrePersist
   protected void onCreate() {
@@ -90,5 +93,13 @@ public class User {
 
   public void setCreatedAt(Instant createdAt) {
     this.createdAt = createdAt;
+  }
+
+  public boolean isNew() {
+    return isNew;
+  }
+
+  public void setNew(boolean isNew) {
+    this.isNew = isNew;
   }
 }

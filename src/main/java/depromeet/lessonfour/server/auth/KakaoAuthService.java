@@ -122,53 +122,55 @@ public class KakaoAuthService {
   public User processOidcToken(String token) {
     // OIDC 토큰 검증
     Map<String, Object> claims = validateOidcToken(token);
-    
+
     // 사용자 정보 추출
     String email = (String) claims.get("email");
     String nickname = (String) claims.get("nickname");
     String picture = (String) claims.get("picture");
     String sub = (String) claims.get("sub");
-    
+
     if (email == null) {
       throw new RuntimeException("Email is required for OIDC authentication");
     }
-    
+
     // 1. provider + externalId로 먼저 찾기 (같은 Kakao 계정)
-    User user = userRepository.findByProviderAndExternalId("kakao", sub)
-        .orElseGet(() -> {
-          // 2. 없으면 이메일로 찾기
-          Optional<User> existingUser = userRepository.findByEmail(email);
-          if (existingUser.isPresent()) {
-            // 3. 이메일이 있지만 다른 provider로 가입된 경우 가입 거부
-            User foundUser = existingUser.get();
-            if (!"kakao".equals(foundUser.getProvider())) {
-              throw new RuntimeException("Email already registered with different provider: " + foundUser.getProvider());
-            }
-            return foundUser;
-          } else {
-            // 4. 완전히 새로운 사용자 생성
-            System.out.println("Creating new user: " + email + " " + nickname + " " + picture + " " + sub);
-            return createNewUser(email, nickname, picture, "kakao", sub);
-          }
-        });
-    
-    // 사용자 정보 업데이트
-    user.setUsername(nickname);
-    user.setProfileImage(picture);
-    user.setProvider("kakao");
-    user.setExternalId(sub);
-    
-    return userRepository.save(user);
+    Optional<User> existingUser = userRepository.findByProviderAndExternalId("kakao", sub);
+
+    if (existingUser.isPresent()) {
+      User user = existingUser.get();
+      // NOTE: 정보 업데이트? 우선 안함
+      return user;
+    }
+
+    Optional<User> emailUser = userRepository.findByEmail(email);
+    if (emailUser.isPresent()) {
+      User foundUser = emailUser.get();
+      if (!"kakao".equals(foundUser.getProvider())) {
+        throw new RuntimeException(
+            "Email already registered with different provider: " + foundUser.getProvider());
+      }
+      // 같은 provider인데 externalId가 다른 경우 (이론적으로는 발생하지 않아야 함)
+      foundUser.setUsername(nickname);
+      foundUser.setProfileImage(picture);
+      foundUser.setProvider("kakao");
+      foundUser.setExternalId(sub);
+
+      return userRepository.save(foundUser);
+    }
+
+    System.out.println("Creating new user: " + email + " " + nickname + " " + picture + " " + sub);
+    return createNewUser(email, nickname, picture, "kakao", sub);
   }
 
-  private User createNewUser(String email, String nickname, String picture, String provider, String externalId) {
+  private User createNewUser(
+      String email, String nickname, String picture, String provider, String externalId) {
     User newUser = new User();
     newUser.setEmail(email);
     newUser.setUsername(nickname);
     newUser.setProfileImage(picture);
     newUser.setProvider(provider);
     newUser.setExternalId(externalId);
+    newUser.setNew(true);
     return userRepository.save(newUser);
   }
-
 }
