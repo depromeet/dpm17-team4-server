@@ -74,8 +74,11 @@ public class AuthController {
       try {
         Map<String, Object> tokenResponse = kakaoAuthService.getToken(code);
         User user = kakaoAuthService.processOidcToken(tokenResponse.get("id_token").toString());
+
+        // TODO: 토큰 발급 로직으로 변경 -> Service layer로 이동
         String accessToken = "access_token_" + UUID.randomUUID().toString();
         String refreshToken = "refresh_token_" + UUID.randomUUID().toString();
+
         ResponseCookie refreshTokenCookie =
             ResponseCookie.from("refresh_token", refreshToken)
                 .httpOnly(true)
