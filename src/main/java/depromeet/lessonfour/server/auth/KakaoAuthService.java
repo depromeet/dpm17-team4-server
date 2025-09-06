@@ -1,7 +1,6 @@
 package depromeet.lessonfour.server.auth;
 
 import java.security.Key;
-import java.util.Base64;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -17,8 +16,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.JwtParserBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Locator;
 
@@ -79,8 +76,9 @@ public class KakaoAuthService {
 
   public Map<String, Object> validateOidcToken(String token) {
     try {
+      System.out.println("Validating OIDC token with simplified JWKS approach...");
+
       // JWKS에서 공개키 가져오기
-      System.out.println("Fetching JWKS from Kakao...");
       ResponseEntity<Map<String, Object>> jwksResponse =
           restTemplate.exchange(
               jwksUrl,
@@ -89,49 +87,29 @@ public class KakaoAuthService {
               new ParameterizedTypeReference<Map<String, Object>>() {});
 
       Map<String, Object> jwks = jwksResponse.getBody();
-      System.out.println("JWKS fetched successfully");
 
-      // JWT 라이브러리를 활용한 Locator 생성
-      Locator<Key> keyLocator = new KakaoSigningKeyResolver(jwks);
+      // 간단한 JWK Locator 생성
+      Locator<Key> keyLocator = new JwkLocator(jwks);
 
-      // JWT 파싱 및 검증 (JWT 라이브러리 활용)
-      System.out.println("Parsing and validating JWT with JJWT library...");
-      JwtParserBuilder parserBuilder = Jwts.parser();
-      JwtParser parser =
-          parserBuilder
+      // JWT 파싱 및 검증
+      Claims claims =
+          Jwts.parser()
               .keyLocator(keyLocator)
               .requireAudience(clientId)
               .requireIssuer("https://kauth.kakao.com")
-              .build();
+              .build()
+              .parseSignedClaims(token)
+              .getPayload();
 
-      Claims claims = parser.parseSignedClaims(token).getPayload();
       System.out.println("JWT validation successful!");
       System.out.println("DECODED CLAIMS: " + claims);
-      return claims;
 
+      return claims;
     } catch (Exception e) {
       System.out.println("JWT validation failed: " + e.getMessage());
-      // Fallback: 간단한 Base64 디코딩
-      try {
-        System.out.println("Falling back to simple Base64 decode...");
-        String[] tokenParts = token.split("\\.");
-        String headerJson = new String(Base64.getUrlDecoder().decode(tokenParts[0]));
-        String payloadJson = new String(Base64.getUrlDecoder().decode(tokenParts[1]));
 
-        System.out.println("HEADER: " + headerJson);
-        System.out.println("PAYLOAD: " + payloadJson);
-
-        Map<String, Object> fallbackClaims =
-            Map.of(
-                "payload", payloadJson,
-                "header", headerJson);
-        // TODO: logging
-        System.out.println("FALLBACK CLAIMS: " + fallbackClaims.toString());
-      } catch (Exception fallbackException) {
-        System.out.println("Fallback also failed: " + fallbackException.getMessage());
-      }
-      // TODO: remove e.getMessage() for security
-      throw new RuntimeException("Failed to verify OIDC token: " + e.getMessage());
+      // JWT 검증 실패 시 예외를 던져서 실패를 명확히 알림
+      throw new RuntimeException("Failed to verify OIDC token: " + e.getMessage(), e);
     }
   }
 }
