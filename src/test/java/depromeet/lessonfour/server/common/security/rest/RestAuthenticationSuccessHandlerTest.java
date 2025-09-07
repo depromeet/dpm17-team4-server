@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -56,6 +57,10 @@ class RestAuthenticationSuccessHandlerTest {
     successHandler =
         new RestAuthenticationSuccessHandler(
             jwtTokenGenerator, httpServletUtils, userUpdateService, objectMapper);
+
+    // @Value 필드에 값 주입
+    ReflectionTestUtils.setField(successHandler, "refreshTokenExpirationSeconds", 604800L);
+
     stringWriter = new StringWriter();
     printWriter = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(printWriter);
