@@ -2,12 +2,10 @@ package depromeet.lessonfour.server.auth.config.jwt;
 
 import java.io.IOException;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -19,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -27,35 +24,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private static final String TOKEN_PREFIX = "Bearer ";
   private static final int TOKEN_PREFIX_LENGTH = 7;
 
-  private final JwtProvider jwtProvider;
-  private final UserDetailsService userDetailsService;
+  private final AuthenticationManager authenticationManager;
 
   @Override
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
 
-    try {
-      String jwt = getTokenFromRequest(request);
-
-      if (StringUtils.hasText(jwt)
-          && SecurityContextHolder.getContext().getAuthentication() == null) {
-        if (jwtProvider.validateToken(jwt)) {
-          String email = jwtProvider.extractEmail(jwt);
-
-          if (email != null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-
-            UsernamePasswordAuthenticationToken authToken =
-                new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-          }
-        }
+    String token = getTokenFromRequest(request);
+    if (StringUtils.hasText(token)
+        && SecurityContextHolder.getContext().getAuthentication() == null) {
+      Authentication authentication = authenticate(token);
+      if (authentication != null) {
+        SecurityContextHolder.getContext().setAuthentication(authentication);
       }
-    } catch (Exception ex) {
-      log.error("Could not set user authentication in security context", ex);
     }
 
     filterChain.doFilter(request, response);
@@ -67,5 +49,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       return bearerToken.substring(TOKEN_PREFIX_LENGTH);
     }
     return null;
+  }
+
+  private Authentication authenticate(String token) {
+    JwtAuthenticationToken authRequest = new JwtAuthenticationToken(token);
+
+    try {
+      return authenticationManager.authenticate(authRequest);
+    } catch (AuthenticationException e) {
+      log.debug("JWT Authentication failed: {}", e.getMessage());
+      return null;
+    }
   }
 }

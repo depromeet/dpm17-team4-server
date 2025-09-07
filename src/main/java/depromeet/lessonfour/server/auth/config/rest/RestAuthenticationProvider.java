@@ -26,16 +26,19 @@ public class RestAuthenticationProvider implements AuthenticationProvider {
 
     AccountContext userDetails = (AccountContext) userDetailsService.loadUserByUsername(loginId);
 
-    if (!passwordEncoder.matches(password, userDetails.getPassword())) {
-      throw new BadCredentialsException("Invalid password");
-    }
+    validatePassword(password, userDetails);
 
-    return new RestAuthenticationToken(
-        userDetails.getAuthorities(), userDetails.getUsername(), null);
+    return new RestAuthenticationToken(userDetails.getAuthorities(), userDetails, null);
   }
 
   @Override
   public boolean supports(Class<?> authentication) {
     return authentication.isAssignableFrom(RestAuthenticationToken.class);
+  }
+
+  private void validatePassword(String password, AccountContext userDetails) {
+    if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+      throw new BadCredentialsException("Invalid password");
+    }
   }
 }

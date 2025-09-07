@@ -13,7 +13,9 @@ import depromeet.lessonfour.server.auth.persist.jpa.entity.User;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccountContext implements UserDetails {

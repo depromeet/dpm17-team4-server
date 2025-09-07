@@ -36,7 +36,8 @@ public class User extends BaseTimeEntity {
 
   private String providerUserId;
 
-  @Column private String refreshToken;
+  @Column(length = 512)
+  private String refreshToken;
 
   public static User register(String email, String nickname, String password) {
     return User.builder()

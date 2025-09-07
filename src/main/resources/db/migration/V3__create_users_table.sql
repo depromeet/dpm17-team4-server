@@ -13,11 +13,6 @@ CREATE TABLE users (
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_users_nickname ON users(nickname);
-CREATE INDEX idx_users_provider ON users(provider);
-CREATE INDEX idx_users_provider_user_id ON users(provider_user_id);
-
 -- Add constraints for enum values
 ALTER TABLE users ADD CONSTRAINT chk_users_role 
     CHECK (role IN ('USER', 'ADMIN'));

@@ -9,16 +9,17 @@ import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.AccessLevel;
 import lombok.Getter;
 
-@Getter
 @Component
 public class JwtSecretKeyProvider {
 
+  @Getter(AccessLevel.NONE)
   @Value("${jwt.secret:myDefaultSecretKeyForJWTWhichShouldBeAtLeast256BitsLong}")
   private String secretKeyString;
 
-  private SecretKey secretKey;
+  @Getter private SecretKey secretKey;
 
   @PostConstruct
   void initializeSecretKey() {
