@@ -21,7 +21,6 @@ public class UserQueryService {
     return new UserResponseDto(
         user.getId(),
         user.getEmail(),
-        user.getPassword(),
         user.getNickname(),
         user.getRole(),
         user.getProvider(),
