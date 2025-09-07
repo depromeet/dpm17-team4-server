@@ -95,7 +95,11 @@ public class HttpServletUtils {
 
     if (getCookie(request, name).isPresent()) {
       try {
-        setCookieHeader(response, name, "", 0, CookieOptions.secure());
+        boolean isSecure =
+            (request.isSecure())
+                || "https".equalsIgnoreCase(request.getHeader("X-Forwarded-Proto"));
+        CookieOptions opts = isSecure ? CookieOptions.secure() : CookieOptions.development();
+        setCookieHeader(response, name, "", 0, opts);
         log.debug("Cookie removed: name={}", name);
       } catch (Exception e) {
         log.warn("Failed to remove cookie: name={}, error={}", name, e.getMessage(), e);
@@ -141,6 +145,7 @@ public class HttpServletUtils {
   }
 
   public static class CookieOptions {
+
     private final String path;
     private final boolean httpOnly;
     private final boolean secure;
