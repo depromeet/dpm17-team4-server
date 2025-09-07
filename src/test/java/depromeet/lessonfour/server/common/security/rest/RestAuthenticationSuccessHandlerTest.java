@@ -1,5 +1,6 @@
 package depromeet.lessonfour.server.common.security.rest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -58,7 +59,6 @@ class RestAuthenticationSuccessHandlerTest {
         new RestAuthenticationSuccessHandler(
             jwtTokenGenerator, httpServletUtils, userUpdateService, objectMapper);
 
-    // @Value 필드에 값 주입
     ReflectionTestUtils.setField(successHandler, "refreshTokenExpirationSeconds", 604800L);
 
     stringWriter = new StringWriter();
@@ -104,7 +104,7 @@ class RestAuthenticationSuccessHandlerTest {
     verify(jwtTokenGenerator).generateAccessToken(accountContext);
     printWriter.flush();
     String responseBody = stringWriter.toString();
-    assert responseBody.contains("mock-access-token");
+    assertThat(responseBody).contains("mock-access-token");
   }
 
   @Test

@@ -169,12 +169,13 @@ class HttpServletUtilsTest {
   class RemoveCookieTest {
 
     @Test
-    @DisplayName("존재하는 쿠키를 올바르게 제거한다")
-    void whenCookieExists_thenRemoveCookie() {
+    @DisplayName("HTTPS 환경에서 존재하는 쿠키를 올바르게 제거한다")
+    void whenCookieExistsInHttpsEnvironment_thenRemoveCookieWithSecureFlag() {
       // given
       String cookieName = "sessionId";
       Cookie existingCookie = new Cookie(cookieName, "some-value");
       when(request.getCookies()).thenReturn(new Cookie[] {existingCookie});
+      when(request.isSecure()).thenReturn(true);
 
       // when
       httpServletUtils.removeCookie(request, response, cookieName);
@@ -184,6 +185,70 @@ class HttpServletUtilsTest {
       verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Max-Age=0"));
       verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("HttpOnly"));
       verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Secure"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("SameSite=Strict"));
+    }
+
+    @Test
+    @DisplayName("HTTP 환경에서 존재하는 쿠키를 올바르게 제거한다")
+    void whenCookieExistsInHttpEnvironment_thenRemoveCookieWithoutSecureFlag() {
+      // given
+      String cookieName = "sessionId";
+      Cookie existingCookie = new Cookie(cookieName, "some-value");
+      when(request.getCookies()).thenReturn(new Cookie[] {existingCookie});
+      when(request.isSecure()).thenReturn(false);
+      when(request.getHeader("X-Forwarded-Proto")).thenReturn(null);
+
+      // when
+      httpServletUtils.removeCookie(request, response, cookieName);
+
+      // then
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("sessionId=;"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Max-Age=0"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("HttpOnly"));
+      verify(response, never()).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Secure"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("SameSite=Lax"));
+    }
+
+    @Test
+    @DisplayName("X-Forwarded-Proto 헤더가 https인 경우 Secure 플래그를 적용한다")
+    void whenXForwardedProtoIsHttps_thenRemoveCookieWithSecureFlag() {
+      // given
+      String cookieName = "sessionId";
+      Cookie existingCookie = new Cookie(cookieName, "some-value");
+      when(request.getCookies()).thenReturn(new Cookie[] {existingCookie});
+      when(request.isSecure()).thenReturn(false);
+      when(request.getHeader("X-Forwarded-Proto")).thenReturn("https");
+
+      // when
+      httpServletUtils.removeCookie(request, response, cookieName);
+
+      // then
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("sessionId=;"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Max-Age=0"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("HttpOnly"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Secure"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("SameSite=Strict"));
+    }
+
+    @Test
+    @DisplayName("X-Forwarded-Proto 헤더가 HTTP인 경우 Secure 플래그를 적용하지 않는다")
+    void whenXForwardedProtoIsHttp_thenRemoveCookieWithoutSecureFlag() {
+      // given
+      String cookieName = "sessionId";
+      Cookie existingCookie = new Cookie(cookieName, "some-value");
+      when(request.getCookies()).thenReturn(new Cookie[] {existingCookie});
+      when(request.isSecure()).thenReturn(false);
+      when(request.getHeader("X-Forwarded-Proto")).thenReturn("http");
+
+      // when
+      httpServletUtils.removeCookie(request, response, cookieName);
+
+      // then
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("sessionId=;"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Max-Age=0"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("HttpOnly"));
+      verify(response, never()).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Secure"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("SameSite=Lax"));
     }
 
     @Test
