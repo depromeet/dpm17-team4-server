@@ -42,8 +42,14 @@ public class ReIssueTokenUseCase {
   }
 
   private User findUserById(String userId) {
+    final UUID uuid;
+    try {
+      uuid = UUID.fromString(userId);
+    } catch (IllegalArgumentException e) {
+      throw new BadCredentialsException("Invalid refresh token subject");
+    }
     return userRepository
-        .findById(UUID.fromString(userId))
+        .findById(uuid)
         .orElseThrow(() -> new BadCredentialsException("User not found"));
   }
 
