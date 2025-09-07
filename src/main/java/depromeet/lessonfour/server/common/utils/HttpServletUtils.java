@@ -47,7 +47,7 @@ public class HttpServletUtils {
           "Invalid parameters for putHeader: response={}, name={}, value={}",
           response != null,
           name,
-          value);
+          value != null);
       return;
     }
     response.addHeader(name, value);

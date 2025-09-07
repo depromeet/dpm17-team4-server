@@ -34,7 +34,9 @@ public class ReIssueTokenUseCase {
   }
 
   private void validateRefreshToken(String refreshToken) {
-    if (!jwtTokenValidator.isValidToken(refreshToken)) {
+    if (refreshToken == null
+        || refreshToken.isBlank()
+        || !jwtTokenValidator.isValidToken(refreshToken)) {
       throw new BadCredentialsException("Invalid refresh token");
     }
   }
