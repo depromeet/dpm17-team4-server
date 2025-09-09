@@ -1,4 +1,4 @@
-variable "vpc_id" {
+variable "vpc_no" {
   description = "The ID of the VPC where the resources will be created"
   type        = string
 }

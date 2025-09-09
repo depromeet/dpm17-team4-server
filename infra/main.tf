@@ -28,7 +28,7 @@ module "subnets" {
   source   = "./modules/subnet"
   for_each = var.subnets
 
-  vpc_id         = module.vpc.vpc_id
+  vpc_no         = module.vpc.vpc_id
   subnet_cidr    = each.value.cidr_block
   zone           = each.value.zone
   network_acl_no = module.vpc.default_network_acl_no
@@ -41,4 +41,15 @@ module "subnets" {
 module "management_key" {
   source   = "./modules/login-key"
   key_name = "${local.name_prefix}-management-key"
+}
+
+# Backend ACG
+module "backend_acg" {
+  source = "./modules/acg"
+
+  vpc_no         = module.vpc.vpc_id
+  name_prefix    = local.name_prefix
+  acg_name       = "backend"
+  inbound_rules  = local.backend_inbound_rules
+  outbound_rules = local.common_outbound_rules
 }
