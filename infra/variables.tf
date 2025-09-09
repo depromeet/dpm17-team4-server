@@ -26,3 +26,14 @@ variable "vpc_cidr_block" {
   description = "The CIDR block for the VPC"
   type        = string
 }
+
+# Subnet
+variable "subnets" {
+    description = "A map of subnets to create"
+    type = map(object({
+        cidr_block  = string
+        zone        = string
+        subnet_type = string
+        usage_type  = string
+    }))
+}
