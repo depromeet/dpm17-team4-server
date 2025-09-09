@@ -1,0 +1,803 @@
+[
+	{
+		"server_image_number": "107029409",
+		"name": "rocky-9.6-base",
+		"description": "kernel version : 5.14.0-570.18.1.el9_6.x86_64",
+		"type": "NCP",
+		"hypervisor_type": "KVM",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "ROCKY",
+		"product_code": "SW.VSVR.OS.LNX64.ROCKY.09.G003",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_snapshot_instance_no": 107029410,
+				"block_storage_snapshot_name": "snapshot of rocky-9.6-base",
+				"block_storage_size": 10737418240,
+				"block_storage_volume_type": "CB1",
+				"iops": 100,
+				"throughput": 104857600,
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "104647014",
+		"name": "ubuntu-24.04-gpu",
+		"description": "kernel version : 6.8.0-60-generic",
+		"type": "NCP",
+		"hypervisor_type": "KVM",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "UBUNTU",
+		"product_code": "SW.VSVR.OS.LNX64.UBNTU.SVR24.G003",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_snapshot_instance_no": 104647015,
+				"block_storage_snapshot_name": "snapshot of ubuntu-24.04-gpu",
+				"block_storage_size": 107374182400,
+				"block_storage_volume_type": "CB1",
+				"iops": 300,
+				"throughput": 104857600,
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "104630229",
+		"name": "ubuntu-24.04-base",
+		"description": "kernel version : 6.8.0-60-generic",
+		"type": "NCP",
+		"hypervisor_type": "KVM",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "UBUNTU",
+		"product_code": "SW.VSVR.OS.LNX64.UBNTU.SVR24.G003",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_snapshot_instance_no": 104630230,
+				"block_storage_snapshot_name": "snapshot of ubuntu-24.04-base",
+				"block_storage_size": 10737418240,
+				"block_storage_volume_type": "CB1",
+				"iops": 100,
+				"throughput": 104857600,
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "100544759",
+		"name": "rocky-9.4-gpu",
+		"description": "kernel version : 5.14.0-503.16.1.el9_5.x86_64",
+		"type": "NCP",
+		"hypervisor_type": "KVM",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "ROCKY",
+		"product_code": "SW.VSVR.OS.LNX64.ROCKY.09.G003",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_snapshot_instance_no": 100544760,
+				"block_storage_snapshot_name": "snapshot of rocky-9.4-gpu",
+				"block_storage_size": 107374182400,
+				"block_storage_volume_type": "CB1",
+				"iops": 300,
+				"throughput": 104857600,
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "100524418",
+		"name": "rocky-9.4-base",
+		"description": "kernel version : 5.14.0-503.16.1.el9_5.x86_64",
+		"type": "NCP",
+		"hypervisor_type": "KVM",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "ROCKY",
+		"product_code": "SW.VSVR.OS.LNX64.ROCKY.09.G003",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_snapshot_instance_no": 100524419,
+				"block_storage_snapshot_name": "snapshot of rocky-9.4-base",
+				"block_storage_size": 10737418240,
+				"block_storage_volume_type": "CB1",
+				"iops": 100,
+				"throughput": 104857600,
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "25624115",
+		"name": "Rocky Linux 8.10",
+		"description": "Rocky Linux 8.10",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "ROCKY",
+		"product_code": "SW.VSVR.OS.LNX64.ROCKY.0810.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "25623982",
+		"name": "rocky-8.10-gpu",
+		"description": "kernel version : 4.18.0-553.51.1.el8_10",
+		"type": "NCP",
+		"hypervisor_type": "KVM",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "ROCKY",
+		"product_code": "SW.VSVR.OS.LNX64.ROCKY.08.G003",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_snapshot_instance_no": 25623983,
+				"block_storage_snapshot_name": "snapshot of rocky-8.10-gpu",
+				"block_storage_size": 107374182400,
+				"block_storage_volume_type": "CB1",
+				"iops": 300,
+				"throughput": 104857600,
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "25495367",
+		"name": "rocky-8.10-base",
+		"description": "kernel version : 4.18.0-553.51.1.el8_10.x86_64",
+		"type": "NCP",
+		"hypervisor_type": "KVM",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "ROCKY",
+		"product_code": "SW.VSVR.OS.LNX64.ROCKY.08.G003",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_snapshot_instance_no": 25495371,
+				"block_storage_snapshot_name": "snapshot of rocky-8.10-base",
+				"block_storage_size": 10737418240,
+				"block_storage_volume_type": "CB1",
+				"iops": 100,
+				"throughput": 104857600,
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "23789321",
+		"name": "ubuntu-22.04-gpu",
+		"description": "kernel version : 5.15.0-140-generic",
+		"type": "NCP",
+		"hypervisor_type": "KVM",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "UBUNTU",
+		"product_code": "SW.VSVR.OS.LNX64.UBNTU.SVR22.G003",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_snapshot_instance_no": 23752581,
+				"block_storage_snapshot_name": "snapshot of ubuntu-22.04-gpu",
+				"block_storage_size": 107374182400,
+				"block_storage_volume_type": "CB1",
+				"iops": 300,
+				"throughput": 104857600,
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "23221307",
+		"name": "win-2022-en-base",
+		"description": "Windows Server 2022 (64-bit) English Edition",
+		"type": "NCP",
+		"hypervisor_type": "KVM",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "WINDOWS",
+		"os_type": "WINDOWS",
+		"product_code": "SW.VSVR.OS.WND64.WND.SVR2022EN.G003",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_snapshot_instance_no": 23221308,
+				"block_storage_snapshot_name": "snapshot of win2022-base",
+				"block_storage_size": 32212254720,
+				"block_storage_volume_type": "CB1",
+				"iops": 100,
+				"throughput": 104857600,
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "23221289",
+		"name": "win-2019-en-base",
+		"description": "Windows Server 2019 (64-bit) English Edition",
+		"type": "NCP",
+		"hypervisor_type": "KVM",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "WINDOWS",
+		"os_type": "WINDOWS",
+		"product_code": "SW.VSVR.OS.WND64.WND.SVR2019EN.G003",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_snapshot_instance_no": 23221290,
+				"block_storage_snapshot_name": "snapshot of win2019-base",
+				"block_storage_size": 32212254720,
+				"block_storage_volume_type": "CB1",
+				"iops": 100,
+				"throughput": 104857600,
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "23214590",
+		"name": "ubuntu-22.04-base",
+		"description": "kernel version : 5.15.0-140-generic",
+		"type": "NCP",
+		"hypervisor_type": "KVM",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "UBUNTU",
+		"product_code": "SW.VSVR.OS.LNX64.UBNTU.SVR22.G003",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_snapshot_instance_no": 23214591,
+				"block_storage_snapshot_name": "snapshot of ubuntu-22.04-base",
+				"block_storage_size": 10737418240,
+				"block_storage_volume_type": "CB1",
+				"iops": 100,
+				"throughput": 104857600,
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "22357724",
+		"name": "TiberoCSE-Rocky-8.8",
+		"description": "Rocky Linux 8.8 with Tibero 7 CSE (Cloud Standard Edition)",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "ROCKY",
+		"product_code": "SW.VSVR.DBMS.LNX64.ROCKY.0808.TBERO.CSE7.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "22357723",
+		"name": "TiberoCEE-Rocky-8.8",
+		"description": "Rocky Linux 8.8 with Tibero 7 CEE (Cloud Enterprise Edition)",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "ROCKY",
+		"product_code": "SW.VSVR.DBMS.LNX64.ROCKY.0808.TBERO.CEE7.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "22247326",
+		"name": "ubuntu-20.04-gpu",
+		"description": "ubuntu-20.04-gpu",
+		"type": "NCP",
+		"hypervisor_type": "KVM",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "UBUNTU",
+		"product_code": "SW.VSVR.OS.LNX64.UBNTU.SVR20.G003",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_snapshot_instance_no": 22247327,
+				"block_storage_snapshot_name": "snapshot of ubuntu-20.04-gpu",
+				"block_storage_size": 107374182400,
+				"block_storage_volume_type": "CB1",
+				"iops": 100,
+				"throughput": 104857600,
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "20696218",
+		"name": "mssql(2022std)-win-2019-64-en",
+		"description": "Windows 2019 Server with MSSQL 2022 Standard English Edition",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "WINDOWS",
+		"os_type": "WINDOWS",
+		"product_code": "SW.VSVR.DBMS.WND64.WND.SVR2019STDEN.MSSQL.2022.B100",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 107374182400,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "19463675",
+		"name": "rocky-8.8-base",
+		"description": "kernel version : 4.18.0-477.27.1.el8_8.x86_64",
+		"type": "NCP",
+		"hypervisor_type": "KVM",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "ROCKY",
+		"product_code": "SW.VSVR.OS.LNX64.ROCKY.08.G003",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_snapshot_instance_no": 19463676,
+				"block_storage_snapshot_name": "snapshot of rocky-8.8-base",
+				"block_storage_size": 10737418240,
+				"block_storage_volume_type": "CB1",
+				"iops": 100,
+				"throughput": 104857600,
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "19124014",
+		"name": "Rocky Linux 8.8",
+		"description": "Rocky Linux 8.8",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "ROCKY",
+		"product_code": "SW.VSVR.OS.LNX64.ROCKY.0808.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "17552318",
+		"name": "ubuntu-20.04-base",
+		"description": "kernel version : 5.4.0-131-generic",
+		"type": "NCP",
+		"hypervisor_type": "KVM",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "UBUNTU",
+		"product_code": "SW.VSVR.OS.LNX64.UBNTU.SVR20.G003",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_snapshot_instance_no": 17552319,
+				"block_storage_snapshot_name": "snapshot of ubuntu-20.04-base",
+				"block_storage_size": 10737418240,
+				"block_storage_volume_type": "CB1",
+				"iops": 100,
+				"throughput": 104857600,
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16946033",
+		"name": "centos-7.8-base",
+		"description": "kernel version : 3.10.0-1160.88.1.el7.x86_64",
+		"type": "NCP",
+		"hypervisor_type": "KVM",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "CENTOS",
+		"product_code": "SW.VSVR.OS.LNX64.CNTOS.07.G003",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_snapshot_instance_no": 16946034,
+				"block_storage_snapshot_name": "snapshot of centos-7.8",
+				"block_storage_size": 10737418240,
+				"block_storage_volume_type": "CB1",
+				"iops": 100,
+				"throughput": 104857600,
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187034",
+		"name": "rabbitmq-centos-7.8-64",
+		"description": "CentOS 7.8 with RabbitMQ",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "CENTOS",
+		"product_code": "SW.VSVR.APP.LNX64.CNTOS.0708.RBBT.LATEST.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187031",
+		"name": "Tibero-centos-7.8-64",
+		"description": "CentOS 7.8 with Tibero",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "CENTOS",
+		"product_code": "SW.VSVR.DBMS.LNX64.CNTOS.0708.TBERO.LATEST.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187025",
+		"name": "mssql(2019std)-win-2016-64-en",
+		"description": "Windows 2016 Server with MSSQL 2019 Standard English Edition",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "WINDOWS",
+		"os_type": "WINDOWS",
+		"product_code": "SW.VSVR.DBMS.WND64.WND.SVR2016STDEN.MSSQL.2019.B100",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 107374182400,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187024",
+		"name": "PostgreSQL 14.3-centos-7.8-64",
+		"description": "CentOS 7.8 with PostgreSQL 14.3",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "CENTOS",
+		"product_code": "SW.VSVR.DBMS.LNX64.CNTOS.0708.PSTGR.1403.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187023",
+		"name": "PostgreSQL 13.3-centos-7.8-64",
+		"description": "CentOS 7.8 with PostgreSQL 13.3",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "CENTOS",
+		"product_code": "SW.VSVR.DBMS.LNX64.CNTOS.0708.PSTGR.1303.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187022",
+		"name": "mssql(2019exp)-win-2019-64-en",
+		"description": "Windows 2019 Server with MSSQL 2019 Express English Edition",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "WINDOWS",
+		"os_type": "WINDOWS",
+		"product_code": "SW.VSVR.DBMS.WND64.WND.SVR2019EXPEN.MSSQL.2019.B100",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 107374182400,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187021",
+		"name": "mssql(2017std)-win-2016-64-en",
+		"description": "Windows 2016 Server with MSSQL 2017 Standard English Edition",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "WINDOWS",
+		"os_type": "WINDOWS",
+		"product_code": "SW.VSVR.DBMS.WND64.WND.SVR2016STDEN.MSSQL.2017.B100",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 107374182400,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187020",
+		"name": "mysql(8.0)-centos-7.8-64",
+		"description": "CentOS 7.8 with MySQL 8.0 (64-bit)",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "CENTOS",
+		"product_code": "SW.VSVR.DBMS.LNX64.CNTOS.0708.MYSQL.0800.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187019",
+		"name": "mariadb(10.2)-centos-7.8-64",
+		"description": "CentOS 7.8 with MariaDB 10.2 (64-bit)",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "CENTOS",
+		"product_code": "SW.VSVR.DBMS.LNX64.CNTOS.0708.MARIA.102.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187018",
+		"name": "tensorflow-Ubuntu-20.04-64",
+		"description": "Ubuntu 20.04 (64-bit) with Tensorflow",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "UBUNTU",
+		"product_code": "SW.VSVR.APP.LNX64.UBNTU.SVR2004.TNSFL.LATEST.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187017",
+		"name": "tensorflow-Ubuntu-18.04-64",
+		"description": "Ubuntu 18.04 (64-bit) with Tensorflow",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "UBUNTU",
+		"product_code": "SW.VSVR.APP.LNX64.UBNTU.SVR1804.TNSFL.LATEST.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187009",
+		"name": "tensorflow-centos-7.8-64",
+		"description": "CentOS 7.8 (64-bit) with Tensorflow",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "CENTOS",
+		"product_code": "SW.VSVR.APP.LNX64.CNTOS.0708.TNSFL.LATEST.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187007",
+		"name": "win-2019-64-en",
+		"description": "Windows Server 2019 (64-bit) English Edition",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "WINDOWS",
+		"os_type": "WINDOWS",
+		"product_code": "SW.VSVR.OS.WND64.WND.SVR2019EN.B100",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 107374182400,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187006",
+		"name": "win-2016-64-en",
+		"description": "Windows Server 2016 (64-bit) English Edition",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "WINDOWS",
+		"os_type": "WINDOWS",
+		"product_code": "SW.VSVR.OS.WND64.WND.SVR2016EN.B100",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 107374182400,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187005",
+		"name": "ubuntu-20.04",
+		"description": "Ubuntu Server 20.04 (64-bit)",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "UBUNTU",
+		"product_code": "SW.VSVR.OS.LNX64.UBNTU.SVR2004.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187004",
+		"name": "ubuntu-18.04",
+		"description": "Ubuntu Server 18.04 (64-bit) ",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "UBUNTU",
+		"product_code": "SW.VSVR.OS.LNX64.UBNTU.SVR1804.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187002",
+		"name": "Rocky Linux 8.6",
+		"description": "Rocky Linux 8.6",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "ROCKY",
+		"product_code": "SW.VSVR.OS.LNX64.ROCKY.0806.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16187001",
+		"name": "centos-7.8-64",
+		"description": "CentOS 7.8 (64-bit)",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "CENTOS",
+		"product_code": "SW.VSVR.OS.LNX64.CNTOS.0708.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
+		"server_image_number": "16186999",
+		"name": "centos-7.3-64",
+		"description": "CentOS 7.3 (64-bit)",
+		"type": "NCP",
+		"hypervisor_type": "XEN",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "CENTOS",
+		"product_code": "SW.VSVR.OS.LNX64.CNTOS.0703.B050",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_size": 53687091200,
+				"block_storage_volume_type": "HDD",
+				"is_encrypted_volume": false
+			}
+		]
+	}
+]

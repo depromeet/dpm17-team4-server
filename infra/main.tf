@@ -14,6 +14,14 @@ provider "ncloud" {
   support_vpc = true
 }
 
+data "ncloud_server_image_numbers" "server_images" {
+  output_file = "ncp_server_spec/image.json"
+}
+
+data "ncloud_server_specs" "server_specs" {
+  output_file = "ncp_server_spec/spec.json"
+}
+
 locals {
   name_prefix = var.ncp_environment
 }
