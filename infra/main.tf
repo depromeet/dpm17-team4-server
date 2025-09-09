@@ -73,4 +73,5 @@ module "servers" {
   login_key_name      = module.management_key.key_name
   key                 = each.key
   name_prefix         = local.name_prefix
+  is_public           = each.value.is_public
 }

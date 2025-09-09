@@ -17,3 +17,10 @@ resource "ncloud_server" "server" {
   server_spec_code    = var.server_spec_code
   login_key_name      = var.login_key_name
 }
+
+resource "ncloud_public_ip" "public_ip" {
+  for_each = var.is_public ? {
+    "main" = true
+  } : {}
+  server_instance_no = ncloud_server.server.instance_no
+}

@@ -23,6 +23,12 @@ variable "name_prefix" {
   type        = string
 }
 
+variable "is_public" {
+  description = "Whether to assign a public IP to the server"
+  type        = bool
+  default     = false
+}
+
 variable "key" {
   description = "A key to identify the server"
   type        = string
