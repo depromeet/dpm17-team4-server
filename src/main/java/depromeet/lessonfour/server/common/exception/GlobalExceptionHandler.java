@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -40,5 +42,12 @@ public class GlobalExceptionHandler {
     Map<String, String> response = new HashMap<>();
     response.put("message", ex.getMessage());
     return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+  }
+
+  @ExceptionHandler({BadCredentialsException.class, AuthenticationException.class})
+  public ResponseEntity<Map<String, String>> handleAuthExceptions(AuthenticationException ex) {
+    Map<String, String> response = new HashMap<>();
+    response.put("message", ex.getMessage());
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
   }
 }

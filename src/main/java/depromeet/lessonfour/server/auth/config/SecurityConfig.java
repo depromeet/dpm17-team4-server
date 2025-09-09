@@ -12,6 +12,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import depromeet.lessonfour.server.auth.config.jwt.JwtAuthenticationFilter;
 import depromeet.lessonfour.server.auth.config.jwt.JwtAuthenticationProvider;
 import depromeet.lessonfour.server.auth.config.jwt.entrypoint.JwtAuthenticationEntryPoint;
@@ -26,6 +28,18 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+  private final ObjectMapper objectMapper;
+
+  /** 문서 조회 API에 대한 필터 체인 */
+  @Bean
+  @Order(0)
+  public SecurityFilterChain docsFilterChain(HttpSecurity http) throws Exception {
+    return http.securityMatcher("/swagger-ui/**", "/v3/api-docs/**")
+        .csrf(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+        .build();
+  }
 
   /** 로컬 로그인 API 요청에 대한 필터 체인 */
   @Bean
@@ -54,7 +68,8 @@ public class SecurityConfig {
             new RestAuthenticationFilter(
                 authenticationManager,
                 restAuthenticationSuccessHandler,
-                restAuthenticationFailureHandler),
+                restAuthenticationFailureHandler,
+                objectMapper),
             UsernamePasswordAuthenticationFilter.class)
         .authenticationManager(authenticationManager)
         .build();
@@ -64,7 +79,11 @@ public class SecurityConfig {
   @Bean
   @Order(2)
   public SecurityFilterChain apiFilterChain(
-      HttpSecurity http, JwtAuthenticationProvider jwtAuthenticationProvider) throws Exception {
+      HttpSecurity http,
+      JwtAuthenticationProvider jwtAuthenticationProvider,
+      JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+      JwtAccessDeniedHandler jwtAccessDeniedHandler)
+      throws Exception {
 
     AuthenticationManagerBuilder authenticationManagerBuilder =
         http.getSharedObject(AuthenticationManagerBuilder.class);
@@ -75,8 +94,7 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers(
-                        "/swagger-ui/**", "/v3/api-docs/**", "/api/auth/register", "/api/echo/**")
+                auth.requestMatchers("/api/auth/register", "/api/auth/reissue", "/api/echo/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
@@ -90,8 +108,8 @@ public class SecurityConfig {
         .exceptionHandling(
             exception ->
                 exception
-                    .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
-                    .accessDeniedHandler(new JwtAccessDeniedHandler()));
+                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                    .accessDeniedHandler(jwtAccessDeniedHandler));
 
     return http.build();
   }

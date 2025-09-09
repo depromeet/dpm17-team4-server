@@ -1,7 +1,10 @@
 package depromeet.lessonfour.server.common.utils;
 
+import static depromeet.lessonfour.server.auth.config.jwt.JwtConstants.AUTHORIZATION_HEADER;
+import static depromeet.lessonfour.server.auth.config.jwt.JwtConstants.BEARER_PREFIX;
 import static java.util.Optional.empty;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -11,14 +14,12 @@ import org.springframework.util.StringUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
 public class HttpServletUtils {
-
-  private static final String BEARER_PREFIX = "Bearer ";
-  private static final String AUTHORIZATION_HEADER = "Authorization";
 
   public Optional<String> getAccessToken(HttpServletRequest request) {
     if (request == null) {
@@ -46,14 +47,15 @@ public class HttpServletUtils {
           "Invalid parameters for putHeader: response={}, name={}, value={}",
           response != null,
           name,
-          value);
+          value != null);
       return;
     }
     response.addHeader(name, value);
   }
 
-  public void addCookie(HttpServletResponse response, String name, String value, int seconds) {
-    addCookie(response, name, value, seconds, CookieOptions.secure());
+  public void addCookie(
+      HttpServletResponse response, String name, String value, Duration duration) {
+    addCookie(response, name, value, (int) duration.getSeconds(), CookieOptions.secure());
   }
 
   public void addCookie(
@@ -93,7 +95,11 @@ public class HttpServletUtils {
 
     if (getCookie(request, name).isPresent()) {
       try {
-        setCookieHeader(response, name, "", 0, CookieOptions.secure());
+        boolean isSecure =
+            (request.isSecure())
+                || "https".equalsIgnoreCase(request.getHeader("X-Forwarded-Proto"));
+        CookieOptions opts = isSecure ? CookieOptions.secure() : CookieOptions.development();
+        setCookieHeader(response, name, "", 0, opts);
         log.debug("Cookie removed: name={}", name);
       } catch (Exception e) {
         log.warn("Failed to remove cookie: name={}, error={}", name, e.getMessage(), e);
@@ -139,6 +145,7 @@ public class HttpServletUtils {
   }
 
   public static class CookieOptions {
+
     private final String path;
     private final boolean httpOnly;
     private final boolean secure;
@@ -153,7 +160,7 @@ public class HttpServletUtils {
 
     // 보안 쿠키 옵션 (HTTPS 환경용)
     public static CookieOptions secure() {
-      return new CookieOptions("/", true, true, SameSite.NONE);
+      return new CookieOptions("/", true, true, SameSite.STRICT);
     }
 
     // 개발 환경용 쿠키 옵션 (HTTP 허용)
@@ -167,6 +174,7 @@ public class HttpServletUtils {
     }
   }
 
+  @Getter
   public enum SameSite {
     STRICT("Strict"),
     LAX("Lax"),
@@ -176,10 +184,6 @@ public class HttpServletUtils {
 
     SameSite(String value) {
       this.value = value;
-    }
-
-    public String getValue() {
-      return value;
     }
   }
 }

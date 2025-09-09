@@ -15,6 +15,11 @@ spring:
   flyway:
     enabled: false
 
+jwt:
+  secret: mySecretKeyForJWTWhichShouldBeAtLeast256BitsLongToEnsureSecurityAndCompliance
+  expiration: 86400
+  refresh-expiration: 604800
+
 logging:
   level:
     org.springframework.web: DEBUG

@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
   private final Object principal;
-  private final String token;
+  private String token;
 
   // 인증 전
   public JwtAuthenticationToken(String token) {
@@ -35,5 +35,11 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
   @Override
   public Object getPrincipal() {
     return principal; // 인증된 사용자 정보
+  }
+
+  @Override
+  public void eraseCredentials() {
+    super.eraseCredentials();
+    this.token = null;
   }
 }

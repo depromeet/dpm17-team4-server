@@ -21,6 +21,12 @@ public class RestAuthenticationProvider implements AuthenticationProvider {
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
+    if (authentication == null
+        || authentication.getCredentials() == null
+        || ((String) authentication.getCredentials()).isBlank()) {
+      throw new BadCredentialsException("Invalid credentials");
+    }
+
     String loginId = authentication.getName();
     String password = (String) authentication.getCredentials();
 
@@ -33,7 +39,7 @@ public class RestAuthenticationProvider implements AuthenticationProvider {
 
   @Override
   public boolean supports(Class<?> authentication) {
-    return authentication.isAssignableFrom(RestAuthenticationToken.class);
+    return RestAuthenticationToken.class.isAssignableFrom(authentication);
   }
 
   private void validatePassword(String password, AccountContext userDetails) {

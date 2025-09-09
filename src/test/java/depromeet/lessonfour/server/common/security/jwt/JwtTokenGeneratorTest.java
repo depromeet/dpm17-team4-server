@@ -1,21 +1,18 @@
 package depromeet.lessonfour.server.common.security.jwt;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.lenient;
 
 import java.util.Date;
 import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import depromeet.lessonfour.server.auth.config.jwt.JwtSecretKeyProvider;
@@ -26,23 +23,15 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@ActiveProfiles("test")
 class JwtTokenGeneratorTest {
 
-  @Mock private JwtSecretKeyProvider secretKeyProvider;
+  @Autowired private JwtTokenGenerator jwtTokenGenerator;
+  @Autowired private JwtSecretKeyProvider secretKeyProvider;
 
-  @InjectMocks private JwtTokenGenerator jwtTokenGenerator;
-
-  private SecretKey testSecretKey;
-
-  @BeforeEach
-  void setUp() {
-    testSecretKey =
-        Keys.hmacShaKeyFor(
-            "testSecretKeyForJWTWhichShouldBeAtLeast256BitsLongForSecurity".getBytes());
-    lenient().when(secretKeyProvider.getSecretKey()).thenReturn(testSecretKey);
-
-    ReflectionTestUtils.setField(jwtTokenGenerator, "accessTokenExpirationSeconds", 3600L);
+  private SecretKey getSecretKey() {
+    return secretKeyProvider.getSecretKey();
   }
 
   @Nested
@@ -66,7 +55,7 @@ class JwtTokenGeneratorTest {
 
       Claims claims =
           Jwts.parser()
-              .verifyWith(testSecretKey)
+              .verifyWith(getSecretKey())
               .build()
               .parseSignedClaims(accessToken)
               .getPayload();
@@ -93,7 +82,7 @@ class JwtTokenGeneratorTest {
       // then
       Claims claims =
           Jwts.parser()
-              .verifyWith(testSecretKey)
+              .verifyWith(getSecretKey())
               .build()
               .parseSignedClaims(accessToken)
               .getPayload();
@@ -101,7 +90,7 @@ class JwtTokenGeneratorTest {
       Date expiration = claims.getExpiration();
       Date issuedAt = claims.getIssuedAt();
 
-      long expectedExpirationMillis = 3600L * 1000L;
+      long expectedExpirationMillis = 86400L * 1000L; // application-test.yaml의 jwt.expiration 값
       long actualExpirationDiff = expiration.getTime() - issuedAt.getTime();
 
       assertThat(actualExpirationDiff).isEqualTo(expectedExpirationMillis);
@@ -111,12 +100,8 @@ class JwtTokenGeneratorTest {
     @Test
     @DisplayName("null 사용자로 Access Token 생성 시 예외가 발생한다")
     void givenNullUser_whenGenerateAccessToken_thenThrowException() {
-      // given
-      JwtTokenGenerator generator = new JwtTokenGenerator(secretKeyProvider);
-      ReflectionTestUtils.setField(generator, "accessTokenExpirationSeconds", 3600L);
-
       // when & then
-      assertThatThrownBy(() -> generator.generateAccessToken(null))
+      assertThatThrownBy(() -> jwtTokenGenerator.generateAccessToken(null))
           .isInstanceOf(NullPointerException.class);
     }
   }
@@ -142,7 +127,7 @@ class JwtTokenGeneratorTest {
 
       Claims claims =
           Jwts.parser()
-              .verifyWith(testSecretKey)
+              .verifyWith(getSecretKey())
               .build()
               .parseSignedClaims(refreshToken)
               .getPayload();
@@ -153,7 +138,7 @@ class JwtTokenGeneratorTest {
     }
 
     @Test
-    @DisplayName("Refresh Token에는 7일의 만료 시간이 설정된다")
+    @DisplayName("Refresh Token에는 환경변수로 등록된 만료 시간이 설정된다")
     void givenValidUser_whenGenerateRefreshToken_thenExpirationTimeIsSevenDays() {
       // given
       User user = User.register("test@example.com", "testuser", "password123");
@@ -168,7 +153,7 @@ class JwtTokenGeneratorTest {
       // then
       Claims claims =
           Jwts.parser()
-              .verifyWith(testSecretKey)
+              .verifyWith(getSecretKey())
               .build()
               .parseSignedClaims(refreshToken)
               .getPayload();
@@ -176,7 +161,8 @@ class JwtTokenGeneratorTest {
       Date expiration = claims.getExpiration();
       Date issuedAt = claims.getIssuedAt();
 
-      long expectedExpirationMillis = 3600L * 1000L * 7L;
+      long expectedExpirationMillis =
+          604800L * 1000L; // application-test.yaml의 jwt.refresh-expiration 값
       long actualExpirationDiff = expiration.getTime() - issuedAt.getTime();
 
       assertThat(actualExpirationDiff).isEqualTo(expectedExpirationMillis);
@@ -197,7 +183,7 @@ class JwtTokenGeneratorTest {
       // then
       Claims claims =
           Jwts.parser()
-              .verifyWith(testSecretKey)
+              .verifyWith(getSecretKey())
               .build()
               .parseSignedClaims(refreshToken)
               .getPayload();
@@ -223,14 +209,14 @@ class JwtTokenGeneratorTest {
       // then
       Claims claims1 =
           Jwts.parser()
-              .verifyWith(testSecretKey)
+              .verifyWith(getSecretKey())
               .build()
               .parseSignedClaims(refreshToken1)
               .getPayload();
 
       Claims claims2 =
           Jwts.parser()
-              .verifyWith(testSecretKey)
+              .verifyWith(getSecretKey())
               .build()
               .parseSignedClaims(refreshToken2)
               .getPayload();
@@ -243,12 +229,8 @@ class JwtTokenGeneratorTest {
     @Test
     @DisplayName("null 사용자로 Refresh Token 생성 시 예외가 발생한다")
     void givenNullUser_whenGenerateRefreshToken_thenThrowException() {
-      // given
-      JwtTokenGenerator generator = new JwtTokenGenerator(secretKeyProvider);
-      ReflectionTestUtils.setField(generator, "accessTokenExpirationSeconds", 3600L);
-
       // when & then
-      assertThatThrownBy(() -> generator.generateRefreshToken(null))
+      assertThatThrownBy(() -> jwtTokenGenerator.generateRefreshToken(null))
           .isInstanceOf(NullPointerException.class);
     }
   }
@@ -258,11 +240,9 @@ class JwtTokenGeneratorTest {
   class ExpirationConfigurationTest {
 
     @Test
-    @DisplayName("커스텀 만료 시간 설정이 정상적으로 적용된다")
-    void givenCustomExpirationTime_whenGenerateTokens_thenExpirationTimeIsCorrect() {
+    @DisplayName("application-test.yaml의 만료 시간 설정이 정상적으로 적용된다")
+    void givenTestConfiguration_whenGenerateTokens_thenExpirationTimeIsCorrect() {
       // given
-      ReflectionTestUtils.setField(jwtTokenGenerator, "accessTokenExpirationSeconds", 7200L);
-
       User user = User.register("test@example.com", "testuser", "password123");
       ReflectionTestUtils.setField(user, "id", UUID.randomUUID());
       AccountContext accountContext = AccountContext.of(user);
@@ -274,14 +254,14 @@ class JwtTokenGeneratorTest {
       // then
       Claims accessClaims =
           Jwts.parser()
-              .verifyWith(testSecretKey)
+              .verifyWith(getSecretKey())
               .build()
               .parseSignedClaims(accessToken)
               .getPayload();
 
       Claims refreshClaims =
           Jwts.parser()
-              .verifyWith(testSecretKey)
+              .verifyWith(getSecretKey())
               .build()
               .parseSignedClaims(refreshToken)
               .getPayload();
@@ -291,8 +271,9 @@ class JwtTokenGeneratorTest {
       long refreshTokenDuration =
           refreshClaims.getExpiration().getTime() - refreshClaims.getIssuedAt().getTime();
 
-      assertThat(accessTokenDuration).isEqualTo(7200L * 1000L);
-      assertThat(refreshTokenDuration).isEqualTo(7200L * 1000L * 7L);
+      // application-test.yaml 설정값 확인: jwt.expiration=86400, jwt.refresh-expiration=604800
+      assertThat(accessTokenDuration).isEqualTo(86400L * 1000L);
+      assertThat(refreshTokenDuration).isEqualTo(604800L * 1000L);
     }
   }
 
@@ -315,12 +296,13 @@ class JwtTokenGeneratorTest {
       // then
       assertThatNoException()
           .isThrownBy(
-              () -> Jwts.parser().verifyWith(testSecretKey).build().parseSignedClaims(accessToken));
+              () ->
+                  Jwts.parser().verifyWith(getSecretKey()).build().parseSignedClaims(accessToken));
 
       assertThatNoException()
           .isThrownBy(
               () ->
-                  Jwts.parser().verifyWith(testSecretKey).build().parseSignedClaims(refreshToken));
+                  Jwts.parser().verifyWith(getSecretKey()).build().parseSignedClaims(refreshToken));
     }
 
     @Test
@@ -333,7 +315,9 @@ class JwtTokenGeneratorTest {
 
       String accessToken = jwtTokenGenerator.generateAccessToken(accountContext);
       SecretKey wrongKey =
-          Keys.hmacShaKeyFor("wrongSecretKeyForTestingPurposesWhichIsAlsoLongEnough".getBytes());
+          Keys.hmacShaKeyFor(
+              "wrongSecretKeyForTestingPurposesWhichShouldBeAtLeast256BitsLongForSecurityTesting"
+                  .getBytes());
 
       // when & then
       assertThatThrownBy(

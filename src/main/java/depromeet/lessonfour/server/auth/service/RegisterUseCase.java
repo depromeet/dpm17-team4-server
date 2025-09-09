@@ -1,5 +1,7 @@
 package depromeet.lessonfour.server.auth.service;
 
+import java.util.Locale;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,7 +11,9 @@ import depromeet.lessonfour.server.auth.persist.jpa.entity.User;
 import depromeet.lessonfour.server.auth.service.validator.UserRegisterValidator;
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @UseCase
 @Transactional
 @RequiredArgsConstructor
@@ -21,11 +25,14 @@ public class RegisterUseCase {
 
   public void register(RegisterRequestDto dto) {
 
-    userRegisterValidator.duplicateEmailCheck(dto.email());
-    userRegisterValidator.duplicateNicknameCheck(dto.nickname());
+    String email = dto.email().toLowerCase(Locale.ROOT);
+    String nickname = dto.nickname().trim();
 
+    userRegisterValidator.duplicateEmailCheck(email);
+    userRegisterValidator.duplicateNicknameCheck(nickname);
     String encodedPassword = passwordEncoder.encode(dto.password());
-    User user = User.register(dto.email(), dto.nickname(), encodedPassword);
-    userRepository.save(user);
+
+    User user = User.register(email, nickname, encodedPassword);
+    userRepository.save(user); // TODO : concurrency issue 용 uk 정의
   }
 }

@@ -17,10 +17,11 @@ public class JwtTokenGenerator {
 
   private final JwtSecretKeyProvider secretKeyProvider;
 
-  @Value("${jwt.expiration:86400}")
+  @Value("${jwt.expiration}")
   private Long accessTokenExpirationSeconds;
 
-  private static final long REFRESH_TOKEN_MULTIPLIER = 7L; // 7 days
+  @Value("${jwt.refresh-expiration}")
+  private Long refreshTokenExpirationSeconds;
 
   public String generateAccessToken(AccountContext accountContext) {
     long expirationMillis = accessTokenExpirationSeconds * 1000L;
@@ -36,7 +37,7 @@ public class JwtTokenGenerator {
   }
 
   public String generateRefreshToken(AccountContext accountContext) {
-    long expirationMillis = accessTokenExpirationSeconds * 1000L * REFRESH_TOKEN_MULTIPLIER;
+    long expirationMillis = refreshTokenExpirationSeconds * 1000L;
     return Jwts.builder()
         .subject(String.valueOf(accountContext.getId()))
         .id(UUID.randomUUID().toString()) // jti

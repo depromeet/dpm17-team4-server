@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
+import java.time.Duration;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -93,22 +94,22 @@ class HttpServletUtilsTest {
   class AddCookieTest {
 
     @Test
-    @DisplayName("기본 보안 쿠키를 올바르게 생성한다")
-    void whenAddSecureCookie_thenCreateCorrectCookie() {
+    @DisplayName("Duration을 사용한 기본 보안 쿠키를 올바르게 생성한다")
+    void whenAddSecureCookieWithDuration_thenCreateCorrectCookie() {
       // given
       String cookieName = "sessionId";
       String cookieValue = "test-session-123";
-      int maxAge = 3600;
+      Duration duration = Duration.ofHours(1);
 
       // when
-      httpServletUtils.addCookie(response, cookieName, cookieValue, maxAge);
+      httpServletUtils.addCookie(response, cookieName, cookieValue, duration);
 
       // then
       verify(response)
           .addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("sessionId=test-session-123"));
       verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("HttpOnly"));
       verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Secure"));
-      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("SameSite=None"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("SameSite=Strict"));
     }
 
     @Test
@@ -137,10 +138,10 @@ class HttpServletUtilsTest {
       // given
       String invalidName = "invalid name with spaces";
       String cookieValue = "value";
-      int maxAge = 3600;
+      Duration duration = Duration.ofHours(1);
 
       // when
-      httpServletUtils.addCookie(response, invalidName, cookieValue, maxAge);
+      httpServletUtils.addCookie(response, invalidName, cookieValue, duration);
 
       // then
       verify(response, never()).addHeader(eq("Set-Cookie"), any(String.class));
@@ -149,11 +150,15 @@ class HttpServletUtilsTest {
     @Test
     @DisplayName("null 파라미터가 있을 때 쿠키를 생성하지 않는다")
     void whenNullParameters_thenDoNotCreateCookie() {
+      // given
+      Duration duration = Duration.ofHours(1);
+      Duration negativeDuration = Duration.ofSeconds(-1);
+
       // when & then
-      httpServletUtils.addCookie(null, "name", "value", 3600);
-      httpServletUtils.addCookie(response, null, "value", 3600);
-      httpServletUtils.addCookie(response, "name", null, 3600);
-      httpServletUtils.addCookie(response, "name", "value", -1);
+      httpServletUtils.addCookie(null, "name", "value", duration);
+      httpServletUtils.addCookie(response, null, "value", duration);
+      httpServletUtils.addCookie(response, "name", null, duration);
+      httpServletUtils.addCookie(response, "name", "value", negativeDuration);
 
       verify(response, never()).addHeader(eq("Set-Cookie"), any(String.class));
     }
@@ -164,12 +169,13 @@ class HttpServletUtilsTest {
   class RemoveCookieTest {
 
     @Test
-    @DisplayName("존재하는 쿠키를 올바르게 제거한다")
-    void whenCookieExists_thenRemoveCookie() {
+    @DisplayName("HTTPS 환경에서 존재하는 쿠키를 올바르게 제거한다")
+    void whenCookieExistsInHttpsEnvironment_thenRemoveCookieWithSecureFlag() {
       // given
       String cookieName = "sessionId";
       Cookie existingCookie = new Cookie(cookieName, "some-value");
       when(request.getCookies()).thenReturn(new Cookie[] {existingCookie});
+      when(request.isSecure()).thenReturn(true);
 
       // when
       httpServletUtils.removeCookie(request, response, cookieName);
@@ -179,6 +185,70 @@ class HttpServletUtilsTest {
       verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Max-Age=0"));
       verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("HttpOnly"));
       verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Secure"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("SameSite=Strict"));
+    }
+
+    @Test
+    @DisplayName("HTTP 환경에서 존재하는 쿠키를 올바르게 제거한다")
+    void whenCookieExistsInHttpEnvironment_thenRemoveCookieWithoutSecureFlag() {
+      // given
+      String cookieName = "sessionId";
+      Cookie existingCookie = new Cookie(cookieName, "some-value");
+      when(request.getCookies()).thenReturn(new Cookie[] {existingCookie});
+      when(request.isSecure()).thenReturn(false);
+      when(request.getHeader("X-Forwarded-Proto")).thenReturn(null);
+
+      // when
+      httpServletUtils.removeCookie(request, response, cookieName);
+
+      // then
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("sessionId=;"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Max-Age=0"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("HttpOnly"));
+      verify(response, never()).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Secure"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("SameSite=Lax"));
+    }
+
+    @Test
+    @DisplayName("X-Forwarded-Proto 헤더가 https인 경우 Secure 플래그를 적용한다")
+    void whenXForwardedProtoIsHttps_thenRemoveCookieWithSecureFlag() {
+      // given
+      String cookieName = "sessionId";
+      Cookie existingCookie = new Cookie(cookieName, "some-value");
+      when(request.getCookies()).thenReturn(new Cookie[] {existingCookie});
+      when(request.isSecure()).thenReturn(false);
+      when(request.getHeader("X-Forwarded-Proto")).thenReturn("https");
+
+      // when
+      httpServletUtils.removeCookie(request, response, cookieName);
+
+      // then
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("sessionId=;"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Max-Age=0"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("HttpOnly"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Secure"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("SameSite=Strict"));
+    }
+
+    @Test
+    @DisplayName("X-Forwarded-Proto 헤더가 HTTP인 경우 Secure 플래그를 적용하지 않는다")
+    void whenXForwardedProtoIsHttp_thenRemoveCookieWithoutSecureFlag() {
+      // given
+      String cookieName = "sessionId";
+      Cookie existingCookie = new Cookie(cookieName, "some-value");
+      when(request.getCookies()).thenReturn(new Cookie[] {existingCookie});
+      when(request.isSecure()).thenReturn(false);
+      when(request.getHeader("X-Forwarded-Proto")).thenReturn("http");
+
+      // when
+      httpServletUtils.removeCookie(request, response, cookieName);
+
+      // then
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("sessionId=;"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Max-Age=0"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("HttpOnly"));
+      verify(response, never()).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("Secure"));
+      verify(response).addHeader(eq("Set-Cookie"), ArgumentMatchers.contains("SameSite=Lax"));
     }
 
     @Test
