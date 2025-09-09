@@ -37,3 +37,8 @@ module "subnets" {
   name_prefix    = local.name_prefix
   subnet_key     = each.key
 }
+
+module "management_key" {
+  source   = "./modules/login-key"
+  key_name = "${local.name_prefix}-management-key"
+}
