@@ -61,3 +61,16 @@ module "backend_acg" {
   inbound_rules  = local.backend_inbound_rules
   outbound_rules = local.common_outbound_rules
 }
+
+# Servers
+module "servers" {
+  source   = "./modules/server"
+  for_each = var.servers
+
+  subnet_no           = module.subnets[each.value.subnet_key].subnet_no
+  server_image_number = each.value.server_image_number
+  server_spec_code    = each.value.server_spec_code
+  login_key_name      = module.management_key.key_name
+  key                 = each.key
+  name_prefix         = local.name_prefix
+}

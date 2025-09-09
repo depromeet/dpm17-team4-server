@@ -31,3 +31,8 @@ output "fingerprint" {
   description = "The fingerprint of the Login Key"
   value       = ncloud_login_key.loginkey.fingerprint
 }
+
+output "key_name" {
+  description = "The name of the Login Key"
+  value       = ncloud_login_key.loginkey.key_name
+}

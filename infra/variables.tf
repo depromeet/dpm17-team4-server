@@ -37,3 +37,13 @@ variable "subnets" {
     usage_type  = string
   }))
 }
+
+# Servers
+variable "servers" {
+  description = "A map of servers to create"
+  type = map(object({
+    subnet_key          = string
+    server_image_number = string
+    server_spec_code    = string
+  }))
+}
