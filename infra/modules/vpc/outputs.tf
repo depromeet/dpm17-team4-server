@@ -8,6 +8,11 @@ output "vpc_no" {
   value       = ncloud_vpc.vpc.vpc_no
 }
 
+output "vpc_cidr_block" {
+  description = "The CIDR block of the VPC"
+  value       = ncloud_vpc.vpc.ipv4_cidr_block
+}
+
 output "default_network_acl_no" {
   description = "The ID of the default network ACL"
   value       = ncloud_vpc.vpc.default_network_acl_no
