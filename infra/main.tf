@@ -67,7 +67,7 @@ module "servers" {
   source   = "./modules/server"
   for_each = var.servers
 
-  subnet_no           = module.subnets[each.value.subnet_key].subnet_no
+  subnet_no           = module.subnets[each.value.subnet_key].subnet_id
   server_image_number = each.value.server_image_number
   server_spec_code    = each.value.server_spec_code
   login_key_name      = module.management_key.key_name

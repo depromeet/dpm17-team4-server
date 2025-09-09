@@ -37,7 +37,6 @@ output "subnets" {
   description = "The ID of the Subnet"
   value = {
     for key, subnet in module.subnets : key => {
-      subnet_no = subnet.subnet_no
       subnet_id = subnet.subnet_id
     }
   }
