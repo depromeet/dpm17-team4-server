@@ -32,6 +32,16 @@ locals {
     }
   })
 
+  # Database 룰
+  database_inbound_rules = {
+    postgres = {
+      protocol    = "TCP"
+      ip_block    = var.vpc_cidr_block
+      port_range  = "5432"
+      description = "accept 5432 port from VPC"
+    }
+  }
+
   # Outbound 룰 (모든 포트 허용)
   common_outbound_rules = {
     all = {
