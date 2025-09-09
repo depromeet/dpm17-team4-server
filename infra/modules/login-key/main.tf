@@ -7,32 +7,14 @@ terraform {
   required_version = ">= 0.13"
 }
 
-variable "key_name" {
-  description = "The name of the login key"
-  type        = string
-}
-
 resource "ncloud_login_key" "loginkey" {
   key_name = var.key_name
 }
 
-output "key_id" {
-  description = "The ID of the Login Key"
-  value       = ncloud_login_key.loginkey.id
-}
-
-output "private_key" {
-  description = "The private key of the Login Key"
-  value       = ncloud_login_key.loginkey.private_key
-  sensitive   = true
-}
-
-output "fingerprint" {
-  description = "The fingerprint of the Login Key"
-  value       = ncloud_login_key.loginkey.fingerprint
-}
-
-output "key_name" {
-  description = "The name of the Login Key"
-  value       = ncloud_login_key.loginkey.key_name
+# PEM 파일을 로컬에 저장
+# TODO: 추후 HashiCorp Vault 같은 비밀 관리 솔루션으로 이전 고려
+resource "local_file" "private_key" {
+  content  = ncloud_login_key.loginkey.private_key
+  filename = "${path.root}/key/${var.key_name}.pem"
+  file_permission = "0400"
 }
