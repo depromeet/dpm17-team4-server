@@ -5,11 +5,11 @@ import java.util.UUID;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.transaction.annotation.Transactional;
 
+import depromeet.lessonfour.server.auth.persist.jpa.UserRepository;
+import depromeet.lessonfour.server.auth.persist.jpa.entity.User;
 import depromeet.lessonfour.server.auth.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.auth.security.jwt.JwtTokenValidator;
 import depromeet.lessonfour.server.auth.security.userdetails.AccountContext;
-import depromeet.lessonfour.server.auth.persist.jpa.UserRepository;
-import depromeet.lessonfour.server.auth.persist.jpa.entity.User;
 import depromeet.lessonfour.server.auth.service.dto.ReIssueResult;
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import lombok.RequiredArgsConstructor;

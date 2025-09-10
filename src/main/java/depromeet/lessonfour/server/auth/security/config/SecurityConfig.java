@@ -1,15 +1,5 @@
 package depromeet.lessonfour.server.auth.security.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import depromeet.lessonfour.server.auth.security.jwt.JwtAuthenticationFilter;
-import depromeet.lessonfour.server.auth.security.jwt.JwtAuthenticationProvider;
-import depromeet.lessonfour.server.auth.security.jwt.entrypoint.JwtAuthenticationEntryPoint;
-import depromeet.lessonfour.server.auth.security.jwt.handler.JwtAccessDeniedHandler;
-import depromeet.lessonfour.server.auth.security.rest.RestAuthenticationFilter;
-import depromeet.lessonfour.server.auth.security.rest.RestAuthenticationProvider;
-import depromeet.lessonfour.server.auth.security.rest.handler.RestAuthenticationFailureHandler;
-import depromeet.lessonfour.server.auth.security.rest.handler.RestAuthenticationSuccessHandler;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -21,6 +11,18 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import depromeet.lessonfour.server.auth.security.jwt.JwtAuthenticationFilter;
+import depromeet.lessonfour.server.auth.security.jwt.JwtAuthenticationProvider;
+import depromeet.lessonfour.server.auth.security.jwt.entrypoint.JwtAuthenticationEntryPoint;
+import depromeet.lessonfour.server.auth.security.jwt.handler.JwtAccessDeniedHandler;
+import depromeet.lessonfour.server.auth.security.rest.RestAuthenticationFilter;
+import depromeet.lessonfour.server.auth.security.rest.RestAuthenticationProvider;
+import depromeet.lessonfour.server.auth.security.rest.handler.RestAuthenticationFailureHandler;
+import depromeet.lessonfour.server.auth.security.rest.handler.RestAuthenticationSuccessHandler;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -111,10 +113,8 @@ public class SecurityConfig {
         .exceptionHandling(
             exception ->
                 exception
-                    .authenticationEntryPoint(
-                        new JwtAuthenticationEntryPoint(objectMapper))
-                    .accessDeniedHandler(
-                        new JwtAccessDeniedHandler(objectMapper)));
+                    .authenticationEntryPoint(new JwtAuthenticationEntryPoint(objectMapper))
+                    .accessDeniedHandler(new JwtAccessDeniedHandler(objectMapper)));
 
     return http.build();
   }

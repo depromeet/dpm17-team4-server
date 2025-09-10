@@ -6,18 +6,11 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import depromeet.lessonfour.server.auth.security.jwt.JwtTokenGenerator;
-import depromeet.lessonfour.server.auth.security.rest.handler.RestAuthenticationSuccessHandler;
-import depromeet.lessonfour.server.auth.security.userdetails.AccountContext;
-import depromeet.lessonfour.server.auth.service.UserUpdateService;
-import depromeet.lessonfour.server.common.utils.HttpServletUtils;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Duration;
 import java.util.UUID;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +19,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import depromeet.lessonfour.server.auth.security.jwt.JwtTokenGenerator;
+import depromeet.lessonfour.server.auth.security.rest.handler.RestAuthenticationSuccessHandler;
+import depromeet.lessonfour.server.auth.security.userdetails.AccountContext;
+import depromeet.lessonfour.server.auth.service.UserUpdateService;
+import depromeet.lessonfour.server.common.utils.HttpServletUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @ExtendWith(MockitoExtension.class)
 class RestAuthenticationSuccessHandlerTest {
