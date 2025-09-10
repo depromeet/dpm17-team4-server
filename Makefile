@@ -1,7 +1,8 @@
 SHELL := /bin/sh
 
 PORT ?= 8080
-SPRING_PROFILES ?= dev # pg
+# pg
+SPRING_PROFILES ?= dev
 EXTRA_ARGS ?=
 
 GRADLE := ./gradlew
@@ -9,7 +10,10 @@ PID_FILE := .server.pid
 LOG_DIR := logs
 LOG_FILE := $(LOG_DIR)/server.log
 
-.PHONY: help build build-no-test jar run start stop restart status logs test clean curl format format-check clear-h2
+TERRAFORM := terraform -chdir=infra
+TFVARS_FILE := $(SPRING_PROFILES).tfvars
+
+.PHONY: help build build-no-test jar run start stop restart status logs test clean curl format format-check clear-h2 tff tf-check tfi tfp tfa tfd
 
 help:
 	@echo "Available targets:"
@@ -28,6 +32,11 @@ help:
 	@echo "  make format          - Auto-format code (Spotless)"
 	@echo "  make format-check    - Check formatting only (fails if changes needed)"
 	@echo "  make clear-h2        - Remove local H2 files (.h2/)"
+	@echo "  make tfi             - Initialize Terraform (run first time or after plugins change)"
+	@echo "  make tff             - Format Terraform files"
+	@echo "  make tfp             - Generate and show Terraform execution plan"
+	@echo "  make tfa             - Apply Terraform-managed infrastructure"
+	@echo "  make tfd             - Destroy Terraform-managed infrastructure"
 	@echo ""
 	@echo "Variables:"
 	@echo "  PORT=<int>                 (default: 8080)"
@@ -122,3 +131,24 @@ clear-h2:
 curl:
 	@echo "GET http://localhost:$(PORT)/api/hello"; \
 	curl -sS http://localhost:$(PORT)/api/hello || true; echo
+
+tfi:
+	$(TERRAFORM) init
+
+tf-check:
+	@if [ ! -f "infra/$(TFVARS_FILE)" ]; then \
+	  echo "Missing tfvars file: infra/$(TFVARS_FILE)"; \
+	  exit 1; \
+	fi
+
+tff:
+	$(TERRAFORM) fmt -recursive
+
+tfp: tf-check tff
+	$(TERRAFORM) plan -var-file=$(TFVARS_FILE)
+
+tfa: tf-check tff
+	$(TERRAFORM) apply -var-file=$(TFVARS_FILE)
+
+tfd: tf-check tff
+	$(TERRAFORM) destroy -var-file=$(TFVARS_FILE)
