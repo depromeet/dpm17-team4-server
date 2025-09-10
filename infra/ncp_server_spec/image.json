@@ -1,5 +1,28 @@
 [
 	{
+		"server_image_number": "108934394",
+		"name": "ubuntu24-nginx-docker-v0",
+		"description": "ubuntu 24.04 with nginx and docker",
+		"type": "SELF",
+		"hypervisor_type": "KVM",
+		"cpu_architecture_type": "X86_64",
+		"os_category_type": "LINUX",
+		"os_type": "UBUNTU",
+		"product_code": "SW.VSVR.OS.LNX64.UBNTU.SVR24.G003",
+		"block_storage_mapping_list": [
+			{
+				"order": 0,
+				"block_storage_snapshot_instance_no": 108934395,
+				"block_storage_snapshot_name": "n19934a08381f5jo",
+				"block_storage_size": 10737418240,
+				"block_storage_volume_type": "CB1",
+				"iops": 100,
+				"throughput": 104857600,
+				"is_encrypted_volume": false
+			}
+		]
+	},
+	{
 		"server_image_number": "107029409",
 		"name": "rocky-9.6-base",
 		"description": "kernel version : 5.14.0-570.18.1.el9_6.x86_64",

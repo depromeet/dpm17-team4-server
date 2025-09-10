@@ -9,10 +9,10 @@ terraform {
 
 resource "ncloud_access_control_group" "acg" {
   # required
-  vpc_no      = var.vpc_no
+  vpc_no = var.vpc_no
 
   # optional
-  name        = "${var.name_prefix}-${var.acg_name}-acg"
+  name = "${var.name_prefix}-${var.acg_name}-acg"
 }
 
 resource "ncloud_access_control_group_rule" "acg-rule" {
