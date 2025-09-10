@@ -15,11 +15,20 @@ provider "ncloud" {
 }
 
 data "ncloud_server_image_numbers" "server_images" {
-  output_file = "ncp_server_spec/image.json"
+  output_file = "ncp_server_spec/server_image.json"
 }
 
 data "ncloud_server_specs" "server_specs" {
-  output_file = "ncp_server_spec/spec.json"
+  output_file = "ncp_server_spec/server_spec.json"
+}
+
+data "ncloud_postgresql_image_products" "postgresql_images" {
+  output_file = "ncp_server_spec/postgresql_image.json"
+}
+
+data "ncloud_postgresql_products" "postgresql_specs" {
+  image_product_code = data.ncloud_postgresql_image_products.postgresql_images.image_product_list.0.product_code
+  output_file        = "ncp_server_spec/postgresql_spec.json"
 }
 
 locals {
@@ -76,5 +85,33 @@ module "backend_servers" {
   is_public           = each.value.is_public
   access_control_groups = [
     module.backend_acg.acg_id
+  ]
+}
+
+# Bastion ACG
+module "bastion_acg" {
+  source = "./modules/acg"
+
+  vpc_no         = module.vpc.vpc_id
+  name_prefix    = local.name_prefix
+  acg_name       = "bastion"
+  inbound_rules  = local.bastion_inbound_rules
+  outbound_rules = local.common_outbound_rules
+}
+
+# Bastion Server
+module "bastion_host" {
+  source   = "./modules/server"
+  for_each = var.bastion_servers
+
+  subnet_no           = module.subnets[each.value.subnet_key].subnet_id
+  server_image_number = each.value.server_image_number
+  server_spec_code    = each.value.server_spec_code
+  login_key_name      = module.management_key.key_name
+  key                 = each.key
+  name_prefix         = local.name_prefix
+  is_public           = each.value.is_public
+  access_control_groups = [
+    module.bastion_acg.acg_id
   ]
 }
