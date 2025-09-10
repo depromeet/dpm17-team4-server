@@ -1,7 +1,9 @@
 package depromeet.lessonfour.server.auth.api;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -19,9 +21,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
-import depromeet.lessonfour.server.auth.config.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.auth.persist.jpa.UserRepository;
 import depromeet.lessonfour.server.auth.persist.jpa.entity.User;
+import depromeet.lessonfour.server.auth.security.jwt.JwtTokenGenerator;
 import io.restassured.RestAssured;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

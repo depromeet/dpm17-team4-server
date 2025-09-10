@@ -1,7 +1,7 @@
 package depromeet.lessonfour.server.common.utils;
 
-import static depromeet.lessonfour.server.auth.config.jwt.JwtConstants.AUTHORIZATION_HEADER;
-import static depromeet.lessonfour.server.auth.config.jwt.JwtConstants.BEARER_PREFIX;
+import static depromeet.lessonfour.server.auth.security.jwt.JwtConstants.AUTHORIZATION_HEADER;
+import static depromeet.lessonfour.server.auth.security.jwt.JwtConstants.BEARER_PREFIX;
 import static java.util.Optional.empty;
 
 import java.time.Duration;
