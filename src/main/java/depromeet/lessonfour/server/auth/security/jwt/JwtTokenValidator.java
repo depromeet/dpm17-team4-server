@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.auth.config.jwt;
+package depromeet.lessonfour.server.auth.security.jwt;
 
 import java.util.UUID;
 
