@@ -63,9 +63,9 @@ module "backend_acg" {
 }
 
 # Servers
-module "servers" {
+module "backend_servers" {
   source   = "./modules/server"
-  for_each = var.servers
+  for_each = var.backend_servers
 
   subnet_no           = module.subnets[each.value.subnet_key].subnet_id
   server_image_number = each.value.server_image_number
@@ -74,4 +74,7 @@ module "servers" {
   key                 = each.key
   name_prefix         = local.name_prefix
   is_public           = each.value.is_public
+  access_control_groups = [
+    module.backend_acg.acg_id
+  ]
 }

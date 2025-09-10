@@ -39,8 +39,18 @@ variable "subnets" {
 }
 
 # Servers
-variable "servers" {
-  description = "A map of servers to create"
+variable "backend_servers" {
+  description = "A map of backend servers to create"
+  type = map(object({
+    subnet_key          = string
+    server_image_number = string
+    server_spec_code    = string
+    is_public           = bool
+  }))
+}
+
+variable "bastion_servers" {
+  description = "A map of backend servers to create"
   type = map(object({
     subnet_key          = string
     server_image_number = string

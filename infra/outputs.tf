@@ -50,7 +50,7 @@ output "private_key_file" {
 output "server_ips" {
   description = "Public IP addresses of created servers"
   value = {
-    for key, server in module.servers : key => {
+    for key, server in module.backend_servers : key => {
       public_ip  = server.public_ip
       private_ip = server.private_ip
     }

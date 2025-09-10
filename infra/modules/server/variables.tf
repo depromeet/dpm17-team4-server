@@ -8,7 +8,7 @@ variable "server_image_number" {
   type        = string
 }
 
-variable server_spec_code {
+variable "server_spec_code" {
   description = "The specification code for the server"
   type        = string
 }
@@ -32,4 +32,9 @@ variable "is_public" {
 variable "key" {
   description = "A key to identify the server"
   type        = string
+}
+
+variable "access_control_groups" {
+  description = "A list of access control group IDs to associate with the network interface"
+  type        = list(string)
 }
