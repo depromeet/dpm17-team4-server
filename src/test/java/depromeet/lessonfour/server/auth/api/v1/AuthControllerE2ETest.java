@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.auth.api;
+package depromeet.lessonfour.server.auth.api.v1;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
@@ -49,7 +49,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/auth/register")
+        .post("/api/v1/auth/register")
         .then()
         .statusCode(HttpStatus.OK.value());
   }
@@ -69,7 +69,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/auth/register")
+        .post("/api/v1/auth/register")
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -92,7 +92,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/auth/register")
+        .post("/api/v1/auth/register")
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -114,7 +114,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/auth/register")
+        .post("/api/v1/auth/register")
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -136,7 +136,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/auth/register")
+        .post("/api/v1/auth/register")
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -159,7 +159,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/auth/register")
+        .post("/api/v1/auth/register")
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -182,7 +182,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/auth/register")
+        .post("/api/v1/auth/register")
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -205,7 +205,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/auth/register")
+        .post("/api/v1/auth/register")
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -229,7 +229,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/auth/register")
+        .post("/api/v1/auth/register")
         .then()
         .statusCode(HttpStatus.OK.value());
 
@@ -247,7 +247,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(duplicateRequest)
         .when()
-        .post("/api/auth/register")
+        .post("/api/v1/auth/register")
         .then()
         .statusCode(HttpStatus.CONFLICT.value());
   }
@@ -269,7 +269,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/auth/register")
+        .post("/api/v1/auth/register")
         .then()
         .statusCode(HttpStatus.OK.value());
 
@@ -287,7 +287,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(duplicateRequest)
         .when()
-        .post("/api/auth/register")
+        .post("/api/v1/auth/register")
         .then()
         .statusCode(HttpStatus.CONFLICT.value());
   }
@@ -301,7 +301,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(invalidRequest)
         .when()
-        .post("/api/auth/register")
+        .post("/api/v1/auth/register")
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value());
   }
@@ -315,7 +315,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.URLENC)
         .body(registerRequest)
         .when()
-        .post("/api/auth/register")
+        .post("/api/v1/auth/register")
         .then()
         .statusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value());
   }

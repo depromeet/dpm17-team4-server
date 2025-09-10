@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.security;
+package depromeet.lessonfour.server.auth.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

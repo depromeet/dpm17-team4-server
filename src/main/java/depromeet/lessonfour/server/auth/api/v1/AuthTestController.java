@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.auth.api;
+package depromeet.lessonfour.server.auth.api.v1;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @Profile("dev")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthTestController {
 
   private final UserQueryService userQueryService;

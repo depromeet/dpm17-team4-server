@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.auth.api;
+package depromeet.lessonfour.server.auth.api.v1;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
   private final RegisterUseCase registerUseCase;
