@@ -10,21 +10,6 @@ spring:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
-  datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/lessonfour}
-    driver-class-name: org.postgresql.Driver
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:root}
-
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 jwt:
   secret: mySecretKeyForJWTWhichShouldBeAtLeast256BitsLongToEnsureSecurityAndCompliance
@@ -42,6 +27,7 @@ logging:
       max-history: 7
       total-size-cap: 200MB
       file-name-pattern: logs/server-%d{yyyy-MM-dd}.%i.log.gz
+
 server:
   tomcat:
     basedir: .
@@ -55,6 +41,12 @@ server:
       pattern: common
 
 kakao:
-  client-id: ${KAKAO_CLIENT_ID:your-kakao-client-id}
-  client-secret: ${KAKAO_CLIENT_SECRET:your-kakao-client-secret}
-  redirect-uri: ${KAKAO_REDIRECT_URI:http://localhost:8080/api/auth/kakao/callback}
+  client-id: ${KAKAO__CLIENT_ID:your-kakao-client-id}
+  client-secret: ${KAKAO__CLIENT_SECRET:your-kakao-client-secret}
+  redirect-url: ${KAKAO__REDIRECT_URL:http://localhost:8080/api/auth/kakao/callback}
+  issuer-url: ${KAKAO__ISSUER_URL:https://kauth.kakao.com}
+  auth-url: ${KAKAO__AUTH_URL:https://kauth.kakao.com/oauth/authorize}
+  token-url: ${KAKAO__TOKEN_URL:https://kauth.kakao.com/oauth/token}
+
+frontend:
+  url: ${FRONTEND__URL:http://localhost:3000}
