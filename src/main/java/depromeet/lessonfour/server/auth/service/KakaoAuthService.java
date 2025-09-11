@@ -104,7 +104,6 @@ public class KakaoAuthService {
     }
 
     Map<String, Object> tokenResponse = response.getBody();
-    System.out.println("TOKEN: " + tokenResponse);
     return tokenResponse;
   }
 
@@ -129,8 +128,6 @@ public class KakaoAuthService {
               .getPayload();
       return claims;
     } catch (Exception e) {
-      System.out.println("JWT validation failed: " + e.getMessage());
-
       throw new RuntimeException("Failed to verify OIDC token: " + e.getMessage(), e);
     }
   }

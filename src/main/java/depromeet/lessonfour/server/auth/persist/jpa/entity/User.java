@@ -7,8 +7,6 @@ import depromeet.lessonfour.server.common.persist.jpa.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -41,9 +39,6 @@ public class User extends BaseTimeEntity {
   @NotNull @Column(unique = true, nullable = false)
   private String nickname;
 
-  @Enumerated(EnumType.STRING)
-  private UserRoleEnum role;
-
   @Embedded private Provider provider;
 
   @Column(length = 500)
@@ -60,7 +55,6 @@ public class User extends BaseTimeEntity {
         .email(email)
         .nickname(nickname)
         .password(password)
-        .role(UserRoleEnum.USER)
         .profileImage(profileImage)
         .provider(provider)
         .isNew(true)
@@ -77,10 +71,6 @@ public class User extends BaseTimeEntity {
 
   public void storeRefreshToken(String refreshToken) {
     this.refreshToken = refreshToken;
-  }
-
-  public String getAuthority() {
-    return role.getAuthority();
   }
 
   public boolean isNew() {
