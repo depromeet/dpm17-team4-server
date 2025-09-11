@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import depromeet.lessonfour.server.auth.api.dto.response.AuthResponseDto;
 import depromeet.lessonfour.server.auth.api.dto.response.UserResponseDto;
@@ -38,6 +39,7 @@ public class KakaoAuthService {
   private final String clientId;
   private final String clientSecret;
   private final String redirectUri;
+  private final String authUrl;
   private final String issuerUrl;
   private final String tokenUrl;
   private final String jwksUrl = "https://kauth.kakao.com/.well-known/jwks.json";
@@ -50,7 +52,8 @@ public class KakaoAuthService {
       @Value("${kakao.client-secret}") String clientSecret,
       @Value("${kakao.redirect-url}") String redirectUrl,
       @Value("${kakao.issuer-url}") String issuerUrl,
-      @Value("${kakao.token-url}") String tokenUrl) {
+      @Value("${kakao.token-url}") String tokenUrl,
+      @Value("${kakao.auth-url}") String authUrl) {
     this.restTemplate = restTemplate;
     this.userRepository = userRepository;
     this.jwtTokenGenerator = jwtTokenGenerator;
@@ -59,20 +62,37 @@ public class KakaoAuthService {
     this.redirectUri = redirectUrl;
     this.issuerUrl = issuerUrl;
     this.tokenUrl = tokenUrl;
+    this.authUrl = authUrl;
   }
 
-  public AuthResponseDto signin(String code) {
+  public AuthResponseDto login(String code) {
     if (code != null) {
       Map<String, Object> tokenData = getToken(code);
       String idToken = tokenData.get("id_token").toString();
       if (idToken == null) {
-        throw new RuntimeException("Id token is required for Kakao signin");
+        throw new RuntimeException("Id token is required for Kakao login");
       }
 
       User user = getUserFromToken(idToken);
       return AuthResponseDto.of(UserResponseDto.of(user), null, user.getRefreshToken());
     }
-    throw new RuntimeException("Code is required for Kakao signin");
+    throw new RuntimeException("Code is required for Kakao login");
+  }
+
+  public String getRequestUrl() {
+    MultiValueMap<String, String> authParams =
+        new LinkedMultiValueMap<>() {
+          {
+            add("client_id", clientId);
+            add("redirect_uri", redirectUri);
+            add("response_type", "code");
+            add("scope", "openid profile_nickname profile_image account_email");
+          }
+        };
+    return UriComponentsBuilder.fromUriString(authUrl)
+        .queryParams(authParams)
+        .build()
+        .toUriString();
   }
 
   private Map<String, Object> getToken(String code) {

@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,24 +38,9 @@ public class KaKaoAuthController {
     this.kakaoAuthService = kakaoAuthService;
   }
 
-  @PostMapping("/signin")
-  public ResponseEntity<Void> kakaoSignIn() {
-    MultiValueMap<String, String> authParams =
-        new LinkedMultiValueMap<>() {
-          {
-            add("client_id", kakaoClientId);
-            add("redirect_uri", kakaoRedirectUrl);
-            add("response_type", "code");
-            add("scope", "openid profile_nickname profile_image account_email");
-          }
-        };
-
-    String authUrl =
-        UriComponentsBuilder.fromUriString(kakaoAuthUrl)
-            .queryParams(authParams)
-            .build()
-            .toUriString();
-
+  @PostMapping("/login")
+  public ResponseEntity<Void> kakaoLogin() {
+    String authUrl = kakaoAuthService.getRequestUrl();
     return ResponseEntity.status(302).header("Location", authUrl).build();
   }
 
@@ -77,7 +60,7 @@ public class KaKaoAuthController {
 
     if (code != null) {
       try {
-        AuthResponseDto authResult = kakaoAuthService.signin(code);
+        AuthResponseDto authResult = kakaoAuthService.login(code);
         System.out.println("refresh_token: " + authResult.refreshToken());
         ResponseCookie refreshTokenCookie =
             ResponseCookie.from("refresh_token", authResult.refreshToken())

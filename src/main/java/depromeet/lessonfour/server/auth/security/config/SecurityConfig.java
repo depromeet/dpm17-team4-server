@@ -56,7 +56,7 @@ public class SecurityConfig {
     authenticationManagerBuilder.authenticationProvider(restAuthenticationProvider);
     AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 
-    return http.securityMatcher("/api/v1/auth/signin")
+    return http.securityMatcher("/api/v1/auth/login")
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
         .sessionManagement(

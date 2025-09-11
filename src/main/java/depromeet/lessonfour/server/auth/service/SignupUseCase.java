@@ -19,13 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 @UseCase
 @Transactional
 @RequiredArgsConstructor
-public class RegisterUseCase {
+public class SignupUseCase {
 
   private final UserRegisterValidator userRegisterValidator;
   private final PasswordEncoder passwordEncoder;
   private final UserRepository userRepository;
 
-  public UserResponseDto register(RegisterRequestDto dto) {
+  public UserResponseDto signup(RegisterRequestDto dto) {
 
     String email = dto.email().toLowerCase(Locale.ROOT);
     String nickname = dto.nickname().trim();

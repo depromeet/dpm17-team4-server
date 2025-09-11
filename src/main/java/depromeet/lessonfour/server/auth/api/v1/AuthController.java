@@ -17,9 +17,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import depromeet.lessonfour.server.auth.api.dto.request.RegisterRequestDto;
 import depromeet.lessonfour.server.auth.api.dto.response.AccessTokenResponseDto;
-import depromeet.lessonfour.server.auth.service.ReIssueTokenUseCase;
-import depromeet.lessonfour.server.auth.service.RegisterUseCase;
-import depromeet.lessonfour.server.auth.service.dto.ReIssueResult;
+import depromeet.lessonfour.server.auth.service.RefreshTokenUseCase;
+import depromeet.lessonfour.server.auth.service.SignupUseCase;
+import depromeet.lessonfour.server.auth.service.dto.AuthTokenDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -28,12 +28,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
-  private final RegisterUseCase registerUseCase;
-  private final ReIssueTokenUseCase reIssueTokenUseCase;
+  private final SignupUseCase registerUseCase;
+  private final RefreshTokenUseCase refreshTokenUseCase;
 
   @PostMapping("/signup")
   public ResponseEntity<?> signup(@Valid @RequestBody RegisterRequestDto dto) {
-    var user = registerUseCase.register(dto);
+    // TODO: RESTful하게 users 도메인으로 옮기는 것은 어떨까? e.g. POST users
+    var user = registerUseCase.signup(dto);
     return ResponseEntity.created(URI.create("/api/v1/users/" + user.id())).body(user);
   }
 
@@ -45,7 +46,7 @@ public class AuthController {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token not found");
     }
 
-    ReIssueResult result = reIssueTokenUseCase.reIssue(refreshToken);
+    AuthTokenDto result = refreshTokenUseCase.refresh(refreshToken);
 
     // Refresh Token Rotation: 새로운 refresh token을 쿠키로 업데이트
     ResponseCookie refreshTokenCookie =
