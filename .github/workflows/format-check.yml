@@ -3,6 +3,8 @@ name: Format Check
 on:
   pull_request:
     branches: [ main, develop ]
+    paths-ignore:
+      - 'infra/**'
 
 jobs:
   format-check:
