@@ -36,12 +36,12 @@ public class User extends BaseTimeEntity {
 
   @Column private String password;
 
-  @NotNull @Column(nullable = false)
+  @NotNull @Column(length = 32)
   private String nickname;
 
   @Embedded private Provider provider;
 
-  @Column(length = 500)
+  @Column(length = 512)
   private String profileImage;
 
   @Column(length = 512)
