@@ -36,7 +36,7 @@ public class User extends BaseTimeEntity {
 
   @Column private String password;
 
-  @NotNull @Column(unique = true, nullable = false)
+  @NotNull @Column(nullable = false)
   private String nickname;
 
   @Embedded private Provider provider;

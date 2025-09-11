@@ -31,7 +31,6 @@ public class RegisterUseCase {
     String nickname = dto.nickname().trim();
 
     userRegisterValidator.duplicateEmailCheck(email);
-    userRegisterValidator.duplicateNicknameCheck(nickname);
     String encodedPassword = passwordEncoder.encode(dto.password());
 
     User user = User.register(email, nickname, encodedPassword, null, Provider.local());
