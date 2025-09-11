@@ -63,9 +63,8 @@ public class ReIssueTokenUseCase {
     AccountContext accountContext = AccountContext.of(user);
     String newAccessToken = jwtTokenGenerator.generateAccessToken(accountContext);
     String newRefreshToken = jwtTokenGenerator.generateRefreshToken(accountContext);
-
     user.storeRefreshToken(newRefreshToken);
-
+    userRepository.save(user);
     return new ReIssueResult(newAccessToken, newRefreshToken);
   }
 }

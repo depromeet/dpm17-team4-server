@@ -6,6 +6,7 @@ import java.net.URI;
 
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +20,6 @@ import depromeet.lessonfour.server.auth.api.dto.response.AccessTokenResponseDto;
 import depromeet.lessonfour.server.auth.service.ReIssueTokenUseCase;
 import depromeet.lessonfour.server.auth.service.RegisterUseCase;
 import depromeet.lessonfour.server.auth.service.dto.ReIssueResult;
-import depromeet.lessonfour.server.common.utils.HttpServletUtils;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -31,7 +30,6 @@ public class AuthController {
 
   private final RegisterUseCase registerUseCase;
   private final ReIssueTokenUseCase reIssueTokenUseCase;
-  private final HttpServletUtils servletUtils;
 
   @PostMapping("/signup")
   public ResponseEntity<?> signup(@Valid @RequestBody RegisterRequestDto dto) {
@@ -41,8 +39,7 @@ public class AuthController {
 
   @PostMapping("/refresh")
   public ResponseEntity<?> refresh(
-      @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken,
-      HttpServletResponse response) {
+      @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken) {
 
     if (refreshToken == null || refreshToken.isBlank()) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token not found");
@@ -50,12 +47,19 @@ public class AuthController {
 
     ReIssueResult result = reIssueTokenUseCase.reIssue(refreshToken);
 
-    // Refresh token이 변경되지 않았으므로 쿠키 업데이트 불필요
-    // servletUtils.addCookie(
-    //     response, REFRESH_TOKEN_COOKIE_NAME, result.refreshToken(), REFRESH_TOKEN_EXPIRATION);
-
+    // Refresh Token Rotation: 새로운 refresh token을 쿠키로 업데이트
+    ResponseCookie refreshTokenCookie =
+        ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, result.refreshToken())
+            .httpOnly(true)
+            .sameSite("Strict")
+            .maxAge(7 * 24 * 60 * 60) // 7일
+            .path("/")
+            .build();
+    // .secure(true) // HTTPS에서만 전송
+    System.out.println("refresh_token: " + result.refreshToken());
     return ResponseEntity.ok()
-        .cacheControl(CacheControl.noCache())
+        .header("Set-Cookie", refreshTokenCookie.toString())
+        .cacheControl(CacheControl.noStore().mustRevalidate())
         .body(new AccessTokenResponseDto(result.accessToken()));
   }
 }
