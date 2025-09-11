@@ -125,7 +125,7 @@ module "postgresql" {
   username      = var.postgresql.username
   password      = var.postgresql.password
   vpc_no        = module.vpc.vpc_id
-  subnet_no     = module.subnets["private_db_1"].subnet_id
+  subnet_no     = module.subnets[var.postgresql.subnet_key].subnet_id
   client_cidr   = module.vpc.vpc_cidr_block
   database_name = var.postgresql.database_name
   access_control_group_no_list = [
@@ -136,7 +136,6 @@ module "postgresql" {
 
 module "static_resource_bucket" {
   source      = "./modules/object-storage"
-  name_prefix = local.name_prefix
   bucket_name = "${local.name_prefix}-static-resources"
   rule        = "public-read"
 }

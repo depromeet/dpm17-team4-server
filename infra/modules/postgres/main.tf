@@ -37,24 +37,17 @@ resource "ncloud_postgresql" "postgresql" {
 }
 
 
-resource "ncloud_access_control_group_rule" "db_inbound_from_bastion" {
-  access_control_group_no = ncloud_postgresql.postgresql.access_control_group_no_list[0]
+resource "ncloud_access_control_group_rule" "db_inbound_from_acgs" {
+  for_each                = toset(ncloud_postgresql.postgresql.access_control_group_no_list)
+  access_control_group_no = each.key
 
   dynamic "inbound" {
     for_each = var.access_control_group_no_list
-
     content {
       protocol                       = "TCP"
       source_access_control_group_no = inbound.value
       port_range                     = "5432"
-      description                    = "Allow Bastion ACG ${inbound.value} to access PostgreSQL"
+      description                    = "Allow ACG ${inbound.value} to access PostgreSQL"
     }
-  }
-
-  outbound {
-    protocol    = "TCP"
-    ip_block    = "0.0.0.0/0"
-    port_range  = "1-65535"
-    description = "all outbound"
   }
 }

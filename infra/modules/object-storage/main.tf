@@ -9,7 +9,7 @@ terraform {
 
 resource "ncloud_objectstorage_bucket" "bucket" {
   # required
-  bucket_name = "${var.name_prefix}-${var.bucket_name}"
+  bucket_name = var.bucket_name
 }
 
 resource "ncloud_objectstorage_bucket_acl" "bucket_acl" {

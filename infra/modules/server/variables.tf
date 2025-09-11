@@ -37,4 +37,8 @@ variable "key" {
 variable "access_control_groups" {
   description = "A list of access control group IDs to associate with the network interface"
   type        = list(string)
+  validation {
+    condition     = length(var.access_control_groups) >= 1
+    error_message = "At least one ACG ID must be provided."
+  }
 }

@@ -42,11 +42,6 @@ output "subnets" {
   }
 }
 
-output "private_key_file" {
-  description = "Path to the private key file for SSH access"
-  value       = module.management_key.private_key_file
-}
-
 output "server_ips" {
   description = "Public IP addresses of created servers"
   value = {
