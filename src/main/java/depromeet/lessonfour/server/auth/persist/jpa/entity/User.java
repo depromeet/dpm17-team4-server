@@ -3,7 +3,6 @@ package depromeet.lessonfour.server.auth.persist.jpa.entity;
 import java.util.UUID;
 
 import depromeet.lessonfour.server.auth.value.Provider;
-import depromeet.lessonfour.server.auth.value.Provider.ProviderType;
 import depromeet.lessonfour.server.common.persist.jpa.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -14,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -36,8 +36,7 @@ public class User extends BaseTimeEntity {
   @NotNull @Column(unique = true, nullable = false)
   private String email;
 
-  @Column
-  private String password;
+  @Column private String password;
 
   @NotNull @Column(unique = true, nullable = false)
   private String nickname;
@@ -45,8 +44,7 @@ public class User extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private UserRoleEnum role;
 
-  @Embedded
-  private Provider provider;
+  @Embedded private Provider provider;
 
   @Column(length = 500)
   private String profileImage;
@@ -54,14 +52,27 @@ public class User extends BaseTimeEntity {
   @Column(length = 512)
   private String refreshToken;
 
-  public static User register(String email, String nickname, String password) {
+  @Transient @Builder.Default private boolean isNew = false;
+
+  public static User register(
+      String email, String nickname, String password, String profileImage, Provider provider) {
     return User.builder()
         .email(email)
         .nickname(nickname)
         .password(password)
         .role(UserRoleEnum.USER)
-        .provider(Provider.of(ProviderType.LOCAL, null))
+        .profileImage(profileImage)
+        .provider(provider)
+        .isNew(true)
         .build();
+  }
+
+  public static User register(String email, String nickname, String password) {
+    return register(email, nickname, password, null, null);
+  }
+
+  public static User register(String email, String nickname, String password, String profileImage) {
+    return register(email, nickname, password, profileImage, null);
   }
 
   public void storeRefreshToken(String refreshToken) {
@@ -70,5 +81,9 @@ public class User extends BaseTimeEntity {
 
   public String getAuthority() {
     return role.getAuthority();
+  }
+
+  public boolean isNew() {
+    return isNew;
   }
 }

@@ -34,7 +34,7 @@ public final class Provider {
 
   private Provider(ProviderType type, String id) {
     this.type = Objects.requireNonNull(type, "type must not be null");
-    if (id == null || id.isBlank()) {
+    if (type != ProviderType.LOCAL && (id == null || id.isBlank())) {
       throw new IllegalArgumentException("id must not be null or blank");
     }
     this.id = id;
@@ -42,5 +42,9 @@ public final class Provider {
 
   public static Provider of(ProviderType type, String id) {
     return new Provider(type, id);
+  }
+
+  public static Provider local() {
+    return of(ProviderType.LOCAL, null);
   }
 }
