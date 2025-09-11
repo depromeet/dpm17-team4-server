@@ -50,7 +50,7 @@ variable "backend_servers" {
 }
 
 variable "bastion_servers" {
-  description = "A map of backend servers to create"
+  description = "A map of backend basion servers to create"
   type = map(object({
     subnet_key          = string
     server_image_number = string

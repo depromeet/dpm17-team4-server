@@ -9,6 +9,6 @@ variable "bucket_name" {
 }
 
 variable "rule" {
-  description = "A map of rules to apply to the bucket policy"
+  description = "The ACL rule to apply to the bucket (e.g., 'private', 'public-read', 'public-read-write', 'authenticated-read')"
   type        = string
 }
