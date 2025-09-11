@@ -51,6 +51,9 @@ public class User extends BaseTimeEntity {
 
   public static User register(
       String email, String nickname, String password, String profileImage, Provider provider) {
+    if (provider == null) {
+      provider = Provider.local();
+    }
     return User.builder()
         .email(email)
         .nickname(nickname)

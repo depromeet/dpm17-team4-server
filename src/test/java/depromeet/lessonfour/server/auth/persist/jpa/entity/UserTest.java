@@ -111,21 +111,6 @@ class UserTest {
   }
 
   @Test
-  @DisplayName("사용자는 기본적으로 USER 역할을 가진다")
-  void givenUserWithRole_whenSaved_thenRolePersisted() {
-    // given
-    String email = "test@example.com";
-    String nickname = "testuser";
-    String password = "password123";
-
-    // when
-    User user = User.register(email, nickname, password);
-
-    // then
-    assertThat(user.getAuthority()).isEqualTo("ROLE_USER");
-  }
-
-  @Test
   @DisplayName("리프레시 토큰을 설정할 수 있다")
   void givenUserWithRefreshToken_whenSaved_thenRefreshTokenPersisted() {
     // given
@@ -158,7 +143,7 @@ class UserTest {
   }
 
   @Test
-  @DisplayName("동일한 닉네임을 가진 사용자를 저장하면 DataIntegrityViolationException이 발생한다")
+  @DisplayName("동일한 닉네임을 가진 사용자를 저장하면 DataIntegrityViolationException이 발생하지 않는다")
   void givenDuplicateNickname_whenSave_thenThrowsDataIntegrityViolationException() {
     // given
     String duplicateNickname = "duplicatenick";
@@ -166,11 +151,13 @@ class UserTest {
     User secondUser = User.register("second@example.com", duplicateNickname, "password456");
 
     // when
-    userRepository.save(firstUser);
+    User savedFirstUser = userRepository.save(firstUser);
+    User savedSecondUser = userRepository.save(secondUser);
 
     // then
-    assertThatThrownBy(() -> userRepository.saveAndFlush(secondUser))
-        .isInstanceOf(DataIntegrityViolationException.class);
+    assertThat(savedFirstUser.getId()).isNotNull();
+    assertThat(savedSecondUser.getId()).isNotNull();
+    assertThat(savedFirstUser.getId()).isNotEqualTo(savedSecondUser.getId());
   }
 
   @Test

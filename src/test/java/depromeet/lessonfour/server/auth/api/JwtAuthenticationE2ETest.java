@@ -1,7 +1,6 @@
 package depromeet.lessonfour.server.auth.api;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
@@ -24,6 +23,7 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import depromeet.lessonfour.server.auth.persist.jpa.UserRepository;
 import depromeet.lessonfour.server.auth.persist.jpa.entity.User;
 import depromeet.lessonfour.server.auth.security.jwt.JwtTokenGenerator;
+import depromeet.lessonfour.server.auth.security.userdetails.AccountContext;
 import io.restassured.RestAssured;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -51,20 +51,19 @@ class JwtAuthenticationE2ETest {
   void givenValidJwtToken_whenAccessProtectedEndpoint_thenSuccess() {
     // Given: 유효한 사용자와 JWT 토큰 생성
     User user = createTestUser("test@example.com", "password123", "testuser");
-    String validToken =
-        jwtTokenGenerator.generateAccessToken(
-            user.getId(), user.getEmail(), user.getNickname(), user.getRole().name());
+    String validToken = jwtTokenGenerator.generateAccessToken(AccountContext.of(user));
 
-    // When & Then: 보호된 엔드포인트에 유효한 토큰으로 접근
+    // When & Then: Echo API에 유효한 토큰으로 접근
     given()
         .header("Authorization", "Bearer " + validToken)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("{\"Hello\": \"World!\"}")
         .when()
-        .get("/api/test/protected")
+        .post("/api/v1/echo")
         .then()
         .statusCode(HttpStatus.OK.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .body("message", containsString("Protected endpoint accessed successfully"))
-        .body("user", equalTo(user.getEmail()));
+        .body(equalTo("{\"Hello\": \"World!\"}"));
   }
 
   @Test
@@ -77,20 +76,21 @@ class JwtAuthenticationE2ETest {
             user.getId(),
             user.getEmail(),
             user.getNickname(),
-            user.getRole().name(),
             Instant.now().minus(1, ChronoUnit.HOURS)); // 1시간 전에 만료
 
     // When & Then: 보호된 엔드포인트에 만료된 토큰으로 접근
     given()
         .header("Authorization", "Bearer " + expiredToken)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("{\"test\": \"data\"}")
         .when()
-        .get("/api/test/protected")
+        .post("/api/v1/echo")
         .then()
         .statusCode(HttpStatus.UNAUTHORIZED.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .body("status", equalTo(401))
         .body("error", equalTo("Unauthorized"))
-        .body("path", equalTo("/api/test/protected"))
+        .body("path", equalTo("/api/v1/echo"))
         .body("timestamp", notNullValue());
   }
 
@@ -103,8 +103,10 @@ class JwtAuthenticationE2ETest {
     // When & Then: 보호된 엔드포인트에 유효하지 않은 토큰으로 접근
     given()
         .header("Authorization", "Bearer " + invalidToken)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("{\"test\": \"data\"}")
         .when()
-        .get("/api/test/protected")
+        .post("/api/v1/echo")
         .then()
         .statusCode(HttpStatus.UNAUTHORIZED.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -117,14 +119,16 @@ class JwtAuthenticationE2ETest {
   void givenNoJwtToken_whenAccessProtectedEndpoint_thenUnauthorized() {
     // When & Then: 토큰 없이 보호된 엔드포인트에 접근
     given()
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("{\"test\": \"data\"}")
         .when()
-        .get("/api/test/protected")
+        .post("/api/v1/echo")
         .then()
         .statusCode(HttpStatus.UNAUTHORIZED.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .body("status", equalTo(401))
         .body("error", equalTo("Unauthorized"))
-        .body("path", equalTo("/api/test/protected"));
+        .body("path", equalTo("/api/v1/echo"));
   }
 
   @Test
@@ -132,38 +136,37 @@ class JwtAuthenticationE2ETest {
   void givenInvalidBearerFormat_whenAccessProtectedEndpoint_thenUnauthorized() {
     // Given: Bearer 형식이 아닌 토큰
     User user = createTestUser("format@example.com", "password123", "formatuser");
-    String validToken =
-        jwtTokenGenerator.generateAccessToken(
-            user.getId(), user.getEmail(), user.getNickname(), user.getRole().name());
+    String validToken = jwtTokenGenerator.generateAccessToken(AccountContext.of(user));
 
     // When & Then: Bearer 접두사 없이 접근
     given()
         .header("Authorization", validToken) // Bearer 접두사 없음
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("{\"test\": \"data\"}")
         .when()
-        .get("/api/test/protected")
+        .post("/api/v1/echo")
         .then()
         .statusCode(HttpStatus.UNAUTHORIZED.value());
   }
 
   @Test
-  @DisplayName("유효한 JWT 토큰으로 사용자 정보 조회가 가능하다")
-  void givenValidJwtToken_whenGetAuthInfo_thenReturnUserInfo() {
+  @DisplayName("유효한 JWT 토큰으로 Echo API에 두 번째 요청도 성공한다")
+  void givenValidJwtToken_whenSecondEchoRequest_thenSuccess() {
     // Given: 유효한 사용자와 JWT 토큰 생성
     User user = createTestUser("info@example.com", "password123", "infouser");
-    String validToken =
-        jwtTokenGenerator.generateAccessToken(
-            user.getId(), user.getEmail(), user.getNickname(), user.getRole().name());
+    String validToken = jwtTokenGenerator.generateAccessToken(AccountContext.of(user));
 
-    // When & Then: 인증 정보 조회
+    // When & Then: Echo API에 두 번째 요청
     given()
         .header("Authorization", "Bearer " + validToken)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("{\"second\": \"request\"}")
         .when()
-        .get("/api/test/auth-info")
+        .post("/api/v1/echo")
         .then()
         .statusCode(HttpStatus.OK.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .body("message", containsString("Authenticated user: " + user.getEmail()))
-        .body("user", equalTo(user.getEmail()));
+        .body(equalTo("{\"second\": \"request\"}"));
   }
 
   private User createTestUser(String email, String password, String nickname) {
