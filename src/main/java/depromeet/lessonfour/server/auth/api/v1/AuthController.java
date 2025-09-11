@@ -1,12 +1,17 @@
 package depromeet.lessonfour.server.auth.api.v1;
 
 import static depromeet.lessonfour.server.auth.security.jwt.JwtConstants.REFRESH_TOKEN_COOKIE_NAME;
-import static depromeet.lessonfour.server.auth.security.jwt.JwtConstants.REFRESH_TOKEN_EXPIRATION;
+
+import java.net.URI;
 
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import depromeet.lessonfour.server.auth.api.dto.request.RegisterRequestDto;
@@ -28,14 +33,14 @@ public class AuthController {
   private final ReIssueTokenUseCase reIssueTokenUseCase;
   private final HttpServletUtils servletUtils;
 
-  @PostMapping("/register")
-  public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto dto) {
-    registerUseCase.register(dto);
-    return ResponseEntity.ok().build();
+  @PostMapping("/signup")
+  public ResponseEntity<?> signup(@Valid @RequestBody RegisterRequestDto dto) {
+    var user = registerUseCase.register(dto);
+    return ResponseEntity.created(URI.create("/api/v1/users/" + user.id())).body(user);
   }
 
-  @PostMapping("/reissue")
-  public ResponseEntity<?> reIssue(
+  @PostMapping("/refresh")
+  public ResponseEntity<?> refresh(
       @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken,
       HttpServletResponse response) {
 
@@ -45,8 +50,9 @@ public class AuthController {
 
     ReIssueResult result = reIssueTokenUseCase.reIssue(refreshToken);
 
-    servletUtils.addCookie(
-        response, REFRESH_TOKEN_COOKIE_NAME, result.refreshToken(), REFRESH_TOKEN_EXPIRATION);
+    // Refresh token이 변경되지 않았으므로 쿠키 업데이트 불필요
+    // servletUtils.addCookie(
+    //     response, REFRESH_TOKEN_COOKIE_NAME, result.refreshToken(), REFRESH_TOKEN_EXPIRATION);
 
     return ResponseEntity.ok()
         .cacheControl(CacheControl.noCache())
