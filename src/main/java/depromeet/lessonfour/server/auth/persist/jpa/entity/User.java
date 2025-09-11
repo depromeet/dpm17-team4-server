@@ -2,10 +2,24 @@ package depromeet.lessonfour.server.auth.persist.jpa.entity;
 
 import java.util.UUID;
 
+import depromeet.lessonfour.server.auth.value.Provider;
+import depromeet.lessonfour.server.auth.value.Provider.ProviderType;
 import depromeet.lessonfour.server.common.persist.jpa.entity.BaseTimeEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "users")
@@ -22,7 +36,8 @@ public class User extends BaseTimeEntity {
   @NotNull @Column(unique = true, nullable = false)
   private String email;
 
-  @Column private String password;
+  @Column
+  private String password;
 
   @NotNull @Column(unique = true, nullable = false)
   private String nickname;
@@ -30,11 +45,11 @@ public class User extends BaseTimeEntity {
   @Enumerated(EnumType.STRING)
   private UserRoleEnum role;
 
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
-  private LoginProvider provider;
+  @Embedded
+  private Provider provider;
 
-  private String providerUserId;
+  @Column(length = 500)
+  private String profileImage;
 
   @Column(length = 512)
   private String refreshToken;
@@ -45,7 +60,7 @@ public class User extends BaseTimeEntity {
         .nickname(nickname)
         .password(password)
         .role(UserRoleEnum.USER)
-        .provider(LoginProvider.LOCAL)
+        .provider(Provider.of(ProviderType.LOCAL, null))
         .build();
   }
 
