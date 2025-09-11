@@ -56,3 +56,8 @@ output "server_ips" {
     }
   }
 }
+
+output "postgresql_access_control_group_no" {
+  description = "The ID of the PostgreSQL access control group"
+  value       = module.postgresql.access_control_group_no_list
+}

@@ -115,3 +115,21 @@ module "bastion_host" {
     module.bastion_acg.acg_id
   ]
 }
+
+# PostgreSQL
+module "postgresql" {
+  source = "./modules/postgres"
+
+  service_name  = local.name_prefix
+  name_prefix   = local.name_prefix
+  username      = var.postgresql.username
+  password      = var.postgresql.password
+  vpc_no        = module.vpc.vpc_id
+  subnet_no     = module.subnets["private_db_1"].subnet_id
+  client_cidr   = module.vpc.vpc_cidr_block
+  database_name = var.postgresql.database_name
+  access_control_group_no_list = [
+    module.bastion_acg.acg_id,
+    module.backend_acg.acg_id
+  ]
+}

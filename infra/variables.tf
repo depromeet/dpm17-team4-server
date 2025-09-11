@@ -58,3 +58,13 @@ variable "bastion_servers" {
     is_public           = bool
   }))
 }
+
+# PostgreSQL
+variable "postgresql" {
+  description = "PostgreSQL configuration"
+  type = object({
+    username      = string
+    password      = string
+    database_name = string
+  })
+}
