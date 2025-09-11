@@ -44,6 +44,7 @@ output "subnets" {
 
 output "server_ips" {
   description = "Public IP addresses of created servers"
+  sensitive   = true
   value = {
     for key, server in module.backend_servers : key => {
       public_ip  = server.public_ip

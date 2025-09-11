@@ -6,4 +6,8 @@ variable "bucket_name" {
 variable "rule" {
   description = "The ACL rule to apply to the bucket (e.g., 'private', 'public-read', 'public-read-write', 'authenticated-read')"
   type        = string
+  validation {
+    condition     = contains(["private", "public-read", "public-read-write", "authenticated-read"], var.rule)
+    error_message = "rule must be one of: private, public-read, public-read-write, authenticated-read."
+  }
 }

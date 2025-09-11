@@ -1,5 +1,5 @@
 variable "subnet_no" {
-  description = "The ID of the subnet where the server will be created"
+  description = "The ID of the subnet where the server will be created. Must be a public subnet when is_public = true"
   type        = string
 }
 
@@ -24,7 +24,7 @@ variable "name_prefix" {
 }
 
 variable "is_public" {
-  description = "Whether to assign a public IP to the server"
+  description = "Whether to assign a public IP to the server. When true, subnet_no must be a public subnet"
   type        = bool
   default     = false
 }

@@ -4,7 +4,6 @@
 *.tfplan
 *.tfplan.*
 .terraform/
-.terraform.lock.hcl
 
 # Variable files with sensitive data
 *.auto.tfvars
