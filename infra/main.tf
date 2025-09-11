@@ -133,3 +133,10 @@ module "postgresql" {
     module.backend_acg.acg_id
   ]
 }
+
+module "static_resource_bucket" {
+  source      = "./modules/object-storage"
+  name_prefix = local.name_prefix
+  bucket_name = "${local.name_prefix}-static-resources"
+  rule        = "public-read"
+}
