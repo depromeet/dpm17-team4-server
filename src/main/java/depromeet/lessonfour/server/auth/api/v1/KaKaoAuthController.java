@@ -91,10 +91,10 @@ public class KaKaoAuthController {
         String successUrl =
             UriComponentsBuilder.fromUriString(frontendUrl)
                 .queryParam("id", authResult.id())
-                .queryParam("username", authResult.nickname())
+                .queryParam("nickname", authResult.nickname())
                 .queryParam("profile_image", authResult.profileImage())
-                .queryParam("is_new_user", authResult.isNew())
-                .queryParam("provider", authResult.provider().getType())
+                .queryParam("is_new", authResult.isNew())
+                .queryParam("provider_type", authResult.provider().getType())
                 .encode(StandardCharsets.UTF_8)
                 .build()
                 .toUriString();
