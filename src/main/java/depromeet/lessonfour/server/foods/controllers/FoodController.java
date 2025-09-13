@@ -26,7 +26,9 @@ public class FoodController {
     @ApiResponse(responseCode = "200", description = "success"),
   })
   @GetMapping(path = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<FoodSearchResultDto> search(@RequestParam String query) {
-    return ResponseEntity.ok(foodService.search(query));
+  public ResponseEntity<FoodSearchResultDto> search(
+      @RequestParam String query,
+      @RequestParam(defaultValue = "5") int count) {
+    return ResponseEntity.ok(foodService.search(query, count));
   }
 }
