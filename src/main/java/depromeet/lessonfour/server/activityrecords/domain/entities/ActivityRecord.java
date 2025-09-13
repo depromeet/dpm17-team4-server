@@ -43,7 +43,7 @@ public class ActivityRecord extends BaseTimeEntity {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  // 마신 물 양 (종이컵 기준, 1~10개)
+  // 마신 물 양 (종이컵 기준, 0~10개)
   @Column
   @Min(0)
   @Max(10)

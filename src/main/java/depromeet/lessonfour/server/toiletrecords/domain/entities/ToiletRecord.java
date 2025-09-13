@@ -43,9 +43,7 @@ public class ToiletRecord extends BaseTimeEntity {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @Column
-  @Enumerated(EnumType.STRING)
-  private ToiletStatus toiletStatus;
+  @Column private boolean isTolietSuccess;
 
   @Column
   @Enumerated(EnumType.STRING)
@@ -56,9 +54,7 @@ public class ToiletRecord extends BaseTimeEntity {
   @Max(100)
   private int painScore;
 
-  @Column
-  @Enumerated(EnumType.STRING)
-  private ToiletDuration toiletDuration;
+  @Column private int toiletDuration;
 
   @Column(nullable = true)
   private String additionalNote;
@@ -68,15 +64,15 @@ public class ToiletRecord extends BaseTimeEntity {
 
   public static ToiletRecord register(
       User user,
-      ToiletStatus toiletStatus,
+      boolean isTolietSuccess,
       ToiletColor toiletColor,
       int painScore,
-      ToiletDuration toiletDuration,
+      int toiletDuration,
       String additionalNote,
       LocalDateTime toiletAt) {
     return ToiletRecord.builder()
         .user(user)
-        .toiletStatus(toiletStatus)
+        .isTolietSuccess(isTolietSuccess)
         .toiletColor(toiletColor)
         .painScore(painScore)
         .toiletDuration(toiletDuration)

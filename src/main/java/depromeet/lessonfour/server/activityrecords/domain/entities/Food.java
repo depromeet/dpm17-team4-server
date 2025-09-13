@@ -32,5 +32,5 @@ public class Food extends BaseTimeEntity {
   @NotNull private String name;
 
   @Column(nullable = false)
-  @NotNull private int foodScore;
+  @NotNull private double foodScore;
 }
