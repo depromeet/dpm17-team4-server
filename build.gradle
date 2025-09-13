@@ -75,3 +75,7 @@ spotless {
         endWithNewline()
     }
 }
+
+bootJar {
+    archiveFileName = 'app.jar'
+}

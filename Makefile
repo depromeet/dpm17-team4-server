@@ -55,7 +55,7 @@ run:
 # Background run using the built JAR
 start: jar
 	@mkdir -p $(LOG_DIR)
-	@JAR_FILE="$$(ls -1t build/libs/server-*.jar 2>/dev/null | grep -v 'plain' | head -n1)"; \
+	@JAR_FILE="build/libs/app.jar"; \
 	if [ -z "$$JAR_FILE" ]; then \
 		echo "No executable JAR found under build/libs. Run 'make jar' first."; \
 		exit 1; \
