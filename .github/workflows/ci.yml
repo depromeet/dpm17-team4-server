@@ -2,9 +2,9 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ "master", "develop" ]
+    branches: [ "develop" ]
   pull_request:
-    branches: [ "master", "develop" ]
+    branches: [ "develop" ]
 
 permissions:
   contents: read
@@ -104,11 +104,11 @@ jobs:
           ls -al build/libs
 
       - name: Set up Docker Build
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master')
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main')
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master')
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main')
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -122,13 +122,12 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/lessonfour:dev-${{ github.sha }}
-            ${{ secrets.DOCKER_HUB_USERNAME }}/lessonfour:dev-latest
+            ${{ secrets.DOCKER_HUB_USERNAME }}/lessonfour:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Build & Push Docker Image (prod)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v6
         with:
           context: .
