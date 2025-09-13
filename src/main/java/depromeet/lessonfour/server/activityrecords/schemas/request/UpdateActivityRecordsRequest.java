@@ -16,6 +16,6 @@ public record UpdateActivityRecordsRequest(
 
   public record UpdateFoodRequestDto(
       UUID id,
-      @NotBlank(message = "음식 이름을 필수입니다") String name,
+      @NotBlank(message = "음식 이름은 필수입니다") String name,
       @NotNull(message = "식사 시간은 필수입니다") MealTime mealTime) {}
 }

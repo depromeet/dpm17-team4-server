@@ -10,10 +10,10 @@ import jakarta.validation.constraints.NotNull;
 
 public record CreateActivityRecordsRequest(
     @Valid List<CreateFoodRequestDto> foods,
-    @NotNull int waterIntakeCups,
+    int waterIntakeCups,
     @NotNull StressLevel stressLevel) {
 
   public record CreateFoodRequestDto(
-      @NotBlank(message = "음식 이름을 필수입니다") String name,
+      @NotBlank(message = "음식 이름은 필수입니다") String name,
       @NotNull(message = "식사 시간은 필수입니다") MealTime mealTime) {}
 }
