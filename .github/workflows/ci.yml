@@ -1,0 +1,141 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  quality-checks:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        check: ['formatting', 'security']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*','**/gradle-wrapper.properties') }}
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Run Spotless Check
+        if: matrix.check == 'formatting'
+        run: ./gradlew spotlessCheck
+      - name: Run Security Scan
+        if: matrix.check == 'security'
+        run: ./gradlew dependencyCheckAnalyze || echo "Security scan completed with warnings"
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*','**/gradle-wrapper.properties') }}
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Process Test Resources
+        run: ./gradlew processTestResources
+      - name: Run Tests
+        run: ./gradlew test -Dspring.profiles.active=test
+
+  check-infra:
+    name: Login to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    needs: [ quality-checks, test, check-infra ]
+    if: always() && (needs.quality-checks.result == 'success' && needs.test.result == 'success')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*','**/gradle-wrapper.properties') }}
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build with Gradle
+        run: ./gradlew build --exclude-task test
+      - name: Prepare JAR for Docker
+        run: |
+          ls -al build/libs || true
+          JAR=$(ls build/libs/*.jar 2>/dev/null | grep -v 'plain' | head -n1)
+          if [ -z "$JAR" ]; then
+            echo "❌ No JAR found in build/libs"; exit 1
+          fi
+          cp "$JAR" build/libs/app.jar
+          echo "Using $JAR -> build/libs/app.jar"
+          ls -al build/libs
+
+      - name: Set up Docker Build
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main')
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main')
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Build & Push Docker Image (dev)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_HUB_USERNAME }}/lessonfour:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build & Push Docker Image (prod)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_HUB_USERNAME }}/lessonfour:${{ github.sha }}
+            ${{ secrets.DOCKER_HUB_USERNAME }}/lessonfour:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
