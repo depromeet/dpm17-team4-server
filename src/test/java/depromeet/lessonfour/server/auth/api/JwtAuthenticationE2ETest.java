@@ -20,10 +20,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
-import depromeet.lessonfour.server.auth.persist.jpa.UserRepository;
-import depromeet.lessonfour.server.auth.persist.jpa.entity.User;
 import depromeet.lessonfour.server.auth.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.auth.security.userdetails.AccountContext;
+import depromeet.lessonfour.server.users.adapters.UserRepository;
+import depromeet.lessonfour.server.users.domain.entities.User;
 import io.restassured.RestAssured;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
