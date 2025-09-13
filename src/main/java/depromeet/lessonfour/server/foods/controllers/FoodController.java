@@ -21,7 +21,7 @@ public class FoodController {
 
   private final FoodService foodService;
 
-  @Operation(summary = "음식 검색 API", description = "음식 검색 API")
+  @Operation(summary = "음식 검색 API")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "success"),
   })
