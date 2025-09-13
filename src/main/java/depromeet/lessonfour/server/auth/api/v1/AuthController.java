@@ -41,6 +41,7 @@ public class AuthController {
   @PostMapping("/refresh")
   public ResponseEntity<?> refresh(
       @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken) {
+
     if (refreshToken == null || refreshToken.isBlank()) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token not found");
     }
