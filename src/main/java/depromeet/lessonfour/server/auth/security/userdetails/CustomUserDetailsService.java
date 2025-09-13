@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import depromeet.lessonfour.server.auth.persist.jpa.UserRepository;
-import depromeet.lessonfour.server.auth.persist.jpa.entity.User;
+import depromeet.lessonfour.server.users.adapters.UserRepository;
+import depromeet.lessonfour.server.users.domain.entities.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

@@ -2,8 +2,9 @@ package depromeet.lessonfour.server.auth.service.validator;
 
 import org.springframework.stereotype.Component;
 
-import depromeet.lessonfour.server.auth.exception.DuplicateEmailException;
-import depromeet.lessonfour.server.auth.persist.jpa.UserRepository;
+import depromeet.lessonfour.server.auth.service.code.AuthErrorCode;
+import depromeet.lessonfour.server.common.exception.ServerException;
+import depromeet.lessonfour.server.users.adapters.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -14,14 +15,14 @@ public class UserRegisterValidator {
 
   public void duplicateEmailCheck(String email) {
     if (userRepository.existsByEmail(email)) {
-      throw new DuplicateEmailException(email);
+      throw new ServerException(AuthErrorCode.DUPLICATE_EMAIL);
     }
   }
 
   /*
   public void duplicateNicknameCheck(String nickname) {
     if (userRepository.existsByNickname(nickname)) {
-      throw new DuplicateNicknameException(nickname);
+      throw new ServerException(AuthErrorCode.DUPLICATE_NICKNAME);
     }
   }
   */

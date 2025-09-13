@@ -17,15 +17,17 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import depromeet.lessonfour.server.auth.api.dto.response.AuthResponseDto;
-import depromeet.lessonfour.server.auth.api.dto.response.UserResponseDto;
-import depromeet.lessonfour.server.auth.persist.jpa.UserRepository;
-import depromeet.lessonfour.server.auth.persist.jpa.entity.User;
 import depromeet.lessonfour.server.auth.security.jwt.JwkLocator;
 import depromeet.lessonfour.server.auth.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.auth.security.userdetails.AccountContext;
-import depromeet.lessonfour.server.auth.value.Provider;
-import depromeet.lessonfour.server.auth.value.Provider.ProviderType;
+import depromeet.lessonfour.server.auth.service.code.AuthErrorCode;
+import depromeet.lessonfour.server.common.exception.ServerException;
+import depromeet.lessonfour.server.users.adapters.UserRepository;
+import depromeet.lessonfour.server.users.domain.entities.User;
+import depromeet.lessonfour.server.users.domain.values.Provider;
+import depromeet.lessonfour.server.users.domain.values.Provider.ProviderType;
+import depromeet.lessonfour.server.users.schemas.response.AuthResponseDto;
+import depromeet.lessonfour.server.users.schemas.response.UserResponseDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Locator;
@@ -70,13 +72,13 @@ public class KakaoAuthService {
       Map<String, Object> tokenData = getToken(code);
       String idToken = tokenData.get("id_token").toString();
       if (idToken == null) {
-        throw new RuntimeException("Id token is required for Kakao login");
+        throw new ServerException(AuthErrorCode.ID_TOKEN_REQUIRED);
       }
 
       User user = getUserFromToken(idToken);
       return AuthResponseDto.of(UserResponseDto.of(user), null, user.getRefreshToken());
     }
-    throw new RuntimeException("Code is required for Kakao login");
+    throw new ServerException(AuthErrorCode.LOGIN_CODE_REQUIRED);
   }
 
   public String getRequestUrl() {
@@ -120,7 +122,7 @@ public class KakaoAuthService {
             new ParameterizedTypeReference<Map<String, Object>>() {});
 
     if (response.getStatusCode().value() != 200) {
-      throw new RuntimeException("Failed to get access token: " + response.getStatusCode());
+      throw new ServerException(AuthErrorCode.OAUTH_TOKEN_REQUEST_FAILED);
     }
 
     Map<String, Object> tokenResponse = response.getBody();
@@ -148,7 +150,7 @@ public class KakaoAuthService {
               .getPayload();
       return claims;
     } catch (Exception e) {
-      throw new RuntimeException("Failed to verify OIDC token: " + e.getMessage(), e);
+      throw new ServerException(AuthErrorCode.INVALID_OIDC_TOKEN);
     }
   }
 
@@ -161,7 +163,7 @@ public class KakaoAuthService {
     String sub = (String) claims.get("sub");
 
     if (email == null) {
-      throw new RuntimeException("Email is required for OIDC authentication");
+      throw new ServerException(AuthErrorCode.EMAIL_REQUIRED_FOR_OIDC);
     }
 
     Optional<User> existingUser = userRepository.findByEmail(email);
