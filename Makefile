@@ -1,3 +1,5 @@
+include .env
+
 SHELL := /bin/sh
 
 PORT ?= 8080
@@ -45,14 +47,17 @@ jar:
 
 # Foreground run using Gradle (good for development)
 run:
-	$(GRADLE) bootRun --args="--server.port=$(PORT) $(if $(SPRING_PROFILES),--spring.profiles.active=$(SPRING_PROFILES)) $(EXTRA_ARGS)"
+	@if [ -f .env ]; then \
+		set -a; . ./.env; set +a; \
+	fi; \
+	$(GRADLE) bootRun --args="--server.port=$(PORT) $(if $(SPRING_PROFILES),--spring.profiles.active=$(SPRING_PROFILES)) $(EXTRA_ARGS)";
 
 # Background run using the built JAR
 start: jar
 	@mkdir -p $(LOG_DIR)
-	@JAR_FILE="$$(ls -1t build/libs/*SNAPSHOT*.jar 2>/dev/null | grep -v -- '-plain\\.jar' | head -n1)"; \
+	@JAR_FILE="$$(ls -1t build/libs/server-*.jar 2>/dev/null | grep -v 'plain' | head -n1)"; \
 	if [ -z "$$JAR_FILE" ]; then \
-		echo "No JAR found under build/libs. Run 'make jar' first."; \
+		echo "No executable JAR found under build/libs. Run 'make jar' first."; \
 		exit 1; \
 	fi; \
 	if [ -f "$(PID_FILE)" ] && kill -0 $$(cat "$(PID_FILE)") 2>/dev/null; then \
@@ -60,7 +65,11 @@ start: jar
 		exit 0; \
 	fi; \
 	echo "Starting $$JAR_FILE on port $(PORT)..."; \
-	nohup java -jar "$$JAR_FILE" --server.port=$(PORT) $(if $(SPRING_PROFILES),--spring.profiles.active=$(SPRING_PROFILES)) $(EXTRA_ARGS) > /dev/null 2>&1 & echo $$! > "$(PID_FILE)"; \
+	if [ -f .env ]; then \
+		set -a; . ./.env; set +a; \
+	fi; \
+	nohup java -jar "$$JAR_FILE" --server.port=$(PORT) $(if $(SPRING_PROFILES),--spring.profiles.active=$(SPRING_PROFILES)) $(EXTRA_ARGS) > /dev/null 2>&1 & \
+	echo $$! > "$(PID_FILE)"; \
 	echo "Started with PID $$(cat $(PID_FILE)). Logs: logs/server.log (app), logs/access*.log (access)"
 
 stop:
@@ -120,5 +129,15 @@ clear-h2:
 	echo "Done."
 
 curl:
-	@echo "GET http://localhost:$(PORT)/api/hello"; \
-	curl -sS http://localhost:$(PORT)/api/hello || true; echo
+	@echo "GET http://localhost:$(PORT)/api/v1/echo"; \
+	curl -sS http://localhost:$(PORT)/api/v1/echo || true; echo
+
+postgres:
+	@echo "Creating postgres container..."; \
+	docker run -d --name postgres -p 5432:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=dpm -e POSTGRES_DB=dpm postgres; \
+	echo "Done."
+
+postgres-stop:
+	@echo "Stopping postgres container..."; \
+	docker stop postgres; \
+	echo "Done."

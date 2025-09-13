@@ -9,6 +9,12 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+    baseline-on-migrate: true
+
+jwt:
+  secret: mySecretKeyForJWTWhichShouldBeAtLeast256BitsLongToEnsureSecurityAndCompliance
+  expiration: 86400 # 24 hours
+  refresh-expiration: 604800 # days
 
 logging:
   level:
@@ -21,6 +27,7 @@ logging:
       max-history: 7
       total-size-cap: 200MB
       file-name-pattern: logs/server-%d{yyyy-MM-dd}.%i.log.gz
+
 server:
   tomcat:
     basedir: .
@@ -32,3 +39,14 @@ server:
       file-date-format: .yyyy-MM-dd
       rotate: true
       pattern: common
+
+kakao:
+  client-id: ${KAKAO__CLIENT_ID:your-kakao-client-id}
+  client-secret: ${KAKAO__CLIENT_SECRET:your-kakao-client-secret}
+  redirect-url: ${KAKAO__REDIRECT_URL:http://localhost:8080/api/auth/kakao/callback}
+  issuer-url: ${KAKAO__ISSUER_URL:https://kauth.kakao.com}
+  auth-url: ${KAKAO__AUTH_URL:https://kauth.kakao.com/oauth/authorize}
+  token-url: ${KAKAO__TOKEN_URL:https://kauth.kakao.com/oauth/token}
+
+frontend:
+  url: ${FRONTEND__URL:http://localhost:3000}
