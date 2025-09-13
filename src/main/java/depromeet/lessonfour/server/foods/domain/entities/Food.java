@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.activityrecords.domain.entities;
+package depromeet.lessonfour.server.foods.domain.entities;
 
 import depromeet.lessonfour.server.common.entities.BaseTimeEntity;
 import jakarta.persistence.Column;
