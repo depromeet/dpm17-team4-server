@@ -95,7 +95,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(
             auth ->
                 auth.requestMatchers(
-                        "/api/v1/healthcheck",
+                        "/api/v1/health",
                         "/api/v1/auth/signup",
                         "/api/v1/auth/refresh",
                         "/api/v1/auth/kakao/**")
