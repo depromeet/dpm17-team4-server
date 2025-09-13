@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.auth.security.jwt;
+package depromeet.lessonfour.server.auth.security.jwt;
 
 import java.math.BigInteger;
 import java.security.Key;
@@ -7,6 +7,8 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+import depromeet.lessonfour.server.auth.service.code.AuthErrorCode;
+import depromeet.lessonfour.server.common.exception.ServerException;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Locator;
@@ -22,7 +24,7 @@ public class JwkLocator implements Locator<Key> {
   @Override
   public Key locate(Header header) {
     if (!(header instanceof JwsHeader)) {
-      throw new IllegalArgumentException("Expected JwsHeader");
+      throw new ServerException(AuthErrorCode.INVALID_OIDC_TOKEN);
     }
 
     JwsHeader jwsHeader = (JwsHeader) header;
@@ -30,6 +32,9 @@ public class JwkLocator implements Locator<Key> {
 
     @SuppressWarnings("unchecked")
     List<Map<String, Object>> keys = (List<Map<String, Object>>) jwks.get("keys");
+    if (keys == null) {
+      throw new ServerException(AuthErrorCode.JWKS_RESPONSE_INVALID);
+    }
 
     for (Map<String, Object> key : keys) {
       if (kid.equals(key.get("kid"))) {
@@ -37,7 +42,7 @@ public class JwkLocator implements Locator<Key> {
       }
     }
 
-    throw new RuntimeException("No matching key found for kid: " + kid);
+    throw new ServerException(AuthErrorCode.JWKS_KEY_NOT_FOUND);
   }
 
   private Key createPublicKey(Map<String, Object> key) {
@@ -57,10 +62,12 @@ public class JwkLocator implements Locator<Key> {
         java.security.KeyFactory keyFactory = java.security.KeyFactory.getInstance("RSA");
         return keyFactory.generatePublic(spec);
       } catch (Exception ex) {
-        throw new RuntimeException("Failed to create public key", ex);
+        // 로컬에서 공개키 구성 실패 → 내부 서버 오류(500)
+        throw new ServerException(AuthErrorCode.JWKS_PUBLIC_KEY_BUILD_FAILED);
       }
     }
 
-    throw new RuntimeException("Unsupported key type: " + kty);
+    // RSA 외 키 타입 → 우리 서버가 검증 불가 → 인증 실패(401)
+    throw new ServerException(AuthErrorCode.JWKS_UNSUPPORTED_KEY_TYPE);
   }
 }
