@@ -93,10 +93,12 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-  public ResponseEntity<ErrorResponse> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException e) {
-    String detail = (e.getContentType() != null)
-        ? "요청 Content-Type: " + e.getContentType()
-        : "요청 Content-Type 누락";
+  public ResponseEntity<ErrorResponse> handleHttpMediaTypeNotSupported(
+      HttpMediaTypeNotSupportedException e) {
+    String detail =
+        (e.getContentType() != null)
+            ? "요청 Content-Type: " + e.getContentType()
+            : "요청 Content-Type 누락";
     return buildErrorResponse(ErrorCode.UNSUPPORTED_MEDIA_TYPE, detail);
   }
 
