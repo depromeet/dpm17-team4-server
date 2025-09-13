@@ -27,8 +27,7 @@ public class FoodController {
   })
   @GetMapping(path = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<FoodSearchResultDto> search(
-      @RequestParam String query,
-      @RequestParam(defaultValue = "5") int count) {
+      @RequestParam String query, @RequestParam(defaultValue = "5") int count) {
     return ResponseEntity.ok(foodService.search(query, count));
   }
 }
