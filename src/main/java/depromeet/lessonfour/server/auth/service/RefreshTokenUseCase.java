@@ -10,20 +10,20 @@ import depromeet.lessonfour.server.auth.persist.jpa.entity.User;
 import depromeet.lessonfour.server.auth.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.auth.security.jwt.JwtTokenValidator;
 import depromeet.lessonfour.server.auth.security.userdetails.AccountContext;
-import depromeet.lessonfour.server.auth.service.dto.ReIssueResult;
+import depromeet.lessonfour.server.auth.service.dto.AuthTokenDto;
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
 @Transactional
 @RequiredArgsConstructor
-public class ReIssueTokenUseCase {
+public class RefreshTokenUseCase {
 
   private final UserRepository userRepository;
   private final JwtTokenValidator jwtTokenValidator;
   private final JwtTokenGenerator jwtTokenGenerator;
 
-  public ReIssueResult reIssue(String refreshToken) {
+  public AuthTokenDto refresh(String refreshToken) {
     validateRefreshToken(refreshToken);
 
     String userId = jwtTokenValidator.extractSubject(refreshToken);
@@ -59,13 +59,12 @@ public class ReIssueTokenUseCase {
     }
   }
 
-  private ReIssueResult generateNewToken(User user) {
+  private AuthTokenDto generateNewToken(User user) {
     AccountContext accountContext = AccountContext.of(user);
     String newAccessToken = jwtTokenGenerator.generateAccessToken(accountContext);
     String newRefreshToken = jwtTokenGenerator.generateRefreshToken(accountContext);
-
     user.storeRefreshToken(newRefreshToken);
-
-    return new ReIssueResult(newAccessToken, newRefreshToken);
+    userRepository.save(user);
+    return new AuthTokenDto(newAccessToken, newRefreshToken);
   }
 }

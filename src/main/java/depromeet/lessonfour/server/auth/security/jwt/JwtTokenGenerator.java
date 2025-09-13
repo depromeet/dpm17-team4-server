@@ -29,7 +29,6 @@ public class JwtTokenGenerator {
         .subject(String.valueOf(accountContext.getId()))
         .issuedAt(new Date())
         .expiration(new Date(System.currentTimeMillis() + expirationMillis))
-        .claim("role", accountContext.getRole())
         .claim("email", accountContext.getEmail())
         .claim("nickname", accountContext.getNickname())
         .signWith(secretKeyProvider.getSecretKey())
@@ -48,13 +47,12 @@ public class JwtTokenGenerator {
   }
 
   // 테스트용 오버로드 메서드들
-  public String generateAccessToken(UUID userId, String email, String nickname, String role) {
+  public String generateAccessToken(UUID userId, String email, String nickname) {
     long expirationMillis = accessTokenExpirationSeconds * 1000L;
     return Jwts.builder()
         .subject(String.valueOf(userId))
         .issuedAt(new Date())
         .expiration(new Date(System.currentTimeMillis() + expirationMillis))
-        .claim("role", role)
         .claim("email", email)
         .claim("nickname", nickname)
         .signWith(secretKeyProvider.getSecretKey())
@@ -62,12 +60,11 @@ public class JwtTokenGenerator {
   }
 
   public String generateAccessToken(
-      UUID userId, String email, String nickname, String role, Instant expiration) {
+      UUID userId, String email, String nickname, Instant expiration) {
     return Jwts.builder()
         .subject(String.valueOf(userId))
         .issuedAt(new Date())
         .expiration(Date.from(expiration))
-        .claim("role", role)
         .claim("email", email)
         .claim("nickname", nickname)
         .signWith(secretKeyProvider.getSecretKey())

@@ -2,10 +2,22 @@ package depromeet.lessonfour.server.auth.persist.jpa.entity;
 
 import java.util.UUID;
 
+import depromeet.lessonfour.server.auth.value.Provider;
 import depromeet.lessonfour.server.common.persist.jpa.entity.BaseTimeEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "users")
@@ -24,36 +36,47 @@ public class User extends BaseTimeEntity {
 
   @Column private String password;
 
-  @NotNull @Column(unique = true, nullable = false)
+  @NotNull @Column(length = 32)
   private String nickname;
 
-  @Enumerated(EnumType.STRING)
-  private UserRoleEnum role;
+  @Embedded private Provider provider;
 
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
-  private LoginProvider provider;
-
-  private String providerUserId;
+  @Column(length = 512)
+  private String profileImage;
 
   @Column(length = 512)
   private String refreshToken;
 
-  public static User register(String email, String nickname, String password) {
+  @Transient @Builder.Default private boolean isNew = false;
+
+  public static User register(
+      String email, String nickname, String password, String profileImage, Provider provider) {
+    if (provider == null) {
+      provider = Provider.local();
+    }
     return User.builder()
         .email(email)
         .nickname(nickname)
         .password(password)
-        .role(UserRoleEnum.USER)
-        .provider(LoginProvider.LOCAL)
+        .profileImage(profileImage)
+        .provider(provider)
+        .isNew(true)
         .build();
+  }
+
+  public static User register(String email, String nickname, String password) {
+    return register(email, nickname, password, null, null);
+  }
+
+  public static User register(String email, String nickname, String password, String profileImage) {
+    return register(email, nickname, password, profileImage, null);
   }
 
   public void storeRefreshToken(String refreshToken) {
     this.refreshToken = refreshToken;
   }
 
-  public String getAuthority() {
-    return role.getAuthority();
+  public boolean isNew() {
+    return isNew;
   }
 }

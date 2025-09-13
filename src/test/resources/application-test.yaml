@@ -1,7 +1,6 @@
 spring:
   datasource:
     url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
     username: sa
     password: ""
   jpa:
@@ -23,3 +22,7 @@ jwt:
 logging:
   level:
     org.springframework.web: DEBUG
+
+kakao:
+  client-id: test-client-id
+  redirect-uri: http://localhost:8080/api/auth/kakao/callback

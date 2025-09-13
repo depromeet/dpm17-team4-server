@@ -18,12 +18,6 @@ public class UserQueryService {
   public UserResponseDto findByEmail(String email) {
     User user = userRepository.findByEmail(email).orElseThrow(RuntimeException::new);
 
-    return new UserResponseDto(
-        user.getId(),
-        user.getEmail(),
-        user.getNickname(),
-        user.getRole(),
-        user.getProvider(),
-        user.getProviderUserId());
+    return UserResponseDto.of(user);
   }
 }

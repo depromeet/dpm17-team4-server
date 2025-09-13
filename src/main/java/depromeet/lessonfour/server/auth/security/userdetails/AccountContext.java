@@ -24,7 +24,6 @@ public class AccountContext implements UserDetails {
   private String email;
   private String password;
   private String nickname;
-  private String role;
 
   public static AccountContext of(User user) {
     return AccountContext.builder()
@@ -32,14 +31,14 @@ public class AccountContext implements UserDetails {
         .email(user.getEmail())
         .password(user.getPassword())
         .nickname(user.getNickname())
-        .role(user.getAuthority())
         .build();
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     List<GrantedAuthority> authorities = new ArrayList<>();
-    authorities.add(new SimpleGrantedAuthority(role));
+    // 모든 사용자에게 기본 ROLE_USER 부여
+    authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
     return authorities;
   }
 

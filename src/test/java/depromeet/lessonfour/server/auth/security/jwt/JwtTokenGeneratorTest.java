@@ -1,6 +1,8 @@
 package depromeet.lessonfour.server.auth.security.jwt;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Date;
 import java.util.UUID;
@@ -59,7 +61,6 @@ class JwtTokenGeneratorTest {
               .getPayload();
 
       assertThat(claims.getSubject()).isEqualTo(user.getId().toString());
-      assertThat(claims.get("role")).isEqualTo(user.getAuthority());
       assertThat(claims.get("email")).isEqualTo(user.getEmail());
       assertThat(claims.get("nickname")).isEqualTo(user.getNickname());
     }

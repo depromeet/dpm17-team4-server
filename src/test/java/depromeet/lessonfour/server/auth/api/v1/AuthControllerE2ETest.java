@@ -49,9 +49,9 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/v1/auth/register")
+        .post("/api/v1/auth/signup")
         .then()
-        .statusCode(HttpStatus.OK.value());
+        .statusCode(HttpStatus.CREATED.value());
   }
 
   @Test
@@ -69,7 +69,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/v1/auth/register")
+        .post("/api/v1/auth/signup")
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -92,7 +92,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/v1/auth/register")
+        .post("/api/v1/auth/signup")
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -114,7 +114,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/v1/auth/register")
+        .post("/api/v1/auth/signup")
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -136,7 +136,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/v1/auth/register")
+        .post("/api/v1/auth/signup")
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -159,7 +159,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/v1/auth/register")
+        .post("/api/v1/auth/signup")
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -182,7 +182,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/v1/auth/register")
+        .post("/api/v1/auth/signup")
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -205,7 +205,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/v1/auth/register")
+        .post("/api/v1/auth/signup")
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -229,9 +229,9 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/v1/auth/register")
+        .post("/api/v1/auth/signup")
         .then()
-        .statusCode(HttpStatus.OK.value());
+        .statusCode(HttpStatus.CREATED.value());
 
     // 같은 이메일로 두 번째 회원가입 시도
     String duplicateRequest =
@@ -247,13 +247,13 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(duplicateRequest)
         .when()
-        .post("/api/v1/auth/register")
+        .post("/api/v1/auth/signup")
         .then()
         .statusCode(HttpStatus.CONFLICT.value());
   }
 
   @Test
-  @DisplayName("동일한 닉네임으로 중복 가입 시도시 에러를 반환한다")
+  @DisplayName("동일한 닉네임으로 중복 가입이 가능하다.")
   void givenDuplicateNickname_whenRegister_thenConflict() {
     String registerRequest =
         """
@@ -269,9 +269,9 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(registerRequest)
         .when()
-        .post("/api/v1/auth/register")
+        .post("/api/v1/auth/signup")
         .then()
-        .statusCode(HttpStatus.OK.value());
+        .statusCode(HttpStatus.CREATED.value());
 
     // 같은 닉네임으로 두 번째 회원가입 시도
     String duplicateRequest =
@@ -287,9 +287,9 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(duplicateRequest)
         .when()
-        .post("/api/v1/auth/register")
+        .post("/api/v1/auth/signup")
         .then()
-        .statusCode(HttpStatus.CONFLICT.value());
+        .statusCode(HttpStatus.CREATED.value());
   }
 
   @Test
@@ -301,7 +301,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.JSON)
         .body(invalidRequest)
         .when()
-        .post("/api/v1/auth/register")
+        .post("/api/v1/auth/signup")
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value());
   }
@@ -315,7 +315,7 @@ class AuthControllerE2ETest {
         .contentType(ContentType.URLENC)
         .body(registerRequest)
         .when()
-        .post("/api/v1/auth/register")
+        .post("/api/v1/auth/signup")
         .then()
         .statusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value());
   }

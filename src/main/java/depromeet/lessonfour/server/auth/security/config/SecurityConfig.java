@@ -97,9 +97,9 @@ public class SecurityConfig {
                 auth.requestMatchers(
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
-                        "/api/v1/auth/register",
-                        "/api/v1/auth/reissue",
-                        "/api/echo/**")
+                        "/api/v1/auth/signup",
+                        "/api/v1/auth/refresh",
+                        "/api/v1/auth/kakao/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
