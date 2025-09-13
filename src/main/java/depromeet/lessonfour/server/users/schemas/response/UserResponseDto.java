@@ -1,7 +1,5 @@
 package depromeet.lessonfour.server.users.schemas.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import depromeet.lessonfour.server.users.domain.entities.User;
 import depromeet.lessonfour.server.users.domain.values.Provider;
 
@@ -10,8 +8,8 @@ public record UserResponseDto(
     String email,
     String nickname,
     Provider provider,
-    @JsonProperty("profile_image") String profileImage,
-    @JsonProperty("is_new") boolean isNew) {
+    String profileImage,
+    boolean isNew) {
 
   public static UserResponseDto of(User user) {
     return new UserResponseDto(

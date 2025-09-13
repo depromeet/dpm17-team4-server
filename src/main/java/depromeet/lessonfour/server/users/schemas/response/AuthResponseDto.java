@@ -1,7 +1,5 @@
 package depromeet.lessonfour.server.users.schemas.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import depromeet.lessonfour.server.users.domain.values.Provider;
 
 public record AuthResponseDto(
@@ -9,10 +7,10 @@ public record AuthResponseDto(
     String email,
     String nickname,
     Provider provider,
-    @JsonProperty("profile_image") String profileImage,
-    @JsonProperty("is_new") boolean isNew,
-    @JsonProperty("access_token") String accessToken,
-    @JsonProperty("refresh_token") String refreshToken) {
+    String profileImage,
+    boolean isNew,
+    String accessToken,
+    String refreshToken) {
 
   public static AuthResponseDto of(UserResponseDto user, String accessToken, String refreshToken) {
     return new AuthResponseDto(
