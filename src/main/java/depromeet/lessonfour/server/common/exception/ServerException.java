@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @Getter
 public class ServerException extends RuntimeException {
-	private final BaseErrorCode baseErrorCode;
+  private final BaseErrorCode baseErrorCode;
 
-	public ServerException(BaseErrorCode baseErrorCode) {
-		super(baseErrorCode.getMessage());
-		this.baseErrorCode = baseErrorCode;
-	}
+  public ServerException(BaseErrorCode baseErrorCode) {
+    super(baseErrorCode.getMessage());
+    this.baseErrorCode = baseErrorCode;
+  }
 }

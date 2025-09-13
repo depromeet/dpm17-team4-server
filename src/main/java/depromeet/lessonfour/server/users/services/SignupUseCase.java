@@ -5,13 +5,13 @@ import java.util.Locale;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import depromeet.lessonfour.server.common.annotation.UseCase;
+import depromeet.lessonfour.server.common.auth.service.validator.UserRegisterValidator;
+import depromeet.lessonfour.server.users.domain.entities.User;
+import depromeet.lessonfour.server.users.domain.ports.UserRepository;
+import depromeet.lessonfour.server.users.domain.values.Provider;
 import depromeet.lessonfour.server.users.schemas.request.RegisterRequestDto;
 import depromeet.lessonfour.server.users.schemas.response.UserResponseDto;
-import depromeet.lessonfour.server.users.domain.ports.UserRepository;
-import depromeet.lessonfour.server.users.domain.entities.User;
-import depromeet.lessonfour.server.common.auth.service.validator.UserRegisterValidator;
-import depromeet.lessonfour.server.users.domain.values.Provider;
-import depromeet.lessonfour.server.common.annotation.UseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

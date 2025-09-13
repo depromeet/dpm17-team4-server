@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ToiletColor {
-	DEFAULT,
-	GOLD,
-	BROWN,
-	RED,
-	GREEN,
-	BLACK
+  DEFAULT,
+  GOLD,
+  BROWN,
+  RED,
+  GREEN,
+  BLACK
 }

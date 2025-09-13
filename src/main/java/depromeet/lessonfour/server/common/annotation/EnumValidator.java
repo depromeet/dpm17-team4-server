@@ -8,17 +8,18 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 public class EnumValidator implements ConstraintValidator<ValidEnum, Enum<?>> {
-	private Set<String> validValues;
+  private Set<String> validValues;
 
-	@Override
-	public void initialize(ValidEnum annotation) {
-		validValues = Arrays.stream(annotation.enumClass().getEnumConstants())
-			.map(Enum::name)
-			.collect(Collectors.toSet());
-	}
+  @Override
+  public void initialize(ValidEnum annotation) {
+    validValues =
+        Arrays.stream(annotation.enumClass().getEnumConstants())
+            .map(Enum::name)
+            .collect(Collectors.toSet());
+  }
 
-	@Override
-	public boolean isValid(Enum<?> value, ConstraintValidatorContext context) {
-		return value != null && validValues.contains(value.name());
-	}
+  @Override
+  public boolean isValid(Enum<?> value, ConstraintValidatorContext context) {
+    return value != null && validValues.contains(value.name());
+  }
 }

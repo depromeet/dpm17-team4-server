@@ -34,48 +34,54 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ToiletRecord extends BaseTimeEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-	// 작성자
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "user_id", nullable = false)
-	private User user;
+  // 작성자
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
-	@Column
-	@Enumerated(EnumType.STRING)
-	private ToiletStatus toiletStatus;
+  @Column
+  @Enumerated(EnumType.STRING)
+  private ToiletStatus toiletStatus;
 
-	@Column
-	@Enumerated(EnumType.STRING)
-	private ToiletColor toiletColor;
+  @Column
+  @Enumerated(EnumType.STRING)
+  private ToiletColor toiletColor;
 
-	@Column
-	@Min(0) @Max(100)
-	private int painScore;
+  @Column
+  @Min(0)
+  @Max(100)
+  private int painScore;
 
-	@Column
-	@Enumerated(EnumType.STRING)
-	private ToiletDuration toiletDuration;
+  @Column
+  @Enumerated(EnumType.STRING)
+  private ToiletDuration toiletDuration;
 
-	@Column(nullable = true)
-	private String additionalNote;
+  @Column(nullable = true)
+  private String additionalNote;
 
-	@Column(nullable = false) @NotNull
-	private LocalDateTime toiletAt;
+  @Column(nullable = false)
+  @NotNull private LocalDateTime toiletAt;
 
-	public static ToiletRecord register(
-		User user, ToiletStatus toiletStatus, ToiletColor toiletColor, int painScore, ToiletDuration toiletDuration, String additionalNote, LocalDateTime toiletAt
-	) {
-		return ToiletRecord.builder()
-			.user(user)
-			.toiletStatus(toiletStatus)
-			.toiletColor(toiletColor)
-			.painScore(painScore)
-			.toiletDuration(toiletDuration)
-			.additionalNote(additionalNote)
-			.toiletAt(toiletAt)
-			.build();
-	}
+  public static ToiletRecord register(
+      User user,
+      ToiletStatus toiletStatus,
+      ToiletColor toiletColor,
+      int painScore,
+      ToiletDuration toiletDuration,
+      String additionalNote,
+      LocalDateTime toiletAt) {
+    return ToiletRecord.builder()
+        .user(user)
+        .toiletStatus(toiletStatus)
+        .toiletColor(toiletColor)
+        .painScore(painScore)
+        .toiletDuration(toiletDuration)
+        .additionalNote(additionalNote)
+        .toiletAt(toiletAt)
+        .build();
+  }
 }

@@ -11,21 +11,22 @@ import depromeet.lessonfour.server.common.converter.StringToEnumCustomConverterF
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-	// 쉼표 구분 문자열을 배열로 쓰기 위해 SpEL로 split (따옴표/공백 안전)
-	@Value("#{'${cors.allowed-origins}'.split('\\s*,\\s*')}")
-	private String[] allowedOrigins;
+  // 쉼표 구분 문자열을 배열로 쓰기 위해 SpEL로 split (따옴표/공백 안전)
+  @Value("#{'${cors.allowed-origins}'.split('\\s*,\\s*')}")
+  private String[] allowedOrigins;
 
-	@Override
-	public void addFormatters(FormatterRegistry registry) {
-		registry.addConverterFactory(new StringToEnumCustomConverterFactory());
-	}
+  @Override
+  public void addFormatters(FormatterRegistry registry) {
+    registry.addConverterFactory(new StringToEnumCustomConverterFactory());
+  }
 
-	@Override
-	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**")
-			.allowedOrigins(allowedOrigins)
-			.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-			.allowedHeaders("*")
-			.allowCredentials(true);
-	}
+  @Override
+  public void addCorsMappings(CorsRegistry registry) {
+    registry
+        .addMapping("/**")
+        .allowedOrigins(allowedOrigins)
+        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+        .allowedHeaders("*")
+        .allowCredentials(true);
+  }
 }

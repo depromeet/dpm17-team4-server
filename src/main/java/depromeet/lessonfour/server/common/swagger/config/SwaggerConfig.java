@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import depromeet.lessonfour.server.common.swagger.annotation.DisableSwaggerSecurity;
-
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -20,62 +19,63 @@ import io.swagger.v3.oas.models.servers.Server;
 @Configuration
 public class SwaggerConfig {
 
-	@Value("${app.server.url}")
-	private String serverUrl;
+  @Value("${app.server.url}")
+  private String serverUrl;
 
-	@Bean
-	public OpenAPI openAPI() {
-		String jwt = "JWT";
-		SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwt);
+  @Bean
+  public OpenAPI openAPI() {
+    String jwt = "JWT";
+    SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwt);
 
-		Components components = new Components().addSecuritySchemes(jwt, new SecurityScheme()
-			.name(jwt)
-			.type(SecurityScheme.Type.HTTP)
-			.scheme("bearer")
-			.bearerFormat("JWT")
-		);
+    Components components =
+        new Components()
+            .addSecuritySchemes(
+                jwt,
+                new SecurityScheme()
+                    .name(jwt)
+                    .type(SecurityScheme.Type.HTTP)
+                    .scheme("bearer")
+                    .bearerFormat("JWT"));
 
-		return new OpenAPI()
-			.addServersItem(new Server().url(serverUrl))
-			.components(components)
-			.info(apiInfo())
-			.addSecurityItem(securityRequirement);
-	}
+    return new OpenAPI()
+        .addServersItem(new Server().url(serverUrl))
+        .components(components)
+        .info(apiInfo())
+        .addSecurityItem(securityRequirement);
+  }
 
-	@Bean
-	public GroupedOpenApi generalApi() {
-		return GroupedOpenApi.builder()
-			.group("general")
-			.pathsToMatch("/**")
-			.pathsToExclude("/api/admin/**")
-			.addOperationCustomizer(customize())
-			.build();
-	}
+  @Bean
+  public GroupedOpenApi generalApi() {
+    return GroupedOpenApi.builder()
+        .group("general")
+        .pathsToMatch("/**")
+        .pathsToExclude("/api/admin/**")
+        .addOperationCustomizer(customize())
+        .build();
+  }
 
-	@Bean
-	public GroupedOpenApi adminApi() {
-		return GroupedOpenApi.builder()
-			.group("admin")
-			.pathsToMatch("/api/admin/**")
-			.addOperationCustomizer(customize())
-			.build();
-	}
+  @Bean
+  public GroupedOpenApi adminApi() {
+    return GroupedOpenApi.builder()
+        .group("admin")
+        .pathsToMatch("/api/admin/**")
+        .addOperationCustomizer(customize())
+        .build();
+  }
 
-	@Bean
-	public OperationCustomizer customize() {
-		return (operation, handlerMethod) -> {
-			DisableSwaggerSecurity methodAnnotation = handlerMethod.getMethodAnnotation(DisableSwaggerSecurity.class);
-			if (methodAnnotation != null) {
-				operation.setSecurity(Collections.emptyList());
-			}
-			return operation;
-		};
-	}
+  @Bean
+  public OperationCustomizer customize() {
+    return (operation, handlerMethod) -> {
+      DisableSwaggerSecurity methodAnnotation =
+          handlerMethod.getMethodAnnotation(DisableSwaggerSecurity.class);
+      if (methodAnnotation != null) {
+        operation.setSecurity(Collections.emptyList());
+      }
+      return operation;
+    };
+  }
 
-	private Info apiInfo() {
-		return new Info()
-			.title("DPM team4 Project API")
-			.description("디프만 17기 4팀")
-			.version("1.0.0");
-	}
+  private Info apiInfo() {
+    return new Info().title("DPM team4 Project API").description("디프만 17기 4팀").version("1.0.0");
+  }
 }

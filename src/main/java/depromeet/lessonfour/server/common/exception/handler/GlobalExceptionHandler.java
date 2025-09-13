@@ -24,17 +24,18 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(ServerException.class)
   public ResponseEntity<ErrorResponse> handleServerException(ServerException e) {
     BaseErrorCode errorCode = e.getBaseErrorCode();
-    return ResponseEntity.status(errorCode.getHttpStatus())
-        .body(ErrorResponse.of(errorCode));
+    return ResponseEntity.status(errorCode.getHttpStatus()).body(ErrorResponse.of(errorCode));
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException e) {
+  public ResponseEntity<ErrorResponse> handleValidationExceptions(
+      MethodArgumentNotValidException e) {
     // 가장 먼저 발생한 필드 에러 메시지(없으면 기본 메시지)
-    String detail = e.getBindingResult().getFieldErrors().stream()
-        .findFirst()
-        .map(err -> String.format("%s: %s", err.getField(), err.getDefaultMessage()))
-        .orElse("요청 값 검증에 실패했습니다.");
+    String detail =
+        e.getBindingResult().getFieldErrors().stream()
+            .findFirst()
+            .map(err -> String.format("%s: %s", err.getField(), err.getDefaultMessage()))
+            .orElse("요청 값 검증에 실패했습니다.");
     return buildErrorResponse(ErrorCode.INVALID_FIELD_ERROR, detail);
   }
 
@@ -45,7 +46,8 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(ConstraintViolationException.class)
-  public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {
+  public ResponseEntity<ErrorResponse> handleConstraintViolationException(
+      ConstraintViolationException e) {
     return buildErrorResponse(ErrorCode.INVALID_FIELD_ERROR, e.getMessage());
   }
 
@@ -56,25 +58,31 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(MissingRequestHeaderException.class)
-  public ResponseEntity<ErrorResponse> handleMissingRequestHeaderException(MissingRequestHeaderException e) {
+  public ResponseEntity<ErrorResponse> handleMissingRequestHeaderException(
+      MissingRequestHeaderException e) {
     return buildErrorResponse(ErrorCode.MISSING_HEADER, e.getHeaderName());
   }
 
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-  public ResponseEntity<ErrorResponse> handleTypeMismatchException(MethodArgumentTypeMismatchException e) {
-    String detail = e.getRequiredType() != null
-        ? String.format("'%s'은(는) %s 타입이어야 합니다.", e.getName(), e.getRequiredType().getSimpleName())
-        : "타입 변환 오류입니다.";
+  public ResponseEntity<ErrorResponse> handleTypeMismatchException(
+      MethodArgumentTypeMismatchException e) {
+    String detail =
+        e.getRequiredType() != null
+            ? String.format(
+                "'%s'은(는) %s 타입이어야 합니다.", e.getName(), e.getRequiredType().getSimpleName())
+            : "타입 변환 오류입니다.";
     return buildErrorResponse(ErrorCode.TYPE_MISMATCH, detail);
   }
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
-  public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+  public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(
+      HttpMessageNotReadableException e) {
     return buildErrorResponse(ErrorCode.INVALID_REQUEST_BODY, e.getMessage());
   }
 
   @ExceptionHandler(DataIntegrityViolationException.class)
-  public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+  public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(
+      DataIntegrityViolationException e) {
     return buildErrorResponse(ErrorCode.DATA_INTEGRITY_VIOLATION, e.getMessage());
   }
 

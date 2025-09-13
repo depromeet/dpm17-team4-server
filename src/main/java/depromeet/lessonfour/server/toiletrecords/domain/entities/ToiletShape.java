@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ToiletShape {
-	RABBIT,
-	ROCK,
-	CORN,
-	BANANA,
-	CREAM,
-	PORRIDGE
+  RABBIT,
+  ROCK,
+  CORN,
+  BANANA,
+  CREAM,
+  PORRIDGE
 }

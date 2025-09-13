@@ -22,17 +22,15 @@ import lombok.NoArgsConstructor;
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Food extends BaseTimeEntity{
+public class Food extends BaseTimeEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-	@Column(nullable = false)
-	@NotNull
-	private String name;
+  @Column(nullable = false)
+  @NotNull private String name;
 
-	@Column(nullable = false)
-	@NotNull
-	private int foodScore;
+  @Column(nullable = false)
+  @NotNull private int foodScore;
 }

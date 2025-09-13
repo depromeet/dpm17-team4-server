@@ -3,7 +3,7 @@ package depromeet.lessonfour.server.common.exception.base;
 import org.springframework.http.HttpStatus;
 
 public interface BaseSuccessCode {
-	HttpStatus getHttpStatus();
+  HttpStatus getHttpStatus();
 
-	String getMessage();
+  String getMessage();
 }

@@ -14,8 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import depromeet.lessonfour.server.common.auth.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.common.auth.security.userdetails.AccountContext;
-import depromeet.lessonfour.server.users.domain.services.UserUpdateService;
 import depromeet.lessonfour.server.common.utils.HttpServletUtils;
+import depromeet.lessonfour.server.users.domain.services.UserUpdateService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

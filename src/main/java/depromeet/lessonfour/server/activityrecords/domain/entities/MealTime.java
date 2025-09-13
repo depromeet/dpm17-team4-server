@@ -6,8 +6,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum MealTime {
-	BREAKFAST,
-	LUNCH,
-	DINNER,
-	SNACK
+  BREAKFAST,
+  LUNCH,
+  DINNER,
+  SNACK
 }

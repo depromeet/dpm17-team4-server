@@ -34,36 +34,36 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ActivityRecord extends BaseTimeEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-	// 작성자
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "user_id", nullable = false)
-	private User user;
+  // 작성자
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
-	// 마신 물 양 (종이컵 기준, 1~10개)
-	@Column
-	@Min(0) @Max(10)
-	private int waterIntakeCups;
+  // 마신 물 양 (종이컵 기준, 1~10개)
+  @Column
+  @Min(0)
+  @Max(10)
+  private int waterIntakeCups;
 
-	// 스트레스 레벨 (5단계 Enum)
-	@Column
-	@Enumerated(EnumType.STRING)
-	private StressLevel stressLevel;
+  // 스트레스 레벨 (5단계 Enum)
+  @Column
+  @Enumerated(EnumType.STRING)
+  private StressLevel stressLevel;
 
-	@Column(nullable = false) @NotNull
-	private LocalDateTime activityAt;
+  @Column(nullable = false)
+  @NotNull private LocalDateTime activityAt;
 
-	public static ActivityRecord register(
-		User user, int waterIntakeCups, StressLevel stressLevel, LocalDateTime activityAt
-	) {
-		return ActivityRecord.builder()
-			.user(user)
-			.waterIntakeCups(waterIntakeCups)
-			.stressLevel(stressLevel)
-			.activityAt(activityAt)
-			.build();
-	}
+  public static ActivityRecord register(
+      User user, int waterIntakeCups, StressLevel stressLevel, LocalDateTime activityAt) {
+    return ActivityRecord.builder()
+        .user(user)
+        .waterIntakeCups(waterIntakeCups)
+        .stressLevel(stressLevel)
+        .activityAt(activityAt)
+        .build();
+  }
 }

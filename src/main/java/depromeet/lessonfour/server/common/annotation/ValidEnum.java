@@ -12,8 +12,11 @@ import jakarta.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = EnumValidator.class)
 public @interface ValidEnum {
-	Class<? extends Enum<?>> enumClass();
-	String message() default "유효하지 않은 값입니다.";
-	Class<?>[] groups() default {};
-	Class<? extends Payload>[] payload() default {};
+  Class<? extends Enum<?>> enumClass();
+
+  String message() default "유효하지 않은 값입니다.";
+
+  Class<?>[] groups() default {};
+
+  Class<? extends Payload>[] payload() default {};
 }

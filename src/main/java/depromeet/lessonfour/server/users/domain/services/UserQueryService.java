@@ -3,9 +3,9 @@ package depromeet.lessonfour.server.users.domain.services;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import depromeet.lessonfour.server.users.schemas.response.UserResponseDto;
-import depromeet.lessonfour.server.users.domain.ports.UserRepository;
 import depromeet.lessonfour.server.users.domain.entities.User;
+import depromeet.lessonfour.server.users.domain.ports.UserRepository;
+import depromeet.lessonfour.server.users.schemas.response.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 
 @Service

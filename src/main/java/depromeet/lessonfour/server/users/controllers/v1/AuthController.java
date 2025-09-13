@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import depromeet.lessonfour.server.common.auth.service.RefreshTokenUseCase;
+import depromeet.lessonfour.server.common.auth.service.dto.AuthTokenDto;
 import depromeet.lessonfour.server.users.schemas.request.RegisterRequestDto;
 import depromeet.lessonfour.server.users.schemas.response.AccessTokenResponseDto;
-import depromeet.lessonfour.server.common.auth.service.RefreshTokenUseCase;
 import depromeet.lessonfour.server.users.services.SignupUseCase;
-import depromeet.lessonfour.server.common.auth.service.dto.AuthTokenDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
