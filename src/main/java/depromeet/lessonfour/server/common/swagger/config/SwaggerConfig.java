@@ -48,7 +48,7 @@ public class SwaggerConfig {
   public GroupedOpenApi generalApi() {
     return GroupedOpenApi.builder()
         .group("general")
-        .pathsToMatch("/**")
+        .pathsToMatch("/api/**")
         .pathsToExclude("/api/admin/**")
         .addOperationCustomizer(customize())
         .build();
