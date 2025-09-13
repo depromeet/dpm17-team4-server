@@ -6,6 +6,7 @@ import java.net.URI;
 
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -31,7 +32,10 @@ public class AuthController {
   private final SignupUseCase registerUseCase;
   private final RefreshTokenUseCase refreshTokenUseCase;
 
-  @PostMapping("/signup")
+  @PostMapping(
+      path = "/signup",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> signup(@Valid @RequestBody RegisterRequestDto dto) {
     // TODO: RESTful하게 users 도메인으로 옮기는 것은 어떨까? e.g. POST users
     var user = registerUseCase.signup(dto);
