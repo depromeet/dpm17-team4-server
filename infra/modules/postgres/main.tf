@@ -38,8 +38,10 @@ resource "ncloud_postgresql" "postgresql" {
 
 
 resource "ncloud_access_control_group_rule" "db_inbound_from_acgs" {
-  for_each                = toset(ncloud_postgresql.postgresql.access_control_group_no_list)
-  access_control_group_no = each.key
+  count                   = length(var.access_control_group_no_list) > 0 ? 1 : 0
+  access_control_group_no = ncloud_postgresql.postgresql.access_control_group_no_list[0]
+
+  depends_on = [ncloud_postgresql.postgresql]
 
   dynamic "inbound" {
     for_each = var.access_control_group_no_list
