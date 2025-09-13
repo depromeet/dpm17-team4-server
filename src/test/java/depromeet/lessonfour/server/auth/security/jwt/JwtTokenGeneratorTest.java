@@ -17,9 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import depromeet.lessonfour.server.common.auth.security.jwt.JwtSecretKeyProvider;
-import depromeet.lessonfour.server.common.auth.security.jwt.JwtTokenGenerator;
-import depromeet.lessonfour.server.common.auth.security.userdetails.AccountContext;
+import depromeet.lessonfour.server.auth.security.userdetails.AccountContext;
 import depromeet.lessonfour.server.users.domain.entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

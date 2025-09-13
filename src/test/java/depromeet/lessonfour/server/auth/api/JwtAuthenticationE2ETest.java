@@ -20,8 +20,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
-import depromeet.lessonfour.server.common.auth.security.jwt.JwtTokenGenerator;
-import depromeet.lessonfour.server.common.auth.security.userdetails.AccountContext;
+import depromeet.lessonfour.server.auth.security.jwt.JwtTokenGenerator;
+import depromeet.lessonfour.server.auth.security.userdetails.AccountContext;
 import depromeet.lessonfour.server.users.adapters.UserRepository;
 import depromeet.lessonfour.server.users.domain.entities.User;
 import io.restassured.RestAssured;
