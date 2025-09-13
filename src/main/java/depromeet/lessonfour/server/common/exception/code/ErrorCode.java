@@ -38,6 +38,12 @@ public enum ErrorCode implements BaseErrorCode {
   CONFLICT(HttpStatus.CONFLICT, "요청이 현재 리소스 상태와 충돌합니다."),
 
   /*
+  415 UNSUPPORTED MEDIA TYPE
+  */
+  UNSUPPORTED_MEDIA_TYPE(
+      HttpStatus.UNSUPPORTED_MEDIA_TYPE, "지원하지 않는 Content-Type 입니다. application/json을 사용하세요."),
+
+  /*
   500 INTERNAL SERVER ERROR
   */
   INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부에서 오류가 발생했습니다.");
