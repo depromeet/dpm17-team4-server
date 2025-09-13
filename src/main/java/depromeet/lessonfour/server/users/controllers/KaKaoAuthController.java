@@ -18,7 +18,7 @@ import depromeet.lessonfour.server.users.schemas.response.AuthResponseDto;
 
 @RestController
 @RequestMapping("/api/v1/auth/kakao")
-public class KaKaoAuthController {
+public class KakaoAuthController {
 
   private final KakaoAuthService kakaoAuthService;
 
@@ -34,7 +34,7 @@ public class KaKaoAuthController {
   @Value("${kakao.auth-url}")
   private String kakaoAuthUrl;
 
-  public KaKaoAuthController(KakaoAuthService kakaoAuthService) {
+  public KakaoAuthController(KakaoAuthService kakaoAuthService) {
     this.kakaoAuthService = kakaoAuthService;
   }
 
