@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.users.domain.ports;
+package depromeet.lessonfour.server.users.adapters;
 
 import java.util.Optional;
 import java.util.UUID;

@@ -10,8 +10,8 @@ import depromeet.lessonfour.server.common.auth.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.common.auth.security.jwt.JwtTokenValidator;
 import depromeet.lessonfour.server.common.auth.security.userdetails.AccountContext;
 import depromeet.lessonfour.server.common.auth.service.dto.AuthTokenDto;
+import depromeet.lessonfour.server.users.adapters.UserRepository;
 import depromeet.lessonfour.server.users.domain.entities.User;
-import depromeet.lessonfour.server.users.domain.ports.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @UseCase

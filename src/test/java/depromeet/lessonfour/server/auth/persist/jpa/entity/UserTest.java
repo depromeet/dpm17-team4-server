@@ -15,8 +15,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import depromeet.lessonfour.server.users.adapters.UserRepository;
 import depromeet.lessonfour.server.users.domain.entities.User;
-import depromeet.lessonfour.server.users.domain.ports.UserRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
