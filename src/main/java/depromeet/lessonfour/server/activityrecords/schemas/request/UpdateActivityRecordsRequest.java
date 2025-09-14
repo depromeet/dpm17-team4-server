@@ -6,12 +6,13 @@ import java.util.UUID;
 import depromeet.lessonfour.server.activityrecords.domain.entities.MealTime;
 import depromeet.lessonfour.server.activityrecords.domain.entities.StressLevel;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record UpdateActivityRecordsRequest(
     @Valid List<UpdateFoodRequestDto> foods,
-    int waterIntakeCups,
+    @Min(0) int waterIntakeCups,
     @NotNull StressLevel stressLevel) {
 
   public record UpdateFoodRequestDto(
