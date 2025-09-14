@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.swagger.annotation;
+package depromeet.lessonfour.server.common.api.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.entities;
+package depromeet.lessonfour.server.common.infra.jpa.entities;
 
 import java.time.LocalDateTime;
 

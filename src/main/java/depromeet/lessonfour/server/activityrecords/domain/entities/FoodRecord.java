@@ -2,7 +2,7 @@ package depromeet.lessonfour.server.activityrecords.domain.entities;
 
 import java.util.UUID;
 
-import depromeet.lessonfour.server.common.entities.BaseTimeEntity;
+import depromeet.lessonfour.server.common.infra.jpa.entities.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

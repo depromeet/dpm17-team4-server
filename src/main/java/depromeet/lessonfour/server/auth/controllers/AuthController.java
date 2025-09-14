@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.users.controllers;
+package depromeet.lessonfour.server.auth.controllers;
 
 import static depromeet.lessonfour.server.auth.security.jwt.JwtConstants.REFRESH_TOKEN_COOKIE_NAME;
 
@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import depromeet.lessonfour.server.auth.schemas.request.RegisterRequestDto;
+import depromeet.lessonfour.server.auth.schemas.response.AccessTokenResponseDto;
 import depromeet.lessonfour.server.auth.service.RefreshTokenUseCase;
+import depromeet.lessonfour.server.auth.service.SignupUseCase;
 import depromeet.lessonfour.server.auth.service.dto.AuthTokenDto;
-import depromeet.lessonfour.server.users.schemas.request.RegisterRequestDto;
-import depromeet.lessonfour.server.users.schemas.response.AccessTokenResponseDto;
-import depromeet.lessonfour.server.users.services.SignupUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 

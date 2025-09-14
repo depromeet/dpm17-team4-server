@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.users.schemas.response;
+package depromeet.lessonfour.server.auth.schemas.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

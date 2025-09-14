@@ -15,7 +15,7 @@ import org.springframework.security.web.servlet.util.matcher.PathPatternRequestM
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import depromeet.lessonfour.server.users.schemas.request.LoginRequestDto;
+import depromeet.lessonfour.server.auth.schemas.request.LoginRequestDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 

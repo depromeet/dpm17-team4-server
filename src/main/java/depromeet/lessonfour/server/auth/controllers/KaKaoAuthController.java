@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.users.controllers;
+package depromeet.lessonfour.server.auth.controllers;
 
 import java.nio.charset.StandardCharsets;
 
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import depromeet.lessonfour.server.auth.schemas.response.AuthResponseDto;
 import depromeet.lessonfour.server.auth.service.KakaoAuthService;
-import depromeet.lessonfour.server.users.schemas.response.AuthResponseDto;
 
 @RestController
 @RequestMapping("/api/v1/auth/kakao")

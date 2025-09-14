@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.utils;
+package depromeet.lessonfour.server.common.api.utils;
 
 import static depromeet.lessonfour.server.auth.security.jwt.JwtConstants.AUTHORIZATION_HEADER;
 import static depromeet.lessonfour.server.auth.security.jwt.JwtConstants.BEARER_PREFIX;

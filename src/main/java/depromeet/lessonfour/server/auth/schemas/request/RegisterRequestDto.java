@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.users.schemas.request;
+package depromeet.lessonfour.server.auth.schemas.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

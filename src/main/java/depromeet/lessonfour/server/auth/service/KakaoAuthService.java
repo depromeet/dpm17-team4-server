@@ -17,6 +17,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import depromeet.lessonfour.server.auth.schemas.response.AuthResponseDto;
+import depromeet.lessonfour.server.auth.schemas.response.UserResponseDto;
 import depromeet.lessonfour.server.auth.security.jwt.JwkLocator;
 import depromeet.lessonfour.server.auth.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.auth.security.userdetails.AccountContext;
@@ -26,8 +28,6 @@ import depromeet.lessonfour.server.users.adapters.UserRepository;
 import depromeet.lessonfour.server.users.domain.entities.User;
 import depromeet.lessonfour.server.users.domain.values.Provider;
 import depromeet.lessonfour.server.users.domain.values.Provider.ProviderType;
-import depromeet.lessonfour.server.users.schemas.response.AuthResponseDto;
-import depromeet.lessonfour.server.users.schemas.response.UserResponseDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Locator;
