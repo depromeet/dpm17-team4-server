@@ -16,7 +16,6 @@ public record UpdateActivityRecordsRequest(
     @NotNull StressLevel stressLevel) {
 
   public record UpdateFoodRequestDto(
-      UUID id,
-      @NotBlank(message = "음식 이름은 필수입니다") String name,
+      @NotBlank(message = "음식 id는 필수입니다") UUID foodId,
       @NotNull(message = "식사 시간은 필수입니다") MealTime mealTime) {}
 }
