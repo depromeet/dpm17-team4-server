@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Duration;
-import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -71,7 +70,7 @@ class RestAuthenticationSuccessHandlerTest {
         .thenReturn("mock-refresh-token");
     when(objectMapper.writeValueAsString(any()))
         .thenReturn("{\"accessToken\":\"mock-access-token\"}");
-    when(accountContext.getId()).thenReturn(UUID.randomUUID());
+    when(accountContext.getId()).thenReturn(1L);
   }
 
   @Test

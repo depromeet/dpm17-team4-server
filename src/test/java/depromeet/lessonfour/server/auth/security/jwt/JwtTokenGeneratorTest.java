@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Date;
-import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
@@ -43,7 +42,7 @@ class JwtTokenGeneratorTest {
     void givenValidUser_whenGenerateAccessToken_thenReturnValidToken() {
       // given
       User user = User.register("test@example.com", "testuser", "password123");
-      ReflectionTestUtils.setField(user, "id", UUID.randomUUID());
+      ReflectionTestUtils.setField(user, "id", 1L);
       AccountContext accountContext = AccountContext.of(user);
 
       // when
@@ -70,7 +69,7 @@ class JwtTokenGeneratorTest {
     void givenValidUser_whenGenerateAccessToken_thenExpirationTimeIsCorrect() {
       // given
       User user = User.register("test@example.com", "testuser", "password123");
-      ReflectionTestUtils.setField(user, "id", UUID.randomUUID());
+      ReflectionTestUtils.setField(user, "id", 1L);
       AccountContext accountContext = AccountContext.of(user);
 
       // when
@@ -114,7 +113,7 @@ class JwtTokenGeneratorTest {
     void givenValidUser_whenGenerateRefreshToken_thenReturnValidToken() {
       // given
       User user = User.register("test@example.com", "testuser", "password123");
-      ReflectionTestUtils.setField(user, "id", UUID.randomUUID());
+      ReflectionTestUtils.setField(user, "id", 1L);
       AccountContext accountContext = AccountContext.of(user);
 
       // when
@@ -141,7 +140,7 @@ class JwtTokenGeneratorTest {
     void givenValidUser_whenGenerateRefreshToken_thenExpirationTimeIsSevenDays() {
       // given
       User user = User.register("test@example.com", "testuser", "password123");
-      ReflectionTestUtils.setField(user, "id", UUID.randomUUID());
+      ReflectionTestUtils.setField(user, "id", 1L);
       AccountContext accountContext = AccountContext.of(user);
 
       // when
@@ -173,7 +172,7 @@ class JwtTokenGeneratorTest {
     void givenValidUser_whenGenerateRefreshToken_thenDoesNotContainUserInfoClaims() {
       // given
       User user = User.register("test@example.com", "testuser", "password123");
-      ReflectionTestUtils.setField(user, "id", UUID.randomUUID());
+      ReflectionTestUtils.setField(user, "id", 1L);
       AccountContext accountContext = AccountContext.of(user);
 
       // when
@@ -198,7 +197,7 @@ class JwtTokenGeneratorTest {
     void givenValidUser_whenGenerateRefreshToken_thenContainsUniqueJti() {
       // given
       User user = User.register("test@example.com", "testuser", "password123");
-      ReflectionTestUtils.setField(user, "id", UUID.randomUUID());
+      ReflectionTestUtils.setField(user, "id", 1L);
       AccountContext accountContext = AccountContext.of(user);
 
       // when
@@ -243,7 +242,7 @@ class JwtTokenGeneratorTest {
     void givenTestConfiguration_whenGenerateTokens_thenExpirationTimeIsCorrect() {
       // given
       User user = User.register("test@example.com", "testuser", "password123");
-      ReflectionTestUtils.setField(user, "id", UUID.randomUUID());
+      ReflectionTestUtils.setField(user, "id", 1L);
       AccountContext accountContext = AccountContext.of(user);
 
       // when
@@ -285,7 +284,7 @@ class JwtTokenGeneratorTest {
     void givenGeneratedTokens_whenVerifySignature_thenVerificationSucceeds() {
       // given
       User user = User.register("test@example.com", "testuser", "password123");
-      ReflectionTestUtils.setField(user, "id", UUID.randomUUID());
+      ReflectionTestUtils.setField(user, "id", 1L);
       AccountContext accountContext = AccountContext.of(user);
 
       // when
@@ -309,7 +308,7 @@ class JwtTokenGeneratorTest {
     void givenGeneratedToken_whenVerifyWithWrongKey_thenThrowException() {
       // given
       User user = User.register("test@example.com", "testuser", "password123");
-      ReflectionTestUtils.setField(user, "id", UUID.randomUUID());
+      ReflectionTestUtils.setField(user, "id", 1L);
       AccountContext accountContext = AccountContext.of(user);
 
       String accessToken = jwtTokenGenerator.generateAccessToken(accountContext);

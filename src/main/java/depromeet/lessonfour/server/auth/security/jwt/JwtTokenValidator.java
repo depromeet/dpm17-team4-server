@@ -67,8 +67,8 @@ public class JwtTokenValidator {
   }
 
   /** JWT 토큰에서 Subject (사용자 ID) 추출 */
-  public String extractSubject(String token) {
+  public Long extractSubject(String token) {
     Claims claims = parseTokenClaims(token);
-    return claims.getSubject();
+    return Long.parseLong(claims.getSubject());
   }
 }
