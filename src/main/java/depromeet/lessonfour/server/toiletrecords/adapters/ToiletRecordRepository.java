@@ -6,5 +6,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import depromeet.lessonfour.server.toiletrecords.domain.entities.ToiletRecord;
 
-public interface ToiletRecordRepository extends JpaRepository<ToiletRecord, UUID> {
-}
+public interface ToiletRecordRepository extends JpaRepository<ToiletRecord, UUID> {}

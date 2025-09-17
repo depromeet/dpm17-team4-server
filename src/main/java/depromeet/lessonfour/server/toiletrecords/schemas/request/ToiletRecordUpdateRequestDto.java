@@ -14,31 +14,16 @@ import jakarta.validation.constraints.Min;
 
 @JsonInclude(Include.NON_NULL)
 public record ToiletRecordUpdateRequestDto(
-
-	@Nullable
-	LocalDateTime selectedWhen,
-
-	@Nullable
-	Boolean selectedSuccess,
-
-	@Nullable
-	@ValidEnum(enumClass = ToiletColor.class, message = "유효하지 않은 배변 색깔입니다.")
-	ToiletColor selectedColor,
-
-	@Nullable
-	@ValidEnum(enumClass = ToiletShape.class, message = "유효하지 않은 배변 형태입니다.")
-	ToiletShape selectedShape,
-
-	@Nullable
-	@Min(value = 0, message = "복통 점수는 0 이상이어야 합니다.")
-	@Max(value = 100, message = "복통 점수는 100 이하여야 합니다.")
-	Integer selectedPain,
-
-	@Nullable
-	@Min(value = 5, message = "소요시간은 5 이상이어야 합니다.")
-	@Max(value = 15, message = "소요시간은 15 이하여야 합니다.")
-	Integer selectedTimeTaken,
-
-	@Nullable
-	String selectedOptional
-) {}
+    @Nullable LocalDateTime selectedWhen,
+    @Nullable Boolean selectedSuccess,
+    @Nullable @ValidEnum(enumClass = ToiletColor.class, message = "유효하지 않은 배변 색깔입니다.")
+        ToiletColor selectedColor,
+    @Nullable @ValidEnum(enumClass = ToiletShape.class, message = "유효하지 않은 배변 형태입니다.")
+        ToiletShape selectedShape,
+    @Nullable @Min(value = 0, message = "복통 점수는 0 이상이어야 합니다.")
+        @Max(value = 100, message = "복통 점수는 100 이하여야 합니다.")
+        Integer selectedPain,
+    @Nullable @Min(value = 5, message = "소요시간은 5 이상이어야 합니다.")
+        @Max(value = 15, message = "소요시간은 15 이하여야 합니다.")
+        Integer selectedTimeTaken,
+    @Nullable String selectedOptional) {}
