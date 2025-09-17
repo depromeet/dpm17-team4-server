@@ -1,7 +1,6 @@
 package depromeet.lessonfour.server.activityrecords.controllers;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -55,7 +54,7 @@ public class ActivityRecordsController {
       })
   @PatchMapping("/{activity-record-id}")
   public SuccessResponse<?> updateActivityRecord(
-      @PathVariable("activity-record-id") UUID activityRecordId,
+      @PathVariable("activity-record-id") Long activityRecordId,
       @RequestBody @Valid UpdateActivityRecordsRequest dto) {
     return SuccessResponse.of(SuccessCode.SUCCESS_UPDATE);
   }
@@ -68,7 +67,7 @@ public class ActivityRecordsController {
       })
   @DeleteMapping("/{activity-record-id}")
   public SuccessResponse<?> deleteActivityRecord(
-      @PathVariable("activity-record-id") UUID activityRecordId) {
+      @PathVariable("activity-record-id") Long activityRecordId) {
     return SuccessResponse.of(SuccessCode.SUCCESS_DELETE);
   }
 

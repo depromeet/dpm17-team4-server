@@ -1,7 +1,5 @@
 package depromeet.lessonfour.server.activityrecords.domain.entities;
 
-import java.util.UUID;
-
 import depromeet.lessonfour.server.common.entities.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,8 +27,8 @@ import lombok.NoArgsConstructor;
 public class FoodRecord extends BaseTimeEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "activity_record_id", nullable = false)
