@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import depromeet.lessonfour.server.foods.schemas.request.FoodSearchRequestDto;
 import depromeet.lessonfour.server.foods.schemas.response.FoodDto;
 import depromeet.lessonfour.server.foods.schemas.response.FoodSearchResultDto;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ public class FoodService {
 
   // private final FoodRepository foodRepository;
 
-  public FoodSearchResultDto search(String query, int count) {
+  public FoodSearchResultDto search(FoodSearchRequestDto request) {
     // 임시로 여러 개의 Food 데이터 생성
     List<FoodDto> allFoods =
         List.of(
@@ -30,8 +31,7 @@ public class FoodService {
             new FoodDto(UUID.randomUUID(), "피자", 4.4),
             new FoodDto(UUID.randomUUID(), "라면", 3.8));
 
-    // count만큼만 반환 (최대 10개)
-    int limit = Math.min(Math.max(count, 1), 10); // 1~10 사이로 제한
+    Integer limit = Math.min(Math.max(request.getCount(), 1), 100);
     List<FoodDto> foodDtos = allFoods.stream().limit(limit).toList();
 
     return new FoodSearchResultDto(foodDtos);
