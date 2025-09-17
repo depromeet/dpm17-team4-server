@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class FoodDto {
   private UUID id;
   private String name;
-  
+
   @JsonProperty("score")
   private double foodScore;
 }
