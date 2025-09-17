@@ -1,5 +1,6 @@
 package depromeet.lessonfour.server.api;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Hidden;
 
 @Hidden
+@Profile("!prod")
 @RestController
 @RequestMapping("/api/v1/echo")
 public class EchoController {
