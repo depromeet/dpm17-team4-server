@@ -53,6 +53,22 @@ variable "subnets" {
 }
 
 # Servers
+variable "nginx_servers" {
+  description = "A map of nginx servers to create"
+  type = map(object({
+    subnet_key          = string
+    server_image_number = string
+    server_spec_code    = string
+    is_public           = bool
+  }))
+  validation {
+    condition = alltrue([
+      for _, v in var.nginx_servers : contains(keys(var.subnets), v.subnet_key)
+    ])
+    error_message = "Each nginx server must reference a valid subnet_key."
+  }
+}
+
 variable "backend_servers" {
   description = "A map of backend servers to create"
   type = map(object({

@@ -60,6 +60,33 @@ module "management_key" {
   key_name = "${local.name_prefix}-management-key"
 }
 
+# Nginx Servers
+module "nginx_servers" {
+  source   = "./modules/server"
+  for_each = var.nginx_servers
+
+  subnet_no           = module.subnets[each.value.subnet_key].subnet_id
+  server_image_number = each.value.server_image_number
+  server_spec_code    = each.value.server_spec_code
+  login_key_name      = module.management_key.key_name
+  key                 = each.key
+  name_prefix         = local.name_prefix
+  is_public           = each.value.is_public
+  access_control_groups = [
+    module.nginx_acg.acg_id
+  ]
+}
+
+# Nginx ACG
+module "nginx_acg" {
+  source         = "./modules/acg"
+  vpc_no         = module.vpc.vpc_id
+  name_prefix    = local.name_prefix
+  acg_name       = "nginx"
+  inbound_rules  = local.nginx_inbound_rules
+  outbound_rules = local.common_outbound_rules
+}
+
 # Backend ACG
 module "backend_acg" {
   source = "./modules/acg"
@@ -71,7 +98,7 @@ module "backend_acg" {
   outbound_rules = local.common_outbound_rules
 }
 
-# Servers
+# Backend Servers
 module "backend_servers" {
   source   = "./modules/server"
   for_each = var.backend_servers
@@ -129,8 +156,8 @@ module "postgresql" {
   client_cidr   = module.vpc.vpc_cidr_block
   database_name = var.postgresql.database_name
   access_control_group_no_list = [
-    module.bastion_acg.acg_id,
-    module.backend_acg.acg_id
+    module.backend_acg.acg_id,
+    module.nginx_acg.acg_id
   ]
 }
 
