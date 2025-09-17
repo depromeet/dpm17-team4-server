@@ -8,8 +8,8 @@ import lombok.Getter;
 public enum ToiletColor {
   DEFAULT,
   GOLD,
-  BROWN,
+  DARK_BROWN,
   RED,
   GREEN,
-  BLACK
+  GRAY
 }
