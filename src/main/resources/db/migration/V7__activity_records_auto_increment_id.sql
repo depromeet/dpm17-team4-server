@@ -17,7 +17,12 @@ alter table toilet_record  drop constraint fk_toilet_record_user;
  alter table toilet_record add column user_id_new bigint;
 
  -- 3-b) 참조 매핑 (기존 UUID → 대상 id_new)
- update food_record fr
+-- (선행) 참조 테이블 id_new 백필 - 매핑 전 필수!
+update foods            set id_new = default where id_new is null;
+update activity_record  set id_new = default where id_new is null;
+update users            set id_new = default where id_new is null;
+
+update food_record fr
          set food_id_new = f.id_new
         from foods f
        where fr.food_id = f.id;
@@ -44,6 +49,12 @@ alter table toilet_record  drop constraint fk_toilet_record_user;
  alter table toilet_record drop column user_id;
  alter table toilet_record rename column user_id_new to user_id;
 
+-- 3-d) NOT NULL 제약 복원 (기존 스키마와 동일하게)
+alter table food_record     alter column food_id             set not null;
+alter table food_record     alter column activity_record_id  set not null;
+alter table activity_record alter column user_id             set not null;
+alter table toilet_record   alter column user_id             set not null;
+
 -- 4) 기존 PK 드롭
 alter table foods           drop constraint foods_pkey;
 alter table food_record     drop constraint food_record_pkey;
@@ -51,11 +62,8 @@ alter table activity_record drop constraint activity_record_pkey;
 alter table users           drop constraint users_pkey;
 
 -- 5) 새 PK 추가 (default naming 유지)
--- (선행) 기존 행에 id_new 백필
-update foods set id_new = default where id_new is null;
+-- (선행) 기존 행에 id_new 백필 (food_record만 필요 - 나머지는 3-b에서 완료)
 update food_record set id_new = default where id_new is null;
-update activity_record set id_new = default where id_new is null;
-update users set id_new = default where id_new is null;
 
 alter table foods           add constraint foods_pkey primary key (id_new);
 alter table food_record     add constraint food_record_pkey primary key (id_new);
