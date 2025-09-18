@@ -85,7 +85,7 @@ public class ToiletRecordController {
     @ApiResponse(responseCode = "404", description = "not found"),
     @ApiResponse(responseCode = "500", description = "server error", content = @Content)
   })
-  @PatchMapping("/update/{toiletRecordId}")
+  @PatchMapping("/{toiletRecordId}")
   public ResponseEntity<SuccessResponse<ToiletRecordResponseDto>> updateToiletRecord(
       @Valid @RequestBody ToiletRecordUpdateRequestDto request,
       @PathVariable UUID toiletRecordId,
@@ -113,7 +113,7 @@ public class ToiletRecordController {
   })
   @DeleteMapping("/{toiletRecordId}")
   public ResponseEntity<SuccessResponse<Void>> deleteToiletRecord(
-      @PathVariable UUID toiletRecordId, @AuthenticationPrincipal(expression = "id") UUID userId) {
+      @PathVariable UUID toiletRecordId, @AuthenticationPrincipal(expression = "id") Long userId) {
     return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_DELETE));
   }
 }

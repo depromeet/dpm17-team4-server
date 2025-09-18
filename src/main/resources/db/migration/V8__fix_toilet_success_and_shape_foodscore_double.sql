@@ -4,12 +4,14 @@ BEGIN
   IF EXISTS (
     SELECT 1
     FROM information_schema.columns
-    WHERE table_name = 'toilet_record'
-      AND column_name = 'is_toliet_success'
+    WHERE table_schema = current_schema()
+        AND table_name = 'toilet_record'
+        AND column_name = 'is_toliet_success'
   ) THEN
 ALTER TABLE toilet_record RENAME COLUMN is_toliet_success TO is_toilet_success;
 END IF;
-END$$;
+END;
+$$;
 
 -- 2) 배변 모양 컬럼 추가 (없으면 추가)
 ALTER TABLE IF EXISTS toilet_record
