@@ -1,7 +1,5 @@
 package depromeet.lessonfour.server.users.domain.entities;
 
-import java.util.UUID;
-
 import depromeet.lessonfour.server.common.entities.BaseTimeEntity;
 import depromeet.lessonfour.server.users.domain.values.Provider;
 import jakarta.persistence.Column;
@@ -28,8 +26,8 @@ import lombok.NoArgsConstructor;
 public class User extends BaseTimeEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   @NotNull @Column(unique = true, nullable = false)
   private String email;

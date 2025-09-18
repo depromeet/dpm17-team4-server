@@ -1,7 +1,5 @@
 package depromeet.lessonfour.server.users.services;
 
-import java.util.UUID;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +13,7 @@ public class UserUpdateService {
 
   private final UserRepository userRepository;
 
-  public void updateRefreshToken(UUID userId, String newRefreshToken) {
+  public void updateRefreshToken(Long userId, String newRefreshToken) {
     userRepository
         .findById(userId)
         .ifPresent(

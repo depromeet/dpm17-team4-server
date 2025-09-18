@@ -3,7 +3,6 @@ package depromeet.lessonfour.server.auth.security.userdetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,7 +19,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccountContext implements UserDetails {
 
-  private UUID id;
+  private Long id;
   private String email;
   private String password;
   private String nickname;
