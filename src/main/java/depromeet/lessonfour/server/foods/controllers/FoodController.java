@@ -13,6 +13,8 @@ import depromeet.lessonfour.server.foods.services.FoodService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -28,7 +30,7 @@ public class FoodController {
   })
   @GetMapping(path = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<FoodSearchResultDto> search(
-      @RequestParam String query, @RequestParam(defaultValue = "10") Integer count) {
-    return ResponseEntity.ok(foodService.search(new FoodSearchRequestDto(query, count)));
+      @NotBlank @RequestParam String query, @Min(0) @RequestParam(defaultValue = "10") int size) {
+    return ResponseEntity.ok(foodService.search(new FoodSearchRequestDto(query, size)));
   }
 }
