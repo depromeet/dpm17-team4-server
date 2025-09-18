@@ -21,9 +21,13 @@ import depromeet.lessonfour.server.auth.service.dto.AuthTokenDto;
 import depromeet.lessonfour.server.users.schemas.request.RegisterRequestDto;
 import depromeet.lessonfour.server.users.schemas.response.AccessTokenResponseDto;
 import depromeet.lessonfour.server.users.services.SignupUseCase;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "인증", description = "로컬 회원가입 및 토큰 갱신 API 문서입니다.")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
@@ -32,6 +36,9 @@ public class AuthController {
   private final SignupUseCase registerUseCase;
   private final RefreshTokenUseCase refreshTokenUseCase;
 
+  @Operation(
+      summary = "로컬 회원가입",
+      description = "이메일과 비밀번호로 회원가입을 진행합니다. 성공 시 201 Created와 함께 생성된 유저 정보를 반환합니다.")
   @PostMapping(
       path = "/signup",
       consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -42,6 +49,10 @@ public class AuthController {
     return ResponseEntity.created(URI.create("/api/v1/users/" + user.id())).body(user);
   }
 
+  @Operation(
+      summary = "토큰 갱신",
+      description = "만료된 access token을 갱신합니다.",
+      security = {@SecurityRequirement(name = "JWT")})
   @PostMapping("/refresh")
   public ResponseEntity<?> refresh(
       @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken) {
