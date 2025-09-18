@@ -39,7 +39,7 @@ public class ToiletRecordController {
   @PostMapping
   public ResponseEntity<SuccessResponse<ToiletRecordResponseDto>> createToiletRecord(
       @Valid @RequestBody ToiletRecordCreateRequestDto request,
-      @AuthenticationPrincipal(expression = "id") UUID userId) {
+      @AuthenticationPrincipal(expression = "id") Long userId) {
     // 임시 더미 응답
     ToiletRecordResponseDto response =
         new ToiletRecordResponseDto(
@@ -63,7 +63,7 @@ public class ToiletRecordController {
   })
   @GetMapping("/{toiletRecordId}/detail")
   public ResponseEntity<SuccessResponse<ToiletRecordResponseDto>> getToiletRecordDetail(
-      @PathVariable UUID toiletRecordId, @AuthenticationPrincipal(expression = "id") UUID userId) {
+      @PathVariable UUID toiletRecordId, @AuthenticationPrincipal(expression = "id") Long userId) {
     // 임시 더미 응답
     ToiletRecordResponseDto response =
         new ToiletRecordResponseDto(
@@ -89,7 +89,7 @@ public class ToiletRecordController {
   public ResponseEntity<SuccessResponse<ToiletRecordResponseDto>> updateToiletRecord(
       @Valid @RequestBody ToiletRecordUpdateRequestDto request,
       @PathVariable UUID toiletRecordId,
-      @AuthenticationPrincipal(expression = "id") UUID userId) {
+      @AuthenticationPrincipal(expression = "id") Long userId) {
     // 임시 더미 응답
     ToiletRecordResponseDto response =
         new ToiletRecordResponseDto(

@@ -9,7 +9,7 @@ import depromeet.lessonfour.server.toiletrecords.domain.entities.ToiletShape;
 
 public record ToiletRecordResponseDto(
     UUID id,
-    UUID userId,
+    Long userId,
     LocalDateTime toiletAt,
     boolean isToiletSuccess,
     ToiletColor toiletColor,
