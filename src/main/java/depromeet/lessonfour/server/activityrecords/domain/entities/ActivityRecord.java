@@ -1,7 +1,6 @@
 package depromeet.lessonfour.server.activityrecords.domain.entities;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import depromeet.lessonfour.server.common.entities.BaseTimeEntity;
 import depromeet.lessonfour.server.users.domain.entities.User;
@@ -35,8 +34,8 @@ import lombok.NoArgsConstructor;
 public class ActivityRecord extends BaseTimeEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   // 작성자
   @ManyToOne(fetch = FetchType.LAZY, optional = false)

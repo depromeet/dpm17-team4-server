@@ -1,7 +1,5 @@
 package depromeet.lessonfour.server.auth.service;
 
-import java.util.UUID;
-
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +25,7 @@ public class RefreshTokenUseCase {
     validateRefreshToken(refreshToken);
 
     String userId = jwtTokenValidator.extractSubject(refreshToken);
-    User user = findUserById(userId);
+    User user = findUserById(Long.valueOf(userId));
     compareWithStoredToken(user, refreshToken);
 
     return generateNewToken(user);
@@ -41,15 +39,9 @@ public class RefreshTokenUseCase {
     }
   }
 
-  private User findUserById(String userId) {
-    final UUID uuid;
-    try {
-      uuid = UUID.fromString(userId);
-    } catch (IllegalArgumentException e) {
-      throw new BadCredentialsException("Invalid refresh token subject");
-    }
+  private User findUserById(Long userId) {
     return userRepository
-        .findById(uuid)
+        .findById(userId)
         .orElseThrow(() -> new BadCredentialsException("User not found"));
   }
 

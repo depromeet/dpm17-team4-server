@@ -60,7 +60,7 @@ public class JwtTokenGenerator {
   }
 
   public String generateAccessToken(
-      UUID userId, String email, String nickname, Instant expiration) {
+      Long userId, String email, String nickname, Instant expiration) {
     return Jwts.builder()
         .subject(String.valueOf(userId))
         .issuedAt(new Date())
