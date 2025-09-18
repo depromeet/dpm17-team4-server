@@ -31,6 +31,7 @@ public enum ErrorCode implements BaseErrorCode {
   */
   DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "데이터가 존재하지 않습니다"),
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저가 존재하지 않습니다"),
+  PATH_NOT_FOUND(HttpStatus.NOT_FOUND, "잘못된 요청 경로입니다."),
 
   /*
   409 CONFLICT

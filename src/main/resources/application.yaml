@@ -10,6 +10,9 @@ spring:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
+  web:
+    resources:
+      add-mappings: false
 
 jwt:
   secret: mySecretKeyForJWTWhichShouldBeAtLeast256BitsLongToEnsureSecurityAndCompliance
