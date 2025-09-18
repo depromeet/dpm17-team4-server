@@ -12,6 +12,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import depromeet.lessonfour.server.common.exception.ServerException;
 import depromeet.lessonfour.server.common.exception.base.BaseErrorCode;
@@ -100,6 +101,12 @@ public class GlobalExceptionHandler {
             ? "요청 Content-Type: " + e.getContentType()
             : "요청 Content-Type 누락";
     return buildErrorResponse(ErrorCode.UNSUPPORTED_MEDIA_TYPE, detail);
+  }
+
+  @ExceptionHandler(NoHandlerFoundException.class)
+  public ResponseEntity<ErrorResponse> handleNoHandlerFoundException(NoHandlerFoundException e) {
+    String detail = String.format("잘못된 요청 경로: %s %s", e.getHttpMethod(), e.getRequestURL());
+    return buildErrorResponse(ErrorCode.PATH_NOT_FOUND, detail);
   }
 
   private ResponseEntity<ErrorResponse> buildErrorResponse(BaseErrorCode errorCode, Object detail) {
