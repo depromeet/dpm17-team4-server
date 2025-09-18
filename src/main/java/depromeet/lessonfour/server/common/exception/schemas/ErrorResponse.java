@@ -7,7 +7,7 @@ import org.springframework.validation.BindingResult;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import depromeet.lessonfour.server.common.exception.base.BaseErrorCode;
+import depromeet.lessonfour.server.common.exception.code.BaseErrorCode;
 import jakarta.validation.ConstraintViolation;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

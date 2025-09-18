@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.api;
+package depromeet.lessonfour.server.common.monitoring;
 
 import java.util.Map;
 

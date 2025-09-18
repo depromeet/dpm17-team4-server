@@ -1,6 +1,6 @@
 package depromeet.lessonfour.server.common.exception;
 
-import depromeet.lessonfour.server.common.exception.base.BaseErrorCode;
+import depromeet.lessonfour.server.common.exception.code.BaseErrorCode;
 import lombok.Getter;
 
 @Getter

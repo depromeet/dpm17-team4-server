@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.infra.jpa.config;
+package depromeet.lessonfour.server.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

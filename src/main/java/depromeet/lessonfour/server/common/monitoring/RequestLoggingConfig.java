@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.api.logging;
+package depromeet.lessonfour.server.common.monitoring;
 
 import java.io.IOException;
 

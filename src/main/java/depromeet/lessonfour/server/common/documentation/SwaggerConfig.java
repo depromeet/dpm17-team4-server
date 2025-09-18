@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.api.swagger;
+package depromeet.lessonfour.server.common.documentation;
 
 import java.util.Collections;
 
@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import depromeet.lessonfour.server.common.api.annotation.DisableSwaggerSecurity;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

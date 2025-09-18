@@ -2,7 +2,6 @@ package depromeet.lessonfour.server.common.exception.code;
 
 import org.springframework.http.HttpStatus;
 
-import depromeet.lessonfour.server.common.exception.base.BaseSuccessCode;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

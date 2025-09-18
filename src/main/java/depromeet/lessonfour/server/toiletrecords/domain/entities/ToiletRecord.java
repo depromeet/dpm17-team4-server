@@ -3,7 +3,7 @@ package depromeet.lessonfour.server.toiletrecords.domain.entities;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import depromeet.lessonfour.server.common.infra.jpa.entities.BaseTimeEntity;
+import depromeet.lessonfour.server.common.domain.BaseTimeEntity;
 import depromeet.lessonfour.server.users.domain.entities.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

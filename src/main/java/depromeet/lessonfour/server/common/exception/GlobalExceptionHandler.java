@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.exception.handler;
+package depromeet.lessonfour.server.common.exception;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import depromeet.lessonfour.server.common.exception.ServerException;
-import depromeet.lessonfour.server.common.exception.base.BaseErrorCode;
+import depromeet.lessonfour.server.common.exception.code.BaseErrorCode;
 import depromeet.lessonfour.server.common.exception.code.ErrorCode;
 import depromeet.lessonfour.server.common.exception.schemas.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;

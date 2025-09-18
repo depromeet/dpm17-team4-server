@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.api;
+package depromeet.lessonfour.server.common.monitoring;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;

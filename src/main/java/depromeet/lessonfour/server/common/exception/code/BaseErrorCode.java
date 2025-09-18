@@ -1,8 +1,8 @@
-package depromeet.lessonfour.server.common.exception.base;
+package depromeet.lessonfour.server.common.exception.code;
 
 import org.springframework.http.HttpStatus;
 
-public interface BaseSuccessCode {
+public interface BaseErrorCode {
   HttpStatus getHttpStatus();
 
   String getMessage();

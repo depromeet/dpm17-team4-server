@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import depromeet.lessonfour.server.common.infra.jpa.entities.BaseTimeEntity;
+import depromeet.lessonfour.server.common.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

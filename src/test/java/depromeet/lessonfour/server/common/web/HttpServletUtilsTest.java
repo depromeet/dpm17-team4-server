@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.utils;
+package depromeet.lessonfour.server.common.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -16,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import depromeet.lessonfour.server.common.api.utils.HttpServletUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

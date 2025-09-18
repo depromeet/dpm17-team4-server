@@ -2,7 +2,7 @@ package depromeet.lessonfour.server.auth.service.code;
 
 import org.springframework.http.HttpStatus;
 
-import depromeet.lessonfour.server.common.exception.base.BaseErrorCode;
+import depromeet.lessonfour.server.common.exception.code.BaseErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.api.annotation;
+package depromeet.lessonfour.server.common.documentation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

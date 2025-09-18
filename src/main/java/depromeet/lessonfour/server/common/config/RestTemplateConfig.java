@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.infra.rest;
+package depromeet.lessonfour.server.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

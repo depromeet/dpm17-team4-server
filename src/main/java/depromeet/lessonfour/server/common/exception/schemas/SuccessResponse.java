@@ -3,7 +3,7 @@ package depromeet.lessonfour.server.common.exception.schemas;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import depromeet.lessonfour.server.common.exception.base.BaseSuccessCode;
+import depromeet.lessonfour.server.common.exception.code.BaseSuccessCode;
 
 @JsonPropertyOrder({"status", "message", "data"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
