@@ -24,8 +24,8 @@ public class RefreshTokenUseCase {
   public AuthTokenDto refresh(String refreshToken) {
     validateRefreshToken(refreshToken);
 
-    Long userId = jwtTokenValidator.extractSubject(refreshToken);
-    User user = findUserById(userId);
+    String userId = jwtTokenValidator.extractSubject(refreshToken);
+    User user = findUserById(Long.valueOf(userId));
     compareWithStoredToken(user, refreshToken);
 
     return generateNewToken(user);
