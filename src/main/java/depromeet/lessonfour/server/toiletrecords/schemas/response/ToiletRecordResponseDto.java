@@ -10,13 +10,13 @@ import depromeet.lessonfour.server.toiletrecords.domain.entities.ToiletShape;
 public record ToiletRecordResponseDto(
     UUID id,
     UUID userId,
-    LocalDateTime selectedWhen,
-    boolean selectedSuccess,
-    ToiletColor selectedColor,
-    ToiletShape selectedShape,
-    int selectedPain,
-    int selectedTimeTaken,
-    String selectedOptional) {
+    LocalDateTime toiletAt,
+    boolean isToiletSuccess,
+    ToiletColor toiletColor,
+    ToiletShape toiletShape,
+    int painScore,
+    int toiletDuration,
+    String additionalNote) {
   public static ToiletRecordResponseDto of(ToiletRecord entity) {
     return new ToiletRecordResponseDto(
         entity.getId(),
