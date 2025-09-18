@@ -7,8 +7,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class FoodDto {
+public class FoodSearchItem {
   private UUID id;
   private String name;
-  private double score;
 }

@@ -8,5 +8,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class FoodSearchResultDto {
-  private List<FoodDto> items;
+  private List<FoodSearchItem> items;
 }
