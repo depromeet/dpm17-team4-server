@@ -31,7 +31,7 @@ public class FoodService {
             new FoodSearchItem(UUID.randomUUID(), "피자"),
             new FoodSearchItem(UUID.randomUUID(), "라면"));
 
-    Integer limit = Math.min(Math.max(request.getCount(), 1), 100);
+    Integer limit = Math.min(Math.max(request.count(), 1), 100);
     List<FoodSearchItem> foodDtos = allFoods.stream().limit(limit).toList();
 
     return new FoodSearchResultDto(foodDtos);

@@ -1,11 +1,9 @@
 package depromeet.lessonfour.server.foods.schemas.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-@Getter
-@AllArgsConstructor
-public class FoodSearchRequestDto {
-  private String query;
-  private Integer count = 10;
-}
+public record FoodSearchRequestDto(
+    @NotBlank String query,
+    @NotNull @Min(0) Integer count) {}
