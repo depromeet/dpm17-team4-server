@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/poo")
+@RequestMapping("/api/v1/poo-records")
 public class ToiletRecordController {
 
   @Operation(summary = "배변기록 등록")
@@ -45,23 +45,23 @@ public class ToiletRecordController {
         new ToiletRecordResponseDto(
             UUID.randomUUID(), // 생성된 레코드 id (더미)
             userId, // 작성자 id
-            request.selectedWhen(),
-            request.selectedSuccess(),
-            request.selectedColor(),
-            request.selectedShape(),
-            request.selectedPain(),
-            request.selectedTimeTaken(),
-            request.selectedOptional() // updatedAt (더미)
-            );
+            request.toiletAt(),
+            request.isToiletSuccess(),
+            request.toiletColor(),
+            request.toiletShape(),
+            request.painScore(),
+            request.toiletDuration(),
+            request.additionalNote());
     return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_CREATE, response));
   }
 
   @Operation(summary = "배변기록 상세조회")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "success"),
+    @ApiResponse(responseCode = "404", description = "not found"),
     @ApiResponse(responseCode = "500", description = "server error", content = @Content)
   })
-  @GetMapping("/detail/{toiletRecordId}")
+  @GetMapping("/{toiletRecordId}/detail")
   public ResponseEntity<SuccessResponse<ToiletRecordResponseDto>> getToiletRecordDetail(
       @PathVariable UUID toiletRecordId, @AuthenticationPrincipal(expression = "id") UUID userId) {
     // 임시 더미 응답
@@ -69,20 +69,20 @@ public class ToiletRecordController {
         new ToiletRecordResponseDto(
             toiletRecordId,
             userId,
-            LocalDateTime.now().minusMinutes(10), // selectedWhen (더미)
-            true, // selectedSuccess (더미)
-            null, // selectedColor (더미)
-            null, // selectedShape (더미)
-            0, // selectedPain (더미)
-            5, // selectedTimeTaken (더미)
-            null // selectedOptional (더미)
-            );
+            LocalDateTime.now().minusMinutes(10),
+            true,
+            null,
+            null,
+            0,
+            5,
+            null);
     return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_FETCH, response));
   }
 
   @Operation(summary = "배변기록 수정")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "success"),
+    @ApiResponse(responseCode = "404", description = "not found"),
     @ApiResponse(responseCode = "500", description = "server error", content = @Content)
   })
   @PatchMapping("/update/{toiletRecordId}")
@@ -95,20 +95,20 @@ public class ToiletRecordController {
         new ToiletRecordResponseDto(
             UUID.randomUUID(), // 생성된 레코드 id (더미)
             userId, // 작성자 id
-            request.selectedWhen(),
-            request.selectedSuccess(),
-            request.selectedColor(),
-            request.selectedShape(),
-            request.selectedPain(),
-            request.selectedTimeTaken(),
-            request.selectedOptional() // updatedAt (더미)
-            );
+            request.toiletAt(),
+            request.isToiletSuccess(),
+            request.toiletColor(),
+            request.toiletShape(),
+            request.painScore(),
+            request.toiletDuration(),
+            request.additionalNote());
     return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_UPDATE, response));
   }
 
   @Operation(summary = "배변기록 삭제")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "success"),
+    @ApiResponse(responseCode = "404", description = "not found"),
     @ApiResponse(responseCode = "500", description = "server error", content = @Content)
   })
   @DeleteMapping("/{toiletRecordId}")
