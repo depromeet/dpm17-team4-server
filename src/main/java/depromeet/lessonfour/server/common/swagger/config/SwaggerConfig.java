@@ -7,11 +7,18 @@ import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 
 import depromeet.lessonfour.server.common.swagger.annotation.DisableSwaggerSecurity;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.media.MediaType;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.responses.ApiResponse;
+import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
@@ -72,73 +79,54 @@ public class SwaggerConfig {
         operation.setSecurity(Collections.emptyList());
       }
 
+      boolean isSecured = operation.getSecurity() != null && !operation.getSecurity().isEmpty();
+
       // 공통 응답 스키마 적용
-      addCommonResponses(operation);
+      addCommonResponses(operation, isSecured);
 
       return operation;
     };
   }
 
-  private void addCommonResponses(io.swagger.v3.oas.models.Operation operation) {
+  private void addCommonResponses(Operation operation, boolean isSecured) {
     if (operation.getResponses() == null) {
-      operation.setResponses(new io.swagger.v3.oas.models.responses.ApiResponses());
+      operation.setResponses(new ApiResponses());
     }
 
-    // 400 Bad Request - 잘못된 요청
-    if (!operation.getResponses().containsKey("400")) {
-      operation.getResponses().addApiResponse("400", createErrorResponse("잘못된 요청입니다.", "400"));
-    }
+    addResponseIfMissing(operation, HttpStatus.BAD_REQUEST, "잘못된 요청입니다.", false, isSecured);
+    addResponseIfMissing(operation, HttpStatus.UNAUTHORIZED, "인증이 필요합니다.", true, isSecured);
+    addResponseIfMissing(operation, HttpStatus.FORBIDDEN, "접근 권한이 없습니다.", true, isSecured);
+    addResponseIfMissing(
+        operation, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다.", false, isSecured);
+  }
 
-    // 401 Unauthorized - 인증 실패 (보안이 필요한 엔드포인트만)
-    if (operation.getSecurity() != null
-        && !operation.getSecurity().isEmpty()
-        && !operation.getResponses().containsKey("401")) {
-      operation.getResponses().addApiResponse("401", createErrorResponse("인증이 필요합니다.", "401"));
-    }
+  private void addResponseIfMissing(
+      Operation operation,
+      HttpStatus status,
+      String message,
+      boolean securedOnly,
+      boolean isSecured) {
 
-    // 403 Forbidden - 권한 없음 (보안이 필요한 엔드포인트만)
-    if (operation.getSecurity() != null
-        && !operation.getSecurity().isEmpty()
-        && !operation.getResponses().containsKey("403")) {
-      operation.getResponses().addApiResponse("403", createErrorResponse("접근 권한이 없습니다.", "403"));
-    }
+    String code = String.valueOf(status.value());
 
-    // 500 Internal Server Error - 서버 오류
-    if (!operation.getResponses().containsKey("500")) {
-      operation
-          .getResponses()
-          .addApiResponse("500", createErrorResponse("서버 내부 오류가 발생했습니다.", "500"));
+    if ((!securedOnly || isSecured) && !operation.getResponses().containsKey(code)) {
+      operation.getResponses().addApiResponse(code, createErrorResponse(status, message));
     }
   }
 
-  private io.swagger.v3.oas.models.responses.ApiResponse createErrorResponse(
-      String description, String status) {
-    io.swagger.v3.oas.models.responses.ApiResponse response =
-        new io.swagger.v3.oas.models.responses.ApiResponse();
-    response.setDescription(description);
+  private ApiResponse createErrorResponse(HttpStatus status, String message) {
+    ApiResponse response = new ApiResponse();
+    response.setDescription(message);
 
-    // 에러 응답 스키마 정의
-    io.swagger.v3.oas.models.media.Content content = new io.swagger.v3.oas.models.media.Content();
-    io.swagger.v3.oas.models.media.MediaType mediaType =
-        new io.swagger.v3.oas.models.media.MediaType();
+    Schema<?> errorSchema =
+        new Schema<>()
+            .type("object")
+            .addProperty("status", new Schema<>().type("integer").example(status.value()))
+            .addProperty("message", new Schema<>().type("string").example(message))
+            .addProperty("timestamp", new Schema<>().type("string").format("date-time"));
 
-    io.swagger.v3.oas.models.media.Schema<?> errorSchema =
-        new io.swagger.v3.oas.models.media.Schema<>();
-    errorSchema.setType("object");
-    errorSchema.addProperty(
-        "status",
-        new io.swagger.v3.oas.models.media.Schema<>()
-            .type("integer")
-            .example(Integer.parseInt(status)));
-    errorSchema.addProperty(
-        "message",
-        new io.swagger.v3.oas.models.media.Schema<>().type("string").example(description));
-    errorSchema.addProperty(
-        "timestamp",
-        new io.swagger.v3.oas.models.media.Schema<>().type("string").format("date-time"));
-
-    mediaType.setSchema(errorSchema);
-    content.addMediaType("application/json", mediaType);
+    MediaType mediaType = new MediaType().schema(errorSchema);
+    Content content = new Content().addMediaType("application/json", mediaType);
     response.setContent(content);
 
     return response;
