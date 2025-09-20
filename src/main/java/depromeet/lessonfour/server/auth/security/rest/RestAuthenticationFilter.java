@@ -21,7 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class RestAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-  private static final String LOGIN_URL = "/api/auth/login";
+  private static final String LOGIN_URL = "/api/v1/auth/login";
 
   private final ObjectMapper objectMapper;
 
