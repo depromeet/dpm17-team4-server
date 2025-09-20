@@ -4,11 +4,11 @@ import java.util.Collections;
 
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 
+import depromeet.lessonfour.server.common.annotation.Value;
 import depromeet.lessonfour.server.common.swagger.annotation.DisableSwaggerSecurity;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

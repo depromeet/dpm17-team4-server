@@ -4,7 +4,6 @@ import java.security.Key;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +20,7 @@ import depromeet.lessonfour.server.auth.security.jwt.JwkLocator;
 import depromeet.lessonfour.server.auth.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.auth.security.userdetails.AccountContext;
 import depromeet.lessonfour.server.auth.service.code.AuthErrorCode;
+import depromeet.lessonfour.server.common.annotation.Value;
 import depromeet.lessonfour.server.common.exception.ServerException;
 import depromeet.lessonfour.server.users.adapters.UserRepository;
 import depromeet.lessonfour.server.users.domain.entities.User;
@@ -38,33 +38,35 @@ public class KakaoAuthService {
   private final RestTemplate restTemplate;
   private final UserRepository userRepository;
   private final JwtTokenGenerator jwtTokenGenerator;
-  private final String clientId;
-  private final String clientSecret;
-  private final String redirectUri;
-  private final String authUrl;
-  private final String issuerUrl;
-  private final String tokenUrl;
-  private final String jwksUrl = "https://kauth.kakao.com/.well-known/jwks.json";
+
+  @Value("${kakao.client-id}")
+  private String clientId;
+
+  @Value("${kakao.client-secret}")
+  private String clientSecret;
+
+  @Value("${kakao.redirect-url}")
+  private String redirectUri;
+
+  @Value("${kakao.auth-url}")
+  private String authUrl;
+
+  @Value("${kakao.issuer-url}")
+  private String issuerUrl;
+
+  @Value("${kakao.token-url}")
+  private String tokenUrl;
+
+  @Value("${kakao.jwks-url}")
+  private String jwksUrl;
 
   public KakaoAuthService(
       RestTemplate restTemplate,
       UserRepository userRepository,
-      JwtTokenGenerator jwtTokenGenerator,
-      @Value("${kakao.client-id}") String clientId,
-      @Value("${kakao.client-secret}") String clientSecret,
-      @Value("${kakao.redirect-url}") String redirectUrl,
-      @Value("${kakao.issuer-url}") String issuerUrl,
-      @Value("${kakao.token-url}") String tokenUrl,
-      @Value("${kakao.auth-url}") String authUrl) {
+      JwtTokenGenerator jwtTokenGenerator) {
     this.restTemplate = restTemplate;
     this.userRepository = userRepository;
     this.jwtTokenGenerator = jwtTokenGenerator;
-    this.clientId = clientId;
-    this.clientSecret = clientSecret;
-    this.redirectUri = redirectUrl;
-    this.issuerUrl = issuerUrl;
-    this.tokenUrl = tokenUrl;
-    this.authUrl = authUrl;
   }
 
   public AuthResponseDto login(String code) {

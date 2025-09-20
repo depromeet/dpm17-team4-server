@@ -4,25 +4,37 @@ import java.nio.charset.StandardCharsets;
 
 import javax.crypto.SecretKey;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
+import depromeet.lessonfour.server.common.annotation.Value;
 import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.Getter;
 
 @Component
+@DependsOn({"valueProcessor"})
 public class JwtSecretKeyProvider {
 
   @Getter(AccessLevel.NONE)
   @Value("${jwt.secret}")
   private String secretKeyString;
 
-  @Getter private SecretKey secretKey;
+  private SecretKey secretKey;
+  private boolean initialized = false;
 
-  @PostConstruct
-  void initializeSecretKey() {
+  public SecretKey getSecretKey() {
+    if (!initialized) {
+      initializeSecretKey();
+    }
+    return secretKey;
+  }
+
+  private synchronized void initializeSecretKey() {
+    if (initialized) {
+      return;
+    }
+
     if (secretKeyString == null || secretKeyString.isBlank()) {
       throw new IllegalStateException("Missing required property 'jwt.secret'.");
     }
@@ -34,6 +46,7 @@ public class JwtSecretKeyProvider {
     } finally {
       // 힙 메모리에서 key값 제거
       this.secretKeyString = null;
+      this.initialized = true;
     }
   }
 }

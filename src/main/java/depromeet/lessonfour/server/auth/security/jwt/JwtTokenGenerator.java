@@ -4,10 +4,10 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.auth.security.userdetails.AccountContext;
+import depromeet.lessonfour.server.common.annotation.Value;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 
