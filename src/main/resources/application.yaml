@@ -65,7 +65,7 @@ springdoc:
   show-actuator: true  # Actuator 관련 문서도 Swagger에서 표시
 
 cors:
-  allowed-origins: "http://localhost:5173, https://<도메인>.com:8080"
+  allowed-origins: "http://localhost:3000, http://localhost:5173, http://localhost:8080"
 
 app:
   server:
