@@ -15,7 +15,7 @@ spring:
       add-mappings: false
 
 jwt:
-  secret: mySecretKeyForJWTWhichShouldBeAtLeast256BitsLongToEnsureSecurityAndCompliance
+  secret: ${JWT__SECRET:mySecretKeyForJWTWhichShouldBeAtLeast256BitsLongToEnsureSecurityAndCompliance}
   expiration: 86400 # 24 hours
   refresh-expiration: 604800 # days
 
@@ -50,6 +50,7 @@ kakao:
   issuer-url: ${KAKAO__ISSUER_URL:https://kauth.kakao.com}
   auth-url: ${KAKAO__AUTH_URL:https://kauth.kakao.com/oauth/authorize}
   token-url: ${KAKAO__TOKEN_URL:https://kauth.kakao.com/oauth/token}
+  jwks-url: ${KAKAO__JWKS_URL:https://kauth.kakao.com/.well-known/jwks.json}
 
 ncp:
   access-key: ${NCP__ACCESS_KEY:your-ncp-access-key}
@@ -75,4 +76,4 @@ cors:
 
 app:
   server:
-    url: http://localhost:8080
+    url: ${APP__SERVER__URL:http://localhost:8080}

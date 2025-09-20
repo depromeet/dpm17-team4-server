@@ -2,7 +2,6 @@ package depromeet.lessonfour.server.users.controllers;
 
 import java.nio.charset.StandardCharsets;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import depromeet.lessonfour.server.auth.service.KakaoAuthService;
+import depromeet.lessonfour.server.common.annotation.Value;
 import depromeet.lessonfour.server.users.schemas.response.AuthResponseDto;
 
 @RestController
