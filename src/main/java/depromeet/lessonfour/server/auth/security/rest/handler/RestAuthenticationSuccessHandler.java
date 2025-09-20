@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -14,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import depromeet.lessonfour.server.auth.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.auth.security.userdetails.AccountContext;
+import depromeet.lessonfour.server.common.annotation.Value;
 import depromeet.lessonfour.server.common.utils.HttpServletUtils;
 import depromeet.lessonfour.server.users.services.UserUpdateService;
 import jakarta.servlet.ServletException;

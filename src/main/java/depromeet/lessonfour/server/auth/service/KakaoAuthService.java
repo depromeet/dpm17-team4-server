@@ -4,7 +4,6 @@ import java.security.Key;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +20,7 @@ import depromeet.lessonfour.server.auth.security.jwt.JwkLocator;
 import depromeet.lessonfour.server.auth.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.auth.security.userdetails.AccountContext;
 import depromeet.lessonfour.server.auth.service.code.AuthErrorCode;
+import depromeet.lessonfour.server.common.annotation.Value;
 import depromeet.lessonfour.server.common.exception.ServerException;
 import depromeet.lessonfour.server.users.adapters.UserRepository;
 import depromeet.lessonfour.server.users.domain.entities.User;
