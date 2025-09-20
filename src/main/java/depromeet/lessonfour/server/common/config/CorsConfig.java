@@ -27,7 +27,8 @@ public class CorsConfig {
     if (origins.contains("*")) {
       configuration.addAllowedOriginPattern("*");
     } else {
-      configuration.setAllowedOriginPatterns(origins);
+      // allowCredentials가 true일 때는 setAllowedOrigins 사용
+      configuration.setAllowedOrigins(origins);
     }
 
     // 허용할 HTTP 메서드 설정
