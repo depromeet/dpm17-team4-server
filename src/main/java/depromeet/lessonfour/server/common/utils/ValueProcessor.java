@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.config;
+package depromeet.lessonfour.server.common.utils;
 
 import java.lang.reflect.Field;
 
@@ -9,7 +9,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import depromeet.lessonfour.server.common.annotation.DynamicValue;
+import depromeet.lessonfour.server.common.annotation.Value;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Order(2)  // SecretInitializer(Order=1) 이후에 실행
 @RequiredArgsConstructor
 @DependsOn("secretInitializer")
-public class DynamicValueProcessor implements BeanPostProcessor {
+public class ValueProcessor implements BeanPostProcessor {
     
     private final Environment environment;
     
@@ -27,54 +27,45 @@ public class DynamicValueProcessor implements BeanPostProcessor {
         Class<?> clazz = bean.getClass();
         
         for (Field field : clazz.getDeclaredFields()) {
-            DynamicValue dynamicValue = field.getAnnotation(DynamicValue.class);
-            if (dynamicValue != null) {
-                processDynamicValue(bean, field, dynamicValue);
+            Value value = field.getAnnotation(Value.class);
+            if (value != null) {
+                processValue(bean, field, value);
             }
         }
         
         return bean;
     }
     
-    private void processDynamicValue(Object bean, Field field, DynamicValue dynamicValue) {
+    private void processValue(Object bean, Field field, Value value) {
         try {
-            String valueExpression = dynamicValue.value();
+            String valueExpression = value.value();
             String propertyKey = extractPropertyKey(valueExpression);
             String defaultValue = extractDefaultValue(valueExpression);
             
             // Secret Manager 키 자동 추론: kakao.client-id -> KAKAO__CLIENT_ID
             String secretKey = inferSecretKey(propertyKey);
             
-            String value = null;
-            String source = "";
+            String valueToSet = null;
             
             // 1. Secret Manager 값 우선 조회
             if (secretKey != null) {
-                value = environment.getProperty(secretKey);
-                if (value != null) {
-                    source = "Secret Manager";
-                }
+                valueToSet = environment.getProperty(secretKey);
             }
             
             // 2. Secret Manager 값이 없으면 application.yaml 값 사용
-            if (value == null) {
-                value = environment.getProperty(propertyKey, defaultValue);
-                if (value != null && !value.equals(defaultValue)) {
-                    source = "application.yaml";
-                } else if (value != null) {
-                    source = "default value";
-                }
+            if (valueToSet == null) {
+                valueToSet = environment.getProperty(propertyKey, defaultValue);
             }
             
-            if (value != null) {
+            if (valueToSet != null) {
                 field.setAccessible(true);
-                field.set(bean, value);
+                field.set(bean, valueToSet);
             } else {
-                log.warn("DynamicValue 값 없음: {} (키: {})", field.getName(), propertyKey);
+                log.warn("Value 값 없음: {} (키: {})", field.getName(), propertyKey);
             }
             
         } catch (Exception e) {
-            log.warn("DynamicValue 처리 실패: {}", field.getName(), e);
+            log.warn("Value 처리 실패: {}", field.getName(), e);
         }
     }
 

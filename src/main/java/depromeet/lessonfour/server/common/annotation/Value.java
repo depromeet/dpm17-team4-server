@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DynamicValue {
+public @interface Value {
     /**
      * 프로퍼티 키 (예: "${kakao.client-id}")
      * @Value와 동일한 문법 사용
