@@ -22,6 +22,7 @@ import depromeet.lessonfour.server.auth.security.rest.RestAuthenticationFilter;
 import depromeet.lessonfour.server.auth.security.rest.RestAuthenticationProvider;
 import depromeet.lessonfour.server.auth.security.rest.handler.RestAuthenticationFailureHandler;
 import depromeet.lessonfour.server.auth.security.rest.handler.RestAuthenticationSuccessHandler;
+import depromeet.lessonfour.server.common.config.CorsConfig;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -30,13 +31,15 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
   private final ObjectMapper objectMapper;
+  private final CorsConfig corsConfig;
 
   /** 문서 조회 API에 대한 필터 체인 */
   @Bean
   @Order(0)
   public SecurityFilterChain docsFilterChain(HttpSecurity http) throws Exception {
-    return http.securityMatcher("/swagger-ui/**", "/v3/api-docs/**")
+    return http.securityMatcher("/swagger-ui/**", "/v3/api-docs/**", "")
         .csrf(AbstractHttpConfigurer::disable)
+        .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
         .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
         .build();
   }
@@ -58,6 +61,7 @@ public class SecurityConfig {
 
     return http.securityMatcher("/api/v1/auth/login")
         .csrf(AbstractHttpConfigurer::disable)
+        .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
         .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -92,6 +96,7 @@ public class SecurityConfig {
 
     http.securityMatcher("/api/**")
         .csrf(AbstractHttpConfigurer::disable)
+        .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
         .authorizeHttpRequests(
             auth ->
                 auth.requestMatchers(
