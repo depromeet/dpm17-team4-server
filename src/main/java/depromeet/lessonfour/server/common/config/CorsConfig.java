@@ -1,9 +1,7 @@
 package depromeet.lessonfour.server.common.config;
 
 import java.util.Arrays;
-import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -13,23 +11,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class CorsConfig {
 
-  @Value("${cors.allowed-origins}")
-  private String allowedOrigins;
-
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
 
-    // 허용할 Origin 설정
-    List<String> origins = Arrays.asList(allowedOrigins.split(","));
-
-    // 개발 환경에서는 모든 Origin 허용 (선택사항)
-    if (origins.contains("*")) {
-      configuration.addAllowedOriginPattern("*");
-    } else {
-      // allowCredentials가 true일 때는 setAllowedOrigins 사용
-      configuration.setAllowedOrigins(origins);
-    }
+    // 모든 Origin 허용 (앞단의 로드밸런서/API Gateway에서 CORS 처리)
+    configuration.addAllowedOriginPattern("*");
 
     // 허용할 HTTP 메서드 설정
     configuration.setAllowedMethods(
