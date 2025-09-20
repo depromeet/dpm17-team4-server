@@ -4,6 +4,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -15,6 +17,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
 public class SecretManager {
@@ -62,7 +66,6 @@ public class SecretManager {
     headers.set("x-ncp-iam-access-key", accessKey);
     headers.set("x-ncp-apigw-signature-v2", signature);
     headers.set("Content-Type", "application/json");
-
     return headers;
   }
 
@@ -73,14 +76,38 @@ public class SecretManager {
     return restTemplate.exchange(secretManagerUrl + uri, HttpMethod.GET, entity, String.class);
   }
 
-  public ResponseEntity<String> getSecretValues() throws NoSuchAlgorithmException, InvalidKeyException {
+  public Map<String, Object> getSecretValues() throws NoSuchAlgorithmException, InvalidKeyException {
     return getSecretValues(secretId);
   }
 
-  public ResponseEntity<String> getSecretValues(String secretId) throws NoSuchAlgorithmException, InvalidKeyException {
+  public Map<String, Object> getSecretValues(String secretId) throws NoSuchAlgorithmException, InvalidKeyException {
     String uri = "/api/v1/secrets/" + secretId + "/values";
     HttpHeaders headers = getHeaders(uri, "GET");
     HttpEntity<String> entity = new HttpEntity<>(headers);
-    return restTemplate.exchange(secretManagerUrl + uri, HttpMethod.GET, entity, String.class);
+    
+    ResponseEntity<String> response = restTemplate.exchange(secretManagerUrl + uri, HttpMethod.GET, entity, String.class);
+    
+    if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+      try {
+        com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+        com.fasterxml.jackson.databind.JsonNode jsonNode = objectMapper.readTree(response.getBody());
+        if (jsonNode.has("data") && jsonNode.get("data").has("decryptedSecretChain")) {
+          JsonNode secretChain = jsonNode.get("data").get("decryptedSecretChain");
+          if (secretChain.has("active")) {
+            String activeSecretJson = secretChain.get("active").asText();
+            JsonNode activeSecrets = objectMapper.readTree(activeSecretJson);
+            Map<String, Object> secrets = new HashMap<>();
+            activeSecrets.properties().forEach(entry -> {
+              secrets.put(entry.getKey(), entry.getValue().asText());
+            });
+            return secrets;
+          }
+        }
+        return new HashMap<>();
+      } catch (Exception e) {
+        throw new RuntimeException("시크릿 응답 파싱 실패", e);
+      }
+    }
+    return new HashMap<>();
   }
 }
