@@ -44,8 +44,13 @@ public class SwaggerConfig {
                     .scheme("bearer")
                     .bearerFormat("JWT"));
 
+    // HTTP와 HTTPS 서버 모두 추가 (SSL 문제 해결을 위해)
     return new OpenAPI()
-        .addServersItem(new Server().url(serverUrl))
+        .addServersItem(
+            new Server()
+                .url(serverUrl.replace("https://", "http://"))
+                .description("HTTP Server (No SSL)"))
+        .addServersItem(new Server().url(serverUrl).description("Production Server (HTTPS)"))
         .components(components)
         .info(apiInfo())
         .addSecurityItem(securityRequirement);
@@ -56,16 +61,6 @@ public class SwaggerConfig {
     return GroupedOpenApi.builder()
         .group("general")
         .pathsToMatch("/api/**")
-        .pathsToExclude("/api/admin/**")
-        .addOperationCustomizer(customize())
-        .build();
-  }
-
-  @Bean
-  public GroupedOpenApi adminApi() {
-    return GroupedOpenApi.builder()
-        .group("admin")
-        .pathsToMatch("/api/admin/**")
         .addOperationCustomizer(customize())
         .build();
   }
