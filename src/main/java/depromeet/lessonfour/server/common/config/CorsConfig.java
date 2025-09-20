@@ -22,7 +22,13 @@ public class CorsConfig {
 
     // 허용할 Origin 설정
     List<String> origins = Arrays.asList(allowedOrigins.split(","));
-    configuration.setAllowedOriginPatterns(origins);
+    
+    // 개발 환경에서는 모든 Origin 허용 (선택사항)
+    if (origins.contains("*")) {
+      configuration.addAllowedOriginPattern("*");
+    } else {
+      configuration.setAllowedOriginPatterns(origins);
+    }
 
     // 허용할 HTTP 메서드 설정
     configuration.setAllowedMethods(
