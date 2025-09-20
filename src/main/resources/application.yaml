@@ -69,4 +69,4 @@ cors:
 
 app:
   server:
-    url: http://localhost:8080
+    url: ${APP__SERVER__URL:http://211.188.58.167:8080}
