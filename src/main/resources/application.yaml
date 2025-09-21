@@ -6,10 +6,6 @@ spring:
       pg:
         - dev
         - postgres
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
-    baseline-on-migrate: true
   web:
     resources:
       add-mappings: false
@@ -68,9 +64,3 @@ springdoc:
     path: /v3/api-docs  # OpenAPI 문서의 기본 경로 설정
   show-actuator: true  # Actuator 관련 문서도 Swagger에서 표시
 
-cors:
-  allowed-origins: "${CORS__ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173,http://localhost:8080,http://211.188.58.167:8080,http://211.188.58.167,https://211.188.58.167}"
-
-app:
-  server:
-    url: ${APP__SERVER__URL:https://211.188.58.167}
