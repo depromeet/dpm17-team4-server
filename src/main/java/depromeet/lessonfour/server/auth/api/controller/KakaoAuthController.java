@@ -65,7 +65,7 @@ public class KakaoAuthController {
         ResponseCookie refreshTokenCookie =
             ResponseCookie.from("refreshToken", authResult.refreshToken())
                 .httpOnly(true)
-                .sameSite("Strict")
+                .sameSite("None") // Strict
                 .maxAge(7 * 24 * 60 * 60) // 7일
                 .path("/")
                 .build();
