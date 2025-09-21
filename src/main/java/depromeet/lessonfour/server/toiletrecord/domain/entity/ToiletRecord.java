@@ -1,0 +1,91 @@
+package depromeet.lessonfour.server.toiletrecord.domain.entity;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import depromeet.lessonfour.server.common.domain.entity.BaseTimeEntity;
+import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
+import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
+import depromeet.lessonfour.server.user.domain.entity.User;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+// TODO : 추후 기능 명세에 따라 notnull 추가
+@Entity
+@Table(name = "toilet_record")
+@Getter
+@Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ToiletRecord extends BaseTimeEntity {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
+
+  // 작성자
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
+
+  @Column private boolean isToiletSuccess;
+
+  @Column
+  @Enumerated(EnumType.STRING)
+  private ToiletColor toiletColor;
+
+  @Column
+  @Enumerated(EnumType.STRING)
+  private ToiletShape toiletShape;
+
+  @Column
+  @Min(0)
+  @Max(100)
+  private int painScore;
+
+  @Column private int toiletDuration;
+
+  @Column(nullable = true)
+  private String additionalNote;
+
+  @Column(nullable = false)
+  @NotNull private LocalDateTime toiletAt;
+
+  public static ToiletRecord register(
+      User user,
+      boolean isToiletSuccess,
+      ToiletColor toiletColor,
+      ToiletShape toiletShape,
+      int painScore,
+      int toiletDuration,
+      String additionalNote,
+      LocalDateTime toiletAt) {
+    return ToiletRecord.builder()
+        .user(user)
+        .isToiletSuccess(isToiletSuccess)
+        .toiletColor(toiletColor)
+        .toiletShape(toiletShape)
+        .painScore(painScore)
+        .toiletDuration(toiletDuration)
+        .additionalNote(additionalNote)
+        .toiletAt(toiletAt)
+        .build();
+  }
+}
