@@ -1,6 +1,7 @@
 package depromeet.lessonfour.server.activityrecord.controllers;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -231,10 +232,10 @@ class DeleteActivityRecordE2ETest {
     assert deletedRecord.isDeleted() : "ActivityRecord should be marked as deleted";
 
     // 조회 시 삭제된 기록은 찾을 수 없어야 함
-    assert activityRecordRepository
-            .findByUser_IdAndIdAndIsDeletedFalse(testUser.getId(), testActivityRecord.getId())
-            .isEmpty()
-        : "Deleted ActivityRecord should not be found by findByUser_IdAndIdAndIsDeletedFalse";
+    assertThat(
+            activityRecordRepository.findByUser_IdAndIdAndIsDeletedFalse(
+                testUser.getId(), testActivityRecord.getId()))
+        .isEmpty();
   }
 
   @Test
@@ -257,7 +258,7 @@ class DeleteActivityRecordE2ETest {
     ActivityRecord secondRecord =
         activityRecordRepository.findById(anotherActivityRecord.getId()).orElseThrow();
 
-    assert firstRecord.isDeleted() : "First record should be deleted";
-    assert !secondRecord.isDeleted() : "Second record should not be deleted";
+    assertThat(firstRecord.isDeleted()).isTrue();
+    assertThat(secondRecord.isDeleted()).isFalse();
   }
 }

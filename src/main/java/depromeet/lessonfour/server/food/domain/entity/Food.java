@@ -29,7 +29,7 @@ public class Food extends BaseTimeEntity {
   @Column(nullable = false)
   @NotNull private String name;
 
-  @Column(nullable = false)
+  @Column(name = "score", nullable = false)
   @NotNull private double foodScore;
 
   // 테스트용 생성 메서드
