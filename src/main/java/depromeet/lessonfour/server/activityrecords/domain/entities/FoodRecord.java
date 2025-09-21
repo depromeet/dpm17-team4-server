@@ -1,6 +1,7 @@
 package depromeet.lessonfour.server.activityrecords.domain.entities;
 
 import depromeet.lessonfour.server.common.entities.BaseTimeEntity;
+import depromeet.lessonfour.server.foods.domain.entities.Food;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

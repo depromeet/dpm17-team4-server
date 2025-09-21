@@ -18,7 +18,7 @@ import depromeet.lessonfour.server.users.schemas.response.AuthResponseDto;
 
 @RestController
 @RequestMapping("/api/v1/auth/kakao")
-public class KaKaoAuthController {
+public class KakaoAuthController {
 
   private final KakaoAuthService kakaoAuthService;
 
@@ -34,7 +34,7 @@ public class KaKaoAuthController {
   @Value("${kakao.auth-url}")
   private String kakaoAuthUrl;
 
-  public KaKaoAuthController(KakaoAuthService kakaoAuthService) {
+  public KakaoAuthController(KakaoAuthService kakaoAuthService) {
     this.kakaoAuthService = kakaoAuthService;
   }
 
@@ -61,9 +61,9 @@ public class KaKaoAuthController {
     if (code != null) {
       try {
         AuthResponseDto authResult = kakaoAuthService.login(code);
-        System.out.println("refresh_token: " + authResult.refreshToken());
+        System.out.println("refreshToken: " + authResult.refreshToken());
         ResponseCookie refreshTokenCookie =
-            ResponseCookie.from("refresh_token", authResult.refreshToken())
+            ResponseCookie.from("refreshToken", authResult.refreshToken())
                 .httpOnly(true)
                 .sameSite("Strict")
                 .maxAge(7 * 24 * 60 * 60) // 7일
@@ -75,9 +75,9 @@ public class KaKaoAuthController {
             UriComponentsBuilder.fromUriString(frontendUrl)
                 .queryParam("id", authResult.id())
                 .queryParam("nickname", authResult.nickname())
-                .queryParam("profile_image", authResult.profileImage())
-                .queryParam("is_new", authResult.isNew())
-                .queryParam("provider_type", authResult.provider().getType())
+                .queryParam("profileImage", authResult.profileImage())
+                .queryParam("isNew", authResult.isNew())
+                .queryParam("providerType", authResult.provider().getType())
                 .encode(StandardCharsets.UTF_8)
                 .build()
                 .toUriString();
