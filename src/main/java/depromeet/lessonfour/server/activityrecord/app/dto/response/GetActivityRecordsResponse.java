@@ -12,7 +12,7 @@ public record GetActivityRecordsResponse(
     int waterIntakeCups,
     StressLevel stressLevel,
     List<FoodResponse> foods,
-    LocalDateTime createdAt) {
+    LocalDateTime occurredAt) {
 
   public record FoodResponse(Long id, String name, MealTime mealTime) {}
 
@@ -21,7 +21,7 @@ public record GetActivityRecordsResponse(
       int waterIntakeCups,
       StressLevel stressLevel,
       List<FoodRecord> foodRecords,
-      LocalDateTime createdAt) {
+      LocalDateTime occurredAt) {
     List<FoodResponse> foods =
         foodRecords.stream()
             .map(
@@ -29,6 +29,6 @@ public record GetActivityRecordsResponse(
                     new FoodResponse(
                         fr.getFood().getId(), fr.getFood().getName(), fr.getMealTime()))
             .toList();
-    return new GetActivityRecordsResponse(id, waterIntakeCups, stressLevel, foods, createdAt);
+    return new GetActivityRecordsResponse(id, waterIntakeCups, stressLevel, foods, occurredAt);
   }
 }

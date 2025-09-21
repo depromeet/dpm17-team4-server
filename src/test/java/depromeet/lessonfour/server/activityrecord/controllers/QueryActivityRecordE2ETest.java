@@ -126,7 +126,7 @@ class QueryActivityRecordE2ETest {
         .body("data.foods", hasSize(2))
         .body("data.foods[0].name", equalTo("사과"))
         .body("data.foods[1].name", equalTo("바나나"))
-        .body("data.createdAt", notNullValue());
+        .body("data.occurredAt", notNullValue());
   }
 
   @Test
@@ -314,7 +314,7 @@ class QueryActivityRecordE2ETest {
         .body("data.waterIntakeCups", equalTo(8))
         .body("data.stressLevel", equalTo("HIGH"))
         .body("data.foods", hasSize(0))
-        .body("data.createdAt", notNullValue());
+        .body("data.occurredAt", notNullValue());
   }
 
   @Test
