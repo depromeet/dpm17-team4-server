@@ -17,7 +17,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
-
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/foods")
 @Validated
@@ -33,14 +32,13 @@ public class FoodController {
   })
   @GetMapping(path = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> search(
-      @RequestParam String query, 
-      @RequestParam(defaultValue = "10") int count) {
+      @RequestParam String query, @RequestParam(defaultValue = "10") int count) {
     try {
       FoodSearchRequestDto request = new FoodSearchRequestDto(query, count);
       return ResponseEntity.ok(foodService.search(request));
     } catch (IllegalArgumentException e) {
       return ResponseEntity.badRequest()
-        .body(ErrorResponse.of(ErrorCode.INVALID_FIELD_ERROR, e.getMessage()));
+          .body(ErrorResponse.of(ErrorCode.INVALID_FIELD_ERROR, e.getMessage()));
     }
   }
 }
