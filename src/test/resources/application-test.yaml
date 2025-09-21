@@ -25,4 +25,18 @@ logging:
 
 kakao:
   client-id: test-client-id
-  redirect-uri: http://localhost:8080/api/auth/kakao/callback
+  client-secret: test-client-secret
+  redirect-url: http://localhost:8080/api/auth/kakao/callback
+  issuer-url: https://kauth.kakao.com
+  auth-url: https://kauth.kakao.com/oauth/authorize
+  token-url: https://kauth.kakao.com/oauth/token
+
+frontend:
+  url: http://localhost:3000
+
+cors:
+  allowed-origins: "http://localhost:3000,http://localhost:5173,http://localhost:8080"
+
+app:
+  server:
+    url: http://localhost:8080
