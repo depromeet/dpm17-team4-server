@@ -27,7 +27,7 @@ import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealFood;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealTime;
 import depromeet.lessonfour.server.activityrecord.domain.vo.StressLevel;
-import depromeet.lessonfour.server.activityrecord.infra.repository.ActivityRecordRepository;
+import depromeet.lessonfour.server.activityrecord.infra.repository.JpaActivityRecordRepository;
 import depromeet.lessonfour.server.auth.domain.vo.AccountContext;
 import depromeet.lessonfour.server.auth.infra.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.food.domain.entity.Food;
@@ -50,7 +50,7 @@ class QueryActivityRecordE2ETest {
   @Autowired private UserRepository userRepository;
   @Autowired private PasswordEncoder passwordEncoder;
   @Autowired private FoodRepository foodRepository;
-  @Autowired private ActivityRecordRepository activityRecordRepository;
+  @Autowired private JpaActivityRecordRepository activityRecordRepository;
 
   private String validJwtToken;
   private User testUser;

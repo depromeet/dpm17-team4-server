@@ -71,7 +71,7 @@ public class ActivityRecord extends BaseTimeEntity {
       cascade = CascadeType.ALL,
       orphanRemoval = true)
   @Builder.Default
-  private final List<FoodRecord> foodRecords = new ArrayList<>();
+  private List<FoodRecord> foodRecords = new ArrayList<>();
 
   public static ActivityRecord createWithMeals(
       User user,

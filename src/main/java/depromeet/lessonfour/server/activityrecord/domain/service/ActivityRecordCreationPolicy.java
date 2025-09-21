@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
-import depromeet.lessonfour.server.activityrecord.infra.repository.ActivityRecordRepository;
+import depromeet.lessonfour.server.activityrecord.app.repository.ActivityRecordRepository;
 import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.exception.ServerException;
 import depromeet.lessonfour.server.user.domain.entity.User;
@@ -20,10 +20,8 @@ public class ActivityRecordCreationPolicy {
   public void validateNoDuplicateRecord(User user, LocalDateTime occurredAt) {
     LocalDate date = occurredAt.toLocalDate();
     LocalDateTime startOfDay = date.atStartOfDay();
-    LocalDateTime endOfDay = date.plusDays(1).atStartOfDay();
 
-    if (activityRecordRepository.existsByUser_IdAndActivityAtBetweenAndIsDeletedFalse(
-        user.getId(), startOfDay, endOfDay)) {
+    if (activityRecordRepository.existsByUserIdAndActivityAt(user.getId(), startOfDay)) {
       throw new ServerException(ErrorCode.CONFLICT);
     }
   }

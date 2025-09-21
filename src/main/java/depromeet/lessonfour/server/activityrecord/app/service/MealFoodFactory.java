@@ -33,7 +33,7 @@ public class MealFoodFactory {
             dto -> {
               Food food = foodMap.get(dto.id());
               if (food == null) {
-                throw new ServerException(ErrorCode.INTERNAL_SERVER_ERROR);
+                throw new ServerException(ErrorCode.DATA_NOT_FOUND);
               }
               return new MealFood(dto.mealTime(), food);
             })

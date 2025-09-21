@@ -17,9 +17,26 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class ActivityRecordQueryRepository {
+public class QueryDslActivityRecordRepository {
 
   private final JPAQueryFactory queryFactory;
+
+  public boolean existsByUserIdAndActivityAt(Long userId, LocalDateTime activityAt) {
+    LocalDateTime startOfDay = activityAt.toLocalDate().atStartOfDay();
+    LocalDateTime endOfDay = startOfDay.plusDays(1);
+
+    Integer count =
+        queryFactory
+            .selectOne()
+            .from(activityRecord)
+            .where(
+                activityRecord.user.id.eq(userId),
+                activityRecord.activityAt.goe(startOfDay),
+                activityRecord.activityAt.lt(endOfDay),
+                activityRecord.isDeleted.eq(false))
+            .fetchFirst();
+    return count != null;
+  }
 
   public Optional<ActivityRecord> findByUserIdAndOccurredAt(Long userId, LocalDate date) {
     LocalDateTime startOfDay = date.atStartOfDay();
@@ -38,7 +55,8 @@ public class ActivityRecordQueryRepository {
                 activityRecord.activityAt.lt(endOfDay),
                 activityRecord.isDeleted.eq(false))
             .distinct()
-            .fetchOne();
+            .orderBy(activityRecord.activityAt.desc())
+            .fetchFirst();
 
     return Optional.ofNullable(record);
   }

@@ -22,7 +22,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
-import depromeet.lessonfour.server.activityrecord.infra.repository.ActivityRecordRepository;
+import depromeet.lessonfour.server.activityrecord.infra.repository.JpaActivityRecordRepository;
 import depromeet.lessonfour.server.auth.domain.vo.AccountContext;
 import depromeet.lessonfour.server.auth.infra.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.food.domain.entity.Food;
@@ -46,7 +46,7 @@ class CreateActivityRecordE2ETest {
   @Autowired private UserRepository userRepository;
   @Autowired private PasswordEncoder passwordEncoder;
   @Autowired private FoodRepository foodRepository;
-  @Autowired private ActivityRecordRepository activityRecordRepository;
+  @Autowired private JpaActivityRecordRepository activityRecordRepository;
 
   private String validJwtToken;
   private User testUser;

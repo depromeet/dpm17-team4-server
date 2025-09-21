@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import depromeet.lessonfour.server.activityrecord.app.dto.response.GetActivityRecordsResponse;
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
-import depromeet.lessonfour.server.activityrecord.infra.repository.ActivityRecordQueryRepository;
+import depromeet.lessonfour.server.activityrecord.infra.repository.QueryDslActivityRecordRepository;
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.exception.ServerException;
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class QueryActivityRecordUseCase {
 
-  private final ActivityRecordQueryRepository queryRepository;
+  private final QueryDslActivityRecordRepository queryRepository;
 
   public GetActivityRecordsResponse getActivityRecord(Long userId, LocalDate date) {
     ActivityRecord record =

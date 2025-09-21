@@ -23,6 +23,6 @@ public class EnumValidator implements ConstraintValidator<ValidEnum, Enum<?>> {
   @Override
   public boolean isValid(Enum<?> value, ConstraintValidatorContext context) {
     if (value == null) return true;
-    return validValues.contains(value.name());
+    return value.getDeclaringClass().equals(enumClass) && validValues.contains(value.name());
   }
 }

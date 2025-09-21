@@ -1,0 +1,27 @@
+package depromeet.lessonfour.server.activityrecord.infra.repository;
+
+import java.time.LocalDateTime;
+
+import org.springframework.stereotype.Repository;
+
+import depromeet.lessonfour.server.activityrecord.app.repository.ActivityRecordRepository;
+import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
+import lombok.RequiredArgsConstructor;
+
+@Repository
+@RequiredArgsConstructor
+public class ActivityRecordRepositoryImpl implements ActivityRecordRepository {
+
+  private final JpaActivityRecordRepository jpaActivityRecordRepository;
+  private final QueryDslActivityRecordRepository queryDslActivityRecordRepository;
+
+  @Override
+  public void save(ActivityRecord activityRecord) {
+    jpaActivityRecordRepository.save(activityRecord);
+  }
+
+  @Override
+  public boolean existsByUserIdAndActivityAt(Long userId, LocalDateTime activityAt) {
+    return queryDslActivityRecordRepository.existsByUserIdAndActivityAt(userId, activityAt);
+  }
+}

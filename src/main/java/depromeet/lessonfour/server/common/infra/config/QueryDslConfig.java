@@ -7,13 +7,11 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import lombok.RequiredArgsConstructor;
 
 @Configuration
-@RequiredArgsConstructor
 public class QueryDslConfig {
 
-  @PersistenceContext private final EntityManager entityManager;
+  @PersistenceContext private EntityManager entityManager;
 
   @Bean
   public JPAQueryFactory queryFactory() {

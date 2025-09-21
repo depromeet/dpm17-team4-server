@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import depromeet.lessonfour.server.activityrecord.app.dto.request.CreateActivityRecordsRequest;
+import depromeet.lessonfour.server.activityrecord.app.repository.ActivityRecordRepository;
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
 import depromeet.lessonfour.server.activityrecord.domain.service.ActivityRecordCreationPolicy;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealFood;
-import depromeet.lessonfour.server.activityrecord.infra.repository.ActivityRecordRepository;
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.user.app.service.UserQueryService;
 import depromeet.lessonfour.server.user.domain.entity.User;
