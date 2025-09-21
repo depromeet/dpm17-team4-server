@@ -133,11 +133,21 @@ curl:
 	curl -sS http://localhost:$(PORT)/api/v1/echo || true; echo
 
 postgres:
-	@echo "Creating postgres container..."; \
-	docker run -d --name postgres -p 5432:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=dpm -e POSTGRES_DB=dpm postgres; \
-	echo "Done."
+	@echo "Creating postgres container..."
+	@docker run -d --name postgres -p 5432:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=dpm -e POSTGRES_DB=dpm postgres
+	@echo "Done."
 
 postgres-stop:
-	@echo "Stopping postgres container..."; \
-	docker stop postgres; \
-	echo "Done."
+	@echo "Stopping postgres container..."
+	@docker stop postgres
+	@docker rm postgres
+	@echo "Done."
+
+frontend-install:
+	@pip install "uvicorn[standard]" fastapi
+
+frontend:
+	@SERVER_URL=${APP__SERVER__URL} python src/test/python/frontend.py
+
+frontend-dev:
+	@SERVER_URL=http://localhost:${PORT} python src/test/python/frontend.py
