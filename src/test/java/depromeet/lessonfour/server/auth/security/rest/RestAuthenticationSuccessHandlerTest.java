@@ -21,11 +21,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import depromeet.lessonfour.server.auth.security.jwt.JwtTokenGenerator;
-import depromeet.lessonfour.server.auth.security.rest.handler.RestAuthenticationSuccessHandler;
-import depromeet.lessonfour.server.auth.security.userdetails.AccountContext;
-import depromeet.lessonfour.server.common.utils.HttpServletUtils;
-import depromeet.lessonfour.server.users.services.UserUpdateService;
+import depromeet.lessonfour.server.auth.domain.vo.AccountContext;
+import depromeet.lessonfour.server.auth.infra.security.jwt.JwtTokenGenerator;
+import depromeet.lessonfour.server.auth.infra.security.rest.handler.RestAuthenticationSuccessHandler;
+import depromeet.lessonfour.server.common.util.HttpServletUtils;
+import depromeet.lessonfour.server.user.app.service.UserUpdateService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 

@@ -25,8 +25,8 @@ import depromeet.lessonfour.server.auth.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.auth.security.userdetails.AccountContext;
 import depromeet.lessonfour.server.foods.adapters.FoodRepository;
 import depromeet.lessonfour.server.foods.domain.Food;
-import depromeet.lessonfour.server.users.adapters.UserRepository;
-import depromeet.lessonfour.server.users.domain.entities.User;
+import depromeet.lessonfour.server.user.adapters.UserRepository;
+import depromeet.lessonfour.server.user.domain.entities.User;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 

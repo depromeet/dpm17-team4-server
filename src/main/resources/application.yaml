@@ -60,13 +60,17 @@ springdoc:
     path: /swagger-ui.html  # Swagger UI 접속 경로
     operations-sorter: method  # 메서드 기준 정렬
     tags-sorter: alpha  # 태그를 알파벳순으로 정렬
+    # SSL 검증 비활성화 (개발 환경용)
+    try-it-out-enabled: true
+    request-snippets-enabled: true
+    deep-linking: true
   api-docs:
     path: /v3/api-docs  # OpenAPI 문서의 기본 경로 설정
   show-actuator: true  # Actuator 관련 문서도 Swagger에서 표시
 
 cors:
-  allowed-origins: "http://localhost:5173, https://<도메인>.com:8080"
+  allowed-origins: "${CORS__ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173,http://localhost:8080,http://211.188.58.167:8080,http://211.188.58.167,https://211.188.58.167}"
 
 app:
   server:
-    url: http://localhost:8080
+    url: ${APP__SERVER__URL:https://211.188.58.167}
