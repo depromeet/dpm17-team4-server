@@ -20,6 +20,7 @@ import depromeet.lessonfour.server.activityrecord.app.dto.request.UpdateActivity
 import depromeet.lessonfour.server.activityrecord.app.dto.response.GetActivityRecordsResponse;
 import depromeet.lessonfour.server.activityrecord.app.service.CreateActivityRecordUseCase;
 import depromeet.lessonfour.server.activityrecord.app.service.DeleteActivityRecordUseCase;
+import depromeet.lessonfour.server.activityrecord.app.service.QueryActivityRecordUseCase;
 import depromeet.lessonfour.server.common.api.code.SuccessCode;
 import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,6 +37,7 @@ public class ActivityRecordsController {
 
   private final CreateActivityRecordUseCase createActivityRecordUseCase;
   private final DeleteActivityRecordUseCase deleteActivityRecordUseCase;
+  private final QueryActivityRecordUseCase queryActivityRecordUseCase;
 
   @Operation(
       summary = "생활 기록 생성",
@@ -80,7 +82,9 @@ public class ActivityRecordsController {
       security = {@SecurityRequirement(name = "JWT")})
   @GetMapping
   public SuccessResponse<GetActivityRecordsResponse> getActivityRecord(
+      @AuthenticationPrincipal(expression = "id") Long userId,
       @RequestParam(required = true) LocalDate date) {
-    return SuccessResponse.of(null);
+    return SuccessResponse.of(
+        SuccessCode.SUCCESS_FETCH, queryActivityRecordUseCase.getActivityRecord(userId, date));
   }
 }

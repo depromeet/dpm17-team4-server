@@ -3,6 +3,7 @@ package depromeet.lessonfour.server.activityrecord.app.dto.response;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import depromeet.lessonfour.server.activityrecord.domain.entity.FoodRecord;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealTime;
 import depromeet.lessonfour.server.activityrecord.domain.vo.StressLevel;
 
@@ -14,4 +15,20 @@ public record GetActivityRecordsResponse(
     LocalDateTime createdAt) {
 
   public record FoodResponse(Long id, String name, MealTime mealTime) {}
+
+  public static GetActivityRecordsResponse from(
+      Long id,
+      int waterIntakeCups,
+      StressLevel stressLevel,
+      List<FoodRecord> foodRecords,
+      LocalDateTime createdAt) {
+    List<FoodResponse> foods =
+        foodRecords.stream()
+            .map(
+                fr ->
+                    new FoodResponse(
+                        fr.getFood().getId(), fr.getFood().getName(), fr.getMealTime()))
+            .toList();
+    return new GetActivityRecordsResponse(id, waterIntakeCups, stressLevel, foods, createdAt);
+  }
 }
