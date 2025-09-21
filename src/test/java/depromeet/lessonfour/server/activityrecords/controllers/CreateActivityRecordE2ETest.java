@@ -21,12 +21,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
-import depromeet.lessonfour.server.auth.security.jwt.JwtTokenGenerator;
-import depromeet.lessonfour.server.auth.security.userdetails.AccountContext;
-import depromeet.lessonfour.server.foods.adapters.FoodRepository;
-import depromeet.lessonfour.server.foods.domain.Food;
-import depromeet.lessonfour.server.user.adapters.UserRepository;
-import depromeet.lessonfour.server.user.domain.entities.User;
+import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
+import depromeet.lessonfour.server.activityrecord.infra.repository.ActivityRecordRepository;
+import depromeet.lessonfour.server.auth.domain.vo.AccountContext;
+import depromeet.lessonfour.server.auth.infra.security.jwt.JwtTokenGenerator;
+import depromeet.lessonfour.server.food.domain.entity.Food;
+import depromeet.lessonfour.server.food.infra.repository.FoodRepository;
+import depromeet.lessonfour.server.user.domain.entity.User;
+import depromeet.lessonfour.server.user.infra.repository.UserRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
@@ -44,8 +46,10 @@ class CreateActivityRecordE2ETest {
   @Autowired private UserRepository userRepository;
   @Autowired private PasswordEncoder passwordEncoder;
   @Autowired private FoodRepository foodRepository;
+  @Autowired private ActivityRecordRepository activityRecordRepository;
 
   private String validJwtToken;
+  private User testUser;
   private final DateTimeFormatter formatter =
       DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
@@ -55,7 +59,7 @@ class CreateActivityRecordE2ETest {
     RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 
     // 실제 사용자 생성 및 JWT 토큰 생성
-    User testUser = createTestUser("test@example.com", "password123", "testuser");
+    testUser = createTestUser("test@example.com", "password123", "testuser");
     validJwtToken = "Bearer " + jwtTokenGenerator.generateAccessToken(AccountContext.of(testUser));
 
     // 테스트용 Food 데이터 생성
@@ -593,5 +597,105 @@ class CreateActivityRecordE2ETest {
         .post("/api/v1/activity-records")
         .then()
         .statusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value());
+  }
+
+  @Test
+  @DisplayName("특정 날짜의 생활 기록을 생성했다가 삭제한 후 다시 생성하는 경우 성공한다")
+  void givenCreateDeleteRecreate_whenCreateActivityRecord_thenSuccess() {
+    LocalDateTime specificDate = LocalDateTime.of(2024, 1, 15, 14, 30, 0);
+    String createRequest =
+        String.format(
+            """
+        {
+          "foods": [
+            {
+              "id": 1,
+              "mealTime": "LUNCH"
+            }
+          ],
+          "water": 3,
+          "stress": "MEDIUM",
+          "occurredAt": "%s"
+        }
+        """,
+            specificDate.format(formatter));
+
+    // 1. 첫 번째 생활 기록 생성
+    given()
+        .log()
+        .all()
+        .contentType(ContentType.JSON)
+        .header("Authorization", validJwtToken)
+        .body(createRequest)
+        .when()
+        .post("/api/v1/activity-records")
+        .then()
+        .log()
+        .all()
+        .statusCode(HttpStatus.CREATED.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("status", equalTo(201));
+
+    // 생성된 생활 기록 ID 추출 - activityAt으로 조회
+    LocalDateTime startOfDay = specificDate.toLocalDate().atStartOfDay();
+    LocalDateTime endOfDay = specificDate.toLocalDate().atTime(23, 59, 59);
+
+    List<ActivityRecord> activityRecords =
+        activityRecordRepository.findAll().stream()
+            .filter(record -> record.getUser().getId().equals(testUser.getId()))
+            .filter(record -> !record.isDeleted())
+            .filter(
+                record ->
+                    record.getActivityAt().isAfter(startOfDay)
+                        && record.getActivityAt().isBefore(endOfDay))
+            .toList();
+
+    Long activityRecordId =
+        activityRecords.stream()
+            .findFirst()
+            .map(ActivityRecord::getId)
+            .orElseThrow(() -> new RuntimeException("생성된 ActivityRecord를 찾을 수 없습니다"));
+
+    // 2. 생성된 생활 기록 삭제
+    given()
+        .log()
+        .all()
+        .header("Authorization", validJwtToken)
+        .when()
+        .delete("/api/v1/activity-records/{activityRecordId}", activityRecordId)
+        .then()
+        .log()
+        .all()
+        .statusCode(HttpStatus.OK.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE);
+
+    // 3. 같은 날짜로 다시 생활 기록 생성 (성공해야 함)
+    given()
+        .log()
+        .all()
+        .contentType(ContentType.JSON)
+        .header("Authorization", validJwtToken)
+        .body(createRequest)
+        .when()
+        .post("/api/v1/activity-records")
+        .then()
+        .log()
+        .all()
+        .statusCode(HttpStatus.CREATED.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("status", equalTo(201));
+
+    // 4. 재생성된 기록이 실제로 존재하는지 확인
+    List<ActivityRecord> recreatedRecords =
+        activityRecordRepository.findAll().stream()
+            .filter(record -> record.getUser().getId().equals(testUser.getId()))
+            .filter(record -> !record.isDeleted())
+            .filter(
+                record ->
+                    record.getActivityAt().isAfter(startOfDay)
+                        && record.getActivityAt().isBefore(endOfDay))
+            .toList();
+
+    assert !recreatedRecords.isEmpty() : "재생성된 ActivityRecord가 존재하지 않습니다";
   }
 }

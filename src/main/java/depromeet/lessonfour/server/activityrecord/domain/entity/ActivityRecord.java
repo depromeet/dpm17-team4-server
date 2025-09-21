@@ -95,4 +95,8 @@ public class ActivityRecord extends BaseTimeEntity {
 
     return activityRecord;
   }
+
+  public void delete() {
+    this.isDeleted = true;
+  }
 }

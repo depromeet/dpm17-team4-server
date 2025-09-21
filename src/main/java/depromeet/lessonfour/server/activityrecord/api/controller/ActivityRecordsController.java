@@ -19,6 +19,7 @@ import depromeet.lessonfour.server.activityrecord.app.dto.request.CreateActivity
 import depromeet.lessonfour.server.activityrecord.app.dto.request.UpdateActivityRecordsRequest;
 import depromeet.lessonfour.server.activityrecord.app.dto.response.GetActivityRecordsResponse;
 import depromeet.lessonfour.server.activityrecord.app.service.CreateActivityRecordUseCase;
+import depromeet.lessonfour.server.activityrecord.app.service.DeleteActivityRecordUseCase;
 import depromeet.lessonfour.server.common.api.code.SuccessCode;
 import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 public class ActivityRecordsController {
 
   private final CreateActivityRecordUseCase createActivityRecordUseCase;
+  private final DeleteActivityRecordUseCase deleteActivityRecordUseCase;
 
   @Operation(
       summary = "생활 기록 생성",
@@ -66,7 +68,9 @@ public class ActivityRecordsController {
       security = {@SecurityRequirement(name = "JWT")})
   @DeleteMapping("/{activityRecordId}")
   public SuccessResponse<?> deleteActivityRecord(
+      @AuthenticationPrincipal(expression = "id") Long userId,
       @PathVariable("activityRecordId") Long activityRecordId) {
+    deleteActivityRecordUseCase.deleteActivityRecord(userId, activityRecordId);
     return SuccessResponse.of(SuccessCode.SUCCESS_DELETE);
   }
 
