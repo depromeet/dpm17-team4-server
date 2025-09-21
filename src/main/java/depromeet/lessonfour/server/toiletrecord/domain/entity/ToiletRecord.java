@@ -1,7 +1,6 @@
 package depromeet.lessonfour.server.toiletrecord.domain.entity;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import depromeet.lessonfour.server.common.domain.entity.BaseTimeEntity;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
@@ -37,55 +36,55 @@ import lombok.NoArgsConstructor;
 public class ToiletRecord extends BaseTimeEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   // 작성자
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @Column private boolean isToiletSuccess;
+  @Column private boolean isSuccessful;
 
   @Column
   @Enumerated(EnumType.STRING)
-  private ToiletColor toiletColor;
+  private ToiletColor color;
 
   @Column
   @Enumerated(EnumType.STRING)
-  private ToiletShape toiletShape;
+  private ToiletShape shape;
 
   @Column
   @Min(0)
   @Max(100)
-  private int painScore;
+  private int pain;
 
-  @Column private int toiletDuration;
+  @Column private int duration;
 
   @Column(nullable = true)
-  private String additionalNote;
+  private String note;
 
   @Column(nullable = false)
-  @NotNull private LocalDateTime toiletAt;
+  @NotNull private LocalDateTime occurredAt;
 
   public static ToiletRecord register(
       User user,
-      boolean isToiletSuccess,
-      ToiletColor toiletColor,
-      ToiletShape toiletShape,
-      int painScore,
-      int toiletDuration,
-      String additionalNote,
-      LocalDateTime toiletAt) {
+      boolean isSuccessful,
+      ToiletColor color,
+      ToiletShape shape,
+      int pain,
+      int duration,
+      String note,
+      LocalDateTime occurredAt) {
     return ToiletRecord.builder()
         .user(user)
-        .isToiletSuccess(isToiletSuccess)
-        .toiletColor(toiletColor)
-        .toiletShape(toiletShape)
-        .painScore(painScore)
-        .toiletDuration(toiletDuration)
-        .additionalNote(additionalNote)
-        .toiletAt(toiletAt)
+        .isSuccessful(isSuccessful)
+        .color(color)
+        .shape(shape)
+        .pain(pain)
+        .duration(duration)
+        .note(note)
+        .occurredAt(occurredAt)
         .build();
   }
 }

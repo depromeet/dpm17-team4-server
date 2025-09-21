@@ -1,7 +1,6 @@
 package depromeet.lessonfour.server.toiletrecord.api.controller;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -43,15 +42,15 @@ public class ToiletRecordController {
     // 임시 더미 응답
     ToiletRecordResponseDto response =
         new ToiletRecordResponseDto(
-            UUID.randomUUID(), // 생성된 레코드 id (더미)
+            1L, // 생성된 레코드 id (더미)
             userId, // 작성자 id
-            request.toiletAt(),
-            request.isToiletSuccess(),
-            request.toiletColor(),
-            request.toiletShape(),
-            request.painScore(),
-            request.toiletDuration(),
-            request.additionalNote());
+            request.occurredAt(),
+            request.isSuccessful(),
+            request.color(),
+            request.shape(),
+            request.pain(),
+            request.duration(),
+            request.note());
     return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_CREATE, response));
   }
 
@@ -63,7 +62,7 @@ public class ToiletRecordController {
   })
   @GetMapping("/{toiletRecordId}/detail")
   public ResponseEntity<SuccessResponse<ToiletRecordResponseDto>> getToiletRecordDetail(
-      @PathVariable UUID toiletRecordId, @AuthenticationPrincipal(expression = "id") Long userId) {
+      @PathVariable Long toiletRecordId, @AuthenticationPrincipal(expression = "id") Long userId) {
     // 임시 더미 응답
     ToiletRecordResponseDto response =
         new ToiletRecordResponseDto(
@@ -88,20 +87,20 @@ public class ToiletRecordController {
   @PatchMapping("/{toiletRecordId}")
   public ResponseEntity<SuccessResponse<ToiletRecordResponseDto>> updateToiletRecord(
       @Valid @RequestBody ToiletRecordUpdateRequestDto request,
-      @PathVariable UUID toiletRecordId,
+      @PathVariable Long toiletRecordId,
       @AuthenticationPrincipal(expression = "id") Long userId) {
     // 임시 더미 응답
     ToiletRecordResponseDto response =
         new ToiletRecordResponseDto(
-            UUID.randomUUID(), // 생성된 레코드 id (더미)
+            1L, // 생성된 레코드 id (더미)
             userId, // 작성자 id
-            request.toiletAt(),
-            request.isToiletSuccess(),
-            request.toiletColor(),
-            request.toiletShape(),
-            request.painScore(),
-            request.toiletDuration(),
-            request.additionalNote());
+            request.occurredAt(),
+            request.isSuccessful(),
+            request.color(),
+            request.shape(),
+            request.pain(),
+            request.duration(),
+            request.note());
     return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_UPDATE, response));
   }
 
@@ -113,7 +112,7 @@ public class ToiletRecordController {
   })
   @DeleteMapping("/{toiletRecordId}")
   public ResponseEntity<SuccessResponse<Void>> deleteToiletRecord(
-      @PathVariable UUID toiletRecordId, @AuthenticationPrincipal(expression = "id") Long userId) {
+      @PathVariable Long toiletRecordId, @AuthenticationPrincipal(expression = "id") Long userId) {
     return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_DELETE));
   }
 }
