@@ -13,9 +13,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import depromeet.lessonfour.server.auth.api.util.RefreshTokenCookieGenerator;
 import depromeet.lessonfour.server.auth.app.service.KakaoAuthService;
 import depromeet.lessonfour.server.user.app.dto.response.AuthResponseDto;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "카카오 인증", description = "카카오 인증에 대한 API 문서입니다.")
 @RestController
 @RequestMapping("/api/v1/auth/kakao")
 public class KakaoAuthController {
@@ -38,12 +43,14 @@ public class KakaoAuthController {
     this.kakaoAuthService = kakaoAuthService;
   }
 
+  @Operation(summary = "카카오 로그인", description = "카카오를 통해 로그인을 진행합니다.")
   @PostMapping("/login")
   public ResponseEntity<Void> kakaoLogin() {
     String authUrl = kakaoAuthService.getRequestUrl();
     return ResponseEntity.status(302).header("Location", authUrl).build();
   }
 
+  @Hidden
   @GetMapping("/callback")
   public ResponseEntity<Void> kakaoCallback(
       @RequestParam(required = false) String code, @RequestParam(required = false) String error) {
@@ -63,14 +70,7 @@ public class KakaoAuthController {
         AuthResponseDto authResult = kakaoAuthService.login(code);
         System.out.println("refreshToken: " + authResult.refreshToken());
         ResponseCookie refreshTokenCookie =
-            ResponseCookie.from("refreshToken", authResult.refreshToken())
-                .httpOnly(true)
-                .sameSite("None") // Strict
-                .maxAge(7 * 24 * 60 * 60) // 7일
-                .path("/")
-                .build();
-        // .secure(true) // HTTPS에서만 전송
-
+            RefreshTokenCookieGenerator.generate(authResult.refreshToken());
         String successUrl =
             UriComponentsBuilder.fromUriString(frontendUrl)
                 .queryParam("id", authResult.id())
@@ -81,11 +81,6 @@ public class KakaoAuthController {
                 .encode(StandardCharsets.UTF_8)
                 .build()
                 .toUriString();
-
-        /*
-        System.out.println(
-            "User authenticated: " + user.getUsername() + " (" + user.getEmail() + ")");
-        */
 
         return ResponseEntity.status(302)
             .header("Location", successUrl)

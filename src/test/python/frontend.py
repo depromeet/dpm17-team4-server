@@ -20,7 +20,8 @@ SERVER_URL = os.environ.get("SERVER_URL", "http://211.188.58.167")
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     """홈페이지 - 카카오 로그인 버튼 및 로그인 정보 표시"""
-    
+    print("Set-Cookie headers:", request.headers.get("cookie"))
+
     # URL 파라미터에서 사용자 정보 추출
     user_id = request.query_params.get("id")
     nickname = request.query_params.get("nickname")
