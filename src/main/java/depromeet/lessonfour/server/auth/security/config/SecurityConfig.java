@@ -98,7 +98,6 @@ public class SecurityConfig {
                         "/api/v1/health",
                         "/api/v1/auth/signup",
                         "/api/v1/auth/refresh",
-                        "/api/v1/activity-records/**",
                         "/api/v1/auth/kakao/**")
                     .permitAll()
                     .anyRequest()
@@ -113,8 +112,8 @@ public class SecurityConfig {
         .exceptionHandling(
             exception ->
                 exception
-                    .authenticationEntryPoint(new JwtAuthenticationEntryPoint(objectMapper))
-                    .accessDeniedHandler(new JwtAccessDeniedHandler(objectMapper)));
+                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                    .accessDeniedHandler(jwtAccessDeniedHandler));
 
     return http.build();
   }

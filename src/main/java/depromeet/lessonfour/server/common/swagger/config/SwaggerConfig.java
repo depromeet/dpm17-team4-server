@@ -123,7 +123,7 @@ public class SwaggerConfig {
             .type("object")
             .addProperty("status", new Schema<>().type("integer").example(status.value()))
             .addProperty("message", new Schema<>().type("string").example(message))
-            .addProperty("timestamp", new Schema<>().type("string").format("date-time"));
+            .addProperty("timestamp", new Schema<>().type("string").format("date-mealTime"));
 
     MediaType mediaType = new MediaType().schema(errorSchema);
     Content content = new Content().addMediaType("application/json", mediaType);

@@ -1,6 +1,7 @@
 package depromeet.lessonfour.server.activityrecords.domain.entities;
 
 import depromeet.lessonfour.server.common.entities.BaseTimeEntity;
+import depromeet.lessonfour.server.foods.domain.Food;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -42,7 +43,8 @@ public class FoodRecord extends BaseTimeEntity {
   @Column(nullable = false)
   private MealTime mealTime;
 
-  public static FoodRecord register(ActivityRecord activityRecord, Food food, MealTime mealTime) {
+  public static FoodRecord createRecord(
+      ActivityRecord activityRecord, Food food, MealTime mealTime) {
     return FoodRecord.builder()
         .activityRecord(activityRecord)
         .food(food)

@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -52,12 +51,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   }
 
   private Authentication authenticate(String token) {
-    JwtAuthenticationToken authRequest = new JwtAuthenticationToken(token);
-
     try {
+      JwtAuthenticationToken authRequest = new JwtAuthenticationToken(token);
       return authenticationManager.authenticate(authRequest);
-    } catch (AuthenticationException e) {
-      log.debug("JWT Authentication failed: {}", e.getMessage());
+    } catch (Exception e) {
+      log.debug("JWT authentication failed: {}", e.getMessage());
       return null;
     }
   }

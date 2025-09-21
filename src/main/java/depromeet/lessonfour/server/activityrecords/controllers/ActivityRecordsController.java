@@ -3,6 +3,7 @@ package depromeet.lessonfour.server.activityrecords.controllers;
 import java.time.LocalDate;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import depromeet.lessonfour.server.activityrecords.schemas.request.CreateActivityRecordsRequest;
 import depromeet.lessonfour.server.activityrecords.schemas.request.UpdateActivityRecordsRequest;
 import depromeet.lessonfour.server.activityrecords.schemas.response.GetActivityRecordsResponse;
+import depromeet.lessonfour.server.activityrecords.services.CreateActivityRecordUseCase;
 import depromeet.lessonfour.server.common.exception.code.SuccessCode;
 import depromeet.lessonfour.server.common.exception.schemas.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +33,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ActivityRecordsController {
 
+  private final CreateActivityRecordUseCase createActivityRecordUseCase;
+
   @Operation(
       summary = "생활 기록 생성",
       description = "새로운 생활 기록을 생성합니다.",
@@ -38,7 +42,10 @@ public class ActivityRecordsController {
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping
   public SuccessResponse<?> createActivityRecord(
+      @AuthenticationPrincipal(expression = "id") Long userId,
       @RequestBody @Valid CreateActivityRecordsRequest dto) {
+    createActivityRecordUseCase.saveActivityRecord(userId, dto);
+
     return SuccessResponse.of(SuccessCode.SUCCESS_CREATE);
   }
 
@@ -46,9 +53,9 @@ public class ActivityRecordsController {
       summary = "생활 기록 수정",
       description = "기존 생활 기록을 수정합니다. 없던 음식은 추가됩니다.",
       security = {@SecurityRequirement(name = "JWT")})
-  @PatchMapping("/{activity-record-id}")
+  @PatchMapping("/{activityRecordId}")
   public SuccessResponse<?> updateActivityRecord(
-      @PathVariable("activity-record-id") Long activityRecordId,
+      @PathVariable("activityRecordId") Long activityRecordId,
       @RequestBody @Valid UpdateActivityRecordsRequest dto) {
     return SuccessResponse.of(SuccessCode.SUCCESS_UPDATE);
   }
@@ -57,9 +64,9 @@ public class ActivityRecordsController {
       summary = "생활 기록 삭제",
       description = "기존 생활 기록을 삭제합니다.",
       security = {@SecurityRequirement(name = "JWT")})
-  @DeleteMapping("/{activity-record-id}")
+  @DeleteMapping("/{activityRecordId}")
   public SuccessResponse<?> deleteActivityRecord(
-      @PathVariable("activity-record-id") Long activityRecordId) {
+      @PathVariable("activityRecordId") Long activityRecordId) {
     return SuccessResponse.of(SuccessCode.SUCCESS_DELETE);
   }
 

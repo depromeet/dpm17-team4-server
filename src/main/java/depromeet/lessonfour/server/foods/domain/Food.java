@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.activityrecords.domain.entities;
+package depromeet.lessonfour.server.foods.domain;
 
 import depromeet.lessonfour.server.common.entities.BaseTimeEntity;
 import jakarta.persistence.Column;
@@ -31,4 +31,9 @@ public class Food extends BaseTimeEntity {
 
   @Column(nullable = false)
   @NotNull private double foodScore;
+
+  // 테스트용 생성 메서드
+  public static Food createForTest(String name, double foodScore) {
+    return Food.builder().name(name).foodScore(foodScore).build();
+  }
 }
