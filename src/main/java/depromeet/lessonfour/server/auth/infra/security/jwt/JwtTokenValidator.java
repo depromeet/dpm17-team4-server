@@ -1,7 +1,5 @@
 package depromeet.lessonfour.server.auth.infra.security.jwt;
 
-import java.util.UUID;
-
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -38,11 +36,11 @@ public class JwtTokenValidator {
   }
 
   /** JWT 토큰에서 사용자 ID 추출 */
-  public UUID extractUserId(String token) {
+  public Long extractUserId(String token) {
     Claims claims = parseTokenClaims(token);
     String subject = claims.getSubject();
     try {
-      return UUID.fromString(subject);
+      return Long.parseLong(subject);
     } catch (IllegalArgumentException e) {
       throw new IllegalArgumentException("Invalid subject format for userId", e);
     }

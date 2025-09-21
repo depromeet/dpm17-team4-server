@@ -27,6 +27,7 @@ public class JwtTokenGenerator {
     long expirationMillis = accessTokenExpirationSeconds * 1000L;
     return Jwts.builder()
         .subject(String.valueOf(accountContext.getId()))
+        .id(UUID.randomUUID().toString())
         .issuedAt(new Date())
         .expiration(new Date(System.currentTimeMillis() + expirationMillis))
         .claim("email", accountContext.getEmail())
@@ -47,10 +48,11 @@ public class JwtTokenGenerator {
   }
 
   // 테스트용 오버로드 메서드들
-  public String generateAccessToken(UUID userId, String email, String nickname) {
+  public String generateAccessToken(Long userId, String email, String nickname) {
     long expirationMillis = accessTokenExpirationSeconds * 1000L;
     return Jwts.builder()
         .subject(String.valueOf(userId))
+        .id(UUID.randomUUID().toString())
         .issuedAt(new Date())
         .expiration(new Date(System.currentTimeMillis() + expirationMillis))
         .claim("email", email)
@@ -63,6 +65,7 @@ public class JwtTokenGenerator {
       Long userId, String email, String nickname, Instant expiration) {
     return Jwts.builder()
         .subject(String.valueOf(userId))
+        .id(UUID.randomUUID().toString())
         .issuedAt(new Date())
         .expiration(Date.from(expiration))
         .claim("email", email)
