@@ -1,6 +1,5 @@
 package depromeet.lessonfour.server.activityrecords.services;
 
-import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,11 +25,10 @@ public class CreateActivityRecordUseCase {
   private final UserQueryService userQueryService;
   private final ActivityRecordRepository activityRecordRepository;
   private final MealFoodFactory mealFoodFactory;
-  private final Clock clock;
 
   public void saveActivityRecord(Long userId, CreateActivityRecordsRequest dto) {
     User user = userQueryService.findById(userId);
-    validateNoDuplicateRecord(user);
+    validateNoDuplicateRecord(user, dto.occurredAt());
 
     List<MealFood> mealFoods = mealFoodFactory.createMealFoods(dto.foods());
     ActivityRecord activityRecord =
@@ -40,12 +38,12 @@ public class CreateActivityRecordUseCase {
     activityRecordRepository.save(activityRecord);
   }
 
-  private void validateNoDuplicateRecord(User user) {
-    LocalDate today = LocalDate.now(clock);
-    LocalDateTime startOfDay = today.atStartOfDay();
-    LocalDateTime endOfDay = today.plusDays(1).atStartOfDay();
+  private void validateNoDuplicateRecord(User user, LocalDateTime occurredAt) {
+    LocalDate date = occurredAt.toLocalDate();
+    LocalDateTime startOfDay = date.atStartOfDay();
+    LocalDateTime endOfDay = date.plusDays(1).atStartOfDay();
 
-    if (activityRecordRepository.existsByUser_IdAndCreatedAtBetween(
+    if (activityRecordRepository.existsByUser_IdAndActivityAtBetweenAndIsDeletedFalse(
         user.getId(), startOfDay, endOfDay)) {
       throw new ServerException(ErrorCode.CONFLICT);
     }

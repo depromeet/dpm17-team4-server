@@ -8,6 +8,6 @@ import depromeet.lessonfour.server.activityrecords.domain.entities.ActivityRecor
 
 public interface ActivityRecordRepository extends JpaRepository<ActivityRecord, Long> {
 
-  boolean existsByUser_IdAndCreatedAtBetween(
+  boolean existsByUser_IdAndActivityAtBetweenAndIsDeletedFalse(
       Long id, LocalDateTime startOfDay, LocalDateTime endOfDay);
 }
