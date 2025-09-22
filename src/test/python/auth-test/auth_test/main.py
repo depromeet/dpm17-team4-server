@@ -14,8 +14,8 @@ import json
 
 
 app = FastAPI(title="Kakao OAuth Login Service", version="1.0.0")
-SERVER_URL = os.environ.get("SERVER_URL", "http://211.188.58.167")
-# SERVER_URL = "http://localhost:8080"
+SERVICE_PORT = int(os.environ.get("SERVICE_PORT", 3000))
+SERVER_URL = os.environ.get("SERVER_URL", f"http://localhost:8080")
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
@@ -193,8 +193,6 @@ async def home(request: Request):
     """
     return HTMLResponse(content=html_content)
 
-
-SERVICE_PORT = int(os.environ.get("SERVICE_PORT", 3000))
 
 if __name__ == "__main__":
     print("🚀 카카오 OAuth 로그인 서비스 시작 중...")

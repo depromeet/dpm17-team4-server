@@ -11,7 +11,7 @@ PID_FILE := .server.pid
 LOG_DIR := logs
 LOG_FILE := $(LOG_DIR)/server.log
 
-.PHONY: help build build-no-test jar run start stop restart status logs test clean curl format format-check clear-h2 ssh
+.PHONY: help build build-no-test jar run start stop restart status logs test clean curl format format-check clear-h2 ssh poetry auth-test
 
 help:
 	@echo "Available targets:"
@@ -143,14 +143,11 @@ postgres-stop:
 	@docker rm postgres
 	@echo "Done."
 
-frontend-install:
-	@pip install "uvicorn[standard]" fastapi
-
-frontend:
-	@SERVER_URL=${APP__SERVER__URL} python src/test/python/frontend.py
-
-frontend-dev:
-	@SERVER_URL=http://localhost:${PORT} python src/test/python/frontend.py
-
 ssh:
 	ssh root@${APP__SERVER__URL}
+
+poetry:
+	@pip install poetry
+
+auth-test:
+	@(cd src/test/python/auth-test && poetry install && SERVER_URL=${APP__SERVER__URL} poetry run python -m auth_test.main)
