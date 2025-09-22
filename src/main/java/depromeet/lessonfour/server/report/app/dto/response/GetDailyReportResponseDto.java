@@ -28,7 +28,7 @@ public record GetDailyReportResponseDto(
   public record PooDailyReport(double score, PooSummary summary, List<PooReportItem> items) {}
 
   public record PooSummary(
-      String image, String firstGradient, String secondGradient, String caption, String message) {}
+      String image, List<String> backgroundColors, String caption, String message) {}
 
   public record PooReportItem(
       LocalDateTime occurredAt,

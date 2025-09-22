@@ -50,7 +50,7 @@ public class DailyReportMapper {
     return new GetDailyReportResponseDto.PooDailyReport(
         85.5,
         new PooSummary(
-            "http://dummy_image.png", "#A4141E", "#FF535F", "화가 잔뜩 난 대장", "전문가 상담이 필요해요"),
+            "http://dummy_image.png", List.of("#A4141E", "#FF535F"), "화가 잔뜩 난 대장", "전문가 상담이 필요해요"),
         List.of(
             new PooReportItem(
                 LocalDateTime.now(),
@@ -70,7 +70,7 @@ public class DailyReportMapper {
                 LocalDateTime.now().minusDays(1),
                 List.of(
                     new FoodReportMeal(MealTime.BREAKFAST, false, List.of("토스트", "커피", "계란")),
-                    new FoodReportMeal(MealTime.LUNCH, true, List.of("매운 떡볶이", "순대", "튀김")),
+                    new FoodReportMeal(MealTime.LUNCH, true, List.of("떡볶이", "순대", "튀김")),
                     new FoodReportMeal(MealTime.DINNER, false, List.of("샐러드", "닭가슴살", "고구마")),
                     new FoodReportMeal(MealTime.SNACK, false, List.of("아이스크림", "과자")))),
             new FoodReportItem(

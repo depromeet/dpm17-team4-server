@@ -31,13 +31,13 @@ public class GetDailyReportUseCase {
   private final DailySuggestionEvaluator dailySuggestionEvaluator;
   private final DailyReportMapper dailyReportMapper;
 
-  public GetDailyReportResponseDto getDailyReport(Long userId, LocalDateTime dataTime) {
+  public GetDailyReportResponseDto getDailyReport(Long userId, LocalDateTime dateTime) {
     FoodEvaluation food = dailyFoodEvaluator.evaluate();
     PooEvaluation poo = dailyPooEvaluator.evaluate();
     StressEvaluation stress = dailyStressEvaluator.evaluate();
     WaterEvaluation water = dailyWaterEvaluator.evaluate();
     SuggestionEvaluation suggestion = dailySuggestionEvaluator.evaluate();
 
-    return dailyReportMapper.toResponse(LocalDateTime.now(), food, poo, stress, water, suggestion);
+    return dailyReportMapper.toResponse(dateTime, food, poo, stress, water, suggestion);
   }
 }
