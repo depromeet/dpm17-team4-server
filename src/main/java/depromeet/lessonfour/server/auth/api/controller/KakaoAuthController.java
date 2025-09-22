@@ -45,9 +45,9 @@ public class KakaoAuthController {
 
   @Operation(summary = "카카오 로그인", description = "카카오를 통해 로그인을 진행합니다.")
   @PostMapping("/login")
-  public ResponseEntity<Void> kakaoLogin(
-      @RequestParam(required = false) String redirectUri) {
-    String authUrl = kakaoAuthService.getRequestUrl(redirectUri != null ? redirectUri : frontendUrl);
+  public ResponseEntity<Void> kakaoLogin(@RequestParam(required = false) String redirectUri) {
+    String authUrl =
+        kakaoAuthService.getRequestUrl(redirectUri != null ? redirectUri : frontendUrl);
     return ResponseEntity.status(302).header("Location", authUrl).build();
   }
 
