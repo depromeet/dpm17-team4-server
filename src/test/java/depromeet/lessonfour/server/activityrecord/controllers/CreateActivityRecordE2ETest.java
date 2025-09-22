@@ -50,6 +50,10 @@ class CreateActivityRecordE2ETest {
 
   private String validJwtToken;
   private User testUser;
+  private Long appleId;
+  private Long bananaId;
+  private Long saladId;
+  private Long burgerId;
   private final DateTimeFormatter formatter =
       DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
@@ -69,7 +73,11 @@ class CreateActivityRecordE2ETest {
             Food.createForTest("바나나", 4.0),
             Food.createForTest("샐러드", 5.0),
             Food.createForTest("햄버거", 2.0));
-    foodRepository.saveAll(foods);
+    List<Food> savedFoods = foodRepository.saveAll(foods);
+    appleId = savedFoods.get(0).getId();
+    bananaId = savedFoods.get(1).getId();
+    saladId = savedFoods.get(2).getId();
+    burgerId = savedFoods.get(3).getId();
   }
 
   private User createTestUser(String email, String password, String nickname) {
@@ -87,11 +95,11 @@ class CreateActivityRecordE2ETest {
         {
           "foods": [
             {
-              "id": 1,
+              "id": %d,
               "mealTime": "BREAKFAST"
             },
             {
-              "id": 2,
+              "id": %d,
               "mealTime": "LUNCH"
             }
           ],
@@ -100,7 +108,7 @@ class CreateActivityRecordE2ETest {
           "occurredAt": "%s"
         }
         """,
-            now.format(formatter));
+            appleId, bananaId, now.format(formatter));
 
     given()
         .log()
@@ -128,7 +136,7 @@ class CreateActivityRecordE2ETest {
         {
           "foods": [
             {
-              "id": 1,
+              "id": %d,
               "mealTime": "BREAKFAST"
             }
           ],
@@ -137,7 +145,7 @@ class CreateActivityRecordE2ETest {
           "occurredAt": "%s"
         }
         """,
-            now.format(formatter));
+            appleId, now.format(formatter));
 
     given()
         .contentType(ContentType.JSON)
@@ -158,7 +166,7 @@ class CreateActivityRecordE2ETest {
         {
           "foods": [
             {
-              "id": 1,
+              "id": %d,
               "mealTime": "BREAKFAST"
             }
           ],
@@ -167,7 +175,7 @@ class CreateActivityRecordE2ETest {
           "occurredAt": "%s"
         }
         """,
-            now.format(formatter));
+            appleId, now.format(formatter));
 
     given()
         .contentType(ContentType.JSON)
@@ -217,7 +225,7 @@ class CreateActivityRecordE2ETest {
         {
           "foods": [
             {
-              "id": 1,
+              "id": %d,
               "mealTime": "BREAKFAST"
             }
           ],
@@ -226,7 +234,7 @@ class CreateActivityRecordE2ETest {
           "occurredAt": "%s"
         }
         """,
-            now.format(formatter));
+            appleId, now.format(formatter));
 
     given()
         .contentType(ContentType.JSON)
@@ -250,7 +258,7 @@ class CreateActivityRecordE2ETest {
         {
           "foods": [
             {
-              "id": 1,
+              "id": %d,
               "mealTime": "BREAKFAST"
             }
           ],
@@ -259,7 +267,7 @@ class CreateActivityRecordE2ETest {
           "occurredAt": "%s"
         }
         """,
-            now.format(formatter));
+            appleId, now.format(formatter));
 
     given()
         .contentType(ContentType.JSON)
@@ -283,7 +291,7 @@ class CreateActivityRecordE2ETest {
         {
           "foods": [
             {
-              "id": 1,
+              "id": %d,
               "mealTime": "BREAKFAST"
             }
           ],
@@ -292,7 +300,7 @@ class CreateActivityRecordE2ETest {
           "occurredAt": "%s"
         }
         """,
-            now.format(formatter));
+            appleId, now.format(formatter));
 
     given()
         .contentType(ContentType.JSON)
@@ -310,11 +318,12 @@ class CreateActivityRecordE2ETest {
   @DisplayName("선택한 날짜와 시간이 null인 경우 400 에러를 반환한다")
   void givenNullSelectedWhen_whenCreateActivityRecord_thenBadRequest() {
     String createRequest =
-        """
+        String.format(
+            """
         {
           "foods": [
             {
-              "id": 1,
+              "id": %d,
               "mealTime": "BREAKFAST"
             }
           ],
@@ -322,7 +331,8 @@ class CreateActivityRecordE2ETest {
           "stress": "LOW",
           "occurredAt": null
         }
-        """;
+        """,
+            appleId);
 
     given()
         .contentType(ContentType.JSON)
@@ -340,11 +350,12 @@ class CreateActivityRecordE2ETest {
   @DisplayName("유효하지 않은 날짜 형식인 경우 400 에러를 반환한다")
   void givenInvalidDateFormat_whenCreateActivityRecord_thenBadRequest() {
     String createRequest =
-        """
+        String.format(
+            """
         {
           "foods": [
             {
-              "id": 1,
+              "id": %d,
               "mealTime": "BREAKFAST"
             }
           ],
@@ -352,7 +363,8 @@ class CreateActivityRecordE2ETest {
           "stress": "LOW",
           "occurredAt": "invalid-date-format"
         }
-        """;
+        """,
+            appleId);
 
     given()
         .contentType(ContentType.JSON)
@@ -407,7 +419,7 @@ class CreateActivityRecordE2ETest {
         {
           "foods": [
             {
-              "id": 1,
+              "id": %d,
               "mealTime": null
             }
           ],
@@ -416,7 +428,7 @@ class CreateActivityRecordE2ETest {
           "occurredAt": "%s"
         }
         """,
-            now.format(formatter));
+            appleId, now.format(formatter));
 
     given()
         .contentType(ContentType.JSON)
@@ -440,7 +452,7 @@ class CreateActivityRecordE2ETest {
         {
           "foods": [
             {
-              "foodId": 1,
+              "id": %d,
               "mealTime": "INVALID_MEAL_TIME"
             }
           ],
@@ -449,7 +461,7 @@ class CreateActivityRecordE2ETest {
           "occurredAt": "%s"
         }
         """,
-            now.format(formatter));
+            appleId, now.format(formatter));
 
     given()
         .contentType(ContentType.JSON)
@@ -501,7 +513,7 @@ class CreateActivityRecordE2ETest {
         {
           "foods": [
             {
-              "id": 1,
+              "id": %d,
               "mealTime": "SNACK"
             }
           ],
@@ -510,7 +522,7 @@ class CreateActivityRecordE2ETest {
           "occurredAt": "%s"
         }
         """,
-            now.format(formatter));
+            appleId, now.format(formatter));
 
     given()
         .contentType(ContentType.JSON)
@@ -534,19 +546,19 @@ class CreateActivityRecordE2ETest {
         {
           "foods": [
             {
-              "id": 1,
+              "id": %d,
               "mealTime": "BREAKFAST"
             },
             {
-              "id": 2,
+              "id": %d,
               "mealTime": "LUNCH"
             },
             {
-              "id": 3,
+              "id": %d,
               "mealTime": "DINNER"
             },
             {
-              "id": 4,
+              "id": %d,
               "mealTime": "SNACK"
             }
           ],
@@ -555,7 +567,7 @@ class CreateActivityRecordE2ETest {
           "occurredAt": "%s"
         }
         """,
-            now.format(formatter));
+            appleId, bananaId, saladId, burgerId, now.format(formatter));
 
     given()
         .contentType(ContentType.JSON)
@@ -609,7 +621,7 @@ class CreateActivityRecordE2ETest {
         {
           "foods": [
             {
-              "id": 1,
+              "id": %d,
               "mealTime": "LUNCH"
             }
           ],
@@ -618,7 +630,7 @@ class CreateActivityRecordE2ETest {
           "occurredAt": "%s"
         }
         """,
-            specificDate.format(formatter));
+            appleId, specificDate.format(formatter));
 
     // 1. 첫 번째 생활 기록 생성
     given()
