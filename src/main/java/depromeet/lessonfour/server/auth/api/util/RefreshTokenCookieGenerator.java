@@ -8,10 +8,10 @@ public class RefreshTokenCookieGenerator {
   public static ResponseCookie generate(String refreshToken) {
     return ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, refreshToken)
         .httpOnly(true)
-        .sameSite("Lax") // Strict
-        .maxAge(7 * 24 * 60 * 60) // 7일
+        .sameSite("None")
+        .maxAge(7 * 24 * 60 * 60)
         .path("/")
-        .secure(false) // HTTP에서도 전송
+        .secure(true)
         .build();
   }
 }
