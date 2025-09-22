@@ -13,12 +13,12 @@ spring:
       idle-timeout: 600000
       max-lifetime: 1800000
   flyway:
-    enabled: false
+    enabled: true
     locations: classpath:db/migration
-    baseline-on-migrate: false
+    baseline-on-migrate: true
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
