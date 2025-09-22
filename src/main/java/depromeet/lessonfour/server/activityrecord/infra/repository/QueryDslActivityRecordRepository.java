@@ -42,6 +42,21 @@ public class QueryDslActivityRecordRepository {
     LocalDateTime startOfDay = date.atStartOfDay();
     LocalDateTime endOfDay = date.plusDays(1).atStartOfDay();
 
+    Long id =
+        queryFactory
+            .select(activityRecord.id)
+            .from(activityRecord)
+            .where(
+                activityRecord.user.id.eq(userId),
+                activityRecord.activityAt.goe(startOfDay),
+                activityRecord.activityAt.lt(endOfDay),
+                activityRecord.isDeleted.eq(false))
+            .fetchFirst();
+
+    if (id == null) {
+      return Optional.empty();
+    }
+
     ActivityRecord record =
         queryFactory
             .selectFrom(activityRecord)
@@ -49,14 +64,8 @@ public class QueryDslActivityRecordRepository {
             .fetchJoin()
             .leftJoin(foodRecord.food, food)
             .fetchJoin()
-            .where(
-                activityRecord.user.id.eq(userId),
-                activityRecord.activityAt.goe(startOfDay),
-                activityRecord.activityAt.lt(endOfDay),
-                activityRecord.isDeleted.eq(false))
-            .distinct()
-            .orderBy(activityRecord.activityAt.desc())
-            .fetchFirst();
+            .where(activityRecord.id.eq(id))
+            .fetchOne();
 
     return Optional.ofNullable(record);
   }
