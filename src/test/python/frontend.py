@@ -145,7 +145,7 @@ async def home(request: Request):
     <body>
         <h1>카카오 OAuth 로그인 테스트</h1>
         <p>아래 버튼을 클릭하여 카카오로 로그인하세요</p>
-        <form action="{SERVER_URL}/api/v1/auth/kakao/login" method="post" style="display:inline;">
+        <form action="{SERVER_URL}/api/v1/auth/kakao/login?redirectUri=http://localhost:{SERVICE_PORT}" method="post" style="display:inline;">
             <button type="submit" class="login-btn">카카오로 로그인</button>
         </form>
         
@@ -194,7 +194,7 @@ async def home(request: Request):
     return HTMLResponse(content=html_content)
 
 
-SERVICE_PORT = 3000
+SERVICE_PORT = int(os.environ.get("SERVICE_PORT", 3000))
 
 if __name__ == "__main__":
     print("🚀 카카오 OAuth 로그인 서비스 시작 중...")
