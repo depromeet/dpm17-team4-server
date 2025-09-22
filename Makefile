@@ -69,7 +69,7 @@ run: compose-up
 	@if [ -f .env ]; then \
 		set -a; . ./.env; set +a; \
 	fi; \
-	trap '$(MAKE) compose-down' EXIT; \
+	trap '$(MAKE) compose-down' EXIT INT TERM; \
 	$(GRADLE) bootRun --args="--server.port=$(PORT) $(if $(SPRING_PROFILES),--spring.profiles.active=$(SPRING_PROFILES)) $(EXTRA_ARGS)";
 
 # Background run using the built JAR

@@ -64,3 +64,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Docker compose ###
+postgres_data
