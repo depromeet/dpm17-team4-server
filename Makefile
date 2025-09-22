@@ -11,7 +11,7 @@ PID_FILE := .server.pid
 LOG_DIR := logs
 LOG_FILE := $(LOG_DIR)/server.log
 
-.PHONY: help build build-no-test jar run start stop restart status logs test clean curl format format-check clear-h2
+.PHONY: help build build-no-test jar run start stop restart status logs test clean curl format format-check clear-h2 ssh
 
 help:
 	@echo "Available targets:"
@@ -151,3 +151,6 @@ frontend:
 
 frontend-dev:
 	@SERVER_URL=http://localhost:${PORT} python src/test/python/frontend.py
+
+ssh:
+	ssh root@${APP__SERVER__URL}
