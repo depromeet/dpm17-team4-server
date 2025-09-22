@@ -41,9 +41,9 @@ public class MealFoodFactory {
   }
 
   private Map<Long, Food> getFoodMap(List<CreateFoodRequestDto> dtos) {
-    List<Long> foodIds = dtos.stream().map(CreateFoodRequestDto::id).toList();
+    List<Long> foodIds = dtos.stream().map(CreateFoodRequestDto::id).distinct().toList();
 
     return foodQueryService.findByIds(foodIds).stream()
-        .collect(Collectors.toMap(Food::getId, food -> food));
+        .collect(Collectors.toMap(Food::getId, food -> food, (a, b) -> a));
   }
 }
