@@ -45,19 +45,22 @@ public class KakaoAuthController {
 
   @Operation(summary = "카카오 로그인", description = "카카오를 통해 로그인을 진행합니다.")
   @PostMapping("/login")
-  public ResponseEntity<Void> kakaoLogin() {
-    String authUrl = kakaoAuthService.getRequestUrl();
+  public ResponseEntity<Void> kakaoLogin(
+      @RequestParam(required = false) String redirectUri) {
+    String authUrl = kakaoAuthService.getRequestUrl(redirectUri != null ? redirectUri : frontendUrl);
     return ResponseEntity.status(302).header("Location", authUrl).build();
   }
 
   @Hidden
   @GetMapping("/callback")
-  public ResponseEntity<Void> kakaoCallback(
-      @RequestParam(required = false) String code, @RequestParam(required = false) String error) {
-
+  public ResponseEntity<Void> kakaoLegacyCallback(
+      @RequestParam(required = false) String code,
+      @RequestParam(required = false) String error,
+      @RequestParam(required = false) String state) {
+    String clientRedirectUri = state != null ? state : frontendUrl;
     if (error != null) {
       String errorUrl =
-          UriComponentsBuilder.fromUriString(frontendUrl)
+          UriComponentsBuilder.fromUriString(clientRedirectUri)
               .queryParam("error", "OAuth error: " + error)
               .encode(StandardCharsets.UTF_8)
               .build()
@@ -72,7 +75,7 @@ public class KakaoAuthController {
         ResponseCookie refreshTokenCookie =
             RefreshTokenCookieGenerator.generate(authResult.refreshToken());
         String successUrl =
-            UriComponentsBuilder.fromUriString(frontendUrl)
+            UriComponentsBuilder.fromUriString(clientRedirectUri)
                 .queryParam("id", authResult.id())
                 .queryParam("nickname", authResult.nickname())
                 .queryParam("profileImage", authResult.profileImage())
@@ -90,7 +93,7 @@ public class KakaoAuthController {
 
       } catch (Exception e) {
         String errorUrl =
-            UriComponentsBuilder.fromUriString(frontendUrl)
+            UriComponentsBuilder.fromUriString(clientRedirectUri)
                 .queryParam("error", "Authentication failed: " + e.getMessage())
                 .encode(StandardCharsets.UTF_8)
                 .build()
@@ -100,7 +103,7 @@ public class KakaoAuthController {
     }
 
     String errorUrl =
-        UriComponentsBuilder.fromUriString(frontendUrl)
+        UriComponentsBuilder.fromUriString(clientRedirectUri)
             .queryParam("error", "No code or error received")
             .encode(StandardCharsets.UTF_8)
             .build()

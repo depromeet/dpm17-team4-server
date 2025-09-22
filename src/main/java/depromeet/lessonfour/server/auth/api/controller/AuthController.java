@@ -66,7 +66,6 @@ public class AuthController {
 
     // Refresh Token Rotation: 새로운 refresh token을 쿠키로 업데이트
     ResponseCookie refreshTokenCookie = RefreshTokenCookieGenerator.generate(result.refreshToken());
-    System.out.println("refresh_token: " + result.refreshToken());
     return ResponseEntity.ok()
         .header("Set-Cookie", refreshTokenCookie.toString())
         .cacheControl(CacheControl.noStore().mustRevalidate())
