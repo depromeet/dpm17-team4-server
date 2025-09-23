@@ -56,6 +56,30 @@ dependencies {
 
     // Swagger(OpenAPI) 공통
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.1'
+
+    // QueryDSL
+    implementation "com.querydsl:querydsl-jpa:5.0.0:jakarta"
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+}
+
+def querydslDir = "$buildDir/src/main/generated"
+
+sourceSets {
+    main {
+        java {
+            srcDirs += [querydslDir]
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
+}
+
+clean {
+    delete file(querydslDir)
 }
 
 test {

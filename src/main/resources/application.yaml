@@ -25,7 +25,7 @@ logging:
       max-file-size: 10MB
       max-history: 7
       total-size-cap: 200MB
-      file-name-pattern: logs/server-%d{yyyy-MM-dd}.%i.log.gz
+      file-name-pattern: logs/server-%d{yyyy-MM-dd}.%id.log.gz
 
 server:
   tomcat:
