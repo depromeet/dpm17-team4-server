@@ -1,21 +1,20 @@
-package depromeet.lessonfour.server.toiletrecord.app.service;
+package depromeet.lessonfour.server.toiletrecord.infra.repository;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import depromeet.lessonfour.server.toiletrecord.app.repository.ToiletRepository;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 import lombok.RequiredArgsConstructor;
 
-@Service
+@Repository
 @RequiredArgsConstructor
-public class ToiletRecordQueryService {
+public class ToiletRepositoryImpl implements ToiletRepository {
 
-  private final ToiletRepository toiletRepository;
-
+  @Override
   public List<ToiletRecord> findByDate(Long userId, LocalDate date) {
-    return toiletRepository.findByDate(userId, date);
+    return List.of();
   }
 }

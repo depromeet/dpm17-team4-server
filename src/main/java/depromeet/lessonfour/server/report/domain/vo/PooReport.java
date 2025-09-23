@@ -1,0 +1,107 @@
+package depromeet.lessonfour.server.report.domain.vo;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
+import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class PooReport {
+
+  private final double stoolScore;
+  private final PooEvaluationLevel level;
+  private final List<PooEvaluation> items;
+
+  private static PooReport empty() {
+    return new PooReport(0, PooEvaluationLevel.NONE, List.of());
+  }
+
+  public static PooReport summarize(List<PooEvaluation> evaluations) {
+    if (evaluations.isEmpty()) {
+      return empty();
+    }
+
+    double averageScore = getTotalScore(evaluations);
+    PooEvaluationLevel level = PooEvaluationLevel.from((int) (averageScore));
+
+    return new PooReport(averageScore, level, evaluations);
+  }
+
+  private static double getTotalScore(List<PooEvaluation> evaluations) {
+    return evaluations.stream()
+        .map(PooEvaluation::getScore)
+        .mapToDouble(Double::doubleValue)
+        .average()
+        .orElse(0);
+  }
+
+  public boolean hasBlood() {
+    return items.stream().anyMatch(item -> item.getColor() == ToiletColor.RED);
+  }
+
+  public boolean hasAbnormalColor() {
+    return items.stream()
+        .anyMatch(
+            item -> item.getColor() == ToiletColor.GREEN || item.getColor() == ToiletColor.GRAY);
+  }
+
+  public boolean drunkAlcohol() {
+    return items.stream()
+        .anyMatch(
+            item ->
+                item.getNote().contains("술")
+                    || item.getNote().contains("음주")
+                    || item.getNote().contains("과음"));
+  }
+
+  public double getAverageDuration() {
+    return items.stream().mapToInt(PooEvaluation::getDuration).average().orElse(0);
+  }
+
+  public double getAveragePain() {
+    return items.stream().mapToDouble(PooEvaluation::getPain).average().orElse(0);
+  }
+
+  public int getNumberOfRecords() {
+    return items.size();
+  }
+
+  public ToiletShape getMostFrequentShape() {
+    return items.stream()
+        .map(PooEvaluation::getShape)
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+        .entrySet()
+        .stream()
+        .max(Map.Entry.comparingByValue())
+        .map(Map.Entry::getKey)
+        .orElse(null);
+  }
+
+  public ToiletColor getMostFrequentColor() {
+    return items.stream()
+        .map(PooEvaluation::getColor)
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+        .entrySet()
+        .stream()
+        .max(Map.Entry.comparingByValue())
+        .map(Map.Entry::getKey)
+        .orElse(null);
+  }
+
+  public boolean hasGoodShape() {
+    ToiletShape shape = getMostFrequentShape();
+    return shape == ToiletShape.BANANA || shape == ToiletShape.CREAM;
+  }
+
+  public boolean hasGoodColor() {
+    ToiletColor color = getMostFrequentColor();
+    return color == ToiletColor.DARK_BROWN || color == ToiletColor.GOLD;
+  }
+}

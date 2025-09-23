@@ -11,5 +11,13 @@ public enum ToiletColor {
   DARK_BROWN,
   RED,
   GREEN,
-  GRAY
+  GRAY;
+
+  public int getScore() {
+    return switch (this) {
+      case DEFAULT, GOLD -> 0;
+      case DARK_BROWN -> -5;
+      case RED, GREEN, GRAY -> -20; // 비정상
+    };
+  }
 }

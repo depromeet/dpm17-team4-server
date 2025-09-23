@@ -1,6 +1,7 @@
 package depromeet.lessonfour.server.activityrecord.infra.repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -36,5 +37,10 @@ public class ActivityRecordRepositoryImpl implements ActivityRecordRepository {
       Long userId, Long activityRecordId) {
     return jpaActivityRecordRepository.findByUser_IdAndIdAndIsDeletedFalse(
         userId, activityRecordId);
+  }
+
+  @Override
+  public List<ActivityRecord> findDayAndDayBefore(Long userId, LocalDate day) {
+    return queryDslActivityRecordRepository.findDayAndDayBefore(userId, day);
   }
 }

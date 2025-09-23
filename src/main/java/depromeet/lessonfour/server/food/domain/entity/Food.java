@@ -36,4 +36,8 @@ public class Food extends BaseTimeEntity {
   public static Food createForTest(String name, double score) {
     return Food.builder().name(name).score(score).build();
   }
+
+  public boolean isDangerous(int dangerousThreshold) {
+    return this.score >= dangerousThreshold;
+  }
 }

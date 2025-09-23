@@ -1,17 +1,15 @@
 package depromeet.lessonfour.server.report.app.service;
 
-import depromeet.lessonfour.server.activityrecord.app.service.ActivityRecordQueryService;
-import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
+import java.time.LocalDateTime;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto;
 import depromeet.lessonfour.server.report.app.support.DailyReportMapper;
-import depromeet.lessonfour.server.toiletrecord.app.service.ToiletRecordQueryService;
-import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
+import depromeet.lessonfour.server.report.domain.vo.ActivityReport;
+import depromeet.lessonfour.server.report.domain.vo.PooReport;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 
 @UseCase
 @Transactional(readOnly = true)
@@ -19,17 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class GetDailyReportUseCase {
 
   private final DailyReportMapper dailyReportMapper;
-  private final ActivityRecordQueryService activityRecordQueryService;
-  private final ToiletRecordQueryService toiletRecordQueryService;
+  private final ActivityReportService activityReportService;
+  private final PooReportService pooReportService;
 
   public GetDailyReportResponseDto getDailyReport(Long userId, LocalDateTime dateTime) {
-    LocalDate date = dateTime.toLocalDate();
-    LocalDate dayBefore = date.minusDays(1);
-    List<ActivityRecord> activityRecords = activityRecordQueryService.findByUserAndPeriod(userId,
-        date, dayBefore);
-    ToiletRecord toiletRecord = toiletRecordQueryService.findByUserIdAndActivityAt(userId,
-        dateTime);
+    ActivityReport activityReport = activityReportService.generateDailyReport(userId, dateTime);
+    PooReport pooReport = pooReportService.generateDailyReport(userId, dateTime);
 
-
+    return null;
   }
 }

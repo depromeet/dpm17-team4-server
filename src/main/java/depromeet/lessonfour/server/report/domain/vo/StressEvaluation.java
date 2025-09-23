@@ -5,5 +5,10 @@ public enum StressEvaluation {
   LOW,
   MEDIUM,
   HIGH,
-  VERY_HIGH
+  VERY_HIGH,
+  NONE;
+
+  public static StressEvaluation empty() {
+    return NONE;
+  }
 }

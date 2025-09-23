@@ -1,6 +1,7 @@
 package depromeet.lessonfour.server.activityrecord.app.repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
@@ -14,4 +15,6 @@ public interface ActivityRecordRepository {
   boolean existsByUserIdAndActivityAt(Long userId, LocalDate activityAt);
 
   Optional<ActivityRecord> findByUser_IdAndIdAndIsDeletedFalse(Long userId, Long activityRecordId);
+
+  List<ActivityRecord> findDayAndDayBefore(Long userId, LocalDate day);
 }

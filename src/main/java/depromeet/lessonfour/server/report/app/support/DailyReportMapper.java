@@ -14,14 +14,13 @@ import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportRespons
 import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.PooReportItem;
 import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.PooSummary;
 import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.StressReport;
-import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.Suggestion;
 import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.SuggestionItem;
 import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.WaterReport;
 import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.WaterReportItem;
 import depromeet.lessonfour.server.report.domain.vo.FoodEvaluation;
-import depromeet.lessonfour.server.report.domain.vo.PooEvaluation;
+import depromeet.lessonfour.server.report.domain.vo.PooReport;
 import depromeet.lessonfour.server.report.domain.vo.StressEvaluation;
-import depromeet.lessonfour.server.report.domain.vo.SuggestionEvaluation;
+import depromeet.lessonfour.server.report.domain.vo.Suggestion;
 import depromeet.lessonfour.server.report.domain.vo.WaterEvaluation;
 import depromeet.lessonfour.server.report.domain.vo.WaterLevel;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
@@ -30,13 +29,13 @@ import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
 @Component
 public class DailyReportMapper {
 
-  public GetDailyReportResponseDto toResponse(
+  public GetDailyReportResponseDto map(
       LocalDateTime updatedAt,
       FoodEvaluation food,
-      PooEvaluation poo,
+      PooReport poo,
       StressEvaluation stress,
       WaterEvaluation water,
-      SuggestionEvaluation suggestion) {
+      Suggestion suggestion) {
     return new GetDailyReportResponseDto(
         updatedAt,
         mapPooDto(poo),
@@ -46,7 +45,8 @@ public class DailyReportMapper {
         mapSuggestionDto(suggestion));
   }
 
-  private PooDailyReport mapPooDto(PooEvaluation poo) {
+  private PooDailyReport mapPooDto(PooReport poo) {
+    // 결과에 따라 score, summary, items mapping 필요
     return new GetDailyReportResponseDto.PooDailyReport(
         85.5,
         new PooSummary(
@@ -66,6 +66,7 @@ public class DailyReportMapper {
   }
 
   private FoodDailyReport mapFoodDto(FoodEvaluation food) {
+    // 결과에 따라 message mapping 필요
     return new GetDailyReportResponseDto.FoodDailyReport(
         "맵고 자극적인 음식이 장을 자극했을 수 있어요",
         List.of(
@@ -86,22 +87,24 @@ public class DailyReportMapper {
   }
 
   private WaterReport mapWaterDto(WaterEvaluation water) {
+    // 결과에 따라 message, color mapping 필요
     return new WaterReport(
         "장이 말라가고 있어요! 물 섭취량을 늘려야 해요",
         List.of(
-            new WaterReportItem(
-                "STANDARD", 2000.0, WaterLevel.STANDARD.getColor(), WaterLevel.STANDARD),
+//            new WaterReportItem(
+//                "STANDARD", 2000.0, WaterLevel.STANDARD.getColor(), WaterLevel.STANDARD),
             new WaterReportItem(
                 "YESTERDAY", 500.0, WaterLevel.MEDIUM.getColor(), WaterLevel.MEDIUM),
             new WaterReportItem("TODAY", 300.0, WaterLevel.LOW.getColor(), WaterLevel.LOW)));
   }
 
   private StressReport mapStressDto(StressEvaluation stress) {
+    // 결과에 따라 message, image mapping 필요
     return new StressReport("스트레스 관리가 필요해요.\n가벼운 산책이나 명상은 어때요?", "http://dummy_stress_image.png");
   }
 
-  private Suggestion mapSuggestionDto(SuggestionEvaluation suggestion) {
-    return new Suggestion(
+  private GetDailyReportResponseDto.Suggestion mapSuggestionDto(Suggestion suggestion) {
+    return new GetDailyReportResponseDto.Suggestion(
         "장 상태를 개선하려면 이런 습관을 추천해요",
         List.of(
             new SuggestionItem(
