@@ -50,7 +50,10 @@ public class DailyReportMapper {
     return new GetDailyReportResponseDto.PooDailyReport(
         85.5,
         new PooSummary(
-            "http://dummy_image.png", List.of("#A4141E", "#FF535F"), "화가 잔뜩 난 대장", "전문가 상담이 필요해요"),
+            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/very_bad_colon.png",
+            List.of("#A4141E", "#FF535F"),
+            "화가 잔뜩 난 대장",
+            "전문가 상담이 필요해요"),
         List.of(
             new PooReportItem(
                 LocalDateTime.now(),
@@ -101,9 +104,17 @@ public class DailyReportMapper {
     return new Suggestion(
         "장 상태를 개선하려면 이런 습관을 추천해요",
         List.of(
-            new SuggestionItem("http://dummy-1.png", "물 섭취량을 더 늘려보세요", "하루 권장 물 섭취량은 성인 기준 2L 예요"),
-            new SuggestionItem("http://dummy-2.png", "충분한 식이섬유가 중요해요", "과일과 채소를 섭취하면 좋은 흐름이 유지돼요"),
             new SuggestionItem(
-                "http://dummy-3.png", "지속적으로 배변을 기록해요", "배변이 잘 되는 나만의 루틴을 만들 수 있어요")));
+                "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion_water.png",
+                "물 섭취량을 더 늘려보세요",
+                "하루 권장 물 섭취량은 성인 기준 2L 예요"),
+            new SuggestionItem(
+                "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion_food.png",
+                "충분한 식이섬유가 중요해요",
+                "과일과 채소를 섭취하면 좋은 흐름이 유지돼요"),
+            new SuggestionItem(
+                "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion_note.png",
+                "지속적으로 배변을 기록해요",
+                "배변이 잘 되는 나만의 루틴을 만들 수 있어요")));
   }
 }
