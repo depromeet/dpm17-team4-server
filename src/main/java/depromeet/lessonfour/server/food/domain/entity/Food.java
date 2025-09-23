@@ -30,10 +30,10 @@ public class Food extends BaseTimeEntity {
   @NotNull private String name;
 
   @Column(name = "score", nullable = false)
-  @NotNull private double foodScore;
+  @NotNull private double score;
 
   // 테스트용 생성 메서드
-  public static Food createForTest(String name, double foodScore) {
-    return Food.builder().name(name).foodScore(foodScore).build();
+  public static Food createForTest(String name, double score) {
+    return Food.builder().name(name).score(score).build();
   }
 }
