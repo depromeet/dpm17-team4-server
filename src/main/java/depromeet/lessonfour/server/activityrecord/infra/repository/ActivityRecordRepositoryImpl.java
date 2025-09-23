@@ -1,6 +1,8 @@
 package depromeet.lessonfour.server.activityrecord.infra.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +18,11 @@ public class ActivityRecordRepositoryImpl implements ActivityRecordRepository {
   private final QueryDslActivityRecordRepository queryDslActivityRecordRepository;
 
   @Override
+  public Optional<ActivityRecord> findByUserIdAndOccurredAt(Long userId, LocalDate date) {
+    return queryDslActivityRecordRepository.findByUserIdAndOccurredAt(userId, date);
+  }
+
+  @Override
   public void save(ActivityRecord activityRecord) {
     jpaActivityRecordRepository.save(activityRecord);
   }
@@ -23,5 +30,12 @@ public class ActivityRecordRepositoryImpl implements ActivityRecordRepository {
   @Override
   public boolean existsByUserIdAndActivityAt(Long userId, LocalDateTime activityAt) {
     return queryDslActivityRecordRepository.existsByUserIdAndActivityAt(userId, activityAt);
+  }
+
+  @Override
+  public Optional<ActivityRecord> findByUser_IdAndIdAndIsDeletedFalse(
+      Long userId, Long activityRecordId) {
+    return jpaActivityRecordRepository.findByUser_IdAndIdAndIsDeletedFalse(
+        userId, activityRecordId);
   }
 }

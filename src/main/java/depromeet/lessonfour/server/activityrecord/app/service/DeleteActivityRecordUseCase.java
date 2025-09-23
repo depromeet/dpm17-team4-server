@@ -2,8 +2,8 @@ package depromeet.lessonfour.server.activityrecord.app.service;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import depromeet.lessonfour.server.activityrecord.app.repository.ActivityRecordRepository;
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
-import depromeet.lessonfour.server.activityrecord.infra.repository.JpaActivityRecordRepository;
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.exception.ServerException;
@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DeleteActivityRecordUseCase {
 
-  private final JpaActivityRecordRepository activityRecordRepository;
+  private final ActivityRecordRepository activityRecordRepository;
 
   public void deleteActivityRecord(Long userId, Long activityRecordId) {
     ActivityRecord activityRecord =
