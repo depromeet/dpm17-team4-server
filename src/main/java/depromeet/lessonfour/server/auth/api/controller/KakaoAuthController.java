@@ -71,7 +71,6 @@ public class KakaoAuthController {
     if (code != null) {
       try {
         AuthResponseDto authResult = kakaoAuthService.login(code);
-        System.out.println("refreshToken: " + authResult.refreshToken());
         ResponseCookie refreshTokenCookie =
             RefreshTokenCookieGenerator.generate(authResult.refreshToken());
         String successUrl =
