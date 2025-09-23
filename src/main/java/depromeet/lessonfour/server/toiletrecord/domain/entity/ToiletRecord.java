@@ -67,6 +67,9 @@ public class ToiletRecord extends BaseTimeEntity {
   @Column(nullable = false)
   @NotNull private LocalDateTime occurredAt;
 
+  @Column(nullable = false)
+  @NotNull private boolean isDeleted;
+
   public static ToiletRecord register(
       User user,
       boolean isSuccessful,
@@ -85,6 +88,28 @@ public class ToiletRecord extends BaseTimeEntity {
         .duration(duration)
         .note(note)
         .occurredAt(occurredAt)
+        .isDeleted(false)
         .build();
+  }
+
+  public void applyPatch(
+      Boolean isSuccessful,
+      ToiletColor color,
+      ToiletShape shape,
+      Integer pain,
+      Integer duration,
+      String note,
+      LocalDateTime occurredAt) {
+    if (isSuccessful != null) this.isSuccessful = isSuccessful;
+    if (color != null) this.color = color;
+    if (shape != null) this.shape = shape;
+    if (pain != null) this.pain = pain;
+    if (duration != null) this.duration = duration;
+    if (note != null) this.note = note;
+    if (occurredAt != null) this.occurredAt = occurredAt;
+  }
+
+  public void delete() {
+    this.isDeleted = true;
   }
 }
