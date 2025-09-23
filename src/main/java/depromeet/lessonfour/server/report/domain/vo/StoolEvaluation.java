@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
-public class PooEvaluation {
+public class StoolEvaluation {
   private final double score;
   private final PooEvaluationLevel level;
   private final ToiletColor color;
@@ -18,8 +18,8 @@ public class PooEvaluation {
   private final double pain;
   private final String note;
 
-  public static PooEvaluation from(PooEvaluationLevel level, ToiletRecord record) {
-    return PooEvaluation.builder()
+  public static StoolEvaluation from(PooEvaluationLevel level, ToiletRecord record) {
+    return StoolEvaluation.builder()
         .level(level)
         .color(record.getColor())
         .shape(record.getShape())

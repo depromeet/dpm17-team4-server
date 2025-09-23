@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.report.domain.vo.ActivityReport;
 import depromeet.lessonfour.server.report.domain.vo.PooEvaluationLevel;
-import depromeet.lessonfour.server.report.domain.vo.PooReport;
+import depromeet.lessonfour.server.report.domain.vo.StoolReport;
 import depromeet.lessonfour.server.report.domain.vo.Suggestion;
 import depromeet.lessonfour.server.report.domain.vo.Suggestion.HabitSuggestion;
 import depromeet.lessonfour.server.report.domain.vo.Suggestion.PooSuggestion;
@@ -26,10 +26,10 @@ public class SuggestionPolicy {
   private static final int NORMAL_DURATION_THRESHOLD = 10;
   private static final int SHORT_DURATION_THRESHOLD = 3;
 
-  public Suggestion suggest(ActivityReport activityReport, PooReport pooReport) {
+  public Suggestion evaluate(ActivityReport activityReport, StoolReport stoolReport) {
     WaterSuggestion waterSuggestion = generateWaterSuggestions(activityReport);
-    PooSuggestion pooSuggestion = generatePooSuggestions(pooReport);
-    List<HabitSuggestion> habitSuggestions = generateHabitSuggestions(activityReport, pooReport);
+    PooSuggestion pooSuggestion = generatePooSuggestions(stoolReport);
+    List<HabitSuggestion> habitSuggestions = generateHabitSuggestions(activityReport, stoolReport);
 
     return new Suggestion(waterSuggestion, pooSuggestion, habitSuggestions);
   }
@@ -49,41 +49,42 @@ public class SuggestionPolicy {
   }
 
   private void addPositiveReinforcementSuggestions(
-      List<HabitSuggestion> result, ActivityReport activityReport, PooReport pooReport) {
+      List<HabitSuggestion> result, ActivityReport activityReport, StoolReport stoolReport) {
 
     if (activityReport.isStressWellManaged()) {
       result.add(HabitSuggestion.STRESS_MANAGEMENT);
     }
 
-    if (pooReport.getStoolScore() >= VERY_GOOD_CONDITION_THRESHOLD) {
+    if (stoolReport.getStoolScore() >= VERY_GOOD_CONDITION_THRESHOLD) {
       result.add(HabitSuggestion.REGULAR_TOILET_HABITS);
     }
   }
 
-  private PooSuggestion generatePooSuggestions(PooReport pooReport) {
+  private PooSuggestion generatePooSuggestions(StoolReport stoolReport) {
 
-    ToiletShape shape = pooReport.getMostFrequentShape();
+    ToiletShape shape = stoolReport.getMostFrequentShape();
     // 가장 심각한 증상부터 체크
-    if (pooReport.hasBlood()) {
+    if (stoolReport.hasBlood()) {
       return BLOODY_STOOL;
     }
 
-    if (pooReport.hasAbnormalColor()) {
+    if (stoolReport.hasAbnormalColor()) {
       return PooSuggestion.COLOR_ABNORMAL;
     }
 
     // 배변 시 통증이 있는 경우
-    if (pooReport.getAveragePain() >= PAINFUL_THRESHOLD) {
+    if (stoolReport.getAveragePain() >= PAINFUL_THRESHOLD) {
       return PooSuggestion.PAINFUL_DEFECATION;
     }
 
     // 변비 판정 (딱딱하고 배변 횟수가 적음)
-    if (shape == ToiletShape.ROCK && pooReport.getNumberOfRecords() < CONSTIPATION_THRESHOLD) {
+    if (shape == ToiletShape.ROCK && stoolReport.getNumberOfRecords() < CONSTIPATION_THRESHOLD) {
       return PooSuggestion.CONSTIPATION;
     }
 
     // 설사 판정 (묽고 잦음)
-    if (shape == ToiletShape.PORRIDGE && pooReport.getNumberOfRecords() > CONSTIPATION_THRESHOLD) {
+    if (shape == ToiletShape.PORRIDGE
+        && stoolReport.getNumberOfRecords() > CONSTIPATION_THRESHOLD) {
       return PooSuggestion.DIARRHEA;
     }
 
@@ -98,20 +99,20 @@ public class SuggestionPolicy {
     }
 
     // 배변 시간이 긴 경우
-    if (pooReport.getAverageDuration() > NORMAL_DURATION_THRESHOLD) {
+    if (stoolReport.getAverageDuration() > NORMAL_DURATION_THRESHOLD) {
       return PooSuggestion.LONG_DEFECATION_TIME;
     }
 
     // 정상적인 경우들
-    if ((pooReport.getLevel() == PooEvaluationLevel.GOOD
-            || pooReport.getLevel() == PooEvaluationLevel.VERY_GOOD)
-        && pooReport.getAverageDuration() <= NORMAL_DURATION_THRESHOLD
-        && pooReport.getAveragePain() <= PAINFUL_THRESHOLD) {
-      if (pooReport.hasGoodShape()) {
+    if ((stoolReport.getLevel() == PooEvaluationLevel.GOOD
+            || stoolReport.getLevel() == PooEvaluationLevel.VERY_GOOD)
+        && stoolReport.getAverageDuration() <= NORMAL_DURATION_THRESHOLD
+        && stoolReport.getAveragePain() <= PAINFUL_THRESHOLD) {
+      if (stoolReport.hasGoodShape()) {
         return PooSuggestion.IDEAL_SHAPE;
       }
 
-      if (pooReport.hasGoodColor()) {
+      if (stoolReport.hasGoodColor()) {
         return PooSuggestion.HEALTHY_COLOR;
       }
 
@@ -119,12 +120,12 @@ public class SuggestionPolicy {
     }
 
     // 통증 없는 배변
-    if (pooReport.getAveragePain() <= PAINFUL_THRESHOLD) {
+    if (stoolReport.getAveragePain() <= PAINFUL_THRESHOLD) {
       return PooSuggestion.PAIN_FREE;
     }
 
     // 적절한 시간 내 배변
-    if (pooReport.getAverageDuration() <= NORMAL_DURATION_THRESHOLD) {
+    if (stoolReport.getAverageDuration() <= NORMAL_DURATION_THRESHOLD) {
       return PooSuggestion.NORMAL_DURATION;
     }
 
@@ -133,7 +134,7 @@ public class SuggestionPolicy {
   }
 
   private List<HabitSuggestion> generateHabitSuggestions(
-      ActivityReport activityReport, PooReport pooReport) {
+      ActivityReport activityReport, StoolReport stoolReport) {
 
     List<HabitSuggestion> result = new ArrayList<>();
 
@@ -145,20 +146,20 @@ public class SuggestionPolicy {
     }
 
     // 알코올 섭취 평가
-    if (pooReport.drunkAlcohol()) {
+    if (stoolReport.drunkAlcohol()) {
       result.add(HabitSuggestion.EXCESSIVE_ALCOHOL);
     }
 
     // 화장실 사용 습관 평가
-    if (pooReport.getAverageDuration() > NORMAL_DURATION_THRESHOLD) {
+    if (stoolReport.getAverageDuration() > NORMAL_DURATION_THRESHOLD) {
       result.add(HabitSuggestion.LONG_TOILET_TIME);
-    } else if (pooReport.getAverageDuration() <= SHORT_DURATION_THRESHOLD) {
+    } else if (stoolReport.getAverageDuration() <= SHORT_DURATION_THRESHOLD) {
       result.add(HabitSuggestion.SHORT_TOILET_TIME);
     }
 
     // 8. 긍정적 습관 강화 (이미 좋은 습관이 있는 경우)
     if (result.isEmpty() || hasOnlyPositiveHabits(result)) {
-      addPositiveReinforcementSuggestions(result, activityReport, pooReport);
+      addPositiveReinforcementSuggestions(result, activityReport, stoolReport);
     }
 
     return result;

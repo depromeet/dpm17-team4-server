@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.report.app.support;
+package depromeet.lessonfour.server.report.api.mapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealTime;
+import depromeet.lessonfour.server.report.app.dto.response.DailyReport;
 import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto;
 import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.FoodDailyReport;
 import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.FoodReportItem;
@@ -18,7 +19,7 @@ import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportRespons
 import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.WaterReport;
 import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.WaterReportItem;
 import depromeet.lessonfour.server.report.domain.vo.FoodEvaluation;
-import depromeet.lessonfour.server.report.domain.vo.PooReport;
+import depromeet.lessonfour.server.report.domain.vo.StoolReport;
 import depromeet.lessonfour.server.report.domain.vo.StressEvaluation;
 import depromeet.lessonfour.server.report.domain.vo.Suggestion;
 import depromeet.lessonfour.server.report.domain.vo.WaterEvaluation;
@@ -29,23 +30,17 @@ import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
 @Component
 public class DailyReportMapper {
 
-  public GetDailyReportResponseDto map(
-      LocalDateTime updatedAt,
-      FoodEvaluation food,
-      PooReport poo,
-      StressEvaluation stress,
-      WaterEvaluation water,
-      Suggestion suggestion) {
+  public GetDailyReportResponseDto map(DailyReport dailyReport, LocalDateTime updatedAt) {
     return new GetDailyReportResponseDto(
         updatedAt,
-        mapPooDto(poo),
-        mapFoodDto(food),
-        mapWaterDto(water),
-        mapStressDto(stress),
-        mapSuggestionDto(suggestion));
+        mapPooDto(dailyReport.stoolReport()),
+        mapFoodDto(dailyReport.activityReport().getFoodEvaluations()),
+        mapWaterDto(dailyReport.activityReport().getWaterEvaluation()),
+        mapStressDto(dailyReport.activityReport().getStressEvaluation()),
+        mapSuggestionDto(dailyReport.suggestion()));
   }
 
-  private PooDailyReport mapPooDto(PooReport poo) {
+  private PooDailyReport mapPooDto(StoolReport stoolReport) {
     // 결과에 따라 score, summary, items mapping 필요
     return new GetDailyReportResponseDto.PooDailyReport(
         85.5,
@@ -65,7 +60,7 @@ public class DailyReportMapper {
                 "배가 너무 아팠어요")));
   }
 
-  private FoodDailyReport mapFoodDto(FoodEvaluation food) {
+  private FoodDailyReport mapFoodDto(List<FoodEvaluation> foodEvaluations) {
     // 결과에 따라 message mapping 필요
     return new GetDailyReportResponseDto.FoodDailyReport(
         "맵고 자극적인 음식이 장을 자극했을 수 있어요",
@@ -86,19 +81,20 @@ public class DailyReportMapper {
                     new FoodReportMeal(MealTime.SNACK, false, List.of("견과류"))))));
   }
 
-  private WaterReport mapWaterDto(WaterEvaluation water) {
+  private WaterReport mapWaterDto(WaterEvaluation waterEvaluation) {
     // 결과에 따라 message, color mapping 필요
     return new WaterReport(
         "장이 말라가고 있어요! 물 섭취량을 늘려야 해요",
         List.of(
-//            new WaterReportItem(
-//                "STANDARD", 2000.0, WaterLevel.STANDARD.getColor(), WaterLevel.STANDARD),
+            //            new WaterReportItem(
+            //                "STANDARD", 2000.0, WaterLevel.STANDARD.getColor(),
+            // WaterLevel.STANDARD),
             new WaterReportItem(
                 "YESTERDAY", 500.0, WaterLevel.MEDIUM.getColor(), WaterLevel.MEDIUM),
             new WaterReportItem("TODAY", 300.0, WaterLevel.LOW.getColor(), WaterLevel.LOW)));
   }
 
-  private StressReport mapStressDto(StressEvaluation stress) {
+  private StressReport mapStressDto(StressEvaluation stressEvaluation) {
     // 결과에 따라 message, image mapping 필요
     return new StressReport("스트레스 관리가 필요해요.\n가벼운 산책이나 명상은 어때요?", "http://dummy_stress_image.png");
   }

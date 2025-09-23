@@ -2,12 +2,12 @@ package depromeet.lessonfour.server.report.domain.policy;
 
 import org.springframework.stereotype.Component;
 
-import depromeet.lessonfour.server.report.domain.vo.PooEvaluation;
 import depromeet.lessonfour.server.report.domain.vo.PooEvaluationLevel;
+import depromeet.lessonfour.server.report.domain.vo.StoolEvaluation;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 
 @Component
-public class PooEvaluationPolicy {
+public class StoolEvaluationPolicy {
 
   // 가중치
   private static final int SUCCESS_WEIGHT = 5;
@@ -31,7 +31,7 @@ public class PooEvaluationPolicy {
   // 소요시간 threshold
   private static final int DURATION_LONG_THRESHOLD = 10;
 
-  public PooEvaluation evaluate(ToiletRecord record) {
+  public StoolEvaluation evaluate(ToiletRecord record) {
     double score = BASE_SCORE;
 
     score += successScore(record.isSuccessful()) * SUCCESS_WEIGHT;
@@ -42,7 +42,7 @@ public class PooEvaluationPolicy {
 
     double finalScore = normalizeScore(score);
 
-    return PooEvaluation.from(PooEvaluationLevel.from(finalScore), record);
+    return StoolEvaluation.from(PooEvaluationLevel.from(finalScore), record);
   }
 
   private static double normalizeScore(double score) {

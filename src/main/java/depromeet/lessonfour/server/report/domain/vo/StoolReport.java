@@ -13,17 +13,17 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class PooReport {
+public class StoolReport {
 
   private final double stoolScore;
   private final PooEvaluationLevel level;
-  private final List<PooEvaluation> items;
+  private final List<StoolEvaluation> items;
 
-  private static PooReport empty() {
-    return new PooReport(0, PooEvaluationLevel.NONE, List.of());
+  private static StoolReport empty() {
+    return new StoolReport(0, PooEvaluationLevel.NONE, List.of());
   }
 
-  public static PooReport summarize(List<PooEvaluation> evaluations) {
+  public static StoolReport summarize(List<StoolEvaluation> evaluations) {
     if (evaluations.isEmpty()) {
       return empty();
     }
@@ -31,12 +31,12 @@ public class PooReport {
     double averageScore = getTotalScore(evaluations);
     PooEvaluationLevel level = PooEvaluationLevel.from((int) (averageScore));
 
-    return new PooReport(averageScore, level, evaluations);
+    return new StoolReport(averageScore, level, evaluations);
   }
 
-  private static double getTotalScore(List<PooEvaluation> evaluations) {
+  private static double getTotalScore(List<StoolEvaluation> evaluations) {
     return evaluations.stream()
-        .map(PooEvaluation::getScore)
+        .map(StoolEvaluation::getScore)
         .mapToDouble(Double::doubleValue)
         .average()
         .orElse(0);
@@ -62,11 +62,11 @@ public class PooReport {
   }
 
   public double getAverageDuration() {
-    return items.stream().mapToInt(PooEvaluation::getDuration).average().orElse(0);
+    return items.stream().mapToInt(StoolEvaluation::getDuration).average().orElse(0);
   }
 
   public double getAveragePain() {
-    return items.stream().mapToDouble(PooEvaluation::getPain).average().orElse(0);
+    return items.stream().mapToDouble(StoolEvaluation::getPain).average().orElse(0);
   }
 
   public int getNumberOfRecords() {
@@ -75,7 +75,7 @@ public class PooReport {
 
   public ToiletShape getMostFrequentShape() {
     return items.stream()
-        .map(PooEvaluation::getShape)
+        .map(StoolEvaluation::getShape)
         .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
         .entrySet()
         .stream()
@@ -86,7 +86,7 @@ public class PooReport {
 
   public ToiletColor getMostFrequentColor() {
     return items.stream()
-        .map(PooEvaluation::getColor)
+        .map(StoolEvaluation::getColor)
         .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
         .entrySet()
         .stream()
