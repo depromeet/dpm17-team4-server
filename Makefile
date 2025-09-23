@@ -147,7 +147,7 @@ ssh:
 	ssh root@${APP__SERVER__URL}
 
 poetry:
-	@pip install poetry
+	@command -v poetry >/dev/null 2>&1 || pip install poetry
 
 auth-test: poetry
 	@(cd src/test/python/auth-test && poetry install && SERVER_URL=${APP__SERVER__URL} poetry run python -m auth_test.main)
