@@ -32,6 +32,7 @@ logging:
       file-name-pattern: logs/server-%d{yyyy-MM-dd}.%i.log.gz
 
 server:
+  forward-headers-strategy: framework
   tomcat:
     basedir: .
     accesslog:

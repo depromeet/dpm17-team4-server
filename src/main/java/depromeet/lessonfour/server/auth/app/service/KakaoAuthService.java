@@ -81,12 +81,13 @@ public class KakaoAuthService {
     throw new ServerException(AuthErrorCode.LOGIN_CODE_REQUIRED);
   }
 
-  public String getRequestUrl() {
+  public String getRequestUrl(String clientRedirectUri) {
     MultiValueMap<String, String> authParams =
         new LinkedMultiValueMap<>() {
           {
             add("client_id", clientId);
-            add("redirect_uri", redirectUri);
+            add("redirect_uri", redirectUri); // serverRedirectUri
+            add("state", clientRedirectUri);
             add("response_type", "code");
             add("scope", "openid profile_nickname profile_image account_email");
           }
