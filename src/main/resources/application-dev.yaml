@@ -3,9 +3,9 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    url: jdbc:h2:file:./.h2/devdb;MODE=PostgreSQL;AUTO_SERVER=TRUE
-    username: sa
-    password: 
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:dpm}
+    username: ${DB_USERNAME:admin}
+    password: ${DB_PASSWORD:dpm}
     hikari:
       maximum-pool-size: 10
       minimum-idle: 2
@@ -21,12 +21,8 @@ spring:
       ddl-auto: validate
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
-  h2:
-    console:
-      enabled: true
-      path: /h2
 
 app:
   server:
