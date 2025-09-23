@@ -21,8 +21,8 @@ public class QueryDslActivityRecordRepository {
 
   private final JPAQueryFactory queryFactory;
 
-  public boolean existsByUserIdAndActivityAt(Long userId, LocalDateTime activityAt) {
-    LocalDateTime startOfDay = activityAt.toLocalDate().atStartOfDay();
+  public boolean existsByUserIdAndActivityAt(Long userId, LocalDate activityAt) {
+    LocalDateTime startOfDay = activityAt.atStartOfDay();
     LocalDateTime endOfDay = startOfDay.plusDays(1);
 
     Integer count =

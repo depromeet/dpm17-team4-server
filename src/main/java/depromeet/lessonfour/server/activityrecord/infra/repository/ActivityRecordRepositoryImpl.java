@@ -1,7 +1,6 @@
 package depromeet.lessonfour.server.activityrecord.infra.repository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -28,7 +27,7 @@ public class ActivityRecordRepositoryImpl implements ActivityRecordRepository {
   }
 
   @Override
-  public boolean existsByUserIdAndActivityAt(Long userId, LocalDateTime activityAt) {
+  public boolean existsByUserIdAndActivityAt(Long userId, LocalDate activityAt) {
     return queryDslActivityRecordRepository.existsByUserIdAndActivityAt(userId, activityAt);
   }
 
