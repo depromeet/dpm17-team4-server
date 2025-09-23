@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.report.app.mapper;
+package depromeet.lessonfour.server.report.app.support;
 
 import java.time.LocalDateTime;
 import java.util.List;

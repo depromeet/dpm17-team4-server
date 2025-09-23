@@ -6,7 +6,13 @@ import java.util.List;
 
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealFood;
 import depromeet.lessonfour.server.activityrecord.domain.vo.StressLevel;
+import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.domain.entity.BaseTimeEntity;
+import depromeet.lessonfour.server.common.exception.ServerException;
+import depromeet.lessonfour.server.report.domain.vo.FoodEvaluation;
+import depromeet.lessonfour.server.report.domain.vo.StressEvaluation;
+import depromeet.lessonfour.server.report.domain.vo.WaterEvaluation;
+import depromeet.lessonfour.server.report.domain.vo.WaterLevel;
 import depromeet.lessonfour.server.user.domain.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -24,6 +30,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -98,5 +105,30 @@ public class ActivityRecord extends BaseTimeEntity {
 
   public void delete() {
     this.isDeleted = true;
+  }
+
+  public WaterEvaluation evaluateWater() {
+    if (waterIntakeCups >= 8) {
+      return new WaterEvaluation(waterIntakeCups, WaterLevel.HIGH);
+    } else if (waterIntakeCups >= 5) {
+      return new WaterEvaluation(waterIntakeCups, WaterLevel.MEDIUM);
+    } else {
+      return new WaterEvaluation(waterIntakeCups, WaterLevel.LOW);
+    }
+  }
+
+  public StressEvaluation evaluateStress() {
+    return switch (stressLevel) {
+      case VERY_LOW -> StressEvaluation.VERY_LOW;
+      case LOW      -> StressEvaluation.LOW;
+      case MEDIUM   -> StressEvaluation.MEDIUM;
+      case HIGH     -> StressEvaluation.HIGH;
+      case VERY_HIGH-> StressEvaluation.VERY_HIGH;
+      default -> throw new ServerException(ErrorCode.INTERNAL_SERVER_ERROR);
+    };
+  }
+
+  public FoodEvaluation evaluateFood() {
+
   }
 }

@@ -1,5 +1,7 @@
 package depromeet.lessonfour.server.report.domain.vo;
 
-public class FoodEvaluation {
-
+public enum PeriodType {
+  DAILY,
+  WEEKLY,
+  MONTHLY
 }
