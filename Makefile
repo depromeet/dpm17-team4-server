@@ -49,16 +49,16 @@ jar:
 	$(GRADLE) bootJar
 
 compose-up:
-	@echo "Starting docker containers (dev only)..."; \
-	if [ "$(SPRING_PROFILES)" = "dev" ]; then \
+	@echo "Starting docker containers (dev or pg only)..."; \
+	if echo ",$(SPRING_PROFILES)," | grep -qE ",(dev|pg),"; then \
 		$(DOCKER_COMPOSE) up -d; \
 	else \
 		echo "Skipped (SPRING_PROFILES=$(SPRING_PROFILES))"; \
 	fi
 
 compose-down:
-	@echo "Stopping docker containers (dev only)..."; \
-	if [ "$(SPRING_PROFILES)" = "dev" ]; then \
+	@echo "Stopping docker containers (dev or pg only)..."; \
+	if echo ",$(SPRING_PROFILES)," | grep -qE ",(dev|pg),"; then \
 		$(DOCKER_COMPOSE) down; \
 	else \
 		echo "Skipped (SPRING_PROFILES=$(SPRING_PROFILES))"; \
