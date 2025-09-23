@@ -31,7 +31,10 @@ public class ReportController {
   @GetMapping("/daily")
   public SuccessResponse<GetDailyReportResponseDto> getDailyReport(
       @AuthenticationPrincipal(expression = "id") Long userId,
-      @NotNull(message = "리포트 생성 시간은 필수입니다") @RequestParam LocalDateTime dateTime) {
+      @NotNull(message = "리포트 생성 시간은 필수입니다") @RequestParam(
+              required = false,
+              defaultValue = "#{T(java.time.LocalDateTime).now().toString()}")
+          LocalDateTime dateTime) {
     return SuccessResponse.of(
         SuccessCode.SUCCESS_FETCH, getDailyReportUseCase.getDailyReport(userId, dateTime));
   }
