@@ -60,11 +60,12 @@ public class QueryDslActivityRecordRepository {
     ActivityRecord record =
         queryFactory
             .selectFrom(activityRecord)
+            .distinct()
             .leftJoin(activityRecord.foodRecords, foodRecord)
             .fetchJoin()
             .leftJoin(foodRecord.food, food)
             .fetchJoin()
-            .where(activityRecord.id.eq(id))
+            .where(activityRecord.id.eq(id), activityRecord.isDeleted.eq(false))
             .fetchOne();
 
     return Optional.ofNullable(record);
