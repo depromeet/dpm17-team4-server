@@ -99,8 +99,7 @@ public class StoolReport {
   }
 
   public boolean hasGoodShape() {
-    ToiletShape shape = getMostFrequentShape();
-    return shape == ToiletShape.BANANA || shape == ToiletShape.CREAM;
+    return getMostFrequentShape() == ToiletShape.BANANA;
   }
 
   public boolean hasGoodColor() {
