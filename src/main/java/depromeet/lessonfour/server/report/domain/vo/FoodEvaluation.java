@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public class FoodEvaluation {
 
-  private DayType dayType;
+  private final DayType dayType;
   private final boolean dangerous;
   private final Map<MealTime, List<String>> foodsByMealTime;
 

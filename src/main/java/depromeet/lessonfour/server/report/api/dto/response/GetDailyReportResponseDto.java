@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.report.app.dto.response;
+package depromeet.lessonfour.server.report.api.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -7,10 +7,7 @@ import depromeet.lessonfour.server.activityrecord.domain.vo.MealTime;
 import depromeet.lessonfour.server.report.domain.vo.Suggestion.WaterSuggestion;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
-import lombok.AccessLevel;
-import lombok.Builder;
 
-@Builder(access = AccessLevel.PRIVATE)
 public record GetDailyReportResponseDto(
     LocalDateTime updatedAt,
     StoolDailyReport poo,
@@ -19,12 +16,7 @@ public record GetDailyReportResponseDto(
     StressReport stress,
     SuggestionDto suggestion) {
 
-  public static GetDailyReportResponseDto from() {
-    return GetDailyReportResponseDto.builder().build();
-  }
-
   // POO
-  @Builder(access = AccessLevel.PRIVATE)
   public record StoolDailyReport(double score, StoolSummary summary, List<StoolReportItem> items) {}
 
   public record StoolSummary(

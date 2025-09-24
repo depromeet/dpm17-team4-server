@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.WaterReport;
-import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.WaterReportItem;
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.WaterReport;
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.WaterReportItem;
 import depromeet.lessonfour.server.report.domain.vo.DayType;
 import depromeet.lessonfour.server.report.domain.vo.Suggestion.WaterSuggestion;
 import depromeet.lessonfour.server.report.domain.vo.WaterEvaluation;

@@ -9,10 +9,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto;
-import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.FoodDailyReport;
-import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.FoodReportItem;
-import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.FoodReportMeal;
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto;
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.FoodDailyReport;
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.FoodReportItem;
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.FoodReportMeal;
 import depromeet.lessonfour.server.report.domain.vo.DayType;
 import depromeet.lessonfour.server.report.domain.vo.FoodEvaluation;
 import lombok.RequiredArgsConstructor;

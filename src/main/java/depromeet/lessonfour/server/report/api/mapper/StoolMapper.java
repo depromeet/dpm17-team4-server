@@ -5,9 +5,9 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.StoolDailyReport;
-import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.StoolReportItem;
-import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.StoolSummary;
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.StoolDailyReport;
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.StoolReportItem;
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.StoolSummary;
 import depromeet.lessonfour.server.report.domain.vo.StoolEvaluationLevel;
 import depromeet.lessonfour.server.report.domain.vo.StoolReport;
 import lombok.AllArgsConstructor;
@@ -41,15 +41,16 @@ public class StoolMapper {
                   "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_good.png",
                   "신이 난 대장",
                   "개운하실 것 같아요!",
-                  List.of("##134DB1", "##588DFF")),
+                  List.of("#134DB1", "#588DFF")),
           StoolEvaluationLevel.VERY_GOOD,
               new HeroCharacter(
                   "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_very_good.png",
                   "기분 좋은 대장",
                   "장 컨디션 아주 굿!",
-                  List.of("##0C7C30", "##7DD357")));
+                  List.of("#0C7C30", "#7DD357")));
 
-  private final String message = "전문가의 상담이 필요해요. 복통이 매우 심했다면 단순한 식사 문제를 넘어서 장염이나 자극적인";
+  private final String message =
+      "전문가의 상담이 필요해요. 복통이 매우 심했다면 단순한 식사 문제를 넘어서 장염이나 자극적인 음식으로 인한 장 트러블일 수 있습니다.";
 
   public StoolDailyReport map(StoolReport stoolReport) {
     if (stoolReport.getLevel() == StoolEvaluationLevel.NONE) {

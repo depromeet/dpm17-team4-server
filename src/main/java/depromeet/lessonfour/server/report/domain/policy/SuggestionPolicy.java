@@ -24,6 +24,7 @@ public class SuggestionPolicy {
   private static final int VERY_GOOD_CONDITION_THRESHOLD = 80;
   private static final int CONSTIPATION_THRESHOLD = 2;
   private static final int PAINFUL_THRESHOLD = 70;
+  private static final int PAIN_MILD_THRESHOLD = 20;
   private static final int NORMAL_DURATION_THRESHOLD = 10;
   private static final int SHORT_DURATION_THRESHOLD = 3;
 
@@ -126,7 +127,7 @@ public class SuggestionPolicy {
     }
 
     // 통증 없는 배변
-    if (stoolReport.getAveragePain() <= PAINFUL_THRESHOLD) {
+    if (stoolReport.getAveragePain() <= PAIN_MILD_THRESHOLD) {
       return StoolSuggestion.PAIN_FREE;
     }
 

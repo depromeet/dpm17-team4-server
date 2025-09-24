@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Component;
 
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto;
 import depromeet.lessonfour.server.report.app.dto.response.DailyReport;
-import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto;
 import lombok.RequiredArgsConstructor;
 
 @Component

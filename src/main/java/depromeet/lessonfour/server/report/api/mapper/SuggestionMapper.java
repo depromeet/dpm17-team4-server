@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.SuggestionDto;
-import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.SuggestionItem;
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.SuggestionDto;
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.SuggestionItem;
 import depromeet.lessonfour.server.report.domain.vo.Suggestion;
 
 @Component

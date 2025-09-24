@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import depromeet.lessonfour.server.common.api.code.SuccessCode;
 import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto;
 import depromeet.lessonfour.server.report.api.mapper.DailyReportMapper;
 import depromeet.lessonfour.server.report.app.dto.response.DailyReport;
-import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto;
 import depromeet.lessonfour.server.report.app.service.GetDailyReportUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

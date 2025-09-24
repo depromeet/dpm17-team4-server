@@ -2,7 +2,7 @@ package depromeet.lessonfour.server.report.api.mapper;
 
 import org.springframework.stereotype.Component;
 
-import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.StressReport;
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.StressReport;
 import depromeet.lessonfour.server.report.domain.vo.StressEvaluation;
 
 @Component
