@@ -17,7 +17,7 @@ public record GetDailyReportResponseDto(
     FoodDailyReport food,
     WaterReport water,
     StressReport stress,
-    Suggestion suggestion) {
+    SuggestionDto suggestion) {
 
   public static GetDailyReportResponseDto from() {
     return GetDailyReportResponseDto.builder().build();
@@ -55,7 +55,7 @@ public record GetDailyReportResponseDto(
   public record StressReport(String message, String image) {}
 
   // SUGGESTION
-  public record Suggestion(String message, List<SuggestionItem> items) {}
+  public record SuggestionDto(String message, List<SuggestionItem> items) {}
 
   public record SuggestionItem(String image, String title, String content) {}
 }

@@ -4,15 +4,15 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto;
+import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.SuggestionDto;
 import depromeet.lessonfour.server.report.app.dto.response.GetDailyReportResponseDto.SuggestionItem;
 import depromeet.lessonfour.server.report.domain.vo.Suggestion;
 
 @Component
 public class SuggestionMapper {
 
-  public GetDailyReportResponseDto.Suggestion map(Suggestion suggestion) {
-    return new GetDailyReportResponseDto.Suggestion(
+  public SuggestionDto map(Suggestion suggestion) {
+    return new SuggestionDto(
         "장 상태를 개선하려면 이런 습관을 추천해요",
         List.of(
             new SuggestionItem(
