@@ -2,18 +2,17 @@ spring:
   application:
     name: server
   profiles:
-    group:
-      pg:
-        - dev
-        - postgres
+    active: local
   web:
     resources:
       add-mappings: false
+  jpa:
+    open-in-view: false
 
 jwt:
-  secret: mySecretKeyForJWTWhichShouldBeAtLeast256BitsLongToEnsureSecurityAndCompliance
-  expiration: 86400 # 24 hours
-  refresh-expiration: 604800 # days
+  secret: ${JWT_SECRET:mySecretKeyForJWTWhichShouldBeAtLeast256BitsLongToEnsureSecurityAndCompliance}
+  expiration: ${JWT_EXPIRATION:86400} # 24 hours in seconds
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800} # 7 days in seconds
 
 logging:
   level:
@@ -38,7 +37,6 @@ server:
       suffix: .log
       file-date-format: .yyyy-MM-dd
       rotate: true
-      pattern: common
 
 kakao:
   client-id: ${KAKAO__CLIENT_ID:your-kakao-client-id}
@@ -53,15 +51,14 @@ frontend:
 
 springdoc:
   swagger-ui:
-    enabled: true   # Swagger UI 활성화
-    path: /swagger-ui.html  # Swagger UI 접속 경로
-    operations-sorter: method  # 메서드 기준 정렬
-    tags-sorter: alpha  # 태그를 알파벳순으로 정렬
-    # SSL 검증 비활성화 (개발 환경용)
+    enabled: ${SWAGGER_UI_ENABLED:true}
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
     try-it-out-enabled: true
     request-snippets-enabled: true
     deep-linking: true
   api-docs:
-    path: /v3/api-docs  # OpenAPI 문서의 기본 경로 설정
-  show-actuator: true  # Actuator 관련 문서도 Swagger에서 표시
+    path: /v3/api-docs
+  show-actuator: ${SPRINGDOC_SHOW_ACTUATOR:true}
 

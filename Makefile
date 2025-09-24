@@ -3,7 +3,8 @@ include .env
 SHELL := /bin/sh
 
 PORT ?= 8080
-SPRING_PROFILES ?= dev # pg
+# Default to local profile for development
+SPRING_PROFILES ?= local
 EXTRA_ARGS ?=
 
 GRADLE := ./gradlew
@@ -11,7 +12,9 @@ PID_FILE := .server.pid
 LOG_DIR := logs
 LOG_FILE := $(LOG_DIR)/server.log
 
-.PHONY: help build build-no-test jar run start stop restart status logs test clean curl format format-check clear-h2 ssh poetry auth-test
+DOCKER_COMPOSE ?= docker compose
+
+.PHONY: help build build-no-test jar compose-up compose-down run start stop restart status logs test clean curl format format-check clear-h2 ssh poetry auth-test
 
 help:
 	@echo "Available targets:"
@@ -33,7 +36,7 @@ help:
 	@echo ""
 	@echo "Variables:"
 	@echo "  PORT=<int>                 (default: 8080)"
-	@echo "  SPRING_PROFILES=<profiles> (default: dev; e.g., dev,local)"
+	@echo "  SPRING_PROFILES=<profiles> (default: local; e.g., local,dev)"
 	@echo "  EXTRA_ARGS=\"--key=val\"    (extra Spring Boot args)"
 
 build:
@@ -45,15 +48,33 @@ build-no-test:
 jar:
 	$(GRADLE) bootJar
 
+compose-up:
+	@echo "Starting docker containers (dev profile only)..."; \
+	if echo ",$(SPRING_PROFILES)," | grep -qE ",dev,"; then \
+		$(DOCKER_COMPOSE) up -d; \
+	else \
+		echo "Skipped for profile '$(SPRING_PROFILES)' (only runs for dev profile)"; \
+	fi
+
+compose-down:
+	@echo "Stopping docker containers (dev profile only)..."; \
+	if echo ",$(SPRING_PROFILES)," | grep -qE ",dev,"; then \
+		$(DOCKER_COMPOSE) down; \
+	else \
+		echo "Skipped for profile '$(SPRING_PROFILES)' (only runs for dev profile)"; \
+	fi
+
 # Foreground run using Gradle (good for development)
-run:
+run: compose-up
 	@if [ -f .env ]; then \
 		set -a; . ./.env; set +a; \
 	fi; \
+	trap '$(MAKE) compose-down' EXIT INT TERM; \
+	unset SPRING_PROFILES; \
 	$(GRADLE) bootRun --args="--server.port=$(PORT) $(if $(SPRING_PROFILES),--spring.profiles.active=$(SPRING_PROFILES)) $(EXTRA_ARGS)";
 
 # Background run using the built JAR
-start: jar
+start: jar compose-up
 	@mkdir -p $(LOG_DIR)
 	@JAR_FILE="$$(ls -1t build/libs/server-*.jar 2>/dev/null | grep -v 'plain' | head -n1)"; \
 	if [ -z "$$JAR_FILE" ]; then \
@@ -68,6 +89,7 @@ start: jar
 	if [ -f .env ]; then \
 		set -a; . ./.env; set +a; \
 	fi; \
+	unset SPRING_PROFILES; \
 	nohup java -jar "$$JAR_FILE" --server.port=$(PORT) $(if $(SPRING_PROFILES),--spring.profiles.active=$(SPRING_PROFILES)) $(EXTRA_ARGS) > /dev/null 2>&1 & \
 	echo $$! > "$(PID_FILE)"; \
 	echo "Started with PID $$(cat $(PID_FILE)). Logs: logs/server.log (app), logs/access*.log (access)"
@@ -90,6 +112,7 @@ stop:
 	else \
 		echo "No PID file found ($(PID_FILE))."; \
 	fi
+	$(MAKE) compose-down
 
 restart: stop start
 
@@ -119,7 +142,7 @@ format:
 format-check:
 	$(GRADLE) spotlessCheck
 
-clean:
+clean: compose-down
 	$(GRADLE) clean
 	@rm -f "$(PID_FILE)"
 
@@ -131,17 +154,6 @@ clear-h2:
 curl:
 	@echo "GET http://localhost:$(PORT)/api/v1/echo"; \
 	curl -sS http://localhost:$(PORT)/api/v1/echo || true; echo
-
-postgres:
-	@echo "Creating postgres container..."
-	@docker run -d --name postgres -p 5432:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=dpm -e POSTGRES_DB=dpm postgres
-	@echo "Done."
-
-postgres-stop:
-	@echo "Stopping postgres container..."
-	@docker stop postgres
-	@docker rm postgres
-	@echo "Done."
 
 ssh:
 	ssh root@${APP__SERVER__URL}
