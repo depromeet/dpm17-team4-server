@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import depromeet.lessonfour.server.activityrecord.app.dto.request.CreateActivityRecordsRequest;
 import depromeet.lessonfour.server.activityrecord.app.repository.ActivityRecordRepository;
+import depromeet.lessonfour.server.activityrecord.app.support.MealFoodFactory;
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
 import depromeet.lessonfour.server.activityrecord.domain.service.ActivityRecordCreationPolicy;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealFood;

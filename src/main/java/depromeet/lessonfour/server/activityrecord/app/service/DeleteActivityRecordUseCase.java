@@ -19,7 +19,7 @@ public class DeleteActivityRecordUseCase {
   public void deleteActivityRecord(Long userId, Long activityRecordId) {
     ActivityRecord activityRecord =
         activityRecordRepository
-            .findByUser_IdAndIdAndIsDeletedFalse(userId, activityRecordId)
+            .findByUserAndId(userId, activityRecordId)
             .orElseThrow(() -> new ServerException(ErrorCode.DATA_NOT_FOUND));
     activityRecord.delete();
   }

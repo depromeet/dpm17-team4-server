@@ -11,7 +11,7 @@ PID_FILE := .server.pid
 LOG_DIR := logs
 LOG_FILE := $(LOG_DIR)/server.log
 
-.PHONY: help build build-no-test jar run start stop restart status logs test clean curl format format-check clear-h2
+.PHONY: help build build-no-test jar run start stop restart status logs test clean curl format format-check clear-h2 ssh poetry auth-test
 
 help:
 	@echo "Available targets:"
@@ -133,11 +133,21 @@ curl:
 	curl -sS http://localhost:$(PORT)/api/v1/echo || true; echo
 
 postgres:
-	@echo "Creating postgres container..."; \
-	docker run -d --name postgres -p 5432:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=dpm -e POSTGRES_DB=dpm postgres; \
-	echo "Done."
+	@echo "Creating postgres container..."
+	@docker run -d --name postgres -p 5432:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=dpm -e POSTGRES_DB=dpm postgres
+	@echo "Done."
 
 postgres-stop:
-	@echo "Stopping postgres container..."; \
-	docker stop postgres; \
-	echo "Done."
+	@echo "Stopping postgres container..."
+	@docker stop postgres
+	@docker rm postgres
+	@echo "Done."
+
+ssh:
+	ssh root@${APP__SERVER__URL}
+
+poetry:
+	@command -v poetry >/dev/null 2>&1 || pip install poetry
+
+auth-test: poetry
+	@(cd src/test/python/auth-test && poetry install && SERVER_URL=${APP__SERVER__URL} poetry run python -m auth_test.main)
