@@ -26,6 +26,7 @@ public class QueryDslToiletRecordRepository {
                 toiletRecord.user.id.eq(userId),
                 toiletRecord.occurredAt.goe(date.atStartOfDay()),
                 toiletRecord.occurredAt.lt(date.atStartOfDay().plusDays(1)))
+            .orderBy(toiletRecord.occurredAt.asc())
             .fetch();
 
     return records == null ? List.of() : records;
