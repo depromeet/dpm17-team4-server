@@ -56,10 +56,7 @@ public class FoodMapper {
 
     // 데이터가 없는 경우: 어제와 오늘 모두 빈 데이터
     else if (foodEvaluations.isEmpty()) {
-      items =
-          List.of(
-              createEmptyFoodReportItem(DayType.YESTERDAY),
-              createEmptyFoodReportItem(DayType.TODAY));
+      items = List.of();
     }
 
     return new GetDailyReportResponseDto.FoodDailyReport(message, items);
@@ -88,6 +85,9 @@ public class FoodMapper {
   }
 
   private static String getMessage(List<FoodEvaluation> foodEvaluations) {
+    if (foodEvaluations.isEmpty()) {
+      return "음식 기록이 없어요. 장에 좋은 음식을 먹어볼까요?";
+    }
     boolean eatDangerousFood = foodEvaluations.stream().anyMatch(FoodEvaluation::isDangerous);
 
     return eatDangerousFood ? DANGEROUS_MESSAGE : SAFE_MESSAGE;
