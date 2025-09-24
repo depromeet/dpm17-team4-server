@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.exception.handler;
+package depromeet.lessonfour.server.common.api.handler;
 
 import static io.restassured.RestAssured.given;
 

@@ -44,7 +44,8 @@ public class FoodRecord extends BaseTimeEntity {
   @Column(nullable = false)
   private MealTime mealTime;
 
-  public static FoodRecord register(ActivityRecord activityRecord, Food food, MealTime mealTime) {
+  public static FoodRecord createRecord(
+      ActivityRecord activityRecord, Food food, MealTime mealTime) {
     return FoodRecord.builder()
         .activityRecord(activityRecord)
         .food(food)

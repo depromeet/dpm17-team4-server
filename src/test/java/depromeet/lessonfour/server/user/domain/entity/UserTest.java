@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.auth.persist.jpa.entity;
+package depromeet.lessonfour.server.user.domain.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -14,7 +14,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import depromeet.lessonfour.server.user.domain.entity.User;
 import depromeet.lessonfour.server.user.infra.repository.UserRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
