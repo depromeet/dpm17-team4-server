@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import depromeet.lessonfour.server.auth.api.util.RefreshTokenCookieGenerator;
 import depromeet.lessonfour.server.auth.app.dto.response.AuthTokenDto;
 import depromeet.lessonfour.server.auth.app.service.RefreshTokenUseCase;
 import depromeet.lessonfour.server.user.app.dto.request.RegisterRequestDto;
@@ -64,15 +65,7 @@ public class AuthController {
     AuthTokenDto result = refreshTokenUseCase.refresh(refreshToken);
 
     // Refresh Token Rotation: 새로운 refresh token을 쿠키로 업데이트
-    ResponseCookie refreshTokenCookie =
-        ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, result.refreshToken())
-            .httpOnly(true)
-            .sameSite("Strict")
-            .maxAge(7 * 24 * 60 * 60) // 7일
-            .path("/")
-            .build();
-    // .secure(true) // HTTPS에서만 전송
-    System.out.println("refresh_token: " + result.refreshToken());
+    ResponseCookie refreshTokenCookie = RefreshTokenCookieGenerator.generate(result.refreshToken());
     return ResponseEntity.ok()
         .header("Set-Cookie", refreshTokenCookie.toString())
         .cacheControl(CacheControl.noStore().mustRevalidate())

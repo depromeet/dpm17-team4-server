@@ -1,10 +1,14 @@
 package depromeet.lessonfour.server.activityrecord.domain.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import depromeet.lessonfour.server.activityrecord.domain.vo.MealFood;
 import depromeet.lessonfour.server.activityrecord.domain.vo.StressLevel;
 import depromeet.lessonfour.server.common.domain.entity.BaseTimeEntity;
 import depromeet.lessonfour.server.user.domain.entity.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +19,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -57,13 +62,41 @@ public class ActivityRecord extends BaseTimeEntity {
   @Column(nullable = false)
   @NotNull private LocalDateTime activityAt;
 
-  public static ActivityRecord register(
-      User user, int waterIntakeCups, StressLevel stressLevel, LocalDateTime activityAt) {
-    return ActivityRecord.builder()
-        .user(user)
-        .waterIntakeCups(waterIntakeCups)
-        .stressLevel(stressLevel)
-        .activityAt(activityAt)
-        .build();
+  @Column(nullable = false)
+  @NotNull private boolean isDeleted;
+
+  @OneToMany(
+      mappedBy = "activityRecord",
+      fetch = FetchType.LAZY,
+      cascade = CascadeType.ALL,
+      orphanRemoval = true)
+  @Builder.Default
+  private List<FoodRecord> foodRecords = new ArrayList<>();
+
+  public static ActivityRecord createWithMeals(
+      User user,
+      int waterIntakeCups,
+      StressLevel stressLevel,
+      LocalDateTime activityAt,
+      List<MealFood> mealFoods) {
+    ActivityRecord activityRecord =
+        ActivityRecord.builder()
+            .user(user)
+            .waterIntakeCups(waterIntakeCups)
+            .stressLevel(stressLevel)
+            .activityAt(activityAt)
+            .build();
+
+    mealFoods.stream()
+        .map(
+            mealFood ->
+                FoodRecord.createRecord(activityRecord, mealFood.food(), mealFood.mealTime()))
+        .forEach(activityRecord.foodRecords::add);
+
+    return activityRecord;
+  }
+
+  public void delete() {
+    this.isDeleted = true;
   }
 }

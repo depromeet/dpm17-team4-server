@@ -14,7 +14,7 @@ LOG_FILE := $(LOG_DIR)/server.log
 
 DOCKER_COMPOSE ?= docker compose
 
-.PHONY: help build build-no-test jar compose-up compose-down run start stop restart status logs test clean curl format format-check clear-h2
+.PHONY: help build build-no-test jar compose-up compose-down run start stop restart status logs test clean curl format format-check clear-h2 ssh poetry auth-test
 
 help:
 	@echo "Available targets:"
@@ -152,3 +152,12 @@ clear-h2:
 curl:
 	@echo "GET http://localhost:$(PORT)/api/v1/echo"; \
 	curl -sS http://localhost:$(PORT)/api/v1/echo || true; echo
+
+ssh:
+	ssh root@${APP__SERVER__URL}
+
+poetry:
+	@command -v poetry >/dev/null 2>&1 || pip install poetry
+
+auth-test: poetry
+	@(cd src/test/python/auth-test && poetry install && SERVER_URL=${APP__SERVER__URL} poetry run python -m auth_test.main)

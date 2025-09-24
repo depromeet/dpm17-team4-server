@@ -65,5 +65,9 @@ out/
 ### VS Code ###
 .vscode/
 
+### Python ###
+poetry.lock
+__pycache__/
+
 ### Docker compose ###
 postgres_data
