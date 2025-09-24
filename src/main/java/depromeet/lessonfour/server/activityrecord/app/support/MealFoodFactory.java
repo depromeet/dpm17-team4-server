@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.activityrecord.app.service;
+package depromeet.lessonfour.server.activityrecord.app.support;
 
 import java.util.List;
 import java.util.Map;

@@ -22,7 +22,7 @@ public class QueryActivityRecordUseCase {
   public GetActivityRecordsResponse getActivityRecord(Long userId, LocalDate date) {
     ActivityRecord record =
         activityRecordRepository
-            .findByUserIdAndOccurredAt(userId, date)
+            .findByUserAndDate(userId, date)
             .orElseThrow(() -> new ServerException(ErrorCode.DATA_NOT_FOUND));
     return GetActivityRecordsResponse.from(
         record.getId(),

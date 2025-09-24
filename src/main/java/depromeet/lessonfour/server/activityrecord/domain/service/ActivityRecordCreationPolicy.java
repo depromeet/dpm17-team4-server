@@ -20,7 +20,7 @@ public class ActivityRecordCreationPolicy {
   public void validateNoDuplicateRecord(User user, LocalDateTime occurredAt) {
     LocalDate date = occurredAt.toLocalDate();
 
-    if (activityRecordRepository.existsByUserIdAndActivityAt(user.getId(), date)) {
+    if (activityRecordRepository.existsByUserAndDate(user.getId(), date)) {
       throw new ServerException(ErrorCode.CONFLICT);
     }
   }

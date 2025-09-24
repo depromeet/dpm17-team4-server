@@ -7,11 +7,11 @@ import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
 
 public interface ActivityRecordRepository {
 
-  Optional<ActivityRecord> findByUserIdAndOccurredAt(Long userId, LocalDate date);
+  Optional<ActivityRecord> findByUserAndDate(Long userId, LocalDate date);
 
   void save(ActivityRecord activityRecord);
 
-  boolean existsByUserIdAndActivityAt(Long userId, LocalDate activityAt);
+  boolean existsByUserAndDate(Long userId, LocalDate activityAt);
 
-  Optional<ActivityRecord> findByUser_IdAndIdAndIsDeletedFalse(Long userId, Long activityRecordId);
+  Optional<ActivityRecord> findByUserAndId(Long userId, Long activityRecordId);
 }
