@@ -3,8 +3,8 @@ include .env
 SHELL := /bin/sh
 
 PORT ?= 8080
-# pg
-SPRING_PROFILES ?= dev
+# Default to local profile for development
+SPRING_PROFILES ?= local
 EXTRA_ARGS ?=
 
 GRADLE := ./gradlew
@@ -36,7 +36,7 @@ help:
 	@echo ""
 	@echo "Variables:"
 	@echo "  PORT=<int>                 (default: 8080)"
-	@echo "  SPRING_PROFILES=<profiles> (default: dev; e.g., dev,local)"
+	@echo "  SPRING_PROFILES=<profiles> (default: local; e.g., local,dev)"
 	@echo "  EXTRA_ARGS=\"--key=val\"    (extra Spring Boot args)"
 
 build:
@@ -49,19 +49,19 @@ jar:
 	$(GRADLE) bootJar
 
 compose-up:
-	@echo "Starting docker containers (dev or pg only)..."; \
-	if echo ",$(SPRING_PROFILES)," | grep -qE ",(dev|pg),"; then \
+	@echo "Starting docker containers (dev profile only)..."; \
+	if echo ",$(SPRING_PROFILES)," | grep -qE ",dev,"; then \
 		$(DOCKER_COMPOSE) up -d; \
 	else \
-		echo "Skipped (SPRING_PROFILES=$(SPRING_PROFILES))"; \
+		echo "Skipped for profile '$(SPRING_PROFILES)' (only runs for dev profile)"; \
 	fi
 
 compose-down:
-	@echo "Stopping docker containers (dev or pg only)..."; \
-	if echo ",$(SPRING_PROFILES)," | grep -qE ",(dev|pg),"; then \
+	@echo "Stopping docker containers (dev profile only)..."; \
+	if echo ",$(SPRING_PROFILES)," | grep -qE ",dev,"; then \
 		$(DOCKER_COMPOSE) down; \
 	else \
-		echo "Skipped (SPRING_PROFILES=$(SPRING_PROFILES))"; \
+		echo "Skipped for profile '$(SPRING_PROFILES)' (only runs for dev profile)"; \
 	fi
 
 # Foreground run using Gradle (good for development)
@@ -70,6 +70,7 @@ run: compose-up
 		set -a; . ./.env; set +a; \
 	fi; \
 	trap '$(MAKE) compose-down' EXIT INT TERM; \
+	unset SPRING_PROFILES; \
 	$(GRADLE) bootRun --args="--server.port=$(PORT) $(if $(SPRING_PROFILES),--spring.profiles.active=$(SPRING_PROFILES)) $(EXTRA_ARGS)";
 
 # Background run using the built JAR
@@ -88,6 +89,7 @@ start: jar compose-up
 	if [ -f .env ]; then \
 		set -a; . ./.env; set +a; \
 	fi; \
+	unset SPRING_PROFILES; \
 	nohup java -jar "$$JAR_FILE" --server.port=$(PORT) $(if $(SPRING_PROFILES),--spring.profiles.active=$(SPRING_PROFILES)) $(EXTRA_ARGS) > /dev/null 2>&1 & \
 	echo $$! > "$(PID_FILE)"; \
 	echo "Started with PID $$(cat $(PID_FILE)). Logs: logs/server.log (app), logs/access*.log (access)"
