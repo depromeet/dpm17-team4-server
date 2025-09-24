@@ -68,3 +68,6 @@ out/
 ### Python ###
 poetry.lock
 __pycache__/
+
+### Docker compose ###
+postgres_data
