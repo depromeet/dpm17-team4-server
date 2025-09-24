@@ -49,10 +49,12 @@ public class StoolMapper {
                   "장 컨디션 아주 굿!",
                   List.of("##0C7C30", "##7DD357")));
 
-  private String message = "전문가의 상담이 필요해요. 복통이 매우 심했다면 단순한 식사 문제를 넘어서 장염이나 자극적인";
+  private final String message = "전문가의 상담이 필요해요. 복통이 매우 심했다면 단순한 식사 문제를 넘어서 장염이나 자극적인";
 
   public StoolDailyReport map(StoolReport stoolReport) {
-    // 결과에 따라 score, summary, items mapping 필요
+    if (stoolReport.getLevel() == StoolEvaluationLevel.NONE) {
+      return null;
+    }
     HeroCharacter heroCharacter = characterMap.get(stoolReport.getLevel());
     return new StoolDailyReport(
         stoolReport.getStoolScore(),
