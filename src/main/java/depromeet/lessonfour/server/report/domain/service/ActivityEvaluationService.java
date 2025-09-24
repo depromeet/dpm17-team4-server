@@ -10,6 +10,7 @@ import depromeet.lessonfour.server.report.domain.policy.FoodEvaluationPolicy;
 import depromeet.lessonfour.server.report.domain.policy.StressEvaluationPolicy;
 import depromeet.lessonfour.server.report.domain.policy.WaterEvaluationPolicy;
 import depromeet.lessonfour.server.report.domain.vo.ActivityReport;
+import depromeet.lessonfour.server.report.domain.vo.DayType;
 import depromeet.lessonfour.server.report.domain.vo.FoodEvaluation;
 import depromeet.lessonfour.server.report.domain.vo.StressEvaluation;
 import depromeet.lessonfour.server.report.domain.vo.WaterEvaluation;
@@ -25,19 +26,23 @@ public class ActivityEvaluationService {
 
   public ActivityReport evaluate(ActivityRecord previous, ActivityRecord current) {
     List<FoodEvaluation> foodEvaluations = new ArrayList<>();
-    WaterEvaluation waterEvaluation = WaterEvaluation.empty();
+    List<WaterEvaluation> waterEvaluations = new ArrayList<>();
     StressEvaluation stressEvaluation = StressEvaluation.empty();
 
     if (previous != null) {
-      foodEvaluations.add(foodEvaluationPolicy.calculate(previous.getFoodRecords()));
+      foodEvaluations.add(
+          foodEvaluationPolicy.calculate(previous.getFoodRecords(), DayType.YESTERDAY));
+      waterEvaluations.add(
+          waterEvaluationPolicy.calculate(previous.getWaterIntakeCups(), DayType.YESTERDAY));
     }
 
     if (current != null) {
-      foodEvaluations.add(foodEvaluationPolicy.calculate(current.getFoodRecords()));
-      waterEvaluation = waterEvaluationPolicy.calculate(current.getWaterIntakeCups());
+      foodEvaluations.add(foodEvaluationPolicy.calculate(current.getFoodRecords(), DayType.TODAY));
+      waterEvaluations.add(
+          waterEvaluationPolicy.calculate(current.getWaterIntakeCups(), DayType.TODAY));
       stressEvaluation = stressEvaluationPolicy.calculate(current.getStressLevel());
     }
 
-    return new ActivityReport(foodEvaluations, waterEvaluation, stressEvaluation);
+    return new ActivityReport(foodEvaluations, waterEvaluations, stressEvaluation);
   }
 }

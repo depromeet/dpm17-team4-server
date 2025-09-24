@@ -8,15 +8,15 @@ import lombok.Getter;
 public class ActivityReport {
 
   private final List<FoodEvaluation> foodEvaluations;
-  private final WaterEvaluation waterEvaluation;
+  private final List<WaterEvaluation> waterEvaluations;
   private final StressEvaluation stressEvaluation;
 
   public ActivityReport(
       List<FoodEvaluation> foodEvaluations,
-      WaterEvaluation waterEvaluation,
+      List<WaterEvaluation> waterEvaluations,
       StressEvaluation stressEvaluation) {
     this.foodEvaluations = foodEvaluations;
-    this.waterEvaluation = waterEvaluation;
+    this.waterEvaluations = waterEvaluations;
     this.stressEvaluation = stressEvaluation;
   }
 

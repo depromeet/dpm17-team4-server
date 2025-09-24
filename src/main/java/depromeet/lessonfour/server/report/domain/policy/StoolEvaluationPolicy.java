@@ -2,8 +2,8 @@ package depromeet.lessonfour.server.report.domain.policy;
 
 import org.springframework.stereotype.Component;
 
-import depromeet.lessonfour.server.report.domain.vo.PooEvaluationLevel;
 import depromeet.lessonfour.server.report.domain.vo.StoolEvaluation;
+import depromeet.lessonfour.server.report.domain.vo.StoolEvaluationLevel;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 
 @Component
@@ -42,7 +42,7 @@ public class StoolEvaluationPolicy {
 
     double finalScore = normalizeScore(score);
 
-    return StoolEvaluation.from(PooEvaluationLevel.from(finalScore), record);
+    return StoolEvaluation.from(StoolEvaluationLevel.from(finalScore), record);
   }
 
   private static double normalizeScore(double score) {

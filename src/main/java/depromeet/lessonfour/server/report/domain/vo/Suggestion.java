@@ -13,17 +13,35 @@ import lombok.Getter;
 public class Suggestion {
 
   private WaterSuggestion waterSuggestion;
-  private PooSuggestion pooSuggestion;
+  private StoolSuggestion stoolSuggestion;
   private List<HabitSuggestion> habitSuggestion;
 
+  @Getter
   public enum WaterSuggestion {
-    HIGH,
-    MEDIUM,
-    LOW;
+    STANDARD("#4E5560"),
+    HIGH("#23ABFF"),
+    MEDIUM("#F4B005"),
+    LOW("#F13A49"),
+    NONE("#D9D9D9");
+
+    private final String color;
+
+    WaterSuggestion(String color) {
+      this.color = color;
+    }
+
+    public static WaterSuggestion from(WaterLevel level) {
+      return switch (level) {
+        case HIGH -> HIGH;
+        case MEDIUM -> MEDIUM;
+        case LOW -> LOW;
+        case NONE -> NONE;
+      };
+    }
   }
 
   @Getter
-  public enum PooSuggestion {
+  public enum StoolSuggestion {
     CONSTIPATION(NEGATIVE), // 변비 (배변 횟수 적음, 딱딱함)
     DIARRHEA(NEGATIVE), // 설사 (묽고 잦음)
     HARD_STOOL(NEGATIVE), // 딱딱한 변
@@ -42,7 +60,7 @@ public class Suggestion {
 
     private final Quality quality;
 
-    PooSuggestion(Quality quality) {
+    StoolSuggestion(Quality quality) {
       this.quality = quality;
     }
   }

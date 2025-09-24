@@ -1,5 +1,7 @@
 package depromeet.lessonfour.server.report.domain.vo;
 
+import java.time.LocalDateTime;
+
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
@@ -11,14 +13,15 @@ import lombok.Getter;
 @Builder(access = AccessLevel.PRIVATE)
 public class StoolEvaluation {
   private final double score;
-  private final PooEvaluationLevel level;
+  private final StoolEvaluationLevel level;
   private final ToiletColor color;
   private final ToiletShape shape;
   private final int duration;
   private final double pain;
   private final String note;
+  private final LocalDateTime occurredAt;
 
-  public static StoolEvaluation from(PooEvaluationLevel level, ToiletRecord record) {
+  public static StoolEvaluation from(StoolEvaluationLevel level, ToiletRecord record) {
     return StoolEvaluation.builder()
         .level(level)
         .color(record.getColor())
@@ -26,6 +29,7 @@ public class StoolEvaluation {
         .duration(record.getDuration())
         .pain(record.getPain())
         .note(record.getNote())
+        .occurredAt(record.getOccurredAt())
         .build();
   }
 }

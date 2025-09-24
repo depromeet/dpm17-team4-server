@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.FoodRecord;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealTime;
+import depromeet.lessonfour.server.report.domain.vo.DayType;
 import depromeet.lessonfour.server.report.domain.vo.FoodEvaluation;
 
 @Component
@@ -15,7 +16,7 @@ public class FoodEvaluationPolicy {
 
   private static final int DEFAULT_DANGEROUS_THRESHOLD = 80;
 
-  public FoodEvaluation calculate(List<FoodRecord> records) {
+  public FoodEvaluation calculate(List<FoodRecord> records, DayType dayType) {
     boolean dangerous = isDangerousExists(records);
 
     Map<MealTime, List<String>> foodsByMealTime =
@@ -25,7 +26,7 @@ public class FoodEvaluationPolicy {
                     FoodRecord::getMealTime,
                     Collectors.mapping(record -> record.getFood().getName(), Collectors.toList())));
 
-    return new FoodEvaluation(dangerous, foodsByMealTime);
+    return new FoodEvaluation(dangerous, foodsByMealTime, dayType);
   }
 
   private static boolean isDangerousExists(List<FoodRecord> records) {

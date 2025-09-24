@@ -1,6 +1,6 @@
 package depromeet.lessonfour.server.report.domain.vo;
 
-public enum PooEvaluationLevel {
+public enum StoolEvaluationLevel {
   VERY_GOOD,
   GOOD,
   AVERAGE,
@@ -13,7 +13,7 @@ public enum PooEvaluationLevel {
   private static final int AVERAGE_THRESHOLD = 40;
   private static final int BAD_THRESHOLD = 20;
 
-  public static PooEvaluationLevel from(int score) {
+  public static StoolEvaluationLevel from(int score) {
     if (score >= VERY_GOOD_THRESHOLD) {
       return VERY_GOOD;
     } else if (score >= GOOD_THRESHOLD) {
@@ -27,7 +27,7 @@ public enum PooEvaluationLevel {
     }
   }
 
-  public static PooEvaluationLevel from(double score) {
+  public static StoolEvaluationLevel from(double score) {
     return from((int) score);
   }
 }

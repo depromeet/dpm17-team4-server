@@ -1,6 +1,6 @@
 package depromeet.lessonfour.server.report.domain.policy;
 
-import static depromeet.lessonfour.server.report.domain.vo.Suggestion.PooSuggestion.BLOODY_STOOL;
+import static depromeet.lessonfour.server.report.domain.vo.Suggestion.StoolSuggestion.BLOODY_STOOL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,11 +8,12 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.report.domain.vo.ActivityReport;
-import depromeet.lessonfour.server.report.domain.vo.PooEvaluationLevel;
+import depromeet.lessonfour.server.report.domain.vo.DayType;
+import depromeet.lessonfour.server.report.domain.vo.StoolEvaluationLevel;
 import depromeet.lessonfour.server.report.domain.vo.StoolReport;
 import depromeet.lessonfour.server.report.domain.vo.Suggestion;
 import depromeet.lessonfour.server.report.domain.vo.Suggestion.HabitSuggestion;
-import depromeet.lessonfour.server.report.domain.vo.Suggestion.PooSuggestion;
+import depromeet.lessonfour.server.report.domain.vo.Suggestion.StoolSuggestion;
 import depromeet.lessonfour.server.report.domain.vo.Suggestion.WaterSuggestion;
 import depromeet.lessonfour.server.report.domain.vo.WaterEvaluation;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
@@ -28,19 +29,24 @@ public class SuggestionPolicy {
 
   public Suggestion evaluate(ActivityReport activityReport, StoolReport stoolReport) {
     WaterSuggestion waterSuggestion = generateWaterSuggestions(activityReport);
-    PooSuggestion pooSuggestion = generatePooSuggestions(stoolReport);
+    StoolSuggestion stoolSuggestion = generatePooSuggestions(stoolReport);
     List<HabitSuggestion> habitSuggestions = generateHabitSuggestions(activityReport, stoolReport);
 
-    return new Suggestion(waterSuggestion, pooSuggestion, habitSuggestions);
+    return new Suggestion(waterSuggestion, stoolSuggestion, habitSuggestions);
   }
 
   private WaterSuggestion generateWaterSuggestions(ActivityReport activityReport) {
-    WaterEvaluation water = activityReport.getWaterEvaluation();
+    WaterEvaluation water =
+        activityReport.getWaterEvaluations().stream()
+            .filter(w -> w.getDayType() == DayType.TODAY)
+            .findFirst()
+            .orElse(WaterEvaluation.empty());
 
     return switch (water.getLevel()) {
       case HIGH -> WaterSuggestion.HIGH;
       case MEDIUM -> WaterSuggestion.MEDIUM;
-      case LOW, NONE -> WaterSuggestion.LOW;
+      case LOW -> WaterSuggestion.LOW;
+      case NONE -> WaterSuggestion.NONE;
     };
   }
 
@@ -60,7 +66,7 @@ public class SuggestionPolicy {
     }
   }
 
-  private PooSuggestion generatePooSuggestions(StoolReport stoolReport) {
+  private StoolSuggestion generatePooSuggestions(StoolReport stoolReport) {
 
     ToiletShape shape = stoolReport.getMostFrequentShape();
     // 가장 심각한 증상부터 체크
@@ -69,68 +75,68 @@ public class SuggestionPolicy {
     }
 
     if (stoolReport.hasAbnormalColor()) {
-      return PooSuggestion.COLOR_ABNORMAL;
+      return StoolSuggestion.COLOR_ABNORMAL;
     }
 
     // 배변 시 통증이 있는 경우
     if (stoolReport.getAveragePain() >= PAINFUL_THRESHOLD) {
-      return PooSuggestion.PAINFUL_DEFECATION;
+      return StoolSuggestion.PAINFUL_DEFECATION;
     }
 
     // 변비 판정 (딱딱하고 배변 횟수가 적음)
     if (shape == ToiletShape.ROCK && stoolReport.getNumberOfRecords() < CONSTIPATION_THRESHOLD) {
-      return PooSuggestion.CONSTIPATION;
+      return StoolSuggestion.CONSTIPATION;
     }
 
     // 설사 판정 (묽고 잦음)
     if (shape == ToiletShape.PORRIDGE
         && stoolReport.getNumberOfRecords() > CONSTIPATION_THRESHOLD) {
-      return PooSuggestion.DIARRHEA;
+      return StoolSuggestion.DIARRHEA;
     }
 
     // 딱딱한 변
     if (shape == ToiletShape.ROCK) {
-      return PooSuggestion.HARD_STOOL;
+      return StoolSuggestion.HARD_STOOL;
     }
 
     // 묽은 변
     if (shape == ToiletShape.PORRIDGE || shape == ToiletShape.CREAM) {
-      return PooSuggestion.SOFT_STOOL;
+      return StoolSuggestion.SOFT_STOOL;
     }
 
     // 배변 시간이 긴 경우
     if (stoolReport.getAverageDuration() > NORMAL_DURATION_THRESHOLD) {
-      return PooSuggestion.LONG_DEFECATION_TIME;
+      return StoolSuggestion.LONG_DEFECATION_TIME;
     }
 
     // 정상적인 경우들
-    if ((stoolReport.getLevel() == PooEvaluationLevel.GOOD
-            || stoolReport.getLevel() == PooEvaluationLevel.VERY_GOOD)
+    if ((stoolReport.getLevel() == StoolEvaluationLevel.GOOD
+            || stoolReport.getLevel() == StoolEvaluationLevel.VERY_GOOD)
         && stoolReport.getAverageDuration() <= NORMAL_DURATION_THRESHOLD
         && stoolReport.getAveragePain() <= PAINFUL_THRESHOLD) {
       if (stoolReport.hasGoodShape()) {
-        return PooSuggestion.IDEAL_SHAPE;
+        return StoolSuggestion.IDEAL_SHAPE;
       }
 
       if (stoolReport.hasGoodColor()) {
-        return PooSuggestion.HEALTHY_COLOR;
+        return StoolSuggestion.HEALTHY_COLOR;
       }
 
-      return PooSuggestion.HEALTHY_REGULAR;
+      return StoolSuggestion.HEALTHY_REGULAR;
     }
 
     // 통증 없는 배변
     if (stoolReport.getAveragePain() <= PAINFUL_THRESHOLD) {
-      return PooSuggestion.PAIN_FREE;
+      return StoolSuggestion.PAIN_FREE;
     }
 
     // 적절한 시간 내 배변
     if (stoolReport.getAverageDuration() <= NORMAL_DURATION_THRESHOLD) {
-      return PooSuggestion.NORMAL_DURATION;
+      return StoolSuggestion.NORMAL_DURATION;
     }
 
     // 기본값 (정상적인 규칙적 배변)
-    return PooSuggestion.HEALTHY_REGULAR;
+    return StoolSuggestion.HEALTHY_REGULAR;
   }
 
   private List<HabitSuggestion> generateHabitSuggestions(

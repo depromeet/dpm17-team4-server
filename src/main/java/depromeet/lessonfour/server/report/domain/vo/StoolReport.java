@@ -16,11 +16,11 @@ import lombok.Getter;
 public class StoolReport {
 
   private final double stoolScore;
-  private final PooEvaluationLevel level;
+  private final StoolEvaluationLevel level;
   private final List<StoolEvaluation> items;
 
   private static StoolReport empty() {
-    return new StoolReport(0, PooEvaluationLevel.NONE, List.of());
+    return new StoolReport(0, StoolEvaluationLevel.NONE, List.of());
   }
 
   public static StoolReport summarize(List<StoolEvaluation> evaluations) {
@@ -29,7 +29,7 @@ public class StoolReport {
     }
 
     double averageScore = getTotalScore(evaluations);
-    PooEvaluationLevel level = PooEvaluationLevel.from((int) (averageScore));
+    StoolEvaluationLevel level = StoolEvaluationLevel.from((int) (averageScore));
 
     return new StoolReport(averageScore, level, evaluations);
   }

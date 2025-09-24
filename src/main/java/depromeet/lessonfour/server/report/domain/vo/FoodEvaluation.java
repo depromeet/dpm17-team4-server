@@ -9,11 +9,14 @@ import lombok.Getter;
 @Getter
 public class FoodEvaluation {
 
+  private DayType dayType;
   private final boolean dangerous;
   private final Map<MealTime, List<String>> foodsByMealTime;
 
-  public FoodEvaluation(boolean dangerous, Map<MealTime, List<String>> foodsByMealTime) {
+  public FoodEvaluation(
+      boolean dangerous, Map<MealTime, List<String>> foodsByMealTime, DayType dayType) {
     this.dangerous = dangerous;
     this.foodsByMealTime = foodsByMealTime;
+    this.dayType = dayType;
   }
 }

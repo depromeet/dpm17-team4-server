@@ -20,7 +20,10 @@ public class ActivityRecordQueryService {
   private final ActivityRecordRepository activityRecordRepository;
 
   public Map<LocalDate, ActivityRecord> findDayAndDayBefore(Long userId, LocalDateTime dateTime) {
-    return activityRecordRepository.findDayAndDayBefore(userId, dateTime.toLocalDate());
+    List<ActivityRecord> records =
+        activityRecordRepository.findDayAndDayBefore(userId, dateTime.toLocalDate());
+
+    return groupByDate(records);
   }
 
   private static Map<LocalDate, ActivityRecord> groupByDate(List<ActivityRecord> activityRecords) {
