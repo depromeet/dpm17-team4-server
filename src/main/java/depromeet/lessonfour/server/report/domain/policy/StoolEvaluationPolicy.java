@@ -42,7 +42,7 @@ public class StoolEvaluationPolicy {
 
     double finalScore = normalizeScore(score);
 
-    return StoolEvaluation.from(StoolEvaluationLevel.from(finalScore), record);
+    return StoolEvaluation.from(finalScore, StoolEvaluationLevel.from(finalScore), record);
   }
 
   private static double normalizeScore(double score) {

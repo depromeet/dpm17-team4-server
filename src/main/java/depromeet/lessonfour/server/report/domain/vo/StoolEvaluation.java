@@ -21,8 +21,10 @@ public class StoolEvaluation {
   private final String note;
   private final LocalDateTime occurredAt;
 
-  public static StoolEvaluation from(StoolEvaluationLevel level, ToiletRecord record) {
+  public static StoolEvaluation from(
+      double score, StoolEvaluationLevel level, ToiletRecord record) {
     return StoolEvaluation.builder()
+        .score(score)
         .level(level)
         .color(record.getColor())
         .shape(record.getShape())
