@@ -55,10 +55,13 @@ public class StoolReport {
   public boolean drunkAlcohol() {
     return items.stream()
         .anyMatch(
-            item ->
-                item.getNote().contains("술")
-                    || item.getNote().contains("음주")
-                    || item.getNote().contains("과음"));
+            item -> {
+              String note = item.getNote();
+              if (note == null || note.isBlank()) {
+                return false;
+              }
+              return note.contains("술") || note.contains("음주") || note.contains("과음");
+            });
   }
 
   public double getAverageDuration() {
