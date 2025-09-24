@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.users.controllers.v1;
+package depromeet.lessonfour.server.auth.api;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;

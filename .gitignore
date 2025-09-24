@@ -64,3 +64,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Python ###
+poetry.lock
+__pycache__/

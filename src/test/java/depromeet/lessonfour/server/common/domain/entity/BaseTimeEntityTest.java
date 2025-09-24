@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.common.persist.jpa.entity;
+package depromeet.lessonfour.server.common.domain.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import depromeet.lessonfour.server.common.domain.entity.BaseTimeEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.GeneratedValue;
