@@ -20,7 +20,7 @@ public class QueryToiletRecordUseCase {
   public ToiletRecordResponseDto getDetail(Long userId, Long recordId) {
     ToiletRecord record =
         toiletRecordRepository
-            .findByUser_IdAndIdAndIsDeletedFalse(userId, recordId)
+            .findByUserAndId(userId, recordId)
             .orElseThrow(() -> new ServerException(ErrorCode.DATA_NOT_FOUND));
     return ToiletRecordResponseDto.of(record);
   }

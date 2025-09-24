@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import depromeet.lessonfour.server.toiletrecord.app.repository.ToiletRepository;
+import depromeet.lessonfour.server.toiletrecord.app.repository.ToiletRecordRepository;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 import lombok.RequiredArgsConstructor;
 
@@ -13,9 +13,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ToiletRecordQueryService {
 
-  private final ToiletRepository toiletRepository;
+  private final ToiletRecordRepository toiletRecordRepository;
 
   public List<ToiletRecord> findByDate(Long userId, LocalDate date) {
-    return toiletRepository.findByDate(userId, date);
+    return toiletRecordRepository.findByDate(userId, date);
   }
 }
