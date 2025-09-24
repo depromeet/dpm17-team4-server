@@ -35,8 +35,8 @@ public class StoolEvaluationPolicy {
     double score = BASE_SCORE;
 
     score += successScore(record.isSuccessful()) * SUCCESS_WEIGHT;
-    score += record.getColor().getScore() * COLOR_WEIGHT;
-    score += record.getShape().getScore() * SHAPE_WEIGHT;
+    score += (record.getColor() != null ? record.getColor().getScore() : 0) * COLOR_WEIGHT;
+    score += (record.getShape() != null ? record.getShape().getScore() : 0) * SHAPE_WEIGHT;
     score += durationPenalty(record.getDuration()) * DURATION_WEIGHT;
     score += painPenalty(record.getPain()) * PAIN_WEIGHT;
 
