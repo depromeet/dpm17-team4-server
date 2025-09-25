@@ -26,6 +26,6 @@ SELECT name, m * 20, NOW(), NOW() FROM tmp_foods;
 TRUNCATE TABLE tmp_foods;
 EOF
 
-rm $CONTAINER_DATA_FILE
+rm $HOST_DATA_DIR/result.txt
 
 echo "CSV data loaded into foods table."
