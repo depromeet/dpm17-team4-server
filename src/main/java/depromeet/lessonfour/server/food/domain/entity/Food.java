@@ -26,9 +26,13 @@ public class Food extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   @NotNull private String name;
 
   @Column(nullable = false)
   @NotNull private double score;
+
+  @Column(nullable = false)
+  @NotNull @Builder.Default
+  private Long usage_count = 0L;
 }
