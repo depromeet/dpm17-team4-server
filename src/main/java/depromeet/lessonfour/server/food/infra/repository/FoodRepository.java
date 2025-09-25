@@ -11,6 +11,8 @@ import depromeet.lessonfour.server.food.domain.entity.Food;
 
 public interface FoodRepository extends JpaRepository<Food, Long> {
 
+  List<Food> findAllByIdIn(List<Long> foodIds);
+
   @Query(value = "SELECT * FROM foods ORDER BY RANDOM() LIMIT 5", nativeQuery = true)
   List<Food> findRandomFoods();
 
