@@ -1,0 +1,22 @@
+"""
+I've analyzed each food item and assigned scores from 0-5 based on their potential negative impact on bowel movements, considering the following medical factors:
+
+Scoring Criteria:
+5 (Highest negative impact): Very fatty/greasy foods, spicy dishes, processed meats, organ meats
+4: Fried foods, fatty meats, highly processed items, alcohol
+3: Moderately processed foods, some dairy, mild spices
+2: Simple carbohydrates, mild seasonings, some fermented foods
+1: Low-FODMAP vegetables, lean proteins, gentle foods
+0 (Minimal impact): Raw vegetables, fruits, herbal teas, water-based items
+
+Key Considerations:
+High fat content (삼겹살, 곱창, 막창): Score 5 - can slow digestion and worsen symptoms
+Fried foods (튀김류, 치킨): Score 4 - high fat and oil content
+Spicy foods (마라탕, 고춧가루): Score 3-5 - can irritate digestive tract
+Fermented foods (김치류): Score 1-2 - generally beneficial but can cause gas in sensitive individuals
+Vegetables (상추, 토마토, 당근): Score 0-1 - high fiber, generally beneficial
+Simple grains (쌀밥, 죽): Score 1 - easy to digest
+Alcohol (소주, 맥주): Score 3-4 - can irritate digestive system
+
+The CSV file has been created with 1,000+ food items scored according to their potential impact on bowel movement health, maintaining relative consistency within food categories as requested.
+"""
