@@ -1,3 +1,7 @@
 package depromeet.lessonfour.server.report.domain.vo;
 
-public class PooEvaluation {}
+public enum DayType {
+  TODAY,
+  YESTERDAY,
+  NONE
+}

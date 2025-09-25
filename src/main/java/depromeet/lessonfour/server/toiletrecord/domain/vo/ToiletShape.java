@@ -11,5 +11,15 @@ public enum ToiletShape {
   CORN,
   BANANA,
   CREAM,
-  PORRIDGE
+  PORRIDGE;
+
+  public int getScore() {
+    return switch (this) {
+      case RABBIT, ROCK -> -15;
+      case PORRIDGE -> -10; // 묽음
+      case CORN -> -5;
+      case CREAM -> 10;
+      case BANANA -> 15; // 이상적
+    };
+  }
 }

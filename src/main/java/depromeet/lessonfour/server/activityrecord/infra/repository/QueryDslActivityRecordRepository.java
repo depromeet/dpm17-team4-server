@@ -6,6 +6,7 @@ import static depromeet.lessonfour.server.food.domain.entity.QFood.food;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -69,5 +70,19 @@ public class QueryDslActivityRecordRepository {
             .fetchOne();
 
     return Optional.ofNullable(record);
+  }
+
+  public List<ActivityRecord> findDayAndDayBefore(Long userId, LocalDate day) {
+    LocalDateTime yesterdayStart = day.minusDays(1).atStartOfDay();
+    LocalDateTime tomorrowStart = day.plusDays(1).atStartOfDay();
+
+    return queryFactory
+        .selectFrom(activityRecord)
+        .where(
+            activityRecord.user.id.eq(userId),
+            activityRecord.activityAt.goe(yesterdayStart),
+            activityRecord.activityAt.lt(tomorrowStart),
+            activityRecord.isDeleted.eq(false))
+        .fetch();
   }
 }

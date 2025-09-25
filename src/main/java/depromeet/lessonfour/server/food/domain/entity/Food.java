@@ -35,4 +35,13 @@ public class Food extends BaseTimeEntity {
   @Column(nullable = false)
   @NotNull @Builder.Default
   private Long usage_count = 0L;
+
+  // 테스트용 생성 메서드
+  public static Food createForTest(String name, double score) {
+    return Food.builder().name(name).score(score).build();
+  }
+
+  public boolean isDangerous(int threshold) {
+    return this.score >= threshold;
+  }
 }

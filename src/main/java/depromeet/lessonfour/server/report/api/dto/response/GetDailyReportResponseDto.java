@@ -1,36 +1,28 @@
-package depromeet.lessonfour.server.report.app.dto.response;
+package depromeet.lessonfour.server.report.api.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealTime;
-import depromeet.lessonfour.server.report.domain.vo.WaterLevel;
+import depromeet.lessonfour.server.report.domain.vo.Suggestion.WaterSuggestion;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
-import lombok.AccessLevel;
-import lombok.Builder;
 
-@Builder(access = AccessLevel.PRIVATE)
 public record GetDailyReportResponseDto(
     LocalDateTime updatedAt,
-    PooDailyReport poo,
+    StoolDailyReport poo,
     FoodDailyReport food,
     WaterReport water,
     StressReport stress,
-    Suggestion suggestion) {
-
-  public static GetDailyReportResponseDto from() {
-    return GetDailyReportResponseDto.builder().build();
-  }
+    SuggestionDto suggestion) {
 
   // POO
-  @Builder(access = AccessLevel.PRIVATE)
-  public record PooDailyReport(double score, PooSummary summary, List<PooReportItem> items) {}
+  public record StoolDailyReport(double score, StoolSummary summary, List<StoolReportItem> items) {}
 
-  public record PooSummary(
+  public record StoolSummary(
       String image, List<String> backgroundColors, String caption, String message) {}
 
-  public record PooReportItem(
+  public record StoolReportItem(
       LocalDateTime occurredAt,
       String message,
       ToiletColor color,
@@ -49,13 +41,13 @@ public record GetDailyReportResponseDto(
   // WATER
   public record WaterReport(String message, List<WaterReportItem> items) {}
 
-  public record WaterReportItem(String name, double value, String color, WaterLevel level) {}
+  public record WaterReportItem(String name, double value, String color, WaterSuggestion level) {}
 
   // STRESS
   public record StressReport(String message, String image) {}
 
   // SUGGESTION
-  public record Suggestion(String message, List<SuggestionItem> items) {}
+  public record SuggestionDto(String message, List<SuggestionItem> items) {}
 
   public record SuggestionItem(String image, String title, String content) {}
 }

@@ -19,7 +19,7 @@ public class DeleteToiletRecordUseCase {
   public void delete(Long userId, Long recordId) {
     ToiletRecord record =
         toiletRecordRepository
-            .findByUser_IdAndIdAndIsDeletedFalse(userId, recordId)
+            .findByUserAndId(userId, recordId)
             .orElseThrow(() -> new ServerException(ErrorCode.DATA_NOT_FOUND));
     record.delete();
   }
