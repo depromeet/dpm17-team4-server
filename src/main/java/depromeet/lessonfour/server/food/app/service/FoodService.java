@@ -18,7 +18,7 @@ public class FoodService {
 
   private final FoodRepository foodRepository;
 
-  @Transactional(readOnly=true)
+  @Transactional(readOnly = true)
   public FoodSearchResultDto search(FoodSearchRequestDto request) {
     List<Food> foods = foodRepository.findByNameContaining(request.query(), request.count());
     List<FoodSearchItem> searchResult =

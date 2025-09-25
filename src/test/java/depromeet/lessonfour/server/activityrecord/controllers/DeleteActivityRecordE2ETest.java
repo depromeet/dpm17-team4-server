@@ -71,7 +71,7 @@ class DeleteActivityRecordE2ETest {
         "Bearer " + jwtTokenGenerator.generateAccessToken(AccountContext.of(anotherUser));
 
     // 테스트용 Food 데이터 생성
-    testFood = Food.of("사과", 4.5);
+    testFood = Food.builder().name("사과").score(4.5).build();
     foodRepository.save(testFood);
 
     // 테스트용 ActivityRecord 생성
