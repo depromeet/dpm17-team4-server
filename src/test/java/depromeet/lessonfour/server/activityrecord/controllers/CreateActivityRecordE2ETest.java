@@ -69,10 +69,10 @@ class CreateActivityRecordE2ETest {
     // 테스트용 Food 데이터 생성
     List<Food> foods =
         List.of(
-            Food.createForTest("사과", 4.5),
-            Food.createForTest("바나나", 4.0),
-            Food.createForTest("샐러드", 5.0),
-            Food.createForTest("햄버거", 2.0));
+            Food.builder().name("사과").score(4.5).build(),
+            Food.builder().name("바나나").score(4.0).build(),
+            Food.builder().name("샐러드").score(5.0).build(),
+            Food.builder().name("햄버거").score(2.0).build());
     List<Food> savedFoods = foodRepository.saveAll(foods);
     appleId = savedFoods.get(0).getId();
     bananaId = savedFoods.get(1).getId();
