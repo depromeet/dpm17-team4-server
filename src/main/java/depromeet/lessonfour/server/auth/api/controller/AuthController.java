@@ -19,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import depromeet.lessonfour.server.auth.api.util.RefreshTokenCookieGenerator;
 import depromeet.lessonfour.server.auth.app.dto.response.AuthTokenDto;
 import depromeet.lessonfour.server.auth.app.service.RefreshTokenUseCase;
+import depromeet.lessonfour.server.user.app.dto.request.LoginRequestDto;
 import depromeet.lessonfour.server.user.app.dto.request.RegisterRequestDto;
 import depromeet.lessonfour.server.user.app.dto.response.AccessTokenResponseDto;
 import depromeet.lessonfour.server.user.app.service.SignupUseCase;
@@ -48,6 +49,18 @@ public class AuthController {
     // TODO: RESTful하게 users 도메인으로 옮기는 것은 어떨까? e.g. POST users
     var user = registerUseCase.signup(dto);
     return ResponseEntity.created(URI.create("/api/v1/users/" + user.id())).body(user);
+  }
+
+  @Operation(
+      summary = "로컬 로그인",
+      description = "이메일과 비밀번호로 로그인을 진행합니다. 성공 시 200 OK와 함께 access token을 반환합니다.")
+  @PostMapping(
+      path = "/login",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<AccessTokenResponseDto> login(@Valid @RequestBody LoginRequestDto dto) {
+    /** swagger에서만 사용 실제 로그인은 spring security filter에서 처리 이 메서드가 호출되지 않음 */
+    return ResponseEntity.ok().body(new AccessTokenResponseDto(null));
   }
 
   @Operation(

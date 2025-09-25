@@ -1,7 +1,5 @@
 package depromeet.lessonfour.server.toiletrecord.api.controller;
 
-import java.time.LocalDateTime;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +16,10 @@ import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
 import depromeet.lessonfour.server.toiletrecord.app.dto.request.ToiletRecordCreateRequestDto;
 import depromeet.lessonfour.server.toiletrecord.app.dto.request.ToiletRecordUpdateRequestDto;
 import depromeet.lessonfour.server.toiletrecord.app.dto.response.ToiletRecordResponseDto;
+import depromeet.lessonfour.server.toiletrecord.app.service.CreateToiletRecordUseCase;
+import depromeet.lessonfour.server.toiletrecord.app.service.DeleteToiletRecordUseCase;
+import depromeet.lessonfour.server.toiletrecord.app.service.QueryToiletRecordUseCase;
+import depromeet.lessonfour.server.toiletrecord.app.service.UpdateToiletRecordUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,6 +32,11 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/poo-records")
 public class ToiletRecordController {
 
+  private final CreateToiletRecordUseCase createUseCase;
+  private final UpdateToiletRecordUseCase updateUseCase;
+  private final DeleteToiletRecordUseCase deleteUseCase;
+  private final QueryToiletRecordUseCase queryUseCase;
+
   @Operation(summary = "배변기록 등록")
   @ApiResponses({
     @ApiResponse(responseCode = "201", description = "success"),
@@ -39,19 +46,8 @@ public class ToiletRecordController {
   public ResponseEntity<SuccessResponse<ToiletRecordResponseDto>> createToiletRecord(
       @Valid @RequestBody ToiletRecordCreateRequestDto request,
       @AuthenticationPrincipal(expression = "id") Long userId) {
-    // 임시 더미 응답
-    ToiletRecordResponseDto response =
-        new ToiletRecordResponseDto(
-            1L, // 생성된 레코드 id (더미)
-            userId, // 작성자 id
-            request.occurredAt(),
-            request.isSuccessful(),
-            request.color(),
-            request.shape(),
-            request.pain(),
-            request.duration(),
-            request.note());
-    return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_CREATE, response));
+    return ResponseEntity.ok(
+        SuccessResponse.of(SuccessCode.SUCCESS_CREATE, createUseCase.create(userId, request)));
   }
 
   @Operation(summary = "배변기록 상세조회")
@@ -63,19 +59,9 @@ public class ToiletRecordController {
   @GetMapping("/{toiletRecordId}/detail")
   public ResponseEntity<SuccessResponse<ToiletRecordResponseDto>> getToiletRecordDetail(
       @PathVariable Long toiletRecordId, @AuthenticationPrincipal(expression = "id") Long userId) {
-    // 임시 더미 응답
-    ToiletRecordResponseDto response =
-        new ToiletRecordResponseDto(
-            toiletRecordId,
-            userId,
-            LocalDateTime.now().minusMinutes(10),
-            true,
-            null,
-            null,
-            0,
-            5,
-            null);
-    return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_FETCH, response));
+    return ResponseEntity.ok(
+        SuccessResponse.of(
+            SuccessCode.SUCCESS_FETCH, queryUseCase.getDetail(userId, toiletRecordId)));
   }
 
   @Operation(summary = "배변기록 수정")
@@ -89,19 +75,9 @@ public class ToiletRecordController {
       @Valid @RequestBody ToiletRecordUpdateRequestDto request,
       @PathVariable Long toiletRecordId,
       @AuthenticationPrincipal(expression = "id") Long userId) {
-    // 임시 더미 응답
-    ToiletRecordResponseDto response =
-        new ToiletRecordResponseDto(
-            1L, // 생성된 레코드 id (더미)
-            userId, // 작성자 id
-            request.occurredAt(),
-            request.isSuccessful(),
-            request.color(),
-            request.shape(),
-            request.pain(),
-            request.duration(),
-            request.note());
-    return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_UPDATE, response));
+    return ResponseEntity.ok(
+        SuccessResponse.of(
+            SuccessCode.SUCCESS_UPDATE, updateUseCase.update(userId, toiletRecordId, request)));
   }
 
   @Operation(summary = "배변기록 삭제")
@@ -113,6 +89,7 @@ public class ToiletRecordController {
   @DeleteMapping("/{toiletRecordId}")
   public ResponseEntity<SuccessResponse<Void>> deleteToiletRecord(
       @PathVariable Long toiletRecordId, @AuthenticationPrincipal(expression = "id") Long userId) {
+    deleteUseCase.delete(userId, toiletRecordId);
     return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_DELETE));
   }
 }

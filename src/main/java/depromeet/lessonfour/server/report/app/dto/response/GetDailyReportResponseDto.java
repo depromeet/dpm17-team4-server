@@ -1,0 +1,61 @@
+package depromeet.lessonfour.server.report.app.dto.response;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import depromeet.lessonfour.server.activityrecord.domain.vo.MealTime;
+import depromeet.lessonfour.server.report.domain.vo.WaterLevel;
+import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
+import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
+import lombok.AccessLevel;
+import lombok.Builder;
+
+@Builder(access = AccessLevel.PRIVATE)
+public record GetDailyReportResponseDto(
+    LocalDateTime updatedAt,
+    PooDailyReport poo,
+    FoodDailyReport food,
+    WaterReport water,
+    StressReport stress,
+    Suggestion suggestion) {
+
+  public static GetDailyReportResponseDto from() {
+    return GetDailyReportResponseDto.builder().build();
+  }
+
+  // POO
+  @Builder(access = AccessLevel.PRIVATE)
+  public record PooDailyReport(double score, PooSummary summary, List<PooReportItem> items) {}
+
+  public record PooSummary(
+      String image, List<String> backgroundColors, String caption, String message) {}
+
+  public record PooReportItem(
+      LocalDateTime occurredAt,
+      String message,
+      ToiletColor color,
+      ToiletShape shape,
+      int duration,
+      double pain,
+      String note) {}
+
+  // FOOD
+  public record FoodDailyReport(String message, List<FoodReportItem> items) {}
+
+  public record FoodReportItem(LocalDateTime occurredAt, List<FoodReportMeal> meals) {}
+
+  public record FoodReportMeal(MealTime mealTime, boolean dangerous, List<String> foods) {}
+
+  // WATER
+  public record WaterReport(String message, List<WaterReportItem> items) {}
+
+  public record WaterReportItem(String name, double value, String color, WaterLevel level) {}
+
+  // STRESS
+  public record StressReport(String message, String image) {}
+
+  // SUGGESTION
+  public record Suggestion(String message, List<SuggestionItem> items) {}
+
+  public record SuggestionItem(String image, String title, String content) {}
+}
