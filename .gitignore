@@ -71,3 +71,6 @@ __pycache__/
 
 ### Postgres ###
 postgres_data/
+
+### Jupiter Notebook ###
+.ipynb_checkpoints/
