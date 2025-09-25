@@ -155,17 +155,6 @@ curl:
 	@echo "GET http://localhost:$(PORT)/api/v1/echo"; \
 	curl -sS http://localhost:$(PORT)/api/v1/echo || true; echo
 
-postgres:
-	@echo "Creating postgres container..."
-	@docker run -d --name postgres -p 5432:5432 -v $(PWD)/postgres_data:/var/lib/postgresql/data -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=dpm -e POSTGRES_DB=dpm postgres
-	@echo "Done."
-
-postgres-stop:
-	@echo "Stopping postgres container..."
-	@docker stop postgres
-	@docker rm postgres
-	@echo "Done."
-
 ssh:
 	ssh root@${APP__SERVER__URL}
 
