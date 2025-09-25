@@ -22,7 +22,7 @@ Think carefully step by step and respond accordingly.
 [INPUT EXAMPLE]
 ```
 소세지
-김치찌개
+토마토
 ```
 
 [OUTPUT EXAMPLE]
