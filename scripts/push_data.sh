@@ -22,7 +22,7 @@ CREATE TEMP TABLE tmp_foods (
 );
 \copy tmp_foods(name, m, s) FROM '$CONTAINER_DATA_FILE' WITH (FORMAT csv, HEADER true);
 INSERT INTO foods (name, score, created_at, updated_at)
-SELECT name, m * 20, NOW(), NOW() FROM tmp_foods;
+SELECT name, m * 20, NOW(), NOW() FROM tmp_foods ON CONFLICT (name) DO UPDATE SET score = EXCLUDED.score, updated_at = NOW();
 TRUNCATE TABLE tmp_foods;
 EOF
 
