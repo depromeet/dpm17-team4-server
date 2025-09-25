@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "foods")
 @Getter
-@Builder(access = AccessLevel.PRIVATE)
+@Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Food extends BaseTimeEntity {
@@ -26,14 +26,13 @@ public class Food extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   @NotNull private String name;
 
   @Column(name = "score", nullable = false)
   @NotNull private double score;
 
-  // 테스트용 생성 메서드
-  public static Food createForTest(String name, double score) {
-    return Food.builder().name(name).score(score).build();
-  }
+  @Column(nullable = false)
+  @NotNull @Builder.Default
+  private Long usage_count = 0L;
 }

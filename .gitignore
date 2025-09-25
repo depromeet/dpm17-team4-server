@@ -69,5 +69,8 @@ out/
 poetry.lock
 __pycache__/
 
-### Docker compose ###
-postgres_data
+### Postgres ###
+postgres_data/
+
+### Jupiter Notebook ###
+.ipynb_checkpoints/
