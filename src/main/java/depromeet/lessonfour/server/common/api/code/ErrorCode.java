@@ -26,6 +26,11 @@ public enum ErrorCode implements BaseErrorCode {
   UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증에 실패했습니다."),
 
   /*
+  403 FORBIDDEN
+   */
+  FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다."),
+
+  /*
   404 NOT FOUND
   */
   DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "데이터가 존재하지 않습니다"),
@@ -36,6 +41,7 @@ public enum ErrorCode implements BaseErrorCode {
   409 CONFLICT
   */
   CONFLICT(HttpStatus.CONFLICT, "요청이 현재 리소스 상태와 충돌합니다."),
+  ACTIVITY_RECORD_CONFLICT(HttpStatus.CONFLICT, "해당 날짜에 이미 활동 기록이 존재합니다."),
 
   /*
   415 UNSUPPORTED MEDIA TYPE

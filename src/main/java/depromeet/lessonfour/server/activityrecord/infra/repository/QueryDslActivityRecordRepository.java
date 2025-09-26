@@ -31,12 +31,42 @@ public class QueryDslActivityRecordRepository {
             .selectOne()
             .from(activityRecord)
             .where(
-                activityRecord.user.id.eq(userId),
+                activityRecord.userId.eq(userId),
                 activityRecord.activityAt.goe(startOfDay),
                 activityRecord.activityAt.lt(endOfDay),
                 activityRecord.isDeleted.eq(false))
             .fetchFirst();
     return count != null;
+  }
+
+  public Optional<ActivityRecord> findByDate(Long userId, LocalDateTime start, LocalDateTime end) {
+    Long id =
+        queryFactory
+            .select(activityRecord.id)
+            .from(activityRecord)
+            .where(
+                activityRecord.userId.eq(userId),
+                activityRecord.activityAt.goe(start),
+                activityRecord.activityAt.lt(end),
+                activityRecord.isDeleted.eq(false))
+            .fetchFirst();
+
+    if (id == null) {
+      return Optional.empty();
+    }
+
+    ActivityRecord record =
+        queryFactory
+            .selectFrom(activityRecord)
+            .distinct()
+            .leftJoin(activityRecord.foodRecords, foodRecord)
+            .fetchJoin()
+            .leftJoin(foodRecord.food, food)
+            .fetchJoin()
+            .where(activityRecord.id.eq(id), activityRecord.isDeleted.eq(false))
+            .fetchOne();
+
+    return Optional.ofNullable(record);
   }
 
   public Optional<ActivityRecord> findByUserIdAndOccurredAt(Long userId, LocalDate date) {
@@ -48,7 +78,7 @@ public class QueryDslActivityRecordRepository {
             .select(activityRecord.id)
             .from(activityRecord)
             .where(
-                activityRecord.user.id.eq(userId),
+                activityRecord.userId.eq(userId),
                 activityRecord.activityAt.goe(startOfDay),
                 activityRecord.activityAt.lt(endOfDay),
                 activityRecord.isDeleted.eq(false))
@@ -79,7 +109,7 @@ public class QueryDslActivityRecordRepository {
     return queryFactory
         .selectFrom(activityRecord)
         .where(
-            activityRecord.user.id.eq(userId),
+            activityRecord.userId.eq(userId),
             activityRecord.activityAt.goe(yesterdayStart),
             activityRecord.activityAt.lt(tomorrowStart),
             activityRecord.isDeleted.eq(false))
