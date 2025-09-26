@@ -32,6 +32,7 @@ import depromeet.lessonfour.server.user.infra.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Locator;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -68,6 +69,12 @@ public class KakaoAuthService {
     this.issuerUrl = issuerUrl;
     this.tokenUrl = tokenUrl;
     this.authUrl = authUrl;
+  }
+
+  @PostConstruct
+  public void init() {
+    log.info(
+        "[KakaoAuthService] Initialized with clientId: {}, redirectUri: {}", clientId, redirectUri);
   }
 
   public AuthResponseDto login(String code) {
