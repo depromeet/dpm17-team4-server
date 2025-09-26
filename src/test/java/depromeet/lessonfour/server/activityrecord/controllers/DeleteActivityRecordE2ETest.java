@@ -22,6 +22,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
+import depromeet.lessonfour.server.activityrecord.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealFood;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealTime;
 import depromeet.lessonfour.server.activityrecord.domain.vo.StressLevel;
@@ -52,8 +53,8 @@ class DeleteActivityRecordE2ETest {
 
   private String validJwtToken;
   private String anotherUserJwtToken;
-  private User testUser;
-  private User anotherUser;
+  private Long testUserId;
+  private Long anotherUserId;
   private Food testFood;
   private ActivityRecord testActivityRecord;
 
@@ -63,8 +64,11 @@ class DeleteActivityRecordE2ETest {
     RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 
     // 테스트용 사용자들 생성
-    testUser = createTestUser("test@example.com", "password123", "testuser");
-    anotherUser = createTestUser("another@example.com", "password456", "anotheruser");
+    testUserId = createTestUser("test@example.com", "password123", "testuser");
+    anotherUserId = createTestUser("another@example.com", "password456", "anotheruser");
+
+    User testUser = userRepository.findById(testUserId).orElseThrow();
+    User anotherUser = userRepository.findById(anotherUserId).orElseThrow();
 
     validJwtToken = "Bearer " + jwtTokenGenerator.generateAccessToken(AccountContext.of(testUser));
     anotherUserJwtToken =
@@ -75,19 +79,20 @@ class DeleteActivityRecordE2ETest {
     foodRepository.save(testFood);
 
     // 테스트용 ActivityRecord 생성
-    testActivityRecord = createTestActivityRecord(testUser);
+    testActivityRecord = createTestActivityRecord(testUserId);
   }
 
-  private User createTestUser(String email, String password, String nickname) {
+  private Long createTestUser(String email, String password, String nickname) {
     User user = User.register(email, nickname, passwordEncoder.encode(password));
-    return userRepository.save(user);
+    return userRepository.save(user).getId();
   }
 
-  private ActivityRecord createTestActivityRecord(User user) {
+  private ActivityRecord createTestActivityRecord(Long userId) {
     List<MealFood> mealFoods = List.of(new MealFood(MealTime.BREAKFAST, testFood));
 
     ActivityRecord activityRecord =
-        ActivityRecord.createWithMeals(user, 5, StressLevel.MEDIUM, LocalDateTime.now(), mealFoods);
+        ActivityRecord.createWithMeals(
+            userId, 5, StressLevel.MEDIUM, ActivityAt.from(LocalDateTime.now()), mealFoods);
 
     return activityRecordRepository.save(activityRecord);
   }
@@ -140,7 +145,7 @@ class DeleteActivityRecordE2ETest {
   }
 
   @Test
-  @DisplayName("다른 사용자의 생활 기록 삭제 요청시 404 에러를 반환한다")
+  @DisplayName("다른 사용자의 생활 기록 삭제 요청시 403 에러를 반환한다")
   void givenAnotherUserActivityRecord_whenDeleteActivityRecord_thenNotFound() {
     given()
         .log()
@@ -151,9 +156,9 @@ class DeleteActivityRecordE2ETest {
         .then()
         .log()
         .all()
-        .statusCode(HttpStatus.NOT_FOUND.value())
+        .statusCode(HttpStatus.FORBIDDEN.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .body("message", containsString("데이터가 존재하지 않습니다"));
+        .body("message", containsString("권한이 없습니다"));
   }
 
   @Test
@@ -233,8 +238,8 @@ class DeleteActivityRecordE2ETest {
 
     // 조회 시 삭제된 기록은 찾을 수 없어야 함
     assertThat(
-            activityRecordRepository.findByUser_IdAndIdAndIsDeletedFalse(
-                testUser.getId(), testActivityRecord.getId()))
+            activityRecordRepository.findByUserIdAndIdAndIsDeletedFalse(
+                testUserId, testActivityRecord.getId()))
         .isEmpty();
   }
 
@@ -242,7 +247,7 @@ class DeleteActivityRecordE2ETest {
   @DisplayName("여러 생활 기록 중 특정 기록만 삭제된다")
   void givenMultipleActivityRecords_whenDeleteOne_thenOnlyTargetDeleted() {
     // 추가 생활 기록 생성
-    ActivityRecord anotherActivityRecord = createTestActivityRecord(testUser);
+    ActivityRecord anotherActivityRecord = createTestActivityRecord(testUserId);
 
     // 첫 번째 기록 삭제
     given()

@@ -23,7 +23,7 @@ public class DeleteActivityRecordUseCase {
             .orElseThrow(() -> new ServerException(ErrorCode.DATA_NOT_FOUND));
 
     if (!activityRecord.isOwnedBy(userId)) {
-      throw new ServerException(ErrorCode.UNAUTHORIZED);
+      throw new ServerException(ErrorCode.FORBIDDEN);
     }
 
     activityRecord.delete();
