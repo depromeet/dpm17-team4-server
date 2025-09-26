@@ -1,9 +1,9 @@
 package depromeet.lessonfour.server.activityrecord.domain.entity;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import depromeet.lessonfour.server.activityrecord.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealFood;
 import depromeet.lessonfour.server.activityrecord.domain.vo.StressLevel;
 import depromeet.lessonfour.server.common.domain.entity.BaseTimeEntity;
@@ -55,7 +55,7 @@ public class ActivityRecord extends BaseTimeEntity {
   private StressLevel stressLevel;
 
   @Column(nullable = false)
-  @NotNull private LocalDateTime activityAt;
+  @NotNull private ActivityAt activityAt;
 
   @Column(nullable = false)
   @NotNull private boolean isDeleted;
@@ -72,7 +72,7 @@ public class ActivityRecord extends BaseTimeEntity {
       Long userId,
       int waterIntakeCups,
       StressLevel stressLevel,
-      LocalDateTime activityAt,
+      ActivityAt activityAt,
       List<MealFood> mealFoods) {
     ActivityRecord activityRecord =
         ActivityRecord.builder()

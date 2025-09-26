@@ -9,6 +9,7 @@ import depromeet.lessonfour.server.activityrecord.app.dto.request.CreateActivity
 import depromeet.lessonfour.server.activityrecord.app.support.MealFoodFactory;
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
 import depromeet.lessonfour.server.activityrecord.domain.repository.ActivityRecordRepository;
+import depromeet.lessonfour.server.activityrecord.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealFood;
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.common.api.code.ErrorCode;
@@ -27,7 +28,7 @@ public class CreateActivityRecordUseCase {
     List<MealFood> mealFoods = mealFoodFactory.createMealFoods(dto.foods());
     ActivityRecord activityRecord =
         ActivityRecord.createWithMeals(
-            userId, dto.water(), dto.stress(), dto.occurredAt(), mealFoods);
+            userId, dto.water(), dto.stress(), ActivityAt.from(dto.occurredAt()), mealFoods);
 
     try {
       activityRecordRepository.save(activityRecord);

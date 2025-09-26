@@ -654,12 +654,13 @@ class CreateActivityRecordE2ETest {
 
     List<ActivityRecord> activityRecords =
         activityRecordRepository.findAll().stream()
-            .filter(record -> record.getUser().getId().equals(testUser.getId()))
+            .filter(record -> record.getUserId().equals(testUser.getId()))
             .filter(record -> !record.isDeleted())
             .filter(
-                record ->
-                    record.getActivityAt().isAfter(startOfDay)
-                        && record.getActivityAt().isBefore(endOfDay))
+                record -> {
+                  LocalDateTime occurredAt = record.getActivityAt().toDateTime();
+                  return occurredAt.isAfter(startOfDay) && occurredAt.isBefore(endOfDay);
+                })
             .toList();
 
     Long activityRecordId =
@@ -700,12 +701,13 @@ class CreateActivityRecordE2ETest {
     // 4. 재생성된 기록이 실제로 존재하는지 확인
     List<ActivityRecord> recreatedRecords =
         activityRecordRepository.findAll().stream()
-            .filter(record -> record.getUser().getId().equals(testUser.getId()))
+            .filter(record -> record.getUserId().equals(testUser.getId()))
             .filter(record -> !record.isDeleted())
             .filter(
-                record ->
-                    record.getActivityAt().isAfter(startOfDay)
-                        && record.getActivityAt().isBefore(endOfDay))
+                record -> {
+                  LocalDateTime occurredAt = record.getActivityAt().toDateTime();
+                  return occurredAt.isAfter(startOfDay) && occurredAt.isBefore(endOfDay);
+                })
             .toList();
 
     assert !recreatedRecords.isEmpty() : "재생성된 ActivityRecord가 존재하지 않습니다";
