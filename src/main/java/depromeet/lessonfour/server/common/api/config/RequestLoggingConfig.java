@@ -11,13 +11,18 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
+import depromeet.lessonfour.server.common.api.filter.CookieLoggingFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
+@RequiredArgsConstructor
 public class RequestLoggingConfig {
+
+  private final CookieLoggingFilter cookieLoggingFilter;
 
   @Bean
   @Profile({"local", "dev"})
@@ -29,6 +34,17 @@ public class RequestLoggingConfig {
     filter.setMaxPayloadLength(1000);
     filter.setIncludeHeaders(false);
     return filter;
+  }
+
+  @Bean
+  @Profile({"local", "dev"})
+  public FilterRegistrationBean<CookieLoggingFilter> cookieLoggingFilterRegistration() {
+    FilterRegistrationBean<CookieLoggingFilter> registration = new FilterRegistrationBean<>();
+    registration.setFilter(cookieLoggingFilter);
+    registration.addUrlPatterns("/api/*");
+    registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 1);
+    registration.setName("cookieLoggingFilter");
+    return registration;
   }
 
   @Bean
