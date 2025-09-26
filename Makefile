@@ -90,7 +90,7 @@ start: jar compose-up
 		set -a; . ./.env; set +a; \
 	fi; \
 	unset SPRING_PROFILES; \
-	nohup java -jar "$$JAR_FILE" --server.port=$(PORT) $(if $(SPRING_PROFILES),--spring.profiles.active=$(SPRING_PROFILES)) $(EXTRA_ARGS) > /dev/null 2>&1 & \
+	nohup java -jar "$$JAR_FILE" --server.port=$(PORT) $(if $(SPRING_PROFILES),--spring.profiles.active=$(SPRING_PROFILES)) $(EXTRA_ARGS) > app.log 2>&1 & \
 	echo $$! > "$(PID_FILE)"; \
 	echo "Started with PID $$(cat $(PID_FILE)). Logs: logs/server.log (app), logs/access*.log (access)"
 
@@ -159,7 +159,7 @@ ssh:
 	ssh root@${APP__SERVER__URL}
 
 poetry:
-	@command -v poetry >/dev/null 2>&1 || pip install poetry
+	@command -v poetry >/dev/null 2>&1 || pip3 install poetry
 
 auth-test: poetry
 	@(cd src/test/python/auth-test && poetry install && SERVER_URL=${APP__SERVER__URL} poetry run python -m auth_test.main)
