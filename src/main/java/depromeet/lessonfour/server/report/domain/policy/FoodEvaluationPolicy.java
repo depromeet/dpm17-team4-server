@@ -2,6 +2,7 @@ package depromeet.lessonfour.server.report.domain.policy;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -26,11 +27,20 @@ public class FoodEvaluationPolicy {
                     FoodRecord::getMealTime,
                     Collectors.mapping(record -> record.getFood().getName(), Collectors.toList())));
 
-    return new FoodEvaluation(dangerous, foodsByMealTime, dayType);
+    Set<MealTime> dangerousMealTimes = getDangerousMealTimes(records);
+
+    return new FoodEvaluation(dangerous, foodsByMealTime, dayType, dangerousMealTimes);
   }
 
   private static boolean isDangerousExists(List<FoodRecord> records) {
     return records.stream()
         .anyMatch(record -> record.getFood().isDangerous(DEFAULT_DANGEROUS_THRESHOLD));
+  }
+
+  private static Set<MealTime> getDangerousMealTimes(List<FoodRecord> records) {
+    return records.stream()
+        .filter(record -> record.getFood().isDangerous(DEFAULT_DANGEROUS_THRESHOLD))
+        .map(FoodRecord::getMealTime)
+        .collect(Collectors.toSet());
   }
 }

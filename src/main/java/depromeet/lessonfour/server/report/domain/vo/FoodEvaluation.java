@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealTime;
 import lombok.Getter;
@@ -16,9 +17,13 @@ public class FoodEvaluation {
   private final DayType dayType;
   private final boolean dangerous;
   private final Map<MealTime, List<String>> foodsByMealTime;
+  private final Set<MealTime> dangerousMealTimes;
 
   public FoodEvaluation(
-      boolean dangerous, Map<MealTime, List<String>> foodsByMealTime, DayType dayType) {
+      boolean dangerous,
+      Map<MealTime, List<String>> foodsByMealTime,
+      DayType dayType,
+      Set<MealTime> dangerousMealTimes) {
     this.dangerous = dangerous;
     this.dayType = Objects.requireNonNull(dayType, "dayType must not be null");
     Map<MealTime, List<String>> source =
@@ -32,5 +37,11 @@ public class FoodEvaluation {
       copy.put(e.getKey(), list);
     }
     this.foodsByMealTime = Collections.unmodifiableMap(copy);
+    this.dangerousMealTimes =
+        dangerousMealTimes == null ? Collections.emptySet() : Set.copyOf(dangerousMealTimes);
+  }
+
+  public boolean isMealDangerous(MealTime mealTime) {
+    return dangerousMealTimes.contains(mealTime);
   }
 }
