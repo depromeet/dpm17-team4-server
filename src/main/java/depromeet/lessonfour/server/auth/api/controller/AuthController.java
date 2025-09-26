@@ -28,7 +28,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Tag(name = "인증", description = "로컬 회원가입 및 토큰 갱신 API 문서입니다.")
 @RestController
 @RequiredArgsConstructor
@@ -70,18 +72,38 @@ public class AuthController {
   @PostMapping("/refresh")
   public ResponseEntity<?> refresh(
       @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken) {
+    log.info(
+        "[Auth Refresh] Starting token refresh process - refresh token present: {}",
+        refreshToken != null && !refreshToken.isBlank());
 
     if (refreshToken == null || refreshToken.isBlank()) {
+      log.warn("[Auth Refresh] Refresh token not found in cookie");
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token not found");
     }
 
-    AuthTokenDto result = refreshTokenUseCase.refresh(refreshToken);
+    log.debug(
+        "[Auth Refresh] Refresh token received: {}...",
+        refreshToken.substring(0, Math.min(refreshToken.length(), 20)));
 
-    // Refresh Token Rotation: 새로운 refresh token을 쿠키로 업데이트
-    ResponseCookie refreshTokenCookie = RefreshTokenCookieGenerator.generate(result.refreshToken());
-    return ResponseEntity.ok()
-        .header("Set-Cookie", refreshTokenCookie.toString())
-        .cacheControl(CacheControl.noStore().mustRevalidate())
-        .body(new AccessTokenResponseDto(result.accessToken()));
+    try {
+      log.debug("[Auth Refresh] Calling RefreshTokenUseCase.refresh");
+      AuthTokenDto result = refreshTokenUseCase.refresh(refreshToken);
+      log.info("[Auth Refresh] Token refresh successful");
+
+      // Refresh Token Rotation: 새로운 refresh token을 쿠키로 업데이트
+      log.debug("[Auth Refresh] Generating new refresh token cookie");
+      ResponseCookie refreshTokenCookie =
+          RefreshTokenCookieGenerator.generate(result.refreshToken());
+      log.debug("[Auth Refresh] New refresh token cookie generated successfully");
+
+      log.info("[Auth Refresh] Token refresh completed successfully");
+      return ResponseEntity.ok()
+          .header("Set-Cookie", refreshTokenCookie.toString())
+          .cacheControl(CacheControl.noStore().mustRevalidate())
+          .body(new AccessTokenResponseDto(result.accessToken()));
+    } catch (Exception e) {
+      log.error("[Auth Refresh] Token refresh failed: {}", e.getMessage(), e);
+      throw e;
+    }
   }
 }
