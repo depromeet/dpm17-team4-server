@@ -68,7 +68,9 @@ public class FoodMapper {
             .map(
                 entry ->
                     new FoodReportMeal(
-                        entry.getKey(), foodEvaluation.isDangerous(), entry.getValue()))
+                        entry.getKey(),
+                        foodEvaluation.isMealDangerous(entry.getKey()),
+                        entry.getValue()))
             .collect(toList());
 
     return new FoodReportItem(getDate(foodEvaluation.getDayType()), meals);
