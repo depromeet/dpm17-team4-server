@@ -1,17 +1,14 @@
 package depromeet.lessonfour.server.activityrecord.app.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import depromeet.lessonfour.server.activityrecord.app.repository.ActivityRecordRepository;
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
+import depromeet.lessonfour.server.activityrecord.domain.repository.ActivityRecordRepository;
+import depromeet.lessonfour.server.activityrecord.domain.vo.ActivityAt;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -21,19 +18,12 @@ public class ActivityRecordQueryService {
 
   private final ActivityRecordRepository activityRecordRepository;
 
-  public Map<LocalDate, ActivityRecord> findDayAndDayBefore(Long userId, LocalDateTime dateTime) {
-    List<ActivityRecord> records =
-        activityRecordRepository.findDayAndDayBefore(userId, dateTime.toLocalDate());
+  public List<ActivityRecord> getActivityRecordsBetween(
+      Long userId, LocalDateTime start, LocalDateTime end) {
 
-    return groupByDate(records);
-  }
+    ActivityAt from = ActivityAt.from(start);
+    ActivityAt to = ActivityAt.from(end);
 
-  private static Map<LocalDate, ActivityRecord> groupByDate(List<ActivityRecord> activityRecords) {
-    return activityRecords.stream()
-        .collect(
-            Collectors.toMap(
-                record -> LocalDate.from(record.getActivityAt()),
-                Function.identity(),
-                (existing, replacement) -> existing));
+    return activityRecordRepository.findByActivityAtBetween(userId, from, to);
   }
 }
