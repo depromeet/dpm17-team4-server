@@ -74,7 +74,10 @@ public class KakaoAuthService {
   @PostConstruct
   public void init() {
     log.info(
-        "[KakaoAuthService] Initialized with clientId: {}, redirectUri: {}", clientId, redirectUri);
+        "[KakaoAuthService] Initialized with clientId: {}, redirectUri: {}, clientSecret: {}",
+        clientId,
+        redirectUri,
+        clientSecret);
   }
 
   public AuthResponseDto login(String code) {
