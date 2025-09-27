@@ -82,8 +82,6 @@ public class KakaoAuthController {
           // URI 파싱 실패 시 도메인 없이 진행
         }
         
-        ResponseCookie refreshTokenCookie =
-            RefreshTokenCookieGenerator.generate(authResult.refreshToken(), domain);
         String successUrl =
             UriComponentsBuilder.fromUriString(clientRedirectUri)
                 .queryParam("id", authResult.id())
@@ -95,11 +93,30 @@ public class KakaoAuthController {
                 .build()
                 .toUriString();
 
-        return ResponseEntity.status(302)
+        ResponseEntity.BodyBuilder responseBuilder = ResponseEntity.status(302)
             .header("Location", successUrl)
-            .header("Set-Cookie", refreshTokenCookie.toString())
-            .cacheControl(CacheControl.noStore().mustRevalidate())
-            .build();
+            .cacheControl(CacheControl.noStore().mustRevalidate());
+        
+        // 도메인을 성공적으로 가져올 수 있으면 2개 쿠키 생성
+        if (domain != null && !domain.isBlank()) {
+          ResponseCookie refreshTokenCookieWithDomain =
+              RefreshTokenCookieGenerator.generate(authResult.refreshToken(), domain);
+          ResponseCookie refreshTokenCookieWithoutDomain =
+              RefreshTokenCookieGenerator.generate(authResult.refreshToken());
+          
+          return responseBuilder
+              .header("Set-Cookie", refreshTokenCookieWithDomain.toString())
+              .header("Set-Cookie", refreshTokenCookieWithoutDomain.toString())
+              .build();
+        } else {
+          // 도메인을 가져올 수 없으면 1개 쿠키만 생성
+          ResponseCookie refreshTokenCookie =
+              RefreshTokenCookieGenerator.generate(authResult.refreshToken());
+          
+          return responseBuilder
+              .header("Set-Cookie", refreshTokenCookie.toString())
+              .build();
+        }
 
       } catch (Exception e) {
         String errorUrl =
