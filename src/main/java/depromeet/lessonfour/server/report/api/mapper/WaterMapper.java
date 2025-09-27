@@ -46,7 +46,7 @@ public class WaterMapper {
   private static WaterReportItem mapItem(String name, double value, WaterEvaluation evaluation) {
     if (evaluation == null) {
       return new WaterReportItem(
-          name, value, WaterSuggestion.NONE.getColor(), WaterSuggestion.NONE);
+          name, value * 200, WaterSuggestion.NONE.getColor(), WaterSuggestion.NONE);
     }
     WaterSuggestion suggestion = WaterSuggestion.from(evaluation.getLevel());
     return new WaterReportItem(name, value, suggestion.getColor(), suggestion);
