@@ -11,7 +11,6 @@ public class RefreshTokenCookieGenerator {
         .sameSite("None")
         .maxAge(7 * 24 * 60 * 60)
         .path("/")
-        .domain("https://dpm17-team4-client-yray.vercel.app")
         .secure(true)
         .build();
   }
@@ -23,7 +22,6 @@ public class RefreshTokenCookieGenerator {
             .sameSite("None")
             .maxAge(7 * 24 * 60 * 60)
             .path("/")
-            .domain("https://dpm17-team4-client-yray.vercel.app")
             .secure(true);
 
     if (domain != null && !domain.isBlank()) {
