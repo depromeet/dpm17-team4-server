@@ -26,7 +26,7 @@ public class WaterMapper {
     return new WaterReport(
         message,
         List.of(
-            mapItem("STANDARD", 2000.0, null),
+            mapItem("STANDARD", 20.0, null),
             mapItem("YESTERDAY", yesterday != null ? yesterday.getQuantity() : 0.0, yesterday),
             mapItem("TODAY", today != null ? today.getQuantity() : 0.0, today)));
   }
