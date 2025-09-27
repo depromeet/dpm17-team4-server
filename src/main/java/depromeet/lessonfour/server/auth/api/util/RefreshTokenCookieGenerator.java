@@ -11,6 +11,7 @@ public class RefreshTokenCookieGenerator {
         .sameSite("None")
         .maxAge(7 * 24 * 60 * 60)
         .path("/")
+        .domain("dpm17-team4-client-yray.vercel.app")
         .secure(true)
         .build();
   }
