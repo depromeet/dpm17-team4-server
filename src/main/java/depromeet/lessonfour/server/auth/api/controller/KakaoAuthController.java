@@ -1,5 +1,6 @@
 package depromeet.lessonfour.server.auth.api.controller;
 
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -71,8 +72,18 @@ public class KakaoAuthController {
     if (code != null) {
       try {
         AuthResponseDto authResult = kakaoAuthService.login(code);
+        
+        // redirectUrl의 호스트를 도메인으로 사용
+        String domain = null;
+        try {
+          URI redirectUri = URI.create(clientRedirectUri);
+          domain = redirectUri.getHost();
+        } catch (Exception e) {
+          // URI 파싱 실패 시 도메인 없이 진행
+        }
+        
         ResponseCookie refreshTokenCookie =
-            RefreshTokenCookieGenerator.generate(authResult.refreshToken());
+            RefreshTokenCookieGenerator.generate(authResult.refreshToken(), domain);
         String successUrl =
             UriComponentsBuilder.fromUriString(clientRedirectUri)
                 .queryParam("id", authResult.id())
