@@ -77,16 +77,18 @@ public class AuthController {
       @RequestBody(required = false) RefreshTokenRequestDto requestDto) {
 
     String refreshToken = null;
-    
+
     // 쿠키에서 refresh token 확인
     if (cookieRefreshToken != null && !cookieRefreshToken.isBlank()) {
       refreshToken = cookieRefreshToken;
     }
     // 쿠키가 없으면 body에서 refresh token 확인
-    else if (requestDto != null && requestDto.refreshToken() != null && !requestDto.refreshToken().isBlank()) {
+    else if (requestDto != null
+        && requestDto.refreshToken() != null
+        && !requestDto.refreshToken().isBlank()) {
       refreshToken = requestDto.refreshToken();
     }
-    
+
     if (refreshToken == null || refreshToken.isBlank()) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token not found");
     }
