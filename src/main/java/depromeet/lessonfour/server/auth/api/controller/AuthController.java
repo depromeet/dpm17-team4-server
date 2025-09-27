@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import depromeet.lessonfour.server.auth.api.util.RefreshTokenCookieGenerator;
+import depromeet.lessonfour.server.auth.app.dto.request.RefreshTokenRequestDto;
 import depromeet.lessonfour.server.auth.app.dto.response.AuthTokenDto;
 import depromeet.lessonfour.server.auth.app.service.RefreshTokenUseCase;
 import depromeet.lessonfour.server.user.app.dto.request.LoginRequestDto;
@@ -65,12 +66,27 @@ public class AuthController {
 
   @Operation(
       summary = "토큰 갱신",
-      description = "만료된 access token을 갱신합니다.",
+      description = "만료된 access token을 갱신합니다. 쿠키 또는 body에서 refresh token을 받습니다.",
       security = {@SecurityRequirement(name = "JWT")})
-  @PostMapping("/refresh")
+  @PostMapping(
+      path = "/refresh",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> refresh(
-      @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken) {
+      @CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String cookieRefreshToken,
+      @RequestBody(required = false) RefreshTokenRequestDto requestDto) {
 
+    String refreshToken = null;
+    
+    // 쿠키에서 refresh token 확인
+    if (cookieRefreshToken != null && !cookieRefreshToken.isBlank()) {
+      refreshToken = cookieRefreshToken;
+    }
+    // 쿠키가 없으면 body에서 refresh token 확인
+    else if (requestDto != null && requestDto.refreshToken() != null && !requestDto.refreshToken().isBlank()) {
+      refreshToken = requestDto.refreshToken();
+    }
+    
     if (refreshToken == null || refreshToken.isBlank()) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token not found");
     }
