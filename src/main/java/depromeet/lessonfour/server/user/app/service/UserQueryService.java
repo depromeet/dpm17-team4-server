@@ -5,9 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.exception.ServerException;
-import depromeet.lessonfour.server.user.app.dto.response.UserResponseDto;
-import depromeet.lessonfour.server.user.domain.entity.User;
-import depromeet.lessonfour.server.user.infra.repository.UserRepository;
+import depromeet.lessonfour.server.user.domain.User;
+import depromeet.lessonfour.server.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -17,15 +16,15 @@ public class UserQueryService {
 
   private final UserRepository userRepository;
 
-  public UserResponseDto findByEmail(String email) {
-    User user = userRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-
-    return UserResponseDto.of(user);
+  public User getUserForAuthentication(String email) {
+    return userRepository
+        .findByEmail(email)
+        .orElseThrow(() -> new ServerException(ErrorCode.USER_NOT_FOUND));
   }
 
-  public User findById(Long userId) {
+  public User getActivityUserById(Long userId) {
     return userRepository
-        .findById(userId)
+        .findActiveById(userId)
         .orElseThrow(() -> new ServerException(ErrorCode.USER_NOT_FOUND));
   }
 }
