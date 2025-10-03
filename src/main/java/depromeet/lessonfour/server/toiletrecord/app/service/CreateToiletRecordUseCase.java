@@ -8,7 +8,7 @@ import depromeet.lessonfour.server.toiletrecord.app.dto.response.ToiletRecordRes
 import depromeet.lessonfour.server.toiletrecord.app.repository.ToiletRecordRepository;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 import depromeet.lessonfour.server.user.app.service.UserQueryService;
-import depromeet.lessonfour.server.user.domain.entity.User;
+import depromeet.lessonfour.server.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
@@ -20,7 +20,7 @@ public class CreateToiletRecordUseCase {
   private final ToiletRecordRepository toiletRecordRepository;
 
   public ToiletRecordResponseDto create(Long userId, ToiletRecordCreateRequestDto dto) {
-    User user = userQueryService.findById(userId);
+    User user = userQueryService.getActivityUserById(userId);
 
     ToiletRecord record =
         ToiletRecord.register(

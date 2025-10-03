@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import depromeet.lessonfour.server.activityrecord.app.repository.ActivityRecordRepository;
 import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.exception.ServerException;
-import depromeet.lessonfour.server.user.domain.entity.User;
+import depromeet.lessonfour.server.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
 @Service

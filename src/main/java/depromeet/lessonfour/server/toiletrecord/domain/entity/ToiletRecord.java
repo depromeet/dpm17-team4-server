@@ -7,7 +7,7 @@ import depromeet.lessonfour.server.report.domain.policy.StoolEvaluationPolicy;
 import depromeet.lessonfour.server.report.domain.vo.StoolEvaluation;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
-import depromeet.lessonfour.server.user.domain.entity.User;
+import depromeet.lessonfour.server.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

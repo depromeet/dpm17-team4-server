@@ -12,7 +12,7 @@ import depromeet.lessonfour.server.activityrecord.domain.service.ActivityRecordC
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealFood;
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.user.app.service.UserQueryService;
-import depromeet.lessonfour.server.user.domain.entity.User;
+import depromeet.lessonfour.server.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
@@ -26,7 +26,7 @@ public class CreateActivityRecordUseCase {
   private final MealFoodFactory mealFoodFactory;
 
   public void saveActivityRecord(Long userId, CreateActivityRecordsRequest dto) {
-    User user = userQueryService.findById(userId);
+    User user = userQueryService.getActivityUserById(userId);
     activityRecordCreationPolicy.validateNoDuplicateRecord(user, dto.occurredAt());
 
     List<MealFood> mealFoods = mealFoodFactory.createMealFoods(dto.foods());
