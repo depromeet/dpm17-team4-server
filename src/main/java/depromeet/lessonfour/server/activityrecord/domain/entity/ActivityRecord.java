@@ -18,6 +18,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -29,7 +30,14 @@ import lombok.NoArgsConstructor;
 
 // TODO : 추후 기능 명세에 따라 notnull 추가
 @Entity
-@Table(name = "activity_record")
+@Table(
+    name = "activity_record",
+    uniqueConstraints = {
+      @UniqueConstraint(
+          name = "uk_user_date", // 🔹 DB 제약 이름과 동일하게 맞추면 좋음
+          columnNames = {"user_id", "activity_date"} // 🔹 실제 컬럼명
+          )
+    })
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
