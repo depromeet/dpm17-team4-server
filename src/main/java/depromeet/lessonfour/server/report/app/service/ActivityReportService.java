@@ -23,7 +23,7 @@ public class ActivityReportService {
     LocalDate baseDate = baseDatetime.toLocalDate();
     Map<LocalDate, ActivityRecord> recordsByDate =
         activityRecordService.getActivityRecordsBetween(
-            userId, baseDate.atStartOfDay(), baseDate.atTime(LocalTime.MAX));
+            userId, baseDate.minusDays(1).atStartOfDay(), baseDate.atTime(LocalTime.MAX));
 
     ActivityRecord currentRecord = recordsByDate.get(baseDate);
     ActivityRecord previousRecord = recordsByDate.get(baseDate.minusDays(1));
