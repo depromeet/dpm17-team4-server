@@ -33,7 +33,7 @@ public class CreateActivityRecordUseCase {
     try {
       activityRecordRepository.save(activityRecord);
     } catch (DataIntegrityViolationException e) {
-      throw new ServerException(ErrorCode.ACTIVITY_RECORD_CONFLICT);
+      throw new ServerException(ErrorCode.CONFLICT);
     }
   }
 }

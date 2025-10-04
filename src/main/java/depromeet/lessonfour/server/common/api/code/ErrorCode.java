@@ -41,7 +41,6 @@ public enum ErrorCode implements BaseErrorCode {
   409 CONFLICT
   */
   CONFLICT(HttpStatus.CONFLICT, "요청이 현재 리소스 상태와 충돌합니다."),
-  ACTIVITY_RECORD_CONFLICT(HttpStatus.CONFLICT, "해당 날짜에 이미 활동 기록이 존재합니다."),
 
   /*
   415 UNSUPPORTED MEDIA TYPE
