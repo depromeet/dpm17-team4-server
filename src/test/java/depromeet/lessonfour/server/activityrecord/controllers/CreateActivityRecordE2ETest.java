@@ -188,7 +188,7 @@ class CreateActivityRecordE2ETest {
   }
 
   @Test
-  @DisplayName("음식 목록이 null인 경우 400 에러를 반환한다")
+  @DisplayName("음식 목록이 null인 경우에도 기록을 생성할 수 있다")
   void givenNullSelectedFoods_whenCreateActivityRecord_thenBadRequest() {
     LocalDateTime now = LocalDateTime.now();
     String createRequest =
@@ -210,9 +210,35 @@ class CreateActivityRecordE2ETest {
         .when()
         .post("/api/v1/activity-records")
         .then()
-        .statusCode(HttpStatus.BAD_REQUEST.value())
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .body("message", containsString("음식 목록은 필수입니다"));
+        .statusCode(HttpStatus.CREATED.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE);
+  }
+
+  @Test
+  @DisplayName("음식 목록이 빈 배열인 경우에도 기록을 생성할 수 있다")
+  void givenEmptySelectedFoods_whenCreateActivityRecord_thenBadRequest() {
+    LocalDateTime now = LocalDateTime.now();
+    String createRequest =
+        String.format(
+            """
+        {
+          "foods": [],
+          "water": 3,
+          "stress": "LOW",
+          "occurredAt": "%s"
+        }
+        """,
+            now.format(formatter));
+
+    given()
+        .contentType(ContentType.JSON)
+        .header("Authorization", validJwtToken)
+        .body(createRequest)
+        .when()
+        .post("/api/v1/activity-records")
+        .then()
+        .statusCode(HttpStatus.CREATED.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE);
   }
 
   @Test
