@@ -85,7 +85,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(DataIntegrityViolationException.class)
   public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(
       DataIntegrityViolationException e) {
-    return buildErrorResponse(ErrorCode.DATA_INTEGRITY_VIOLATION, e.getMessage());
+    return buildErrorResponse(ErrorCode.CONFLICT, e.getMessage());
   }
 
   @ExceptionHandler(Exception.class)
