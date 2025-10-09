@@ -17,7 +17,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
-import depromeet.lessonfour.server.common.infra.DailyExistenceProjection;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 
