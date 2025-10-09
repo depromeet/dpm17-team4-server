@@ -3,6 +3,7 @@ package depromeet.lessonfour.server.activityrecord.infra.repository;
 import static depromeet.lessonfour.server.activityrecord.domain.entity.QActivityRecord.activityRecord;
 import static depromeet.lessonfour.server.activityrecord.domain.entity.QFoodRecord.foodRecord;
 import static depromeet.lessonfour.server.food.domain.entity.QFood.food;
+import static depromeet.lessonfour.server.toiletrecord.domain.entity.QToiletRecord.toiletRecord;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -72,21 +73,18 @@ public class ActivityRecordQuery {
   public List<DailyExistenceView> existsByActivityAt(
       Long userId, ActivityAt start, @Nullable ActivityAt end) {
 
-    LocalDate startDate = start.toDate();
-    LocalDate endDate = (end != null ? end.toDate() : start.toDate());
+    List<LocalDate> dateRange = start.datesUntil(end);
 
     List<LocalDate> existingDates =
         queryFactory
-            .select(activityRecord.activityAt.date)
-            .from(activityRecord)
+            .select(toiletRecord.activityAt.date)
+            .from(toiletRecord)
             .where(
-                activityRecord.userId.eq(userId),
-                activityRecord.activityAt.date.between(startDate, endDate),
-                activityRecord.isDeleted.isFalse())
+                toiletRecord.user.id.eq(userId),
+                toiletRecord.activityAt.date.between(dateRange.getFirst(), dateRange.getLast()),
+                toiletRecord.isDeleted.isFalse())
             .distinct()
             .fetch();
-
-    List<LocalDate> dateRange = startDate.datesUntil(endDate.plusDays(1)).toList();
 
     Set<LocalDate> existingSet = new HashSet<>(existingDates);
 

@@ -3,7 +3,11 @@ package depromeet.lessonfour.server.common.domain.vo;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
+import depromeet.lessonfour.server.common.api.code.ErrorCode;
+import depromeet.lessonfour.server.common.exception.ServerException;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -41,5 +45,17 @@ public class ActivityAt {
 
   public LocalDate toDate() {
     return date;
+  }
+
+  public List<LocalDate> datesUntil(@Nullable ActivityAt end) {
+    if (end == null) {
+      return List.of(date);
+    }
+
+    if (date.isAfter(end.date)) {
+      throw new ServerException(ErrorCode.INVALID_FIELD_ERROR);
+    }
+
+    return date.datesUntil(end.date.plusDays(1)).toList();
   }
 }

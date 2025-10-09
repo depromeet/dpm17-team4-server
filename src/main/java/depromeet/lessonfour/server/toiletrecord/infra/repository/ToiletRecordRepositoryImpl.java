@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
+import depromeet.lessonfour.server.common.domain.view.DailyExistenceView;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 import depromeet.lessonfour.server.toiletrecord.domain.repository.ToiletRecordRepository;
@@ -30,5 +31,16 @@ public class ToiletRecordRepositoryImpl implements ToiletRecordRepository {
   @Override
   public List<ToiletRecord> findByDate(Long userId, ActivityAt at) {
     return query.findByDate(userId, at);
+  }
+
+  @Override
+  public DailyExistenceView existsByActivityAt(Long userId, ActivityAt at) {
+    return query.existsByActivityAt(userId, at, null).getFirst();
+  }
+
+  @Override
+  public List<DailyExistenceView> existsByActivityAt(
+      Long userId, ActivityAt start, ActivityAt end) {
+    return query.existsByActivityAt(userId, start, end);
   }
 }
