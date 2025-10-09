@@ -18,7 +18,7 @@ public class ToiletRecordQueryService {
   private final ToiletRecordRepository toiletRecordRepository;
 
   public List<ToiletRecord> findByDate(Long userId, LocalDate date) {
-    return toiletRecordRepository.findByDate(userId, date);
+    return toiletRecordRepository.findByDate(userId, ActivityAt.of(date));
   }
 
   public DailyExistenceView existsByActivityAt(Long userId, ActivityAt at) {

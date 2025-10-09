@@ -1,9 +1,9 @@
-package depromeet.lessonfour.server.toiletrecord.app.repository;
+package depromeet.lessonfour.server.toiletrecord.domain.repository;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 
 public interface ToiletRecordRepository {
@@ -12,7 +12,5 @@ public interface ToiletRecordRepository {
 
   Optional<ToiletRecord> findByUserAndId(Long userId, Long recordId);
 
-  Optional<ToiletRecord> findByIdAndIsDeletedFalse(Long recordId);
-
-  List<ToiletRecord> findByDate(Long userId, LocalDate date);
+  List<ToiletRecord> findByDate(Long userId, ActivityAt at);
 }
