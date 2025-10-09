@@ -7,6 +7,8 @@ import depromeet.lessonfour.server.report.domain.vo.StoolEvaluation;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
 import depromeet.lessonfour.server.user.domain.entity.User;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -66,7 +68,11 @@ public class ToiletRecord extends BaseTimeEntity {
   private String note;
 
   @Column(nullable = false)
-  @NotNull private ActivityAt activityAt;
+  @NotNull @AttributeOverrides({
+    @AttributeOverride(name = "date", column = @Column(name = "activity_date")),
+    @AttributeOverride(name = "time", column = @Column(name = "activity_time"))
+  })
+  private ActivityAt activityAt;
 
   @Column(nullable = false)
   @NotNull private boolean isDeleted;
