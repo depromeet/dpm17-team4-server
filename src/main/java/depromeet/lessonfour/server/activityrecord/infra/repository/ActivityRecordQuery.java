@@ -4,20 +4,26 @@ import static depromeet.lessonfour.server.activityrecord.domain.entity.QActivity
 import static depromeet.lessonfour.server.activityrecord.domain.entity.QFoodRecord.foodRecord;
 import static depromeet.lessonfour.server.food.domain.entity.QFood.food;
 
+import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
-import depromeet.lessonfour.server.activityrecord.domain.vo.ActivityAt;
+import depromeet.lessonfour.server.common.domain.view.DailyExistenceView;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
+import depromeet.lessonfour.server.common.infra.DailyExistenceProjection;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class QueryDslActivityRecordRepository {
+public class ActivityRecordQuery {
 
   private final JPAQueryFactory queryFactory;
 
@@ -61,5 +67,32 @@ public class QueryDslActivityRecordRepository {
             activityRecord.activityAt.date.loe(end.toDate()),
             activityRecord.isDeleted.eq(false))
         .fetch();
+  }
+
+  public List<DailyExistenceView> existsByActivityAt(
+      Long userId, ActivityAt start, @Nullable ActivityAt end) {
+
+    LocalDate startDate = start.toDate();
+    LocalDate endDate = (end != null ? end.toDate() : start.toDate());
+
+    List<LocalDate> existingDates =
+        queryFactory
+            .select(activityRecord.activityAt.date)
+            .from(activityRecord)
+            .where(
+                activityRecord.userId.eq(userId),
+                activityRecord.activityAt.date.between(startDate, endDate),
+                activityRecord.isDeleted.isFalse())
+            .distinct()
+            .fetch();
+
+    List<LocalDate> dateRange = startDate.datesUntil(endDate.plusDays(1)).toList();
+
+    Set<LocalDate> existingSet = new HashSet<>(existingDates);
+
+    return dateRange.stream()
+        .<DailyExistenceView>map(
+            date -> new DailyExistenceProjection(date, existingSet.contains(date)))
+        .toList();
   }
 }

@@ -7,34 +7,46 @@ import org.springframework.stereotype.Repository;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
 import depromeet.lessonfour.server.activityrecord.domain.repository.ActivityRecordRepository;
-import depromeet.lessonfour.server.activityrecord.domain.vo.ActivityAt;
+import depromeet.lessonfour.server.common.domain.view.DailyExistenceView;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
 public class ActivityRecordRepositoryImpl implements ActivityRecordRepository {
 
-  private final JpaActivityRecordRepository jpaActivityRecordRepository;
-  private final QueryDslActivityRecordRepository queryDslActivityRecordRepository;
+  private final JpaActivityRecordRepository jpa;
+  private final ActivityRecordQuery query;
 
   @Override
   public void save(ActivityRecord activityRecord) {
-    jpaActivityRecordRepository.save(activityRecord);
+    jpa.save(activityRecord);
   }
 
   @Override
   public Optional<ActivityRecord> findById(Long activityRecordId) {
-    return jpaActivityRecordRepository.findByIdAndIsDeletedFalse(activityRecordId);
+    return jpa.findByIdAndIsDeletedFalse(activityRecordId);
   }
 
   @Override
   public Optional<ActivityRecord> findByActivityAt(Long userId, ActivityAt date) {
-    return queryDslActivityRecordRepository.findByDate(userId, date);
+    return query.findByDate(userId, date);
   }
 
   @Override
   public List<ActivityRecord> findByActivityAtBetween(
       Long userId, ActivityAt start, ActivityAt end) {
-    return queryDslActivityRecordRepository.findByActivityAtBetween(userId, start, end);
+    return query.findByActivityAtBetween(userId, start, end);
+  }
+
+  @Override
+  public DailyExistenceView existsByActivityAt(Long userId, ActivityAt at) {
+    return query.existsByActivityAt(userId, at, null).getFirst();
+  }
+
+  @Override
+  public List<DailyExistenceView> existsByActivityAt(
+      Long userId, ActivityAt start, ActivityAt end) {
+    return query.existsByActivityAt(userId, start, end);
   }
 }
