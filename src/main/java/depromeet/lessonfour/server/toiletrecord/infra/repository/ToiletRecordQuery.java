@@ -1,6 +1,5 @@
 package depromeet.lessonfour.server.toiletrecord.infra.repository;
 
-import static depromeet.lessonfour.server.activityrecord.domain.entity.QActivityRecord.activityRecord;
 import static depromeet.lessonfour.server.toiletrecord.domain.entity.QToiletRecord.toiletRecord;
 
 import java.time.LocalDate;
@@ -12,8 +11,10 @@ import org.springframework.stereotype.Repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import depromeet.lessonfour.server.common.domain.view.DailyExistenceView;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
+import depromeet.lessonfour.server.common.infra.DailyExistenceProjection;
 import depromeet.lessonfour.server.common.infra.DailyExistenceProjection;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 import jakarta.annotation.Nullable;
