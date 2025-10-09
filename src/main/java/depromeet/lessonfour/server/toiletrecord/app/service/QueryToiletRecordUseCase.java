@@ -6,8 +6,8 @@ import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.exception.ServerException;
 import depromeet.lessonfour.server.toiletrecord.app.dto.response.ToiletRecordResponseDto;
-import depromeet.lessonfour.server.toiletrecord.app.repository.ToiletRecordRepository;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
+import depromeet.lessonfour.server.toiletrecord.domain.repository.ToiletRecordRepository;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
