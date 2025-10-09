@@ -1,8 +1,8 @@
-package depromeet.lessonfour.server.activityrecord.infra.support;
+package depromeet.lessonfour.server.common.infra.support;
 
 import java.time.LocalDateTime;
 
-import depromeet.lessonfour.server.activityrecord.domain.vo.ActivityAt;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

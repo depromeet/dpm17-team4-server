@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.activityrecord.domain.vo;
+package depromeet.lessonfour.server.common.domain.vo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

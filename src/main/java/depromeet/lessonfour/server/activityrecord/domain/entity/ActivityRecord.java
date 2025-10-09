@@ -3,10 +3,10 @@ package depromeet.lessonfour.server.activityrecord.domain.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import depromeet.lessonfour.server.activityrecord.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealFood;
 import depromeet.lessonfour.server.activityrecord.domain.vo.StressLevel;
 import depromeet.lessonfour.server.common.domain.entity.BaseTimeEntity;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
