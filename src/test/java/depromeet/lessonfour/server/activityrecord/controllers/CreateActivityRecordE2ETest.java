@@ -189,7 +189,7 @@ class CreateActivityRecordE2ETest {
 
   @Test
   @DisplayName("음식 목록이 null인 경우에도 기록을 생성할 수 있다")
-  void givenNullSelectedFoods_whenCreateActivityRecord_thenBadRequest() {
+  void givenNullSelectedFoods_whenCreateActivityRecord_thenSuccess() {
     LocalDateTime now = LocalDateTime.now();
     String createRequest =
         String.format(
