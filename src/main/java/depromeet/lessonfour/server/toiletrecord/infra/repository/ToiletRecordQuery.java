@@ -1,5 +1,6 @@
 package depromeet.lessonfour.server.toiletrecord.infra.repository;
 
+import static depromeet.lessonfour.server.activityrecord.domain.entity.QActivityRecord.activityRecord;
 import static depromeet.lessonfour.server.toiletrecord.domain.entity.QToiletRecord.toiletRecord;
 
 import java.time.LocalDate;
