@@ -68,7 +68,7 @@ public class StoolMapper {
             .map(
                 item ->
                     new StoolReportItem(
-                        item.getOccurredAt(),
+                        item.getOccurredAt().toDateTime(),
                         message,
                         item.getColor(),
                         item.getShape(),
