@@ -20,7 +20,7 @@ public record ToiletRecordResponseDto(
     return new ToiletRecordResponseDto(
         entity.getId(),
         entity.getUser().getId(),
-        entity.getOccurredAt(),
+        entity.getActivityAt().toDateTime(),
         entity.isSuccessful(),
         entity.getColor(),
         entity.getShape(),

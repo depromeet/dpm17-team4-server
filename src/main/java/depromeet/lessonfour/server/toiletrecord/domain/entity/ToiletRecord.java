@@ -1,8 +1,7 @@
 package depromeet.lessonfour.server.toiletrecord.domain.entity;
 
-import java.time.LocalDateTime;
-
 import depromeet.lessonfour.server.common.domain.entity.BaseTimeEntity;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.report.domain.policy.StoolEvaluationPolicy;
 import depromeet.lessonfour.server.report.domain.vo.StoolEvaluation;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
@@ -67,7 +66,7 @@ public class ToiletRecord extends BaseTimeEntity {
   private String note;
 
   @Column(nullable = false)
-  @NotNull private LocalDateTime occurredAt;
+  @NotNull private ActivityAt activityAt;
 
   @Column(nullable = false)
   @NotNull private boolean isDeleted;
@@ -80,7 +79,7 @@ public class ToiletRecord extends BaseTimeEntity {
       int pain,
       int duration,
       String note,
-      LocalDateTime occurredAt) {
+      ActivityAt activityAt) {
     return ToiletRecord.builder()
         .user(user)
         .isSuccessful(isSuccessful)
@@ -89,7 +88,7 @@ public class ToiletRecord extends BaseTimeEntity {
         .pain(pain)
         .duration(duration)
         .note(note)
-        .occurredAt(occurredAt)
+        .activityAt(activityAt)
         .isDeleted(false)
         .build();
   }
@@ -101,14 +100,14 @@ public class ToiletRecord extends BaseTimeEntity {
       Integer pain,
       Integer duration,
       String note,
-      LocalDateTime occurredAt) {
+      ActivityAt activityAt) {
     if (isSuccessful != null) this.isSuccessful = isSuccessful;
     if (color != null) this.color = color;
     if (shape != null) this.shape = shape;
     if (pain != null) this.pain = pain;
     if (duration != null) this.duration = duration;
     if (note != null) this.note = note;
-    if (occurredAt != null) this.occurredAt = occurredAt;
+    if (activityAt != null) this.activityAt = activityAt;
   }
 
   public void delete() {
