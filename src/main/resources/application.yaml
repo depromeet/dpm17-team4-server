@@ -45,7 +45,6 @@ kakao:
   issuer-url: ${KAKAO__ISSUER_URL:https://kauth.kakao.com}
   auth-url: ${KAKAO__AUTH_URL:https://kauth.kakao.com/oauth/authorize}
   token-url: ${KAKAO__TOKEN_URL:https://kauth.kakao.com/oauth/token}
-  callback-mode: ${KAKAO__CALLBACK_MODE:token} # token: 토큰 직접 발급, code: auth code 전달
 
 frontend:
   url: ${FRONTEND__URL:http://localhost:3000}

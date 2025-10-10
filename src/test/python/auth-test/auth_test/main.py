@@ -203,19 +203,18 @@ async def home(request: Request):
         <p>아래 버튼을 클릭하여 카카오로 로그인하세요</p>
         
         <div style="margin: 20px 0;">
-            <h3>기존 방식 (토큰 직접 발급)</h3>
-            <form action="{SERVER_URL}/api/v1/auth/kakao/login?redirectUri=http://localhost:{SERVICE_PORT}" method="post" style="display:inline;">
-                <button type="submit" class="login-btn">카카오로 로그인</button>
-            </form>
+            <h3>토큰 직접 발급 방식</h3>
+            <p style="margin-bottom: 15px; color: #666;">카카오 인증 후 바로 토큰을 발급받아 쿠키로 설정</p>
+            <button onclick="loginWithResponseType()" class="login-btn">카카오로 로그인 (토큰 방식)</button>
         </div>
         
         <div class="auth-flow-section">
-            <h3>새로운 방식 (Auth Code Flow)</h3>
+            <h3>Auth Code Flow 방식</h3>
             <p style="margin-bottom: 15px; color: #666;">1단계: Auth Code 받기 → 2단계: Code로 토큰 발급</p>
             <div style="margin: 15px 0;">
-                <button onclick="getAuthCode()" class="success-btn">1단계: Get Auth Code</button>
+                <button onclick="loginWithResponseType('code')" class="success-btn">1단계: Get Auth Code</button>
                 <p style="margin: 10px 0; font-size: 14px; color: #666;">
-                    ⚠️ 서버의 callback-mode가 'code'로 설정되어 있어야 합니다
+                    💡 responseType=code로 설정하면 auth code만 받습니다
                 </p>
             </div>
             <div style="margin: 15px 0;">
@@ -271,10 +270,15 @@ async def home(request: Request):
                 }}
             }}
             
-            function getAuthCode() {{
-                // Auth Code 플로우를 위해 새 창에서 카카오 로그인 시작
+            function loginWithResponseType(responseType) {{
+                // 선택한 responseType으로 카카오 로그인 시작
                 const redirectUri = encodeURIComponent('http://localhost:{SERVICE_PORT}');
-                const loginUrl = '{SERVER_URL}/api/v1/auth/kakao/login?redirectUri=' + redirectUri;
+                let loginUrl = `{SERVER_URL}/api/v1/auth/kakao/login?redirectUri=${{redirectUri}}`;
+                
+                // responseType이 있는 경우에만 추가
+                if (responseType) {{
+                    loginUrl += `&responseType=${{responseType}}`;
+                }}
                 
                 // POST 요청을 위한 form 생성 및 제출
                 const form = document.createElement('form');

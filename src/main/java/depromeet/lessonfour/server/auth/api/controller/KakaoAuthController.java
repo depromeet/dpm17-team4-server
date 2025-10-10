@@ -44,18 +44,17 @@ public class KakaoAuthController {
   @Value("${kakao.auth-url}")
   private String kakaoAuthUrl;
 
-  @Value("${kakao.callback-mode:token}")
-  private String callbackMode;
-
   public KakaoAuthController(KakaoAuthService kakaoAuthService) {
     this.kakaoAuthService = kakaoAuthService;
   }
 
   @Operation(summary = "카카오 로그인", description = "카카오를 통해 로그인을 진행합니다.")
   @PostMapping("/login")
-  public ResponseEntity<Void> kakaoLogin(@RequestParam(required = false) String redirectUri) {
+  public ResponseEntity<Void> kakaoLogin(
+      @RequestParam(required = false) String redirectUri,
+      @RequestParam(required = false) String responseType) {
     String authUrl =
-        kakaoAuthService.getRequestUrl(redirectUri != null ? redirectUri : frontendUrl);
+        kakaoAuthService.getRequestUrl(redirectUri != null ? redirectUri : frontendUrl, responseType);
     return ResponseEntity.status(302).header("Location", authUrl).build();
   }
 
@@ -89,7 +88,27 @@ public class KakaoAuthController {
       @RequestParam(required = false) String code,
       @RequestParam(required = false) String error,
       @RequestParam(required = false) String state) {
-    String clientRedirectUri = state != null ? state : frontendUrl;
+    
+    // state에서 redirectUri와 responseType 파싱
+    String clientRedirectUri = frontendUrl;
+    String requestResponseType = null;
+    
+    if (state != null && !state.isBlank()) {
+      String[] stateParts = state.split("\\|responseType=", 2); // 최대 2개로 분할
+      
+      // redirectUri 파싱 (첫 번째 부분)
+      String parsedRedirectUri = stateParts[0];
+      if (parsedRedirectUri != null && !parsedRedirectUri.isBlank()) {
+        clientRedirectUri = parsedRedirectUri;
+      }
+      // parsedRedirectUri가 빈 문자열이면 기본값(frontendUrl) 유지
+      
+      // responseType 파싱 (두 번째 부분)
+      if (stateParts.length > 1 && stateParts[1] != null && !stateParts[1].isBlank()) {
+        requestResponseType = stateParts[1];
+      }
+    }
+    
     if (error != null) {
       String errorUrl =
           UriComponentsBuilder.fromUriString(clientRedirectUri)
@@ -102,8 +121,8 @@ public class KakaoAuthController {
 
     if (code != null) {
       try {
-        // 콜백 모드에 따라 다르게 처리
-        if ("code".equals(callbackMode)) {
+        // responseType이 "code"인 경우에만 auth code를 그대로 전달, 그 외에는 토큰 직접 발급
+        if ("code".equals(requestResponseType)) {
           // auth code를 그대로 프론트엔드로 전달
           String successUrl =
               UriComponentsBuilder.fromUriString(clientRedirectUri)
@@ -117,7 +136,7 @@ public class KakaoAuthController {
               .cacheControl(CacheControl.noStore().mustRevalidate())
               .build();
         } else {
-          // 기존 방식: 토큰 직접 발급
+          // 기본 방식: 토큰 직접 발급 (responseType이 없거나 "code"가 아닌 경우)
           AuthResponseDto authResult = kakaoAuthService.login(code);
 
           // redirectUrl의 호스트를 도메인으로 사용

@@ -81,13 +81,27 @@ public class KakaoAuthService {
     throw new ServerException(AuthErrorCode.LOGIN_CODE_REQUIRED);
   }
 
-  public String getRequestUrl(String clientRedirectUri) {
+  public String getRequestUrl(String clientRedirectUri, String responseType) {
+    // state에 redirectUri와 responseType을 함께 인코딩
+    // redirectUri가 null이면 빈 문자열로 처리
+    String safeRedirectUri = (clientRedirectUri != null && !clientRedirectUri.isBlank()) 
+        ? clientRedirectUri : "";
+    
+    final String stateValue;
+    if (responseType != null && !responseType.isBlank()) {
+      // responseType이 있는 경우: "redirectUri|responseType=value" 형태
+      stateValue = safeRedirectUri + "|responseType=" + responseType;
+    } else {
+      // responseType이 없는 경우: redirectUri만 또는 빈 문자열
+      stateValue = safeRedirectUri;
+    }
+    
     MultiValueMap<String, String> authParams =
         new LinkedMultiValueMap<>() {
           {
             add("client_id", clientId);
             add("redirect_uri", redirectUri); // serverRedirectUri
-            add("state", clientRedirectUri);
+            add("state", stateValue);
             add("response_type", "code");
             add("scope", "openid profile_nickname profile_image account_email");
           }
@@ -96,6 +110,10 @@ public class KakaoAuthService {
         .queryParams(authParams)
         .build()
         .toUriString();
+  }
+  
+  public String getRequestUrl(String clientRedirectUri) {
+    return getRequestUrl(clientRedirectUri, null);
   }
 
   private Map<String, Object> getToken(String code) {
