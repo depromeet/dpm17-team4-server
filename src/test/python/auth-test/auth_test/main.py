@@ -286,15 +286,13 @@ async def home(request: Request):
             
             async function getTokenFromCode(code) {{
                 try {{
-                    const redirectUri = 'http://localhost:{SERVICE_PORT}';
                     const response = await fetch(`{SERVER_URL}/api/v1/auth/kakao/token`, {{
                         method: 'POST',
                         headers: {{
                             'Content-Type': 'application/json',
                         }},
                         body: JSON.stringify({{
-                            code: code,
-                            redirectUri: redirectUri
+                            code: code
                         }})
                     }});
                     

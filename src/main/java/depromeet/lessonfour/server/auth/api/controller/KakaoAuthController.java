@@ -66,14 +66,6 @@ public class KakaoAuthController {
       // JSON 응답에서는 access token도 포함
       AuthResponseDto authResult = kakaoAuthService.login(request.code(), true);
 
-      // redirectUri가 제공된 경우 응답에 포함 (프론트엔드에서 활용 가능)
-      if (request.redirectUri() != null && !request.redirectUri().isBlank()) {
-        return ResponseEntity.ok()
-            .cacheControl(CacheControl.noStore().mustRevalidate())
-            .header("X-Redirect-Uri", request.redirectUri())
-            .body(authResult);
-      }
-
       return ResponseEntity.ok()
           .cacheControl(CacheControl.noStore().mustRevalidate())
           .body(authResult);
