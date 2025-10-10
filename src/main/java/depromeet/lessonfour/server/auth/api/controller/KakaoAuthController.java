@@ -54,18 +54,18 @@ public class KakaoAuthController {
       @RequestParam(required = false) String redirectUri,
       @RequestParam(required = false) String responseType) {
     String authUrl =
-        kakaoAuthService.getRequestUrl(redirectUri != null ? redirectUri : frontendUrl, responseType);
+        kakaoAuthService.getRequestUrl(
+            redirectUri != null ? redirectUri : frontendUrl, responseType);
     return ResponseEntity.status(302).header("Location", authUrl).build();
   }
 
-  @Operation(
-      summary = "카카오 인증 토큰 발급",
-      description = "카카오 인증 코드를 받아서 토큰을 JSON 형태로 반환합니다.")
+  @Operation(summary = "카카오 인증 토큰 발급", description = "카카오 인증 코드를 받아서 토큰을 JSON 형태로 반환합니다.")
   @PostMapping("/token")
   public ResponseEntity<AuthResponseDto> getKakaoToken(@RequestBody KakaoTokenRequestDto request) {
     try {
-      AuthResponseDto authResult = kakaoAuthService.login(request.code());
-      
+      // JSON 응답에서는 access token도 포함
+      AuthResponseDto authResult = kakaoAuthService.login(request.code(), true);
+
       // redirectUri가 제공된 경우 응답에 포함 (프론트엔드에서 활용 가능)
       if (request.redirectUri() != null && !request.redirectUri().isBlank()) {
         return ResponseEntity.ok()
@@ -73,12 +73,13 @@ public class KakaoAuthController {
             .header("X-Redirect-Uri", request.redirectUri())
             .body(authResult);
       }
-      
+
       return ResponseEntity.ok()
           .cacheControl(CacheControl.noStore().mustRevalidate())
           .body(authResult);
     } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Authentication failed: " + e.getMessage());
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Authentication failed: " + e.getMessage());
     }
   }
 
@@ -88,27 +89,27 @@ public class KakaoAuthController {
       @RequestParam(required = false) String code,
       @RequestParam(required = false) String error,
       @RequestParam(required = false) String state) {
-    
+
     // state에서 redirectUri와 responseType 파싱
     String clientRedirectUri = frontendUrl;
     String requestResponseType = null;
-    
+
     if (state != null && !state.isBlank()) {
       String[] stateParts = state.split("\\|responseType=", 2); // 최대 2개로 분할
-      
+
       // redirectUri 파싱 (첫 번째 부분)
       String parsedRedirectUri = stateParts[0];
       if (parsedRedirectUri != null && !parsedRedirectUri.isBlank()) {
         clientRedirectUri = parsedRedirectUri;
       }
       // parsedRedirectUri가 빈 문자열이면 기본값(frontendUrl) 유지
-      
+
       // responseType 파싱 (두 번째 부분)
       if (stateParts.length > 1 && stateParts[1] != null && !stateParts[1].isBlank()) {
         requestResponseType = stateParts[1];
       }
     }
-    
+
     if (error != null) {
       String errorUrl =
           UriComponentsBuilder.fromUriString(clientRedirectUri)

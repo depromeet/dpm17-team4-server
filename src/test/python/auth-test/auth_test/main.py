@@ -58,7 +58,13 @@ async def home(request: Request):
         <div class="auth-code-info">
             <h2>받은 Auth Code</h2>
             <div class="code-display">{auth_code}</div>
-            <button onclick="getTokenFromCode('{auth_code}')" class="token-btn">이 코드로 토큰 발급받기</button>
+            <button onclick="getTokenFromCode('{auth_code}')" class="token-btn" style="margin-top: 15px;">2단계: Get Token</button>
+            
+            <div id="codeTokenInfo" class="token-info" style="display: none; margin-top: 15px;">
+                <h3>Auth Code Flow 결과</h3>
+                <div id="codeTokenDisplay"></div>
+                <div id="userInfoFromToken" style="margin-top: 15px;"></div>
+            </div>
         </div>
         """
     
@@ -206,6 +212,20 @@ async def home(request: Request):
             <h3>토큰 직접 발급 방식</h3>
             <p style="margin-bottom: 15px; color: #666;">카카오 인증 후 바로 토큰을 발급받아 쿠키로 설정</p>
             <button onclick="loginWithResponseType()" class="login-btn">카카오로 로그인 (토큰 방식)</button>
+            
+            <div class="token-section" style="margin-top: 20px;">
+                <div class="token-input-group">
+                    <button onclick="getToken()" class="token-btn">Get Access Token</button>
+                </div>
+                <p style="margin-top: 10px; color: #666; font-size: 14px;">
+                    쿠키의 refresh token으로 access token을 발급받습니다.
+                </p>
+                
+                <div id="tokenInfo" class="token-info" style="display: none; margin-top: 15px;">
+                    <h3>Access Token</h3>
+                    <div id="tokenDisplay" class="token-display"></div>
+                </div>
+            </div>
         </div>
         
         <div class="auth-flow-section">
@@ -217,34 +237,9 @@ async def home(request: Request):
                     💡 responseType=code로 설정하면 auth code만 받습니다
                 </p>
             </div>
-            <div style="margin: 15px 0;">
-                <input type="text" id="manualCodeInput" placeholder="또는 여기에 auth code를 직접 입력하세요" 
-                       style="width: 300px; padding: 10px; margin-right: 10px; border: 1px solid #ddd; border-radius: 4px;">
-                <button onclick="getTokenFromManualCode()" class="token-btn">2단계: Get Token</button>
-            </div>
-        </div>
-        
-        <div class="token-section">
-            <div class="token-input-group">
-                <button onclick="getToken()" class="token-btn">Get token</button>
-            </div>
-            <p style="margin-top: 10px; color: #666; font-size: 14px;">
-                Refresh token은 쿠키에서 자동으로 가져옵니다.
-            </p>
         </div>
         {user_info_section}
         {auth_code_section}
-        
-        <div id="tokenInfo" class="token-info" style="display: none;">
-            <h3>Access Token</h3>
-            <div id="tokenDisplay" class="token-display"></div>
-        </div>
-        
-        <div id="codeTokenInfo" class="token-info" style="display: none;">
-            <h3>Auth Code로 발급받은 토큰</h3>
-            <div id="codeTokenDisplay" class="token-display"></div>
-            <div id="userInfoFromToken" style="margin-top: 15px;"></div>
-        </div>
         
         <script>
             async function getToken() {{
@@ -305,7 +300,19 @@ async def home(request: Request):
                     
                     if (response.ok) {{
                         const data = await response.json();
-                        document.getElementById('codeTokenDisplay').textContent = data.refreshToken || 'No token received';
+                        
+                        // 토큰 정보 표시
+                        const tokenInfoHtml = `
+                            <p><strong>Access Token:</strong></p>
+                            <div style="word-break: break-all; font-family: monospace; background-color: #f8f9fa; padding: 10px; border-radius: 4px; margin: 10px 0;">
+                                ${{data.accessToken || 'No access token'}}
+                            </div>
+                            <p><strong>Refresh Token:</strong></p>
+                            <div style="word-break: break-all; font-family: monospace; background-color: #f8f9fa; padding: 10px; border-radius: 4px; margin: 10px 0;">
+                                ${{data.refreshToken || 'No refresh token'}}
+                            </div>
+                        `;
+                        document.getElementById('codeTokenDisplay').innerHTML = tokenInfoHtml;
                         
                         // 사용자 정보 표시
                         const userInfoHtml = `
@@ -327,14 +334,6 @@ async def home(request: Request):
                 }}
             }}
             
-            async function getTokenFromManualCode() {{
-                const code = document.getElementById('manualCodeInput').value.trim();
-                if (!code) {{
-                    alert('Auth code를 입력해주세요.');
-                    return;
-                }}
-                await getTokenFromCode(code);
-            }}
         </script>
     </body>
     </html>
