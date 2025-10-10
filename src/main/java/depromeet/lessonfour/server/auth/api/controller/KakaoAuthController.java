@@ -5,15 +5,19 @@ import java.nio.charset.StandardCharsets;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import depromeet.lessonfour.server.auth.api.dto.KakaoTokenRequestDto;
 import depromeet.lessonfour.server.auth.api.util.RefreshTokenCookieGenerator;
 import depromeet.lessonfour.server.auth.app.service.KakaoAuthService;
 import depromeet.lessonfour.server.user.app.dto.response.AuthResponseDto;
@@ -40,6 +44,9 @@ public class KakaoAuthController {
   @Value("${kakao.auth-url}")
   private String kakaoAuthUrl;
 
+  @Value("${kakao.callback-mode:token}")
+  private String callbackMode;
+
   public KakaoAuthController(KakaoAuthService kakaoAuthService) {
     this.kakaoAuthService = kakaoAuthService;
   }
@@ -50,6 +57,30 @@ public class KakaoAuthController {
     String authUrl =
         kakaoAuthService.getRequestUrl(redirectUri != null ? redirectUri : frontendUrl);
     return ResponseEntity.status(302).header("Location", authUrl).build();
+  }
+
+  @Operation(
+      summary = "카카오 인증 토큰 발급",
+      description = "카카오 인증 코드를 받아서 토큰을 JSON 형태로 반환합니다.")
+  @PostMapping("/token")
+  public ResponseEntity<AuthResponseDto> getKakaoToken(@RequestBody KakaoTokenRequestDto request) {
+    try {
+      AuthResponseDto authResult = kakaoAuthService.login(request.code());
+      
+      // redirectUri가 제공된 경우 응답에 포함 (프론트엔드에서 활용 가능)
+      if (request.redirectUri() != null && !request.redirectUri().isBlank()) {
+        return ResponseEntity.ok()
+            .cacheControl(CacheControl.noStore().mustRevalidate())
+            .header("X-Redirect-Uri", request.redirectUri())
+            .body(authResult);
+      }
+      
+      return ResponseEntity.ok()
+          .cacheControl(CacheControl.noStore().mustRevalidate())
+          .body(authResult);
+    } catch (Exception e) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Authentication failed: " + e.getMessage());
+    }
   }
 
   @Hidden
@@ -71,50 +102,67 @@ public class KakaoAuthController {
 
     if (code != null) {
       try {
-        AuthResponseDto authResult = kakaoAuthService.login(code);
+        // 콜백 모드에 따라 다르게 처리
+        if ("code".equals(callbackMode)) {
+          // auth code를 그대로 프론트엔드로 전달
+          String successUrl =
+              UriComponentsBuilder.fromUriString(clientRedirectUri)
+                  .queryParam("code", code)
+                  .encode(StandardCharsets.UTF_8)
+                  .build()
+                  .toUriString();
 
-        // redirectUrl의 호스트를 도메인으로 사용
-        String domain = null;
-        try {
-          URI redirectUri = URI.create(clientRedirectUri);
-          domain = redirectUri.getHost();
-        } catch (Exception e) {
-          // URI 파싱 실패 시 도메인 없이 진행
-        }
-
-        String successUrl =
-            UriComponentsBuilder.fromUriString(clientRedirectUri)
-                .queryParam("id", authResult.id())
-                .queryParam("nickname", authResult.nickname())
-                .queryParam("profileImage", authResult.profileImage())
-                .queryParam("isNew", authResult.isNew())
-                .queryParam("providerType", authResult.provider().getType())
-                .encode(StandardCharsets.UTF_8)
-                .build()
-                .toUriString();
-
-        ResponseEntity.BodyBuilder responseBuilder =
-            ResponseEntity.status(302)
-                .header("Location", successUrl)
-                .cacheControl(CacheControl.noStore().mustRevalidate());
-
-        // 도메인을 성공적으로 가져올 수 있으면 2개 쿠키 생성
-        if (domain != null && !domain.isBlank()) {
-          ResponseCookie refreshTokenCookieWithDomain =
-              RefreshTokenCookieGenerator.generate(authResult.refreshToken(), domain);
-          ResponseCookie refreshTokenCookieWithoutDomain =
-              RefreshTokenCookieGenerator.generate(authResult.refreshToken());
-
-          return responseBuilder
-              .header("Set-Cookie", refreshTokenCookieWithDomain.toString())
-              .header("Set-Cookie", refreshTokenCookieWithoutDomain.toString())
+          return ResponseEntity.status(302)
+              .header("Location", successUrl)
+              .cacheControl(CacheControl.noStore().mustRevalidate())
               .build();
         } else {
-          // 도메인을 가져올 수 없으면 1개 쿠키만 생성
-          ResponseCookie refreshTokenCookie =
-              RefreshTokenCookieGenerator.generate(authResult.refreshToken());
+          // 기존 방식: 토큰 직접 발급
+          AuthResponseDto authResult = kakaoAuthService.login(code);
 
-          return responseBuilder.header("Set-Cookie", refreshTokenCookie.toString()).build();
+          // redirectUrl의 호스트를 도메인으로 사용
+          String domain = null;
+          try {
+            URI redirectUri = URI.create(clientRedirectUri);
+            domain = redirectUri.getHost();
+          } catch (Exception e) {
+            // URI 파싱 실패 시 도메인 없이 진행
+          }
+
+          String successUrl =
+              UriComponentsBuilder.fromUriString(clientRedirectUri)
+                  .queryParam("id", authResult.id())
+                  .queryParam("nickname", authResult.nickname())
+                  .queryParam("profileImage", authResult.profileImage())
+                  .queryParam("isNew", authResult.isNew())
+                  .queryParam("providerType", authResult.provider().getType())
+                  .encode(StandardCharsets.UTF_8)
+                  .build()
+                  .toUriString();
+
+          ResponseEntity.BodyBuilder responseBuilder =
+              ResponseEntity.status(302)
+                  .header("Location", successUrl)
+                  .cacheControl(CacheControl.noStore().mustRevalidate());
+
+          // 도메인을 성공적으로 가져올 수 있으면 2개 쿠키 생성
+          if (domain != null && !domain.isBlank()) {
+            ResponseCookie refreshTokenCookieWithDomain =
+                RefreshTokenCookieGenerator.generate(authResult.refreshToken(), domain);
+            ResponseCookie refreshTokenCookieWithoutDomain =
+                RefreshTokenCookieGenerator.generate(authResult.refreshToken());
+
+            return responseBuilder
+                .header("Set-Cookie", refreshTokenCookieWithDomain.toString())
+                .header("Set-Cookie", refreshTokenCookieWithoutDomain.toString())
+                .build();
+          } else {
+            // 도메인을 가져올 수 없으면 1개 쿠키만 생성
+            ResponseCookie refreshTokenCookie =
+                RefreshTokenCookieGenerator.generate(authResult.refreshToken());
+
+            return responseBuilder.header("Set-Cookie", refreshTokenCookie.toString()).build();
+          }
         }
 
       } catch (Exception e) {

@@ -29,6 +29,9 @@ async def home(request: Request):
     is_new = request.query_params.get("isNew")
     provider_type = request.query_params.get("providerType")
     
+    # auth code 추출 (새로운 플로우용)
+    auth_code = request.query_params.get("code")
+    
     # 사용자 정보가 있는지 확인
     has_user_info = any([user_id, nickname, profile_image])
     
@@ -45,6 +48,17 @@ async def home(request: Request):
                 {f'<p><strong>신규 사용자:</strong> {is_new}</p>' if is_new else ''}
                 {f'<p><strong>제공자:</strong> {provider_type}</p>' if provider_type else ''}
             </div>
+        </div>
+        """
+    
+    # auth code 섹션 HTML 생성
+    auth_code_section = ""
+    if auth_code:
+        auth_code_section = f"""
+        <div class="auth-code-info">
+            <h2>받은 Auth Code</h2>
+            <div class="code-display">{auth_code}</div>
+            <button onclick="getTokenFromCode('{auth_code}')" class="token-btn">이 코드로 토큰 발급받기</button>
         </div>
         """
     
@@ -140,14 +154,76 @@ async def home(request: Request):
                 border-radius: 4px;
                 margin-top: 10px;
             }}
+            .auth-code-info {{
+                margin-top: 30px;
+                padding: 20px;
+                background-color: #fff3cd;
+                border-radius: 8px;
+                border-left: 4px solid #ffc107;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+            }}
+            .code-display {{
+                word-break: break-all;
+                font-family: monospace;
+                background-color: #f8f9fa;
+                padding: 15px;
+                border-radius: 4px;
+                margin: 15px 0;
+                border: 1px solid #ddd;
+            }}
+            .auth-flow-section {{
+                margin-top: 30px;
+                padding: 20px;
+                background-color: #e8f5e8;
+                border-radius: 8px;
+                border-left: 4px solid #28a745;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+            }}
+            .success-btn {{
+                background-color: #28a745; 
+                color: #fff; 
+                padding: 15px 30px; 
+                border: none; 
+                border-radius: 8px; 
+                font-size: 16px; 
+                cursor: pointer; 
+                text-decoration: none;
+                display: inline-block;
+                margin: 10px;
+            }}
+            .success-btn:hover {{ background-color: #218838; }}
         </style>
     </head>
     <body>
         <h1>카카오 OAuth 로그인 테스트</h1>
         <p>아래 버튼을 클릭하여 카카오로 로그인하세요</p>
-        <form action="{SERVER_URL}/api/v1/auth/kakao/login?redirectUri=http://localhost:{SERVICE_PORT}" method="post" style="display:inline;">
-            <button type="submit" class="login-btn">카카오로 로그인</button>
-        </form>
+        
+        <div style="margin: 20px 0;">
+            <h3>기존 방식 (토큰 직접 발급)</h3>
+            <form action="{SERVER_URL}/api/v1/auth/kakao/login?redirectUri=http://localhost:{SERVICE_PORT}" method="post" style="display:inline;">
+                <button type="submit" class="login-btn">카카오로 로그인</button>
+            </form>
+        </div>
+        
+        <div class="auth-flow-section">
+            <h3>새로운 방식 (Auth Code Flow)</h3>
+            <p style="margin-bottom: 15px; color: #666;">1단계: Auth Code 받기 → 2단계: Code로 토큰 발급</p>
+            <div style="margin: 15px 0;">
+                <button onclick="getAuthCode()" class="success-btn">1단계: Get Auth Code</button>
+                <p style="margin: 10px 0; font-size: 14px; color: #666;">
+                    ⚠️ 서버의 callback-mode가 'code'로 설정되어 있어야 합니다
+                </p>
+            </div>
+            <div style="margin: 15px 0;">
+                <input type="text" id="manualCodeInput" placeholder="또는 여기에 auth code를 직접 입력하세요" 
+                       style="width: 300px; padding: 10px; margin-right: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                <button onclick="getTokenFromManualCode()" class="token-btn">2단계: Get Token</button>
+            </div>
+        </div>
         
         <div class="token-section">
             <div class="token-input-group">
@@ -158,10 +234,17 @@ async def home(request: Request):
             </p>
         </div>
         {user_info_section}
+        {auth_code_section}
         
         <div id="tokenInfo" class="token-info" style="display: none;">
             <h3>Access Token</h3>
             <div id="tokenDisplay" class="token-display"></div>
+        </div>
+        
+        <div id="codeTokenInfo" class="token-info" style="display: none;">
+            <h3>Auth Code로 발급받은 토큰</h3>
+            <div id="codeTokenDisplay" class="token-display"></div>
+            <div id="userInfoFromToken" style="margin-top: 15px;"></div>
         </div>
         
         <script>
@@ -186,6 +269,67 @@ async def home(request: Request):
                 }} catch (error) {{
                     alert('토큰 가져오기 중 오류 발생: ' + error.message);
                 }}
+            }}
+            
+            function getAuthCode() {{
+                // Auth Code 플로우를 위해 새 창에서 카카오 로그인 시작
+                const redirectUri = encodeURIComponent('http://localhost:{SERVICE_PORT}');
+                const loginUrl = '{SERVER_URL}/api/v1/auth/kakao/login?redirectUri=' + redirectUri;
+                
+                // POST 요청을 위한 form 생성 및 제출
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = loginUrl;
+                form.target = '_self';
+                document.body.appendChild(form);
+                form.submit();
+            }}
+            
+            async function getTokenFromCode(code) {{
+                try {{
+                    const redirectUri = 'http://localhost:{SERVICE_PORT}';
+                    const response = await fetch(`{SERVER_URL}/api/v1/auth/kakao/token`, {{
+                        method: 'POST',
+                        headers: {{
+                            'Content-Type': 'application/json',
+                        }},
+                        body: JSON.stringify({{
+                            code: code,
+                            redirectUri: redirectUri
+                        }})
+                    }});
+                    
+                    if (response.ok) {{
+                        const data = await response.json();
+                        document.getElementById('codeTokenDisplay').textContent = data.refreshToken || 'No token received';
+                        
+                        // 사용자 정보 표시
+                        const userInfoHtml = `
+                            <h4>사용자 정보:</h4>
+                            <p><strong>ID:</strong> ${{data.id || 'N/A'}}</p>
+                            <p><strong>닉네임:</strong> ${{data.nickname || 'N/A'}}</p>
+                            <p><strong>프로필 이미지:</strong> ${{data.profileImage ? `<img src="${{data.profileImage}}" style="width: 30px; height: 30px; border-radius: 50%;">` : 'N/A'}}</p>
+                            <p><strong>신규 사용자:</strong> ${{data.isNew || 'N/A'}}</p>
+                            <p><strong>제공자:</strong> ${{data.provider?.type || 'N/A'}}</p>
+                        `;
+                        document.getElementById('userInfoFromToken').innerHTML = userInfoHtml;
+                        document.getElementById('codeTokenInfo').style.display = 'block';
+                    }} else {{
+                        const errorData = await response.json();
+                        alert('토큰 발급 실패: ' + (errorData.message || 'Unknown error'));
+                    }}
+                }} catch (error) {{
+                    alert('토큰 발급 중 오류 발생: ' + error.message);
+                }}
+            }}
+            
+            async function getTokenFromManualCode() {{
+                const code = document.getElementById('manualCodeInput').value.trim();
+                if (!code) {{
+                    alert('Auth code를 입력해주세요.');
+                    return;
+                }}
+                await getTokenFromCode(code);
             }}
         </script>
     </body>
