@@ -3,7 +3,6 @@ package depromeet.lessonfour.server.activityrecord.infra.repository;
 import static depromeet.lessonfour.server.activityrecord.domain.entity.QActivityRecord.activityRecord;
 import static depromeet.lessonfour.server.activityrecord.domain.entity.QFoodRecord.foodRecord;
 import static depromeet.lessonfour.server.food.domain.entity.QFood.food;
-import static depromeet.lessonfour.server.toiletrecord.domain.entity.QToiletRecord.toiletRecord;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -77,12 +76,12 @@ public class ActivityRecordQuery {
 
     List<LocalDate> existingDates =
         queryFactory
-            .select(toiletRecord.activityAt.date)
-            .from(toiletRecord)
+            .select(activityRecord.activityAt.date)
+            .from(activityRecord)
             .where(
-                toiletRecord.user.id.eq(userId),
-                toiletRecord.activityAt.date.between(dateRange.getFirst(), dateRange.getLast()),
-                toiletRecord.isDeleted.isFalse())
+                activityRecord.userId.eq(userId),
+                activityRecord.activityAt.date.between(dateRange.getFirst(), dateRange.getLast()),
+                activityRecord.isDeleted.isFalse())
             .distinct()
             .fetch();
 
