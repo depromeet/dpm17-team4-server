@@ -36,7 +36,8 @@ public class UserController {
   public ResponseEntity<SuccessResponse<UserProfileResponseDto>> getMe(
       @AuthenticationPrincipal(expression = "id") Long authenticatedUserId) {
 
-    UserProfileResponseDto user = UserProfileResponseDto.of(userQueryService.findById(authenticatedUserId));
+    UserProfileResponseDto user =
+        UserProfileResponseDto.of(userQueryService.findById(authenticatedUserId));
     return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_FETCH, user));
   }
 
