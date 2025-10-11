@@ -27,8 +27,9 @@ public class WaterMapper {
         message,
         List.of(
             mapItem("STANDARD", 2000.0, null),
-            mapItem("YESTERDAY", yesterday != null ? yesterday.getQuantity() : 0.0, yesterday),
-            mapItem("TODAY", today != null ? today.getQuantity() : 0.0, today)));
+            mapItem(
+                "YESTERDAY", yesterday != null ? yesterday.getQuantity() * 200 : 0.0, yesterday),
+            mapItem("TODAY", today != null ? today.getQuantity() * 200 : 0.0, today)));
   }
 
   private static String getMessage(WaterEvaluation evaluation) {

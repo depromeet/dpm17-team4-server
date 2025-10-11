@@ -1,5 +1,6 @@
 package depromeet.lessonfour.server.auth.api.controller;
 
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -71,8 +72,16 @@ public class KakaoAuthController {
     if (code != null) {
       try {
         AuthResponseDto authResult = kakaoAuthService.login(code);
-        ResponseCookie refreshTokenCookie =
-            RefreshTokenCookieGenerator.generate(authResult.refreshToken());
+
+        // redirectUrl의 호스트를 도메인으로 사용
+        String domain = null;
+        try {
+          URI redirectUri = URI.create(clientRedirectUri);
+          domain = redirectUri.getHost();
+        } catch (Exception e) {
+          // URI 파싱 실패 시 도메인 없이 진행
+        }
+
         String successUrl =
             UriComponentsBuilder.fromUriString(clientRedirectUri)
                 .queryParam("id", authResult.id())
@@ -84,11 +93,29 @@ public class KakaoAuthController {
                 .build()
                 .toUriString();
 
-        return ResponseEntity.status(302)
-            .header("Location", successUrl)
-            .header("Set-Cookie", refreshTokenCookie.toString())
-            .cacheControl(CacheControl.noStore().mustRevalidate())
-            .build();
+        ResponseEntity.BodyBuilder responseBuilder =
+            ResponseEntity.status(302)
+                .header("Location", successUrl)
+                .cacheControl(CacheControl.noStore().mustRevalidate());
+
+        // 도메인을 성공적으로 가져올 수 있으면 2개 쿠키 생성
+        if (domain != null && !domain.isBlank()) {
+          ResponseCookie refreshTokenCookieWithDomain =
+              RefreshTokenCookieGenerator.generate(authResult.refreshToken(), domain);
+          ResponseCookie refreshTokenCookieWithoutDomain =
+              RefreshTokenCookieGenerator.generate(authResult.refreshToken());
+
+          return responseBuilder
+              .header("Set-Cookie", refreshTokenCookieWithDomain.toString())
+              .header("Set-Cookie", refreshTokenCookieWithoutDomain.toString())
+              .build();
+        } else {
+          // 도메인을 가져올 수 없으면 1개 쿠키만 생성
+          ResponseCookie refreshTokenCookie =
+              RefreshTokenCookieGenerator.generate(authResult.refreshToken());
+
+          return responseBuilder.header("Set-Cookie", refreshTokenCookie.toString()).build();
+        }
 
       } catch (Exception e) {
         String errorUrl =
