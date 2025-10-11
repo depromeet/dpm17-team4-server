@@ -42,13 +42,22 @@ async def home(request: Request):
         <div class="user-info">
             <h2>로그인된 사용자</h2>
             <div class="user-details">
-                {f'<p><strong>ID:</strong> {user_id}</p>' if user_id else ''}
+                {f'<p><strong>🆔 사용자 ID:</strong> <span style="background-color: #007bff; color: white; padding: 2px 8px; border-radius: 4px; font-family: monospace;">{user_id}</span></p>' if user_id else ''}
                 {f'<p><strong>닉네임:</strong> {nickname}</p>' if nickname else ''}
                 {f'<p><strong>프로필 이미지:</strong> <img src="{profile_image}" alt="프로필" style="width: 50px; height: 50px; border-radius: 50%;"></p>' if profile_image else ''}
                 {f'<p><strong>신규 사용자:</strong> {is_new}</p>' if is_new else ''}
                 {f'<p><strong>제공자:</strong> {provider_type}</p>' if provider_type else ''}
             </div>
         </div>
+        <script>
+            // 페이지 로드 시 사용자 ID를 입력 필드에 자동으로 채움
+            document.addEventListener('DOMContentLoaded', function() {{
+                const userIdInput = document.getElementById('userIdInput');
+                if (userIdInput && '{user_id}') {{
+                    userIdInput.value = '{user_id}';
+                }}
+            }});
+        </script>
         """
     
     # auth code 섹션 HTML 생성
@@ -224,6 +233,14 @@ async def home(request: Request):
                 <div id="tokenInfo" class="token-info" style="display: none; margin-top: 15px;">
                     <h3>Access Token</h3>
                     <div id="tokenDisplay" class="token-display"></div>
+                    <div style="margin-top: 10px;">
+                        <input type="number" id="userIdInput" placeholder="사용자 ID 입력" class="token-input" style="width: 200px; margin-right: 10px;">
+                        <button onclick="getProfile()" class="token-btn">Get Profile</button>
+                    </div>
+                    <div id="profileInfo" class="token-info" style="display: none; margin-top: 10px;">
+                        <h4>사용자 프로필</h4>
+                        <div id="profileDisplay"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -329,6 +346,57 @@ async def home(request: Request):
                     }}
                 }} catch (error) {{
                     alert('토큰 발급 중 오류 발생: ' + error.message);
+                }}
+            }}
+            
+            async function getProfile() {{
+                try {{
+                    const accessToken = document.getElementById('tokenDisplay').textContent;
+                    if (!accessToken || accessToken === 'No token received') {{
+                        alert('먼저 Access Token을 가져와주세요.');
+                        return;
+                    }}
+                    
+                    const userId = document.getElementById('userIdInput').value;
+                    if (!userId) {{
+                        alert('사용자 ID를 입력해주세요.');
+                        return;
+                    }}
+                    
+                    const response = await fetch(`{SERVER_URL}/api/v1/users/${{userId}}`, {{
+                        method: 'GET',
+                        headers: {{
+                            'Authorization': `Bearer ${{accessToken}}`,
+                            'Content-Type': 'application/json',
+                        }}
+                    }});
+                    
+                    if (response.ok) {{
+                        const data = await response.json();
+                        const profileData = data.data; // SuccessResponse의 data 필드
+                        
+                        const profileHtml = `
+                            <p><strong>ID:</strong> ${{profileData.id}}</p>
+                            <p><strong>이메일:</strong> ${{profileData.email}}</p>
+                            <p><strong>닉네임:</strong> ${{profileData.nickname}}</p>
+                            <p><strong>프로필 이미지:</strong> ${{profileData.profileImage ? `<img src="${{profileData.profileImage}}" style="width: 50px; height: 50px; border-radius: 50%;">` : 'N/A'}}</p>
+                            <p><strong>제공자:</strong> ${{profileData.provider?.type || 'N/A'}}</p>
+                            <p><strong>신규 사용자:</strong> ${{profileData.isNew ? 'Yes' : 'No'}}</p>
+                        `;
+                        document.getElementById('profileDisplay').innerHTML = profileHtml;
+                        document.getElementById('profileInfo').style.display = 'block';
+                    }} else {{
+                        const errorData = await response.json();
+                        let errorMessage = 'Unknown error';
+                        if (response.status === 403) {{
+                            errorMessage = '권한이 없습니다. 본인의 ID만 조회할 수 있습니다.';
+                        }} else if (errorData.message) {{
+                            errorMessage = errorData.message;
+                        }}
+                        alert('프로필 조회 실패: ' + errorMessage);
+                    }}
+                }} catch (error) {{
+                    alert('프로필 조회 중 오류 발생: ' + error.message);
                 }}
             }}
             
