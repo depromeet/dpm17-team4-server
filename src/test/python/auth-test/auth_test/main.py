@@ -211,6 +211,16 @@ async def home(request: Request):
                 margin: 10px;
             }}
             .success-btn:hover {{ background-color: #218838; }}
+            .profile-section {{
+                margin-top: 30px;
+                padding: 20px;
+                background-color: #f0f8ff;
+                border-radius: 8px;
+                border-left: 4px solid #007bff;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+            }}
         </style>
     </head>
     <body>
@@ -233,19 +243,6 @@ async def home(request: Request):
                 <div id="tokenInfo" class="token-info" style="display: none; margin-top: 15px;">
                     <h3>Access Token</h3>
                     <div id="tokenDisplay" class="token-display"></div>
-                    <div style="margin-top: 10px;">
-                        <button onclick="getMyProfile()" class="token-btn" style="margin-right: 10px;">Get My Profile (/me)</button>
-                        <input type="number" id="userIdInput" placeholder="사용자 ID 입력" class="token-input" style="width: 200px; margin-right: 10px;">
-                        <button onclick="getProfile()" class="token-btn">Get Profile (/{id})</button>
-                    </div>
-                    <div id="myProfileInfo" class="token-info" style="display: none; margin-top: 10px;">
-                        <h4>내 프로필 (/me)</h4>
-                        <div id="myProfileDisplay"></div>
-                    </div>
-                    <div id="profileInfo" class="token-info" style="display: none; margin-top: 10px;">
-                        <h4>사용자 프로필 (/{id})</h4>
-                        <div id="profileDisplay"></div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -262,6 +259,29 @@ async def home(request: Request):
         </div>
         {user_info_section}
         {auth_code_section}
+        
+        <div class="profile-section">
+            <h3>프로필 조회 (공통)</h3>
+            <p style="margin-bottom: 15px; color: #666;">Access Token이 있으면 언제든지 프로필을 조회할 수 있습니다</p>
+            
+            <div class="token-section">
+                <div style="margin: 15px 0;">
+                    <button onclick="getMyProfile()" class="token-btn" style="margin-right: 10px;">Get My Profile (/me)</button>
+                    <input type="number" id="userIdInput" placeholder="사용자 ID 입력" class="token-input" style="width: 200px; margin-right: 10px;">
+                    <button onclick="getProfile()" class="token-btn">Get Profile (/{id})</button>
+                </div>
+                
+                <div id="myProfileInfo" class="token-info" style="display: none; margin-top: 15px;">
+                    <h4>내 프로필 (/me)</h4>
+                    <div id="myProfileDisplay"></div>
+                </div>
+                
+                <div id="profileInfo" class="token-info" style="display: none; margin-top: 15px;">
+                    <h4>사용자 프로필 (/{id})</h4>
+                    <div id="profileDisplay"></div>
+                </div>
+            </div>
+        </div>
         
         <script>
             async function getToken() {{
@@ -356,9 +376,28 @@ async def home(request: Request):
             
             async function getProfile() {{
                 try {{
-                    const accessToken = document.getElementById('tokenDisplay').textContent;
-                    if (!accessToken || accessToken === 'No token received') {{
-                        alert('먼저 Access Token을 가져와주세요.');
+                    // Token 방식의 Access Token 또는 Auth Code Flow의 Access Token 찾기
+                    let accessToken = null;
+                    
+                    // 1. Token 방식에서 발급받은 Access Token 확인
+                    const tokenDisplay = document.getElementById('tokenDisplay');
+                    if (tokenDisplay && tokenDisplay.textContent && tokenDisplay.textContent !== 'No token received') {{
+                        accessToken = tokenDisplay.textContent;
+                    }}
+                    
+                    // 2. Auth Code Flow에서 발급받은 Access Token 확인 (codeTokenDisplay에서 추출)
+                    if (!accessToken) {{
+                        const codeTokenDisplay = document.getElementById('codeTokenDisplay');
+                        if (codeTokenDisplay) {{
+                            const tokenMatch = codeTokenDisplay.innerHTML.match(/Access Token:<\/strong><\/p>[\s\S]*?<div[^>]*>([^<]+)<\/div>/);
+                            if (tokenMatch && tokenMatch[1] && tokenMatch[1] !== 'No access token') {{
+                                accessToken = tokenMatch[1].trim();
+                            }}
+                        }}
+                    }}
+                    
+                    if (!accessToken) {{
+                        alert('Access Token이 없습니다. 먼저 로그인하거나 토큰을 발급받아주세요.');
                         return;
                     }}
                     
@@ -385,8 +424,6 @@ async def home(request: Request):
                             <p><strong>이메일:</strong> ${{profileData.email}}</p>
                             <p><strong>닉네임:</strong> ${{profileData.nickname}}</p>
                             <p><strong>프로필 이미지:</strong> ${{profileData.profileImage ? `<img src="${{profileData.profileImage}}" style="width: 50px; height: 50px; border-radius: 50%;">` : 'N/A'}}</p>
-                            <p><strong>제공자:</strong> ${{profileData.provider?.type || 'N/A'}}</p>
-                            <p><strong>신규 사용자:</strong> ${{profileData.isNew ? 'Yes' : 'No'}}</p>
                         `;
                         document.getElementById('profileDisplay').innerHTML = profileHtml;
                         document.getElementById('profileInfo').style.display = 'block';
@@ -407,9 +444,28 @@ async def home(request: Request):
             
             async function getMyProfile() {{
                 try {{
-                    const accessToken = document.getElementById('tokenDisplay').textContent;
-                    if (!accessToken || accessToken === 'No token received') {{
-                        alert('먼저 Access Token을 가져와주세요.');
+                    // Token 방식의 Access Token 또는 Auth Code Flow의 Access Token 찾기
+                    let accessToken = null;
+                    
+                    // 1. Token 방식에서 발급받은 Access Token 확인
+                    const tokenDisplay = document.getElementById('tokenDisplay');
+                    if (tokenDisplay && tokenDisplay.textContent && tokenDisplay.textContent !== 'No token received') {{
+                        accessToken = tokenDisplay.textContent;
+                    }}
+                    
+                    // 2. Auth Code Flow에서 발급받은 Access Token 확인 (codeTokenDisplay에서 추출)
+                    if (!accessToken) {{
+                        const codeTokenDisplay = document.getElementById('codeTokenDisplay');
+                        if (codeTokenDisplay) {{
+                            const tokenMatch = codeTokenDisplay.innerHTML.match(/Access Token:<\/strong><\/p>[\s\S]*?<div[^>]*>([^<]+)<\/div>/);
+                            if (tokenMatch && tokenMatch[1] && tokenMatch[1] !== 'No access token') {{
+                                accessToken = tokenMatch[1].trim();
+                            }}
+                        }}
+                    }}
+                    
+                    if (!accessToken) {{
+                        alert('Access Token이 없습니다. 먼저 로그인하거나 토큰을 발급받아주세요.');
                         return;
                     }}
                     
@@ -430,8 +486,6 @@ async def home(request: Request):
                             <p><strong>이메일:</strong> ${{profileData.email}}</p>
                             <p><strong>닉네임:</strong> ${{profileData.nickname}}</p>
                             <p><strong>프로필 이미지:</strong> ${{profileData.profileImage ? `<img src="${{profileData.profileImage}}" style="width: 50px; height: 50px; border-radius: 50%;">` : 'N/A'}}</p>
-                            <p><strong>제공자:</strong> ${{profileData.provider?.type || 'N/A'}}</p>
-                            <p><strong>신규 사용자:</strong> ${{profileData.isNew ? 'Yes' : 'No'}}</p>
                         `;
                         document.getElementById('myProfileDisplay').innerHTML = profileHtml;
                         document.getElementById('myProfileInfo').style.display = 'block';
