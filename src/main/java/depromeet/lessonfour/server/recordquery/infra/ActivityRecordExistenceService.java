@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.activityrecord.app.service.ActivityRecordQueryService;
+import depromeet.lessonfour.server.common.domain.view.DailyExistenceView;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
 import depromeet.lessonfour.server.recordquery.app.service.ActivityRecordExistenceClient;
