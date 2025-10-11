@@ -29,6 +29,18 @@ public class UserController {
   }
 
   @Operation(
+      summary = "내 정보 조회",
+      description = "현재 로그인한 사용자의 정보를 조회합니다.",
+      security = {@SecurityRequirement(name = "JWT")})
+  @GetMapping("/me")
+  public ResponseEntity<SuccessResponse<UserProfileResponseDto>> getMe(
+      @AuthenticationPrincipal(expression = "id") Long authenticatedUserId) {
+
+    UserProfileResponseDto user = UserProfileResponseDto.of(userQueryService.findById(authenticatedUserId));
+    return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_FETCH, user));
+  }
+
+  @Operation(
       summary = "사용자 정보 조회",
       description = "지정된 ID의 사용자 정보를 조회합니다. 본인의 정보만 조회할 수 있습니다.",
       security = {@SecurityRequirement(name = "JWT")})

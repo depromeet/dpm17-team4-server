@@ -234,11 +234,16 @@ async def home(request: Request):
                     <h3>Access Token</h3>
                     <div id="tokenDisplay" class="token-display"></div>
                     <div style="margin-top: 10px;">
+                        <button onclick="getMyProfile()" class="token-btn" style="margin-right: 10px;">Get My Profile (/me)</button>
                         <input type="number" id="userIdInput" placeholder="사용자 ID 입력" class="token-input" style="width: 200px; margin-right: 10px;">
-                        <button onclick="getProfile()" class="token-btn">Get Profile</button>
+                        <button onclick="getProfile()" class="token-btn">Get Profile (/{id})</button>
+                    </div>
+                    <div id="myProfileInfo" class="token-info" style="display: none; margin-top: 10px;">
+                        <h4>내 프로필 (/me)</h4>
+                        <div id="myProfileDisplay"></div>
                     </div>
                     <div id="profileInfo" class="token-info" style="display: none; margin-top: 10px;">
-                        <h4>사용자 프로필</h4>
+                        <h4>사용자 프로필 (/{id})</h4>
                         <div id="profileDisplay"></div>
                     </div>
                 </div>
@@ -397,6 +402,57 @@ async def home(request: Request):
                     }}
                 }} catch (error) {{
                     alert('프로필 조회 중 오류 발생: ' + error.message);
+                }}
+            }}
+            
+            async function getMyProfile() {{
+                try {{
+                    const accessToken = document.getElementById('tokenDisplay').textContent;
+                    if (!accessToken || accessToken === 'No token received') {{
+                        alert('먼저 Access Token을 가져와주세요.');
+                        return;
+                    }}
+                    
+                    const response = await fetch(`{SERVER_URL}/api/v1/users/me`, {{
+                        method: 'GET',
+                        headers: {{
+                            'Authorization': `Bearer ${{accessToken}}`,
+                            'Content-Type': 'application/json',
+                        }}
+                    }});
+                    
+                    if (response.ok) {{
+                        const data = await response.json();
+                        const profileData = data.data; // SuccessResponse의 data 필드
+                        
+                        const profileHtml = `
+                            <p><strong>ID:</strong> ${{profileData.id}}</p>
+                            <p><strong>이메일:</strong> ${{profileData.email}}</p>
+                            <p><strong>닉네임:</strong> ${{profileData.nickname}}</p>
+                            <p><strong>프로필 이미지:</strong> ${{profileData.profileImage ? `<img src="${{profileData.profileImage}}" style="width: 50px; height: 50px; border-radius: 50%;">` : 'N/A'}}</p>
+                            <p><strong>제공자:</strong> ${{profileData.provider?.type || 'N/A'}}</p>
+                            <p><strong>신규 사용자:</strong> ${{profileData.isNew ? 'Yes' : 'No'}}</p>
+                        `;
+                        document.getElementById('myProfileDisplay').innerHTML = profileHtml;
+                        document.getElementById('myProfileInfo').style.display = 'block';
+                        
+                        // 자동으로 사용자 ID 입력 필드에 채우기
+                        const userIdInput = document.getElementById('userIdInput');
+                        if (userIdInput && profileData.id) {{
+                            userIdInput.value = profileData.id;
+                        }}
+                    }} else {{
+                        const errorData = await response.json();
+                        let errorMessage = 'Unknown error';
+                        if (response.status === 401) {{
+                            errorMessage = '인증이 필요합니다. 유효한 Access Token을 사용해주세요.';
+                        }} else if (errorData.message) {{
+                            errorMessage = errorData.message;
+                        }}
+                        alert('내 프로필 조회 실패: ' + errorMessage);
+                    }}
+                }} catch (error) {{
+                    alert('내 프로필 조회 중 오류 발생: ' + error.message);
                 }}
             }}
             
