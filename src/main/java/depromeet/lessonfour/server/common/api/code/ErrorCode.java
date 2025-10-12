@@ -26,6 +26,11 @@ public enum ErrorCode implements BaseErrorCode {
   UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증에 실패했습니다."),
 
   /*
+  403 FORBIDDEN
+  */
+  ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
+
+  /*
   404 NOT FOUND
   */
   DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "데이터가 존재하지 않습니다"),
