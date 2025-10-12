@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.FoodRecord;
-import depromeet.lessonfour.server.activityrecord.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealTime;
 import depromeet.lessonfour.server.activityrecord.domain.vo.StressLevel;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 
 public record GetActivityRecordsResponse(
     Long id,

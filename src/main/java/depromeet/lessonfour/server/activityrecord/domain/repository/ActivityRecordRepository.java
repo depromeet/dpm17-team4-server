@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
-import depromeet.lessonfour.server.activityrecord.domain.vo.ActivityAt;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 
 public interface ActivityRecordRepository {
 
