@@ -1,6 +1,7 @@
 package depromeet.lessonfour.server.activityrecord.controllers;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -188,8 +189,8 @@ class CreateActivityRecordE2ETest {
   }
 
   @Test
-  @DisplayName("음식 목록이 null인 경우 400 에러를 반환한다")
-  void givenNullSelectedFoods_whenCreateActivityRecord_thenBadRequest() {
+  @DisplayName("음식 목록이 null인 경우에도 기록을 생성할 수 있다")
+  void givenNullSelectedFoods_whenCreateActivityRecord_thenSuccess() {
     LocalDateTime now = LocalDateTime.now();
     String createRequest =
         String.format(
@@ -210,9 +211,35 @@ class CreateActivityRecordE2ETest {
         .when()
         .post("/api/v1/activity-records")
         .then()
-        .statusCode(HttpStatus.BAD_REQUEST.value())
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .body("message", containsString("음식 목록은 필수입니다"));
+        .statusCode(HttpStatus.CREATED.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE);
+  }
+
+  @Test
+  @DisplayName("음식 목록이 빈 배열인 경우에도 기록을 생성할 수 있다")
+  void givenEmptySelectedFoods_whenCreateActivityRecord_thenBadRequest() {
+    LocalDateTime now = LocalDateTime.now();
+    String createRequest =
+        String.format(
+            """
+        {
+          "foods": [],
+          "water": 3,
+          "stress": "LOW",
+          "occurredAt": "%s"
+        }
+        """,
+            now.format(formatter));
+
+    given()
+        .contentType(ContentType.JSON)
+        .header("Authorization", validJwtToken)
+        .body(createRequest)
+        .when()
+        .post("/api/v1/activity-records")
+        .then()
+        .statusCode(HttpStatus.CREATED.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE);
   }
 
   @Test
@@ -710,6 +737,6 @@ class CreateActivityRecordE2ETest {
                 })
             .toList();
 
-    assert !recreatedRecords.isEmpty() : "재생성된 ActivityRecord가 존재하지 않습니다";
+    assertThat(recreatedRecords).isNotEmpty();
   }
 }

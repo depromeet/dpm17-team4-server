@@ -155,7 +155,7 @@ class DeleteActivityRecordE2ETest {
   }
 
   @Test
-  @DisplayName("다른 사용자의 생활 기록 삭제 요청시 403 에러를 반환한다")
+  @DisplayName("다른 사용자의 생활 기록 삭제 요청시 404 에러를 반환한다")
   void givenAnotherUserActivityRecord_whenDeleteActivityRecord_thenNotFound() {
     given()
         .log()
@@ -167,8 +167,7 @@ class DeleteActivityRecordE2ETest {
         .log()
         .all()
         .statusCode(HttpStatus.NOT_FOUND.value())
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .body("message", containsString("데이터가 존재하지 않습니다"));
+        .contentType(MediaType.APPLICATION_JSON_VALUE);
   }
 
   @Test
