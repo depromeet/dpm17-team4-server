@@ -11,10 +11,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserUpdateService {
 
-  private final UserRepository jpaUserRepository;
+  private final UserRepository userRepository;
 
   public void updateRefreshToken(Long userId, String newRefreshToken) {
-    jpaUserRepository
+    userRepository
         .findById(userId)
         .ifPresent(
             user -> {

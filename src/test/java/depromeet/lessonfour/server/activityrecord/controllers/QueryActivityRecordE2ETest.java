@@ -47,7 +47,7 @@ class QueryActivityRecordE2ETest {
   @LocalServerPort private int port;
 
   @Autowired private JwtTokenGenerator jwtTokenGenerator;
-  @Autowired private UserRepository jpaUserRepository;
+  @Autowired private UserRepository userRepository;
   @Autowired private PasswordEncoder passwordEncoder;
   @Autowired private FoodRepository foodRepository;
   @Autowired private JpaActivityRecordRepository activityRecordRepository;
@@ -77,7 +77,7 @@ class QueryActivityRecordE2ETest {
 
   private User createTestUser(String email, String password, String nickname) {
     User user = User.register(email, nickname, passwordEncoder.encode(password));
-    return jpaUserRepository.save(user);
+    return userRepository.save(user);
   }
 
   private ActivityRecord createTestActivityRecord(
