@@ -15,8 +15,8 @@ import org.springframework.stereotype.Repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
-import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.domain.view.DailyExistenceView;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.infra.DailyExistenceProjection;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
