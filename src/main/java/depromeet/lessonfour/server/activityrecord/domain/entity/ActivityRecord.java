@@ -3,10 +3,12 @@ package depromeet.lessonfour.server.activityrecord.domain.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import depromeet.lessonfour.server.activityrecord.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealFood;
 import depromeet.lessonfour.server.activityrecord.domain.vo.StressLevel;
 import depromeet.lessonfour.server.common.domain.entity.BaseTimeEntity;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +20,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -30,14 +31,7 @@ import lombok.NoArgsConstructor;
 
 // TODO : 추후 기능 명세에 따라 notnull 추가
 @Entity
-@Table(
-    name = "activity_record",
-    uniqueConstraints = {
-      @UniqueConstraint(
-          name = "uk_user_date", // 🔹 DB 제약 이름과 동일하게 맞추면 좋음
-          columnNames = {"user_id", "activity_date"} // 🔹 실제 컬럼명
-          )
-    })
+@Table(name = "activity_record")
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -63,6 +57,10 @@ public class ActivityRecord extends BaseTimeEntity {
   private StressLevel stressLevel;
 
   @Column(nullable = false)
+  @NotNull @AttributeOverrides({
+    @AttributeOverride(name = "date", column = @Column(name = "activity_date")),
+    @AttributeOverride(name = "time", column = @Column(name = "activity_time"))
+  })
   @NotNull private ActivityAt activityAt;
 
   @Column(nullable = false)

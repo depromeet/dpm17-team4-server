@@ -22,13 +22,13 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
-import depromeet.lessonfour.server.activityrecord.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealFood;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealTime;
 import depromeet.lessonfour.server.activityrecord.domain.vo.StressLevel;
 import depromeet.lessonfour.server.activityrecord.infra.repository.JpaActivityRecordRepository;
 import depromeet.lessonfour.server.auth.domain.vo.AccountContext;
 import depromeet.lessonfour.server.auth.infra.security.jwt.JwtTokenGenerator;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.food.domain.entity.Food;
 import depromeet.lessonfour.server.food.infra.repository.FoodRepository;
 import depromeet.lessonfour.server.user.domain.entity.User;
@@ -97,6 +97,16 @@ class DeleteActivityRecordE2ETest {
     return activityRecordRepository.save(activityRecord);
   }
 
+  private ActivityRecord createTestActivityRecordWithDate(Long userId, LocalDateTime dateTime) {
+    List<MealFood> mealFoods = List.of(new MealFood(MealTime.BREAKFAST, testFood));
+
+    ActivityRecord activityRecord =
+        ActivityRecord.createWithMeals(
+            userId, 5, StressLevel.MEDIUM, ActivityAt.from(dateTime), mealFoods);
+
+    return activityRecordRepository.save(activityRecord);
+  }
+
   @Test
   @DisplayName("유효한 생활 기록 삭제 요청시 성공적으로 삭제된다")
   void givenValidActivityRecordDeleteRequest_whenDeleteActivityRecord_thenSuccess() {
@@ -145,7 +155,7 @@ class DeleteActivityRecordE2ETest {
   }
 
   @Test
-  @DisplayName("다른 사용자의 생활 기록 삭제 요청시 403 에러를 반환한다")
+  @DisplayName("다른 사용자의 생활 기록 삭제 요청시 404 에러를 반환한다")
   void givenAnotherUserActivityRecord_whenDeleteActivityRecord_thenNotFound() {
     given()
         .log()
@@ -156,9 +166,8 @@ class DeleteActivityRecordE2ETest {
         .then()
         .log()
         .all()
-        .statusCode(HttpStatus.FORBIDDEN.value())
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .body("message", containsString("권한이 없습니다"));
+        .statusCode(HttpStatus.NOT_FOUND.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE);
   }
 
   @Test
@@ -247,7 +256,8 @@ class DeleteActivityRecordE2ETest {
   @DisplayName("여러 생활 기록 중 특정 기록만 삭제된다")
   void givenMultipleActivityRecords_whenDeleteOne_thenOnlyTargetDeleted() {
     // 추가 생활 기록 생성
-    ActivityRecord anotherActivityRecord = createTestActivityRecord(testUserId);
+    ActivityRecord anotherActivityRecord =
+        createTestActivityRecordWithDate(testUserId, LocalDateTime.now().minusDays(1));
 
     // 첫 번째 기록 삭제
     given()
