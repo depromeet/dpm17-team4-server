@@ -1,6 +1,7 @@
 package depromeet.lessonfour.server.activityrecord.controllers;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -736,6 +737,6 @@ class CreateActivityRecordE2ETest {
                 })
             .toList();
 
-    assert !recreatedRecords.isEmpty() : "재생성된 ActivityRecord가 존재하지 않습니다";
+    assertThat(recreatedRecords).isNotEmpty();
   }
 }
