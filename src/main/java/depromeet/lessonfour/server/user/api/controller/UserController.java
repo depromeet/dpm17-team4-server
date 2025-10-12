@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.api.code.SuccessCode;
 import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
-import depromeet.lessonfour.server.user.app.service.UserDeleteUseCase;
-import lombok.RequiredArgsConstructor;
 import depromeet.lessonfour.server.common.exception.ServerException;
 import depromeet.lessonfour.server.user.app.dto.response.UserProfileResponseDto;
+import depromeet.lessonfour.server.user.app.service.UserDeleteUseCase;
 import depromeet.lessonfour.server.user.app.service.UserQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 
 @Tag(name = "사용자", description = "사용자 관련 API 문서입니다.")
 @RestController
@@ -38,7 +38,7 @@ public class UserController {
       @AuthenticationPrincipal(expression = "id") Long authenticatedUserId) {
 
     UserProfileResponseDto user =
-        UserProfileResponseDto.of(userQueryService.findById(authenticatedUserId));
+        UserProfileResponseDto.of(userQueryService.getActivityUserById(authenticatedUserId));
     return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_FETCH, user));
   }
 
@@ -56,10 +56,15 @@ public class UserController {
       throw new ServerException(ErrorCode.ACCESS_DENIED);
     }
 
-    UserProfileResponseDto user = UserProfileResponseDto.of(userQueryService.findById(userId));
+    UserProfileResponseDto user =
+        UserProfileResponseDto.of(userQueryService.getActivityUserById(userId));
     return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_FETCH, user));
   }
 
+  @Operation(
+      summary = "회원 탈퇴",
+      description = "현재 로그인한 사용자의 계정을 삭제합니다.",
+      security = {@SecurityRequirement(name = "JWT")})
   @DeleteMapping("/me")
   public SuccessResponse<Void> delete(@AuthenticationPrincipal(expression = "id") Long userId) {
     userDeleteUseCase.delete(userId);
