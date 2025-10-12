@@ -23,7 +23,7 @@ public class SignupUseCase {
 
   private final UserRegisterValidator userRegisterValidator;
   private final PasswordEncoder passwordEncoder;
-  private final UserRepository jpaUserRepository;
+  private final UserRepository userRepository;
 
   public UserResponseDto signup(RegisterRequestDto dto) {
 
@@ -34,7 +34,7 @@ public class SignupUseCase {
     String encodedPassword = passwordEncoder.encode(dto.password());
 
     User user = User.register(email, nickname, encodedPassword, null, Provider.local());
-    jpaUserRepository.save(user); // TODO : concurrency issue 용 uk 정의
+    userRepository.save(user); // TODO : concurrency issue 용 uk 정의
 
     return UserResponseDto.of(user);
   }
