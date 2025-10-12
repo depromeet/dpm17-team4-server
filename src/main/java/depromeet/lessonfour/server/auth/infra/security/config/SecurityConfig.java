@@ -18,6 +18,7 @@ import depromeet.lessonfour.server.auth.infra.security.jwt.JwtAuthenticationFilt
 import depromeet.lessonfour.server.auth.infra.security.jwt.JwtAuthenticationProvider;
 import depromeet.lessonfour.server.auth.infra.security.jwt.entrypoint.JwtAuthenticationEntryPoint;
 import depromeet.lessonfour.server.auth.infra.security.jwt.handler.JwtAccessDeniedHandler;
+import depromeet.lessonfour.server.auth.infra.security.kakao.OAuthorizationRequestResolver;
 import depromeet.lessonfour.server.auth.infra.security.rest.RestAuthenticationFilter;
 import depromeet.lessonfour.server.auth.infra.security.rest.RestAuthenticationProvider;
 import depromeet.lessonfour.server.auth.infra.security.rest.handler.RestAuthenticationFailureHandler;
@@ -79,9 +80,32 @@ public class SecurityConfig {
         .build();
   }
 
-  /** 일반 API 요청에 대한 필터 체인 */
   @Bean
   @Order(2)
+  public SecurityFilterChain oAuth2LoginFilterChain(
+      HttpSecurity http, OAuthorizationRequestResolver oAuthorizationRequestResolver)
+      throws Exception {
+    http.csrf(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(
+            auth ->
+                auth.requestMatchers("/", "/api/v1/auth/kakao/**", "/api/v1/auth/apple/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .oauth2Login(
+            oauth2 ->
+                oauth2.authorizationEndpoint(
+                    endpoint ->
+                        endpoint
+                            .baseUri("/oauth2/authorization")
+                            .authorizationRequestResolver(oAuthorizationRequestResolver)));
+
+    return http.build();
+  }
+
+  /** 일반 API 요청에 대한 필터 체인 */
+  @Bean
+  @Order(3)
   public SecurityFilterChain apiFilterChain(
       HttpSecurity http,
       JwtAuthenticationProvider jwtAuthenticationProvider,

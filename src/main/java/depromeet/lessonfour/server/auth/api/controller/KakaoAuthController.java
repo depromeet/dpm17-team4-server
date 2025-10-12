@@ -24,39 +24,27 @@ import depromeet.lessonfour.server.user.app.dto.response.AuthResponseDto;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 
 @Tag(name = "카카오 인증", description = "카카오 인증에 대한 API 문서입니다.")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/auth/kakao")
 public class KakaoAuthController {
 
   private final KakaoAuthService kakaoAuthService;
 
-  @Value("${kakao.client-id}")
-  private String kakaoClientId;
-
-  @Value("${kakao.redirect-url}")
-  private String kakaoRedirectUrl;
-
   @Value("${frontend.url}")
   private String frontendUrl;
-
-  @Value("${kakao.auth-url}")
-  private String kakaoAuthUrl;
-
-  public KakaoAuthController(KakaoAuthService kakaoAuthService) {
-    this.kakaoAuthService = kakaoAuthService;
-  }
 
   @Operation(summary = "카카오 로그인", description = "카카오를 통해 로그인을 진행합니다.")
   @PostMapping("/login")
   public ResponseEntity<Void> kakaoLogin(
       @RequestParam(required = false) String redirectUri,
       @RequestParam(required = false) String responseType) {
-    String authUrl =
-        kakaoAuthService.getRequestUrl(
-            redirectUri != null ? redirectUri : frontendUrl, responseType);
-    return ResponseEntity.status(302).header("Location", authUrl).build();
+    String redirectUrl =
+        "/oauth2/authorization/kakao?redirectUri=" + redirectUri + "&responseType=" + responseType;
+    return ResponseEntity.status(302).header("Location", redirectUrl).build();
   }
 
   @Operation(summary = "카카오 인증 토큰 발급", description = "카카오 인증 코드를 받아서 토큰을 JSON 형태로 반환합니다.")
