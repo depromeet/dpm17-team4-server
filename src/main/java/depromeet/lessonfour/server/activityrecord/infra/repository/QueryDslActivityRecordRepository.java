@@ -55,6 +55,11 @@ public class QueryDslActivityRecordRepository {
 
     return queryFactory
         .selectFrom(activityRecord)
+        .distinct()
+        .leftJoin(activityRecord.foodRecords, foodRecord)
+        .fetchJoin()
+        .leftJoin(foodRecord.food, food)
+        .fetchJoin()
         .where(
             activityRecord.userId.eq(userId),
             activityRecord.activityAt.date.goe(start.toDate()),
