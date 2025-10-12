@@ -27,8 +27,8 @@ public enum ErrorCode implements BaseErrorCode {
 
   /*
   403 FORBIDDEN
-   */
-  FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다."),
+  */
+  ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),
 
   /*
   404 NOT FOUND

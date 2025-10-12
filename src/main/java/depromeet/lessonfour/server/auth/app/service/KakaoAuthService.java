@@ -67,7 +67,7 @@ public class KakaoAuthService {
     this.authUrl = authUrl;
   }
 
-  public AuthResponseDto login(String code) {
+  public AuthResponseDto login(String code, boolean includeAccessToken) {
     if (code != null) {
       Map<String, Object> tokenData = getToken(code);
       String idToken = tokenData.get("id_token").toString();
@@ -76,18 +76,44 @@ public class KakaoAuthService {
       }
 
       User user = getUserFromToken(idToken);
-      return AuthResponseDto.of(UserResponseDto.of(user), null, user.getRefreshToken());
+
+      // includeAccessToken이 true일 때만 access token 발급
+      String accessToken = null;
+      if (includeAccessToken) {
+        AccountContext accountContext = AccountContext.of(user);
+        accessToken = jwtTokenGenerator.generateAccessToken(accountContext);
+      }
+
+      return AuthResponseDto.of(UserResponseDto.of(user), accessToken, user.getRefreshToken());
     }
     throw new ServerException(AuthErrorCode.LOGIN_CODE_REQUIRED);
   }
 
-  public String getRequestUrl(String clientRedirectUri) {
+  public AuthResponseDto login(String code) {
+    return login(code, false); // 기본값은 false
+  }
+
+  public String getRequestUrl(String clientRedirectUri, String responseType) {
+    // state에 redirectUri와 responseType을 함께 인코딩
+    // redirectUri가 null이면 빈 문자열로 처리
+    String safeRedirectUri =
+        (clientRedirectUri != null && !clientRedirectUri.isBlank()) ? clientRedirectUri : "";
+
+    final String stateValue;
+    if (responseType != null && !responseType.isBlank()) {
+      // responseType이 있는 경우: "redirectUri|responseType=value" 형태
+      stateValue = safeRedirectUri + "|responseType=" + responseType;
+    } else {
+      // responseType이 없는 경우: redirectUri만 또는 빈 문자열
+      stateValue = safeRedirectUri;
+    }
+
     MultiValueMap<String, String> authParams =
         new LinkedMultiValueMap<>() {
           {
             add("client_id", clientId);
             add("redirect_uri", redirectUri); // serverRedirectUri
-            add("state", clientRedirectUri);
+            add("state", stateValue);
             add("response_type", "code");
             add("scope", "openid profile_nickname profile_image account_email");
           }
@@ -96,6 +122,10 @@ public class KakaoAuthService {
         .queryParams(authParams)
         .build()
         .toUriString();
+  }
+
+  public String getRequestUrl(String clientRedirectUri) {
+    return getRequestUrl(clientRedirectUri, null);
   }
 
   private Map<String, Object> getToken(String code) {
