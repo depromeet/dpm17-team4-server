@@ -14,8 +14,6 @@ import json
 
 
 app = FastAPI(title="Kakao OAuth Login Service", version="1.0.0")
-SERVICE_PORT = int(os.environ.get("SERVICE_PORT", 3000))
-SERVER_URL = os.environ.get("SERVER_URL", f"http://localhost:8080")
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
@@ -311,7 +309,7 @@ async def home(request: Request):
                 // 선택한 responseType으로 카카오 로그인 시작
                 const redirectUri = encodeURIComponent('http://localhost:{SERVICE_PORT}');
                 let loginUrl = `{SERVER_URL}/api/v1/auth/kakao/login?redirectUri=${{redirectUri}}`;
-                
+
                 // responseType이 있는 경우에만 추가
                 if (responseType) {{
                     loginUrl += `&responseType=${{responseType}}`;
@@ -361,7 +359,7 @@ async def home(request: Request):
                             <p><strong>닉네임:</strong> ${{data.nickname || 'N/A'}}</p>
                             <p><strong>프로필 이미지:</strong> ${{data.profileImage ? `<img src="${{data.profileImage}}" style="width: 30px; height: 30px; border-radius: 50%;">` : 'N/A'}}</p>
                             <p><strong>신규 사용자:</strong> ${{data.isNew || 'N/A'}}</p>
-                            <p><strong>제공자:</strong> ${{data.provider?.type || 'N/A'}}</p>
+                            <p><strong>제공자:</strong> ${{data.socialProvider?.type || 'N/A'}}</p>
                         `;
                         document.getElementById('userInfoFromToken').innerHTML = userInfoHtml;
                         document.getElementById('codeTokenInfo').style.display = 'block';
@@ -518,8 +516,12 @@ async def home(request: Request):
 
 
 if __name__ == "__main__":
+    SERVICE_PORT = int(os.environ.get("SERVICE_PORT", 3000))
+#     SERVER_URL = os.environ.get("SERVER_URL", f"http://localhost:8080")
+    SERVER_URL = "http://localhost:8080"
     print("🚀 카카오 OAuth 로그인 서비스 시작 중...")
-    print(f"SERVER_URL: {SERVER_URL}")
+    print("SERVER_URL:", SERVER_URL)
+
     uvicorn.run(
         app,
         host="0.0.0.0",
