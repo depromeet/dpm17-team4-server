@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import depromeet.lessonfour.server.common.api.code.SuccessCode;
 import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
 import depromeet.lessonfour.server.recordquery.app.dto.RecordExistenceListResponse;
+import depromeet.lessonfour.server.recordquery.app.dto.ToiletTimeListResponse;
 import depromeet.lessonfour.server.recordquery.app.service.GetRecordUseCase;
+import depromeet.lessonfour.server.recordquery.app.service.GetToiletTimesUseCase;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class CalendarController {
 
   private final GetRecordUseCase getRecordUseCase;
+  private final GetToiletTimesUseCase getToiletTimesUseCase;
 
   @GetMapping
   public SuccessResponse<RecordExistenceListResponse> getSingleRecord(
@@ -35,5 +38,16 @@ public class CalendarController {
 
     return SuccessResponse.of(
         SuccessCode.SUCCESS_FETCH, getRecordUseCase.getRecordExistenceList(userId, start, end));
+  }
+
+  @GetMapping("/toilets")
+  public SuccessResponse<ToiletTimeListResponse> getToiletTimesByDate(
+      @AuthenticationPrincipal(expression = "id") Long userId,
+      @NotNull(message = "date는 필수입니다") @RequestParam("date")
+          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+          LocalDate date) {
+
+    return SuccessResponse.of(
+        SuccessCode.SUCCESS_FETCH, getToiletTimesUseCase.getToiletTimes(userId, date));
   }
 }
