@@ -9,11 +9,14 @@ import java.util.Set;
 
 import org.springframework.stereotype.Repository;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import depromeet.lessonfour.server.common.domain.view.DailyExistenceView;
+import depromeet.lessonfour.server.common.domain.view.RecordTimeView;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.infra.DailyExistenceProjection;
+import depromeet.lessonfour.server.common.infra.RecordTimeProjection;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
@@ -30,11 +33,33 @@ public class ToiletRecordQuery {
             .selectFrom(toiletRecord)
             .where(
                 toiletRecord.user.id.eq(userId),
-                toiletRecord.activityAt.date.eq(activityAt.toDate()))
-            .orderBy(toiletRecord.activityAt.date.asc())
+                toiletRecord.activityAt.date.eq(activityAt.toDate()),
+                toiletRecord.isDeleted.isFalse())
+            .orderBy(toiletRecord.activityAt.time.asc())
             .fetch();
 
     return records == null ? List.of() : records;
+  }
+
+  public List<RecordTimeView> findTimesByDate(Long userId, ActivityAt activityAt) {
+    List<Tuple> recordTimes =
+        queryFactory
+            .select(toiletRecord.id, toiletRecord.activityAt.time)
+            .from(toiletRecord)
+            .where(
+                toiletRecord.user.id.eq(userId),
+                toiletRecord.activityAt.date.eq(activityAt.toDate()),
+                toiletRecord.isDeleted.isFalse())
+            .orderBy(toiletRecord.activityAt.time.asc())
+            .fetch();
+
+    return recordTimes.stream()
+        .map(
+            t ->
+                new RecordTimeProjection(
+                    t.get(toiletRecord.id), t.get(toiletRecord.activityAt.time)))
+        .map(RecordTimeView.class::cast)
+        .toList();
   }
 
   public List<DailyExistenceView> existsByActivityAt(
