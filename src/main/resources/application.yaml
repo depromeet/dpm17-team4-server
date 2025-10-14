@@ -15,11 +15,12 @@ spring:
           kakao:
             client-id: ${KAKAO__CLIENT_ID:your-kakao-client-id}
             client-secret: ${KAKAO__CLIENT_SECRET:your-kakao-client-secret}
-            redirect-uri: ${KAKAO__REDIRECT_URL:http://localhost:8080/api/auth/kakao/callback}
+            redirect-uri: ${KAKAO__REDIRECT_URL:http://localhost:8080/api/v1/auth/kakao/callback}
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
             client-name: Kakao
             scope:
+              - openid
               - profile_nickname
               - profile_image
               - account_email
@@ -30,7 +31,10 @@ spring:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
-            user-name-attribute: id
+            user-name-attribute: sub
+            jwk-set-uri: https://kauth.kakao.com/.well-known/jwks.json
+            issuer-uri: https://kauth.kakao.com
+
 
 
 jwt:
@@ -61,14 +65,6 @@ server:
       suffix: .log
       file-date-format: .yyyy-MM-dd
       rotate: true
-
-kakao:
-  client-id: ${KAKAO__CLIENT_ID:your-kakao-client-id}
-  client-secret: ${KAKAO__CLIENT_SECRET:your-kakao-client-secret}
-  redirect-url: ${KAKAO__REDIRECT_URL:http://localhost:8080/api/auth/kakao/callback}
-  issuer-url: ${KAKAO__ISSUER_URL:https://kauth.kakao.com}
-  auth-url: ${KAKAO__AUTH_URL:https://kauth.kakao.com/oauth/authorize}
-  token-url: ${KAKAO__TOKEN_URL:https://kauth.kakao.com/oauth/token}
 
 frontend:
   url: ${FRONTEND__URL:http://localhost:3000}
