@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import depromeet.lessonfour.server.common.domain.view.DailyExistenceView;
+import depromeet.lessonfour.server.common.domain.view.RecordTimeView;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 import depromeet.lessonfour.server.toiletrecord.domain.repository.ToiletRecordRepository;
@@ -19,6 +20,10 @@ public class ToiletRecordQueryService {
 
   public List<ToiletRecord> findByDate(Long userId, LocalDate date) {
     return toiletRecordRepository.findByDate(userId, ActivityAt.of(date));
+  }
+
+  public List<RecordTimeView> findTimesByDate(Long userId, ActivityAt at) {
+    return toiletRecordRepository.findTimesByDate(userId, at);
   }
 
   public DailyExistenceView existsByActivityAt(Long userId, ActivityAt at) {
