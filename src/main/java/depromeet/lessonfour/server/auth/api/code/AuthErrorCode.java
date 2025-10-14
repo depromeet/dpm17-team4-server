@@ -13,20 +13,18 @@ public enum AuthErrorCode implements BaseErrorCode {
   400 Bad Request
    */
   ID_TOKEN_REQUIRED(HttpStatus.BAD_REQUEST, "ID 토큰이 필요해요."),
-  LOGIN_CODE_REQUIRED(HttpStatus.BAD_REQUEST, "인가 코드(code)가 필요해요."),
-  EMAIL_REQUIRED_FOR_OIDC(HttpStatus.BAD_REQUEST, "Email is required for OIDC authentication"),
+  EMAIL_REQUIRED_FOR_OIDC(HttpStatus.BAD_REQUEST, "OIDC 인증에 이메일이 필요합니다."),
 
   /*
   401 Unauthorized
    */
   INVALID_OIDC_TOKEN(HttpStatus.UNAUTHORIZED, "OIDC 토큰 검증에 실패했어요."),
-  JWKS_KEY_NOT_FOUND(HttpStatus.UNAUTHORIZED, "JWKS에서 일치하는 키(kid)를 찾지 못했어요."),
-  JWKS_UNSUPPORTED_KEY_TYPE(HttpStatus.UNAUTHORIZED, "지원하지 않는 키 타입이에요.(RSA만 지원)"),
 
   /*
   404 Not Found
    */
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
+  OAUTH_PROVIDER_NOT_FOUND(HttpStatus.NOT_FOUND, "OAuth 공급자를 찾을 수 없습니다."),
 
   /*
   409 Conflict
