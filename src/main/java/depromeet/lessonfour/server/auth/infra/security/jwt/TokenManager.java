@@ -1,0 +1,41 @@
+package depromeet.lessonfour.server.auth.infra.security.jwt;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import depromeet.lessonfour.server.auth.app.dto.response.AuthResponseDto;
+import depromeet.lessonfour.server.auth.app.dto.response.TokenPairDto;
+import depromeet.lessonfour.server.auth.domain.vo.AccountContext;
+import depromeet.lessonfour.server.user.app.service.UserUpdateService;
+import depromeet.lessonfour.server.user.domain.entity.User;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class TokenManager {
+
+  private final JwtTokenGenerator jwtTokenGenerator;
+  private final UserUpdateService userUpdateService;
+
+  public TokenPairDto generateToken(User user, boolean includeAccessToken) {
+    String refreshToken = jwtTokenGenerator.generateRefreshToken(AccountContext.of(user));
+    user.storeRefreshToken(refreshToken);
+
+    String accessToken = null;
+    if (includeAccessToken) {
+      accessToken = jwtTokenGenerator.generateAccessToken(AccountContext.of(user));
+    }
+
+    return new TokenPairDto(accessToken, refreshToken);
+  }
+
+  public String generateAndStoreTokens(AuthResponseDto authResponse) {
+    AccountContext accountContext =
+        AccountContext.ofOAuth2(authResponse.id(), authResponse.email(), authResponse.nickname());
+    String refreshToken = jwtTokenGenerator.generateRefreshToken(accountContext);
+    userUpdateService.updateRefreshToken(authResponse.id(), refreshToken);
+
+    return refreshToken;
+  }
+}

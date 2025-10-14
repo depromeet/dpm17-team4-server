@@ -18,11 +18,17 @@ import lombok.ToString;
 @NoArgsConstructor
 public final class Provider {
 
+  @Getter
   public enum ProviderType {
-    KAKAO,
-    APPLE,
-    LOCAL,
-    // GOOGLE
+    KAKAO("kakao"),
+    APPLE("apple"),
+    LOCAL("local");
+
+    private final String value;
+
+    ProviderType(String value) {
+      this.value = value;
+    }
   }
 
   @Enumerated(EnumType.STRING)

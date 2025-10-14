@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.auth.infra.security.kakao;
+package depromeet.lessonfour.server.auth.infra.security.oauth;
 
 import java.util.Optional;
 
@@ -18,10 +18,13 @@ public class OAuthorizationRequestResolver implements OAuth2AuthorizationRequest
   private String defaultRedirectUri;
 
   private final OAuth2AuthorizationRequestResolver defaultResolver;
+  private final OidcStateCodec oidcStateCodec;
 
-  public OAuthorizationRequestResolver(ClientRegistrationRepository repo) {
+  public OAuthorizationRequestResolver(
+      ClientRegistrationRepository repo, OidcStateCodec oidcStateCodec) {
     this.defaultResolver =
         new DefaultOAuth2AuthorizationRequestResolver(repo, "/oauth2/authorization");
+    this.oidcStateCodec = oidcStateCodec;
   }
 
   @Override
@@ -44,8 +47,7 @@ public class OAuthorizationRequestResolver implements OAuth2AuthorizationRequest
     String frontendRedirect =
         Optional.ofNullable(request.getParameter("redirectUri")).orElse(defaultRedirectUri);
     String responseType = Optional.ofNullable(request.getParameter("responseType")).orElse("");
-
-    String stateValue = frontendRedirect + "|responseType=" + responseType;
+    String stateValue = oidcStateCodec.encode(frontendRedirect, responseType);
 
     return OAuth2AuthorizationRequest.from(req).state(stateValue).build();
   }

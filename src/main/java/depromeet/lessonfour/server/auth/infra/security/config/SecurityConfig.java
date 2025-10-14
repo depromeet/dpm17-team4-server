@@ -18,7 +18,9 @@ import depromeet.lessonfour.server.auth.infra.security.jwt.JwtAuthenticationFilt
 import depromeet.lessonfour.server.auth.infra.security.jwt.JwtAuthenticationProvider;
 import depromeet.lessonfour.server.auth.infra.security.jwt.entrypoint.JwtAuthenticationEntryPoint;
 import depromeet.lessonfour.server.auth.infra.security.jwt.handler.JwtAccessDeniedHandler;
-import depromeet.lessonfour.server.auth.infra.security.kakao.OAuthorizationRequestResolver;
+import depromeet.lessonfour.server.auth.infra.security.oauth.DelegatingOAuth2UserService;
+import depromeet.lessonfour.server.auth.infra.security.oauth.OAuth2SuccessHandler;
+import depromeet.lessonfour.server.auth.infra.security.oauth.OAuthorizationRequestResolver;
 import depromeet.lessonfour.server.auth.infra.security.rest.RestAuthenticationFilter;
 import depromeet.lessonfour.server.auth.infra.security.rest.RestAuthenticationProvider;
 import depromeet.lessonfour.server.auth.infra.security.rest.handler.RestAuthenticationFailureHandler;
@@ -83,22 +85,28 @@ public class SecurityConfig {
   @Bean
   @Order(2)
   public SecurityFilterChain oAuth2LoginFilterChain(
-      HttpSecurity http, OAuthorizationRequestResolver oAuthorizationRequestResolver)
+      HttpSecurity http,
+      OAuthorizationRequestResolver oAuthorizationRequestResolver,
+      DelegatingOAuth2UserService delegatingOAuth2UserService,
+      OAuth2SuccessHandler oAuth2SuccessHandler)
       throws Exception {
-    http.csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(
-            auth ->
-                auth.requestMatchers("/", "/api/v1/auth/kakao/**", "/api/v1/auth/apple/**")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated())
+    http.securityMatcher("/oauth2/**", "/login/oauth2/**")
+        .csrf(AbstractHttpConfigurer::disable)
+        .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
         .oauth2Login(
             oauth2 ->
-                oauth2.authorizationEndpoint(
-                    endpoint ->
-                        endpoint
-                            .baseUri("/oauth2/authorization")
-                            .authorizationRequestResolver(oAuthorizationRequestResolver)));
+                oauth2
+                    .authorizationEndpoint(
+                        endpoint ->
+                            endpoint
+                                .baseUri("/oauth2/authorization")
+                                .authorizationRequestResolver(oAuthorizationRequestResolver))
+                    .userInfoEndpoint(
+                        userInfo -> {
+                          userInfo.userService(delegatingOAuth2UserService);
+                        })
+                    .successHandler(oAuth2SuccessHandler));
 
     return http.build();
   }
