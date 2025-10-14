@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import depromeet.lessonfour.server.auth.api.util.RefreshTokenCookieGenerator;
 import depromeet.lessonfour.server.auth.app.dto.request.RefreshTokenRequestDto;
-import depromeet.lessonfour.server.auth.app.dto.response.AuthTokenDto;
+import depromeet.lessonfour.server.auth.app.dto.response.TokenPairDto;
 import depromeet.lessonfour.server.auth.app.service.RefreshTokenUseCase;
 import depromeet.lessonfour.server.user.app.dto.request.LoginRequestDto;
 import depromeet.lessonfour.server.user.app.dto.request.RegisterRequestDto;
@@ -93,7 +93,7 @@ public class AuthController {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Refresh token not found");
     }
 
-    AuthTokenDto result = refreshTokenUseCase.refresh(refreshToken);
+    TokenPairDto result = refreshTokenUseCase.refresh(refreshToken);
 
     // Refresh Token Rotation: 새로운 refresh token을 쿠키로 업데이트
     ResponseCookie refreshTokenCookie = RefreshTokenCookieGenerator.generate(result.refreshToken());
