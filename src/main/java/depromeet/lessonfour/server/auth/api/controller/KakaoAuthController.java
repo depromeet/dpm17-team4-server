@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 public class KakaoAuthController {
 
   private final AuthCodeFlowUseCase authCodeFlowUseCase;
-  private final OAuthCallbackRedirectUseCase OAuthCallbackRedirectUseCase;
+  private final OAuthCallbackRedirectUseCase oAuthCallbackRedirectUseCase;
 
   @Operation(summary = "카카오 로그인", description = "카카오를 통해 로그인을 진행합니다.")
   @PostMapping("/login")
@@ -87,6 +87,6 @@ public class KakaoAuthController {
       @Parameter(description = "에러 발생시") @RequestParam(required = false) String error,
       HttpServletResponse response)
       throws IOException {
-    response.sendRedirect(OAuthCallbackRedirectUseCase.getPath(code, state, error));
+    response.sendRedirect(oAuthCallbackRedirectUseCase.getPath(code, state, error));
   }
 }
