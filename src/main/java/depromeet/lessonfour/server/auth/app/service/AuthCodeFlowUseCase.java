@@ -48,6 +48,10 @@ public class AuthCodeFlowUseCase {
       throw new ServerException(AuthErrorCode.EMAIL_REQUIRED_FOR_OIDC);
     }
 
+    if (sub == null) {
+      throw new ServerException(AuthErrorCode.SUB_REQUIRED_FOR_OIDC);
+    }
+
     return userServiceClient.findOrCreate(email, nickname, picture, socialProvider, sub);
   }
 }

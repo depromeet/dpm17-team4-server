@@ -14,6 +14,7 @@ public enum AuthErrorCode implements BaseErrorCode {
    */
   ID_TOKEN_REQUIRED(HttpStatus.BAD_REQUEST, "ID 토큰이 필요해요."),
   EMAIL_REQUIRED_FOR_OIDC(HttpStatus.BAD_REQUEST, "OIDC 인증에 이메일이 필요합니다."),
+  SUB_REQUIRED_FOR_OIDC(HttpStatus.BAD_REQUEST, "OIDC 인증에 sub(사용자 식별자)가 필요합니다."),
 
   /*
   401 Unauthorized
