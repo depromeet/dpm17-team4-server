@@ -1,5 +1,7 @@
 package depromeet.lessonfour.server.auth.domain.vo;
 
+import depromeet.lessonfour.server.auth.api.code.AuthErrorCode;
+import depromeet.lessonfour.server.common.exception.ServerException;
 import depromeet.lessonfour.server.user.domain.vo.Provider;
 import lombok.Getter;
 
@@ -18,7 +20,7 @@ public enum SocialProvider {
     for (SocialProvider type : values()) {
       if (type.name().equalsIgnoreCase(value)) return type;
     }
-    throw new IllegalArgumentException("Unknown provider: " + value);
+    throw new ServerException(AuthErrorCode.OAUTH_PROVIDER_NOT_FOUND);
   }
 
   public static SocialProvider from(Provider provider) {
@@ -27,5 +29,14 @@ public enum SocialProvider {
       case APPLE -> SocialProvider.APPLE;
       case LOCAL -> null;
     };
+  }
+
+  public Provider toProvider(String providerId) {
+    Provider.ProviderType providerType =
+        switch (this) {
+          case KAKAO -> Provider.ProviderType.KAKAO;
+          case APPLE -> Provider.ProviderType.APPLE;
+        };
+    return Provider.of(providerType, providerId);
   }
 }

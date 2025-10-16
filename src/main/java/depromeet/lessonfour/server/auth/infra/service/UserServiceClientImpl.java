@@ -22,6 +22,6 @@ public class UserServiceClientImpl implements UserServiceClient {
       SocialProvider socialProvider,
       String providerId) {
     return userService.findOrCreate(
-        email, nickname, profileImage, socialProvider.getValue(), providerId);
+        email, nickname, profileImage, socialProvider.toProvider(providerId));
   }
 }
