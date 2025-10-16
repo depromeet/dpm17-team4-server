@@ -24,7 +24,7 @@ public class ToiletRecordRepositoryImpl implements ToiletRecordRepository {
   }
 
   @Override
-  public Optional<ToiletRecord> findByUserAndId(Long userId, Long recordId) {
+  public Optional<ToiletRecord> findById(Long userId, Long recordId) {
     return jpa.findByUser_IdAndIdAndIsDeletedFalse(userId, recordId);
   }
 

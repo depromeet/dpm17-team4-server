@@ -11,7 +11,7 @@ public interface ToiletRecordRepository {
 
   void save(ToiletRecord record);
 
-  Optional<ToiletRecord> findByUserAndId(Long userId, Long recordId);
+  Optional<ToiletRecord> findById(Long userId, Long recordId);
 
   List<ToiletRecord> findByDate(Long userId, ActivityAt at);
 

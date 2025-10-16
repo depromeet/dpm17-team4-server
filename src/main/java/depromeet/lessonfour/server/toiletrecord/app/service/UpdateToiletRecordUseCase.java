@@ -23,7 +23,7 @@ public class UpdateToiletRecordUseCase {
       Long userId, Long recordId, ToiletRecordUpdateRequestDto dto) {
     ToiletRecord record =
         toiletRecordRepository
-            .findByUserAndId(userId, recordId)
+            .findById(userId, recordId)
             .orElseThrow(() -> new ServerException(ErrorCode.DATA_NOT_FOUND));
 
     record.applyPatch(
