@@ -13,7 +13,7 @@ public interface ToiletRecordRepository {
 
   Optional<ToiletRecord> findById(Long userId, Long recordId);
 
-  List<ToiletRecord> findByDate(Long userId, ActivityAt at);
+  List<ToiletRecord> findByActivityAt(Long userId, ActivityAt at);
 
   DailyExistenceView existsByActivityAt(Long userId, ActivityAt at);
 

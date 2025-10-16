@@ -29,7 +29,7 @@ public class ToiletRecordRepositoryImpl implements ToiletRecordRepository {
   }
 
   @Override
-  public List<ToiletRecord> findByDate(Long userId, ActivityAt at) {
+  public List<ToiletRecord> findByActivityAt(Long userId, ActivityAt at) {
     return query.findByDate(userId, at);
   }
 
