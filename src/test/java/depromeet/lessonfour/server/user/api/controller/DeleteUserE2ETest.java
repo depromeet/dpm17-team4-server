@@ -123,7 +123,7 @@ class DeleteUserE2ETest {
   }
 
   @Test
-  @DisplayName("이미 삭제된 사용자 계정 삭제 요청시 404 에러를 반환한다")
+  @DisplayName("이미 삭제된 사용자 계정 삭제 요청시에도 멱등성을 보장한다")
   void givenAlreadyDeletedUser_whenDeleteUser_thenNotFound() {
     // 먼저 사용자를 삭제
     testUser.deactivate();
@@ -138,7 +138,7 @@ class DeleteUserE2ETest {
         .then()
         .log()
         .all()
-        .statusCode(HttpStatus.NOT_FOUND.value())
+        .statusCode(HttpStatus.OK.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE);
   }
 

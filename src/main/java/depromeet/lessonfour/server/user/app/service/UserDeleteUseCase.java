@@ -19,8 +19,11 @@ public class UserDeleteUseCase {
   public void delete(Long userId) {
     User user =
         userRepository
-            .findActiveById(userId)
+            .findById(userId)
             .orElseThrow(() -> new ServerException(ErrorCode.USER_NOT_FOUND));
+    if (user.isDeleted()) {
+      return;
+    }
     user.deactivate();
   }
 }
