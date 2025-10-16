@@ -517,8 +517,7 @@ async def home(request: Request):
 
 if __name__ == "__main__":
     SERVICE_PORT = int(os.environ.get("SERVICE_PORT", 3000))
-#     SERVER_URL = os.environ.get("SERVER_URL", f"http://localhost:8080")
-    SERVER_URL = "http://localhost:8080"
+    SERVER_URL = os.environ.get("SERVER_URL", "http://localhost:8080")
     print("🚀 카카오 OAuth 로그인 서비스 시작 중...")
     print("SERVER_URL:", SERVER_URL)
 
