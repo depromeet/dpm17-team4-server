@@ -42,7 +42,7 @@ public class OAuthController {
 
   @Operation(summary = "소셜 로그인", description = "소셜 로그인을 진행합니다.")
   @PostMapping("/{provider}/login")
-  public ResponseEntity<Void> kakaoLogin(
+  public ResponseEntity<Void> oauthLogin(
       @PathVariable("provider") String provider,
       @RequestParam(required = false) String redirectUri,
       @RequestParam(required = false) String responseType) {
@@ -62,7 +62,7 @@ public class OAuthController {
 
   @Operation(summary = "인증 토큰 발급", description = "인가 코드를 받아서 토큰을 JSON 형태로 반환합니다.")
   @PostMapping("/{provider}/token")
-  public ResponseEntity<AuthResponseDto> getKakaoToken(
+  public ResponseEntity<AuthResponseDto> getToken(
       @PathVariable("provider") String provider, @Valid @RequestBody AuthCodeRequestDto request) {
     try {
       // JSON 응답에서는 access token도 포함
@@ -83,7 +83,7 @@ public class OAuthController {
       summary = "소셜 로그인 인증 콜백",
       description = "인가코드를 받습니다. responseType에 따라 인가코드만 전달하거나 Spring OAuth2로 위임합니다.")
   @GetMapping("/{provider}/callback")
-  public void kakaoCallback(
+  public void callback(
       @PathVariable("provider") String provider,
       @Parameter(description = "인가코드") @RequestParam String code,
       @Parameter(description = "state (redirectUri|responseType 인코딩)") @RequestParam String state,
