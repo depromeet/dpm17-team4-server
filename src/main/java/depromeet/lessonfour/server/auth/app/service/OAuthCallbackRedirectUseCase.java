@@ -17,7 +17,7 @@ public class OAuthCallbackRedirectUseCase {
 
   private final OidcStateCodec oidcStateCodec;
 
-  public String getPath(String code, String state, String error) {
+  public String getPath(String provider, String code, String state, String error) {
     if (error != null) {
       throw new ServerException(AuthErrorCode.OAUTH_TOKEN_REQUEST_FAILED);
     }
@@ -33,8 +33,8 @@ public class OAuthCallbackRedirectUseCase {
           .toUriString();
     }
 
-    // token flow 진행
-    return UriComponentsBuilder.fromPath("/login/oauth2/code/kakao")
+    // token flow 진행 - provider에 따라 동적으로 path 생성
+    return UriComponentsBuilder.fromPath(String.format("/login/oauth2/code/%s", provider))
         .queryParam("code", code)
         .queryParam("state", state)
         .encode(StandardCharsets.UTF_8)

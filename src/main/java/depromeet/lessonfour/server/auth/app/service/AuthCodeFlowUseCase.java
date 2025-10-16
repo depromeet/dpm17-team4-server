@@ -26,8 +26,8 @@ public class AuthCodeFlowUseCase {
   private final OidcTokenDecoder oidcTokenDecoder;
   private final OAuthTokenClient oAuthTokenClient;
 
-  public AuthResponseDto login(
-      String code, SocialProvider socialProvider, boolean includeAccessToken) {
+  public AuthResponseDto login(String code, String provider, boolean includeAccessToken) {
+    SocialProvider socialProvider = SocialProvider.from(provider);
     OAuth2AccessTokenResponse response = oAuthTokenClient.requestToken(code, socialProvider);
     String idToken = (String) response.getAdditionalParameters().get("id_token");
     Map<String, Object> claims = oidcTokenDecoder.parseClaims(idToken);
