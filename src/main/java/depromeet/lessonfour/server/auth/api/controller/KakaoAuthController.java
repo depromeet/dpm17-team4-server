@@ -1,8 +1,6 @@
 package depromeet.lessonfour.server.auth.api.controller;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
@@ -21,6 +19,7 @@ import depromeet.lessonfour.server.auth.app.dto.response.AuthResponseDto;
 import depromeet.lessonfour.server.auth.app.service.AuthCodeFlowUseCase;
 import depromeet.lessonfour.server.auth.app.service.OAuthCallbackRedirectUseCase;
 import depromeet.lessonfour.server.auth.domain.vo.SocialProvider;
+import depromeet.lessonfour.server.auth.infra.security.oauth.OidcStateCodec;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,6 +38,7 @@ public class KakaoAuthController {
 
   private final AuthCodeFlowUseCase authCodeFlowUseCase;
   private final OAuthCallbackRedirectUseCase oAuthCallbackRedirectUseCase;
+  private final OidcStateCodec oidcStateCodec;
 
   @Operation(summary = "카카오 로그인", description = "카카오를 통해 로그인을 진행합니다.")
   @PostMapping("/login")
@@ -46,11 +46,16 @@ public class KakaoAuthController {
       @RequestParam(required = false) String redirectUri,
       @RequestParam(required = false) String responseType) {
 
+    // OidcStateCodec을 사용해 state 생성 (redirectUri, responseType, provider)
+    String encodedState =
+        oidcStateCodec.encode(
+            redirectUri != null ? redirectUri : "",
+            responseType != null ? responseType : "",
+            SocialProvider.KAKAO);
+
     String redirectUrl =
         UriComponentsBuilder.fromPath("/oauth2/authorization/kakao")
-            .queryParamIfPresent("redirectUri", Optional.ofNullable(redirectUri))
-            .queryParamIfPresent("responseType", Optional.ofNullable(responseType))
-            .encode(StandardCharsets.UTF_8)
+            .queryParam("state", encodedState)
             .build()
             .toUriString();
 
