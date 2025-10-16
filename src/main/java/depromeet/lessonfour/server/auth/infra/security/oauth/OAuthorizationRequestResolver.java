@@ -1,7 +1,5 @@
 package depromeet.lessonfour.server.auth.infra.security.oauth;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
@@ -44,10 +42,16 @@ public class OAuthorizationRequestResolver implements OAuth2AuthorizationRequest
       OAuth2AuthorizationRequest req, HttpServletRequest request) {
     if (req == null) return null;
 
-    String frontendRedirect =
-        Optional.ofNullable(request.getParameter("redirectUri")).orElse(defaultRedirectUri);
-    String responseType = Optional.ofNullable(request.getParameter("responseType")).orElse("");
-    String stateValue = oidcStateCodec.encode(frontendRedirect, responseType);
+    String stateParam = request.getParameter("state");
+
+    String stateValue;
+    if (stateParam != null && !stateParam.isEmpty()) {
+      // state가 이미 인코딩되어 있으면 그대로 사용
+      stateValue = stateParam;
+    } else {
+      // state가 없으면 default 값으로 인코딩
+      stateValue = oidcStateCodec.encode(defaultRedirectUri, "");
+    }
 
     return OAuth2AuthorizationRequest.from(req).state(stateValue).build();
   }
