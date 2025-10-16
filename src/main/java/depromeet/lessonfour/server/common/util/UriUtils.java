@@ -3,7 +3,9 @@ package depromeet.lessonfour.server.common.util;
 import java.net.URI;
 
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @UtilityClass
 public class UriUtils {
 
@@ -11,7 +13,8 @@ public class UriUtils {
     try {
       URI uri = URI.create(uriString);
       return uri.getHost();
-    } catch (Exception e) {
+    } catch (IllegalArgumentException e) {
+      log.warn("Invalid URI: {}", uriString, e);
       return null;
     }
   }
