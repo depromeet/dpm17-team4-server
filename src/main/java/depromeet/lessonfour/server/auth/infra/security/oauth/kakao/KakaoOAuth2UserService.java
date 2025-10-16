@@ -33,7 +33,7 @@ public class KakaoOAuth2UserService implements OAuth2UserService<OAuth2UserReque
 
     return new DefaultOAuth2User(
         Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
-        Map.of("id", id, "nickname", nickname, "email", email, "profileImage", profileImage),
+        Map.of("id", id, "email", email, "nickname", nickname, "profileImage", profileImage),
         "id");
   }
 }

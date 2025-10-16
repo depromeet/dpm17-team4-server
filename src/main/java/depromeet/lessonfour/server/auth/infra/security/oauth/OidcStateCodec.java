@@ -18,7 +18,9 @@ import lombok.RequiredArgsConstructor;
 public class OidcStateCodec {
 
   @Value("${frontend.url}")
-  private String defaultRedirectUri;
+  private String DEFAULT_REDIRECT_URI;
+
+  private static final String DEFAULT_RESPONSE_TYPE = "";
 
   private final ObjectMapper objectMapper;
 
@@ -39,9 +41,10 @@ public class OidcStateCodec {
     try {
       String json = new String(Base64.getUrlDecoder().decode(encodedState), StandardCharsets.UTF_8);
       Map<String, String> stateMap = objectMapper.readValue(json, new TypeReference<>() {});
+
       return new StateData(
-          stateMap.getOrDefault("redirectUri", defaultRedirectUri),
-          stateMap.getOrDefault("responseType", "token"));
+          stateMap.getOrDefault("redirectUri", DEFAULT_REDIRECT_URI),
+          stateMap.getOrDefault("responseType", DEFAULT_RESPONSE_TYPE));
     } catch (Exception e) {
       throw new IllegalStateException("Failed to decode state", e);
     }
