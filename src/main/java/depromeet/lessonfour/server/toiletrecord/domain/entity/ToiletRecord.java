@@ -10,6 +10,7 @@ import depromeet.lessonfour.server.user.domain.entity.User;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -67,7 +68,7 @@ public class ToiletRecord extends BaseTimeEntity {
   @Column(nullable = true)
   private String note;
 
-  @Column(nullable = false)
+  @Embedded
   @NotNull @AttributeOverrides({
     @AttributeOverride(name = "date", column = @Column(name = "activity_date")),
     @AttributeOverride(name = "time", column = @Column(name = "activity_time"))

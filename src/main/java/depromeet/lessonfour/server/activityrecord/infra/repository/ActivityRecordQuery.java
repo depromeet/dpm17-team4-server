@@ -73,10 +73,14 @@ public class ActivityRecordQuery {
         .fetch();
   }
 
-  public List<DailyExistence> findDailyExistencesByActivityAt(
+  public List<DailyExistence> findDailyExistencesBetween(
       Long userId, ActivityAt start, @Nullable ActivityAt end) {
 
     List<LocalDate> dateRange = start.datesUntil(end);
+
+    if (dateRange.isEmpty()) {
+      return List.of();
+    }
 
     List<LocalDate> existingDates =
         queryFactory

@@ -28,10 +28,11 @@ public class ActivityRecordQueryService {
     ActivityAt from = ActivityAt.from(start);
     ActivityAt to = ActivityAt.from(end);
 
-    return activityRecordRepository.findByActivityAtBetween(userId, from, to);
+    return activityRecordRepository.findAllByActivityAtBetween(userId, from, to);
   }
 
-  public List<DailyExistence> existsByActivityAt(Long userId, ActivityAt start, ActivityAt end) {
-    return activityRecordRepository.existsByActivityAt(userId, start, end);
+  public List<DailyExistence> findDailyExistencesBetween(
+      Long userId, ActivityAt startInclude, ActivityAt endInclude) {
+    return activityRecordRepository.findDailyExistencesBetween(userId, startInclude, endInclude);
   }
 }

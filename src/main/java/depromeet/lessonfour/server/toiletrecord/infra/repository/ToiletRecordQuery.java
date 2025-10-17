@@ -32,17 +32,22 @@ public class ToiletRecordQuery {
             .selectFrom(toiletRecord)
             .where(
                 toiletRecord.user.id.eq(userId),
-                toiletRecord.activityAt.date.eq(activityAt.toDate()))
-            .orderBy(toiletRecord.activityAt.date.asc())
+                toiletRecord.activityAt.date.eq(activityAt.toDate()),
+                toiletRecord.isDeleted.isFalse())
+            .orderBy(toiletRecord.activityAt.date.asc(), toiletRecord.activityAt.time.asc())
             .fetch();
 
-    return records == null ? List.of() : records;
+    return records;
   }
 
-  public List<DailyExistence> findDailyExistencesByActivityAt(
-      Long userId, ActivityAt start, @Nullable ActivityAt end) {
+  public List<DailyExistence> findDailyExistencesBetween(
+      Long userId, ActivityAt startInclude, @Nullable ActivityAt endInclude) {
 
-    List<LocalDate> dateRange = start.datesUntil(end);
+    List<LocalDate> dateRange = startInclude.datesUntil(endInclude);
+
+    if (dateRange.isEmpty()) {
+      return List.of();
+    }
 
     List<LocalDate> existingDates =
         queryFactory
