@@ -6,6 +6,7 @@ import java.util.List;
 import depromeet.lessonfour.server.activityrecord.domain.entity.FoodRecord;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealTime;
 import depromeet.lessonfour.server.activityrecord.domain.vo.StressLevel;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 
 public record GetActivityRecordsResponse(
     Long id,
@@ -21,7 +22,7 @@ public record GetActivityRecordsResponse(
       int waterIntakeCups,
       StressLevel stressLevel,
       List<FoodRecord> foodRecords,
-      LocalDateTime occurredAt) {
+      ActivityAt occurredAt) {
     List<FoodResponse> foods =
         foodRecords.stream()
             .map(
@@ -29,6 +30,7 @@ public record GetActivityRecordsResponse(
                     new FoodResponse(
                         fr.getFood().getId(), fr.getFood().getName(), fr.getMealTime()))
             .toList();
-    return new GetActivityRecordsResponse(id, waterIntakeCups, stressLevel, foods, occurredAt);
+    return new GetActivityRecordsResponse(
+        id, waterIntakeCups, stressLevel, foods, occurredAt.toDateTime());
   }
 }

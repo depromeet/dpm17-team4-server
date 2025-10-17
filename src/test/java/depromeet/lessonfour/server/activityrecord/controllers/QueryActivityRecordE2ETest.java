@@ -30,6 +30,7 @@ import depromeet.lessonfour.server.activityrecord.domain.vo.StressLevel;
 import depromeet.lessonfour.server.activityrecord.infra.repository.JpaActivityRecordRepository;
 import depromeet.lessonfour.server.auth.domain.vo.AccountContext;
 import depromeet.lessonfour.server.auth.infra.security.jwt.JwtTokenGenerator;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.food.domain.entity.Food;
 import depromeet.lessonfour.server.food.infra.repository.FoodRepository;
 import depromeet.lessonfour.server.user.domain.entity.User;
@@ -53,7 +54,7 @@ class QueryActivityRecordE2ETest {
   @Autowired private JpaActivityRecordRepository activityRecordRepository;
 
   private String validJwtToken;
-  private User testUser;
+  private Long testUserId;
   private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
   @BeforeEach
@@ -62,7 +63,8 @@ class QueryActivityRecordE2ETest {
     RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 
     // 실제 사용자 생성 및 JWT 토큰 생성
-    testUser = createTestUser("test@example.com", "password123", "testuser");
+    User testUser = createTestUser("test@example.com", "password123", "testuser");
+    testUserId = testUser.getId();
     validJwtToken = "Bearer " + jwtTokenGenerator.generateAccessToken(AccountContext.of(testUser));
 
     // 테스트용 Food 데이터 생성
@@ -81,13 +83,13 @@ class QueryActivityRecordE2ETest {
   }
 
   private ActivityRecord createTestActivityRecord(
-      LocalDateTime activityAt,
+      LocalDateTime dateTime,
       StressLevel stressLevel,
       int waterIntakeCups,
       List<MealFood> mealFoods) {
     return activityRecordRepository.save(
         ActivityRecord.createWithMeals(
-            testUser, waterIntakeCups, stressLevel, activityAt, mealFoods));
+            testUserId, waterIntakeCups, stressLevel, ActivityAt.from(dateTime), mealFoods));
   }
 
   @Test
@@ -259,8 +261,8 @@ class QueryActivityRecordE2ETest {
   void givenOtherUserActivityRecord_whenQueryActivityRecord_thenNotFound() {
     // Given
     User otherUser = createTestUser("other@example.com", "password123", "otheruser");
-    LocalDate targetDate = LocalDate.of(2024, 1, 15);
-    LocalDateTime activityAt = targetDate.atTime(14, 30, 0);
+    LocalDateTime dateTime = LocalDateTime.of(2025, 9, 26, 14, 30);
+    ActivityAt activityAt = ActivityAt.from(dateTime);
 
     List<Food> foods = foodRepository.findAll();
     List<MealFood> mealFoods = List.of(new MealFood(MealTime.BREAKFAST, foods.get(0)));
@@ -268,14 +270,15 @@ class QueryActivityRecordE2ETest {
     // 다른 사용자의 생활 기록 생성
     ActivityRecord otherUserRecord =
         activityRecordRepository.save(
-            ActivityRecord.createWithMeals(otherUser, 3, StressLevel.LOW, activityAt, mealFoods));
+            ActivityRecord.createWithMeals(
+                otherUser.getId(), 3, StressLevel.LOW, activityAt, mealFoods));
 
     // When & Then - 현재 사용자로 조회 시 찾을 수 없음
     given()
         .log()
         .all()
         .header("Authorization", validJwtToken)
-        .queryParam("date", targetDate.format(dateFormatter))
+        .queryParam("date", dateTime.format(dateFormatter))
         .when()
         .get("/api/v1/activity-records")
         .then()
