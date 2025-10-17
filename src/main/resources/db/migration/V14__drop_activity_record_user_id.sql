@@ -1,0 +1,1 @@
+alter table activity_record drop constraint fk_activity_record_user;
