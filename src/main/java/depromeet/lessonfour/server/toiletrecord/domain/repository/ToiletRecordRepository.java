@@ -3,8 +3,8 @@ package depromeet.lessonfour.server.toiletrecord.domain.repository;
 import java.util.List;
 import java.util.Optional;
 
-import depromeet.lessonfour.server.common.domain.view.DailyExistenceView;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
+import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 
 public interface ToiletRecordRepository {
@@ -15,7 +15,7 @@ public interface ToiletRecordRepository {
 
   List<ToiletRecord> findByActivityAt(Long userId, ActivityAt at);
 
-  DailyExistenceView existsByActivityAt(Long userId, ActivityAt at);
+  DailyExistence existsByActivityAt(Long userId, ActivityAt at);
 
-  List<DailyExistenceView> existsByActivityAt(Long userId, ActivityAt start, ActivityAt end);
+  List<DailyExistence> existsByActivityAt(Long userId, ActivityAt start, ActivityAt end);
 }

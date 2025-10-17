@@ -142,19 +142,19 @@ class CalendarControllerE2ETest {
         .body("data.results", hasSize(5)) // 요청한 날짜 범위 전체에 대한 결과 반환
         .body("data.results[0].date", equalTo("2024-01-01"))
         .body("data.results[0].activityExists", equalTo(true))
-        .body("data.results[0].stoolExists", equalTo(false))
+        .body("data.results[0].toiletExists", equalTo(false))
         .body("data.results[1].date", equalTo("2024-01-02"))
         .body("data.results[1].activityExists", equalTo(false))
-        .body("data.results[1].stoolExists", equalTo(true))
+        .body("data.results[1].toiletExists", equalTo(true))
         .body("data.results[2].date", equalTo("2024-01-03"))
         .body("data.results[2].activityExists", equalTo(true))
-        .body("data.results[2].stoolExists", equalTo(true))
+        .body("data.results[2].toiletExists", equalTo(true))
         .body("data.results[3].date", equalTo("2024-01-04"))
         .body("data.results[3].activityExists", equalTo(false))
-        .body("data.results[3].stoolExists", equalTo(false))
+        .body("data.results[3].toiletExists", equalTo(false))
         .body("data.results[4].date", equalTo("2024-01-05"))
         .body("data.results[4].activityExists", equalTo(false))
-        .body("data.results[4].stoolExists", equalTo(false));
+        .body("data.results[4].toiletExists", equalTo(false));
   }
 
   @Test
@@ -273,9 +273,9 @@ class CalendarControllerE2ETest {
         .body("status", equalTo(200))
         .body("data.results", hasSize(2))
         .body("data.results[0].activityExists", equalTo(false))
-        .body("data.results[0].stoolExists", equalTo(false))
+        .body("data.results[0].toiletExists", equalTo(false))
         .body("data.results[1].activityExists", equalTo(false))
-        .body("data.results[1].stoolExists", equalTo(false));
+        .body("data.results[1].toiletExists", equalTo(false));
   }
 
   @Test
@@ -326,9 +326,9 @@ class CalendarControllerE2ETest {
         .body("status", equalTo(200))
         .body("data.results", hasSize(2))
         .body("data.results[0].activityExists", equalTo(false))
-        .body("data.results[0].stoolExists", equalTo(false))
+        .body("data.results[0].toiletExists", equalTo(false))
         .body("data.results[1].activityExists", equalTo(false))
-        .body("data.results[1].stoolExists", equalTo(false));
+        .body("data.results[1].toiletExists", equalTo(false));
   }
 
   @Test
@@ -362,7 +362,7 @@ class CalendarControllerE2ETest {
         .body("data.results", hasSize(1))
         .body("data.results[0].date", equalTo("2024-01-01"))
         .body("data.results[0].activityExists", equalTo(true))
-        .body("data.results[0].stoolExists", equalTo(true));
+        .body("data.results[0].toiletExists", equalTo(true));
   }
 
   @Test

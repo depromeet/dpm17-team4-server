@@ -7,25 +7,25 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import depromeet.lessonfour.server.common.domain.view.DailyExistenceView;
+import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
 
 public record RecordExistenceListResponse(
     LocalDate startDate, LocalDate endDate, List<DailyExistenceResponseDto> results) {
 
   public static RecordExistenceListResponse from(
-      List<DailyExistenceView> activityViews, List<DailyExistenceView> stoolViews) {
+      List<DailyExistence> activityExistences, List<DailyExistence> toiletExistences) {
 
     Map<LocalDate, Boolean> activityMap =
-        activityViews.stream()
-            .collect(Collectors.toMap(DailyExistenceView::date, DailyExistenceView::exists));
+        activityExistences.stream()
+            .collect(Collectors.toMap(DailyExistence::date, DailyExistence::exists));
 
-    Map<LocalDate, Boolean> stoolMap =
-        stoolViews.stream()
-            .collect(Collectors.toMap(DailyExistenceView::date, DailyExistenceView::exists));
+    Map<LocalDate, Boolean> toiletRecordMap =
+        toiletExistences.stream()
+            .collect(Collectors.toMap(DailyExistence::date, DailyExistence::exists));
 
     Set<LocalDate> allDates = new TreeSet<>();
     allDates.addAll(activityMap.keySet());
-    allDates.addAll(stoolMap.keySet());
+    allDates.addAll(toiletRecordMap.keySet());
 
     List<DailyExistenceResponseDto> merged =
         allDates.stream()
@@ -34,7 +34,7 @@ public record RecordExistenceListResponse(
                     new DailyExistenceResponseDto(
                         date,
                         activityMap.getOrDefault(date, false),
-                        stoolMap.getOrDefault(date, false)))
+                        toiletRecordMap.getOrDefault(date, false)))
             .toList();
 
     return new RecordExistenceListResponse(

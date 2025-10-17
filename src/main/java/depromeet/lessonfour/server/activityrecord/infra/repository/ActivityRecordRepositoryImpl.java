@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
 import depromeet.lessonfour.server.activityrecord.domain.repository.ActivityRecordRepository;
-import depromeet.lessonfour.server.common.domain.view.DailyExistenceView;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
+import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -40,13 +40,12 @@ public class ActivityRecordRepositoryImpl implements ActivityRecordRepository {
   }
 
   @Override
-  public DailyExistenceView existsByActivityAt(Long userId, ActivityAt at) {
+  public DailyExistence existsByActivityAt(Long userId, ActivityAt at) {
     return query.existsByActivityAt(userId, at, null).getFirst();
   }
 
   @Override
-  public List<DailyExistenceView> existsByActivityAt(
-      Long userId, ActivityAt start, ActivityAt end) {
+  public List<DailyExistence> existsByActivityAt(Long userId, ActivityAt start, ActivityAt end) {
     return query.existsByActivityAt(userId, start, end);
   }
 }

@@ -15,8 +15,8 @@ import org.springframework.stereotype.Repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
-import depromeet.lessonfour.server.common.domain.view.DailyExistenceView;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
+import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
 import depromeet.lessonfour.server.common.infra.DailyExistenceProjection;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +74,7 @@ public class ActivityRecordQuery {
         .fetch();
   }
 
-  public List<DailyExistenceView> existsByActivityAt(
+  public List<DailyExistence> existsByActivityAt(
       Long userId, ActivityAt start, @Nullable ActivityAt end) {
 
     List<LocalDate> dateRange = start.datesUntil(end);
@@ -93,8 +93,7 @@ public class ActivityRecordQuery {
     Set<LocalDate> existingSet = new HashSet<>(existingDates);
 
     return dateRange.stream()
-        .<DailyExistenceView>map(
-            date -> new DailyExistenceProjection(date, existingSet.contains(date)))
+        .<DailyExistence>map(date -> new DailyExistenceProjection(date, existingSet.contains(date)))
         .toList();
   }
 }

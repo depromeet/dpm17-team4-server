@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
-import depromeet.lessonfour.server.common.domain.view.DailyExistenceView;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
+import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
 
 public interface ActivityRecordRepository {
 
@@ -17,7 +17,7 @@ public interface ActivityRecordRepository {
 
   List<ActivityRecord> findByActivityAtBetween(Long userId, ActivityAt start, ActivityAt end);
 
-  DailyExistenceView existsByActivityAt(Long userId, ActivityAt activityAt);
+  DailyExistence existsByActivityAt(Long userId, ActivityAt activityAt);
 
-  List<DailyExistenceView> existsByActivityAt(Long userId, ActivityAt start, ActivityAt end);
+  List<DailyExistence> existsByActivityAt(Long userId, ActivityAt start, ActivityAt end);
 }
