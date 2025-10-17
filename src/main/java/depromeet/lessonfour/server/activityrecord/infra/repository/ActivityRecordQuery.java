@@ -74,7 +74,7 @@ public class ActivityRecordQuery {
         .fetch();
   }
 
-  public List<DailyExistence> existsByActivityAt(
+  public List<DailyExistence> findDailyExistencesByActivityAt(
       Long userId, ActivityAt start, @Nullable ActivityAt end) {
 
     List<LocalDate> dateRange = start.datesUntil(end);

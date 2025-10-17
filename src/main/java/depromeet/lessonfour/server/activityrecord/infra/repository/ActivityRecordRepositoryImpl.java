@@ -40,12 +40,7 @@ public class ActivityRecordRepositoryImpl implements ActivityRecordRepository {
   }
 
   @Override
-  public DailyExistence existsByActivityAt(Long userId, ActivityAt at) {
-    return query.existsByActivityAt(userId, at, null).getFirst();
-  }
-
-  @Override
   public List<DailyExistence> existsByActivityAt(Long userId, ActivityAt start, ActivityAt end) {
-    return query.existsByActivityAt(userId, start, end);
+    return query.findDailyExistencesByActivityAt(userId, start, end);
   }
 }
