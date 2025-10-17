@@ -38,7 +38,7 @@ public class UserController {
       @AuthenticationPrincipal(expression = "id") Long authenticatedUserId) {
 
     UserProfileResponseDto user =
-        UserProfileResponseDto.of(userQueryService.getActivityUserById(authenticatedUserId));
+        UserProfileResponseDto.of(userQueryService.getActivatedUserById(authenticatedUserId));
     return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_FETCH, user));
   }
 
@@ -57,7 +57,7 @@ public class UserController {
     }
 
     UserProfileResponseDto user =
-        UserProfileResponseDto.of(userQueryService.getActivityUserById(userId));
+        UserProfileResponseDto.of(userQueryService.getActivatedUserById(userId));
     return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_FETCH, user));
   }
 
