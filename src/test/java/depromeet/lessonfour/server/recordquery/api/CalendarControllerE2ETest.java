@@ -399,8 +399,8 @@ class CalendarControllerE2ETest {
   }
 
   @Test
-  @DisplayName("시작일만 있는 경우 정상 동작한다")
-  void givenStartDate_whenGetRecordExistence_thenSuccess() {
+  @DisplayName("시작일만 있는 경우 정상 실패한다")
+  void givenStartDate_whenGetRecordExistence_thenFail() {
     // Given
     LocalDate targetDate = LocalDate.of(2024, 1, 1);
     createTestActivityRecord(LocalDateTime.of(2024, 1, 1, 10, 0));
@@ -416,14 +416,7 @@ class CalendarControllerE2ETest {
         .then()
         .log()
         .all()
-        .statusCode(HttpStatus.OK.value())
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .body("status", equalTo(200))
-        .body("data.startDate", equalTo("2024-01-01"))
-        .body("data.endDate", equalTo("2024-01-01"))
-        .body("data.results", hasSize(1))
-        .body("data.results[0].date", equalTo("2024-01-01"))
-        .body("data.results[0].activityExists", equalTo(true));
+        .statusCode(HttpStatus.BAD_REQUEST.value());
   }
 
   @Test
