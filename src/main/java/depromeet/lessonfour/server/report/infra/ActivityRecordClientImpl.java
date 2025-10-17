@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.activityrecord.app.service.ActivityRecordQueryService;
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
-import depromeet.lessonfour.server.report.app.service.ActivityRecordService;
+import depromeet.lessonfour.server.report.app.client.ActivityRecordClient;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class ActivityRecordServiceImpl implements ActivityRecordService {
+public class ActivityRecordClientImpl implements ActivityRecordClient {
 
   private final ActivityRecordQueryService activityRecordQueryService;
 

@@ -69,7 +69,7 @@ public class ActivityRecordQuery {
         .where(
             activityRecord.userId.eq(userId),
             activityRecord.activityAt.date.goe(start.toDate()),
-            activityRecord.activityAt.date.loe(end.toDate()),
+            activityRecord.activityAt.date.lt(end.toDate()),
             activityRecord.isDeleted.eq(false))
         .fetch();
   }

@@ -1,5 +1,3 @@
-BEGIN;
-
 -- 새 컬럼 추가
 ALTER TABLE activity_record
     ADD COLUMN activity_date DATE,
@@ -16,7 +14,7 @@ DO $$
 BEGIN
     IF EXISTS (SELECT 1 FROM activity_record WHERE activity_date IS NULL) THEN
         RAISE EXCEPTION 'activity_date contains NULL values';
-END IF;
+    END IF;
 END $$;
 
 -- NOT NULL 제약 추가
@@ -41,11 +39,9 @@ BEGIN
         HAVING COUNT(*) > 1
     ) THEN
         RAISE EXCEPTION 'Duplicate (user_id, activity_date) detected for active records';
-END IF;
+    END IF;
 END $$;
 
 -- Partial Unique Index: is_deleted=false인 레코드에만 unique 제약 적용
 CREATE UNIQUE INDEX uk_user_date ON activity_record (user_id, activity_date)
 WHERE is_deleted = false;
-
-COMMIT;
