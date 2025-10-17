@@ -5,8 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.exception.ServerException;
-import depromeet.lessonfour.server.user.domain.User;
-import depromeet.lessonfour.server.user.domain.UserRepository;
+import depromeet.lessonfour.server.user.domain.entity.User;
+import depromeet.lessonfour.server.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @UseCase

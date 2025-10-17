@@ -5,8 +5,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import depromeet.lessonfour.server.user.domain.User;
-import depromeet.lessonfour.server.user.domain.UserRepository;
+import depromeet.lessonfour.server.user.domain.entity.User;
+import depromeet.lessonfour.server.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Repository

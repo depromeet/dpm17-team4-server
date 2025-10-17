@@ -1,6 +1,8 @@
-package depromeet.lessonfour.server.user.domain;
+package depromeet.lessonfour.server.user.domain.repository;
 
 import java.util.Optional;
+
+import depromeet.lessonfour.server.user.domain.entity.User;
 
 public interface UserRepository {
 

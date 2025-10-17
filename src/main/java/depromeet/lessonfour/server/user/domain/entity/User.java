@@ -1,6 +1,7 @@
-package depromeet.lessonfour.server.user.domain;
+package depromeet.lessonfour.server.user.domain.entity;
 
 import depromeet.lessonfour.server.common.domain.entity.BaseTimeEntity;
+import depromeet.lessonfour.server.user.domain.vo.Provider;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;

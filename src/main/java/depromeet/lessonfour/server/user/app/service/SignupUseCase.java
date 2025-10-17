@@ -9,9 +9,9 @@ import depromeet.lessonfour.server.auth.app.validator.UserRegisterValidator;
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.user.app.dto.request.RegisterRequestDto;
 import depromeet.lessonfour.server.user.app.dto.response.UserResponseDto;
-import depromeet.lessonfour.server.user.domain.Provider;
-import depromeet.lessonfour.server.user.domain.User;
-import depromeet.lessonfour.server.user.domain.UserRepository;
+import depromeet.lessonfour.server.user.domain.entity.User;
+import depromeet.lessonfour.server.user.domain.repository.UserRepository;
+import depromeet.lessonfour.server.user.domain.vo.Provider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

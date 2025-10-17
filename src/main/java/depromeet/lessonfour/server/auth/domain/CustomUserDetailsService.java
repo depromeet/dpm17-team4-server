@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import depromeet.lessonfour.server.auth.domain.vo.AccountContext;
 import depromeet.lessonfour.server.user.app.service.UserQueryService;
-import depromeet.lessonfour.server.user.domain.User;
+import depromeet.lessonfour.server.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,7 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    User user = userQueryService.getUserForAuthentication(email);
+    User user = userQueryService.getUserByEmail(email);
     return AccountContext.of(user);
   }
 }

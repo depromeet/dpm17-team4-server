@@ -16,8 +16,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.transaction.annotation.Transactional;
 
-import depromeet.lessonfour.server.user.domain.User;
-import depromeet.lessonfour.server.user.domain.UserRepository;
+import depromeet.lessonfour.server.user.domain.repository.UserRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

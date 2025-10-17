@@ -1,6 +1,6 @@
 package depromeet.lessonfour.server.user.app.dto.response;
 
-import depromeet.lessonfour.server.user.domain.Provider;
+import depromeet.lessonfour.server.user.domain.vo.Provider;
 
 public record AuthResponseDto(
     Long id,

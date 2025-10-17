@@ -32,8 +32,8 @@ import depromeet.lessonfour.server.auth.domain.vo.AccountContext;
 import depromeet.lessonfour.server.auth.infra.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.food.domain.entity.Food;
 import depromeet.lessonfour.server.food.infra.repository.FoodRepository;
-import depromeet.lessonfour.server.user.domain.User;
-import depromeet.lessonfour.server.user.domain.UserRepository;
+import depromeet.lessonfour.server.user.domain.entity.User;
+import depromeet.lessonfour.server.user.domain.repository.UserRepository;
 import io.restassured.RestAssured;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

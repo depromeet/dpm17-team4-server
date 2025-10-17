@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.auth.api.code.AuthErrorCode;
 import depromeet.lessonfour.server.common.exception.ServerException;
-import depromeet.lessonfour.server.user.domain.UserRepository;
+import depromeet.lessonfour.server.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Component

@@ -19,8 +19,8 @@ import org.springframework.test.context.jdbc.SqlConfig;
 
 import depromeet.lessonfour.server.auth.domain.vo.AccountContext;
 import depromeet.lessonfour.server.auth.infra.security.jwt.JwtTokenGenerator;
-import depromeet.lessonfour.server.user.domain.User;
-import depromeet.lessonfour.server.user.domain.UserRepository;
+import depromeet.lessonfour.server.user.domain.entity.User;
+import depromeet.lessonfour.server.user.domain.repository.UserRepository;
 import io.restassured.RestAssured;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -124,7 +124,7 @@ class DeleteUserE2ETest {
 
   @Test
   @DisplayName("이미 삭제된 사용자 계정 삭제 요청시에도 멱등성을 보장한다")
-  void givenAlreadyDeletedUser_whenDeleteUser_thenNotFound() {
+  void givenAlreadyDeletedUser_whenDeleteUser_thenSuccessIdempotently() {
     // 먼저 사용자를 삭제
     testUser.deactivate();
     userRepository.save(testUser);

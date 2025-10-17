@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.user.domain;
+package depromeet.lessonfour.server.user.domain.vo;
 
 import java.util.Objects;
 

@@ -7,7 +7,7 @@ import java.util.List;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealFood;
 import depromeet.lessonfour.server.activityrecord.domain.vo.StressLevel;
 import depromeet.lessonfour.server.common.domain.entity.BaseTimeEntity;
-import depromeet.lessonfour.server.user.domain.User;
+import depromeet.lessonfour.server.user.domain.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
