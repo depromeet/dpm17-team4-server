@@ -32,7 +32,7 @@ public class TokenManager {
 
   public String generateAndStoreRefreshToken(AuthResponseDto authResponse) {
     AccountContext accountContext =
-        AccountContext.ofOAuth2(authResponse.id(), authResponse.email(), authResponse.nickname());
+        AccountContext.from(authResponse.id(), authResponse.email(), authResponse.nickname());
     String refreshToken = jwtTokenGenerator.generateRefreshToken(accountContext);
     userUpdateService.updateRefreshToken(authResponse.id(), refreshToken);
 

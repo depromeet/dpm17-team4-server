@@ -33,7 +33,7 @@ public class AccountContext implements UserDetails {
         .build();
   }
 
-  public static AccountContext ofOAuth2(Long id, String email, String nickname) {
+  public static AccountContext from(Long id, String email, String nickname) {
     return AccountContext.builder().id(id).email(email).nickname(nickname).build();
   }
 
