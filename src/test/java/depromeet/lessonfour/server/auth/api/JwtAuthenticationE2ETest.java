@@ -23,7 +23,7 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import depromeet.lessonfour.server.auth.domain.vo.AccountContext;
 import depromeet.lessonfour.server.auth.infra.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.user.domain.entity.User;
-import depromeet.lessonfour.server.user.infra.repository.UserRepository;
+import depromeet.lessonfour.server.user.domain.repository.UserRepository;
 import io.restassured.RestAssured;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

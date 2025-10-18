@@ -10,8 +10,8 @@ import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.user.app.dto.request.RegisterRequestDto;
 import depromeet.lessonfour.server.user.app.dto.response.UserResponseDto;
 import depromeet.lessonfour.server.user.domain.entity.User;
+import depromeet.lessonfour.server.user.domain.repository.UserRepository;
 import depromeet.lessonfour.server.user.domain.vo.Provider;
-import depromeet.lessonfour.server.user.infra.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +35,7 @@ public class SignupUseCase {
 
     User user = User.register(email, nickname, encodedPassword, null, Provider.local());
     userRepository.save(user); // TODO : concurrency issue 용 uk 정의
+
     return UserResponseDto.of(user);
   }
 }

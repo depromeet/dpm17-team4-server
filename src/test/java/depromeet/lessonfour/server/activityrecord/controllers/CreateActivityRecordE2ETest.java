@@ -1,6 +1,7 @@
 package depromeet.lessonfour.server.activityrecord.controllers;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -28,7 +29,7 @@ import depromeet.lessonfour.server.auth.infra.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.food.domain.entity.Food;
 import depromeet.lessonfour.server.food.infra.repository.FoodRepository;
 import depromeet.lessonfour.server.user.domain.entity.User;
-import depromeet.lessonfour.server.user.infra.repository.UserRepository;
+import depromeet.lessonfour.server.user.domain.repository.UserRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
@@ -43,7 +44,7 @@ class CreateActivityRecordE2ETest {
   @LocalServerPort private int port;
 
   @Autowired private JwtTokenGenerator jwtTokenGenerator;
-  @Autowired private UserRepository userRepository;
+  @Autowired private UserRepository jpaUserRepository;
   @Autowired private PasswordEncoder passwordEncoder;
   @Autowired private FoodRepository foodRepository;
   @Autowired private JpaActivityRecordRepository activityRecordRepository;
@@ -82,7 +83,7 @@ class CreateActivityRecordE2ETest {
 
   private User createTestUser(String email, String password, String nickname) {
     User user = User.register(email, nickname, passwordEncoder.encode(password));
-    return userRepository.save(user);
+    return jpaUserRepository.save(user);
   }
 
   @Test
@@ -680,12 +681,13 @@ class CreateActivityRecordE2ETest {
 
     List<ActivityRecord> activityRecords =
         activityRecordRepository.findAll().stream()
-            .filter(record -> record.getUser().getId().equals(testUser.getId()))
+            .filter(record -> record.getUserId().equals(testUser.getId()))
             .filter(record -> !record.isDeleted())
             .filter(
-                record ->
-                    record.getActivityAt().isAfter(startOfDay)
-                        && record.getActivityAt().isBefore(endOfDay))
+                record -> {
+                  LocalDateTime occurredAt = record.getActivityAt().toDateTime();
+                  return occurredAt.isAfter(startOfDay) && occurredAt.isBefore(endOfDay);
+                })
             .toList();
 
     Long activityRecordId =
@@ -726,14 +728,15 @@ class CreateActivityRecordE2ETest {
     // 4. 재생성된 기록이 실제로 존재하는지 확인
     List<ActivityRecord> recreatedRecords =
         activityRecordRepository.findAll().stream()
-            .filter(record -> record.getUser().getId().equals(testUser.getId()))
+            .filter(record -> record.getUserId().equals(testUser.getId()))
             .filter(record -> !record.isDeleted())
             .filter(
-                record ->
-                    record.getActivityAt().isAfter(startOfDay)
-                        && record.getActivityAt().isBefore(endOfDay))
+                record -> {
+                  LocalDateTime occurredAt = record.getActivityAt().toDateTime();
+                  return occurredAt.isAfter(startOfDay) && occurredAt.isBefore(endOfDay);
+                })
             .toList();
 
-    assert !recreatedRecords.isEmpty() : "재생성된 ActivityRecord가 존재하지 않습니다";
+    assertThat(recreatedRecords).isNotEmpty();
   }
 }

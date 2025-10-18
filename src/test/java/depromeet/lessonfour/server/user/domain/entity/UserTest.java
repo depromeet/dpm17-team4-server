@@ -12,17 +12,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.transaction.annotation.Transactional;
 
-import depromeet.lessonfour.server.user.infra.repository.UserRepository;
+import depromeet.lessonfour.server.user.domain.repository.UserRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
-@Transactional
 @SpringBootTest
 @ActiveProfiles("test")
+@Sql(
+    scripts = "/sql/cleanup.sql",
+    config = @SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
+    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class UserTest {
 
   @Autowired private UserRepository userRepository;
@@ -52,6 +57,7 @@ class UserTest {
         .containsExactly(email, nickname, password);
   }
 
+  @Transactional
   @Test
   @DisplayName("사용자를 데이터베이스에 저장할 수 있다")
   void givenUser_whenSaved_thenUserPersisted() {
@@ -137,7 +143,7 @@ class UserTest {
     userRepository.save(firstUser);
 
     // then
-    assertThatThrownBy(() -> userRepository.saveAndFlush(secondUser))
+    assertThatThrownBy(() -> userRepository.save(secondUser))
         .isInstanceOf(DataIntegrityViolationException.class);
   }
 

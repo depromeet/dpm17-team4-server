@@ -1,13 +1,14 @@
 package depromeet.lessonfour.server.activityrecord.domain.entity;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealFood;
 import depromeet.lessonfour.server.activityrecord.domain.vo.StressLevel;
 import depromeet.lessonfour.server.common.domain.entity.BaseTimeEntity;
-import depromeet.lessonfour.server.user.domain.entity.User;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,8 +18,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
@@ -44,9 +43,7 @@ public class ActivityRecord extends BaseTimeEntity {
   private Long id;
 
   // 작성자
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user;
+  private Long userId;
 
   // 마신 물 양 (종이컵 기준, 0~10개)
   @Column
@@ -60,7 +57,11 @@ public class ActivityRecord extends BaseTimeEntity {
   private StressLevel stressLevel;
 
   @Column(nullable = false)
-  @NotNull private LocalDateTime activityAt;
+  @NotNull @AttributeOverrides({
+    @AttributeOverride(name = "date", column = @Column(name = "activity_date")),
+    @AttributeOverride(name = "time", column = @Column(name = "activity_time"))
+  })
+  private ActivityAt activityAt;
 
   @Column(nullable = false)
   @NotNull private boolean isDeleted;
@@ -74,14 +75,14 @@ public class ActivityRecord extends BaseTimeEntity {
   private List<FoodRecord> foodRecords = new ArrayList<>();
 
   public static ActivityRecord createWithMeals(
-      User user,
+      Long userId,
       int waterIntakeCups,
       StressLevel stressLevel,
-      LocalDateTime activityAt,
+      ActivityAt activityAt,
       List<MealFood> mealFoods) {
     ActivityRecord activityRecord =
         ActivityRecord.builder()
-            .user(user)
+            .userId(userId)
             .waterIntakeCups(waterIntakeCups)
             .stressLevel(stressLevel)
             .activityAt(activityAt)
@@ -98,5 +99,9 @@ public class ActivityRecord extends BaseTimeEntity {
 
   public void delete() {
     this.isDeleted = true;
+  }
+
+  public boolean isOwnedBy(Long userId) {
+    return this.userId.equals(userId);
   }
 }

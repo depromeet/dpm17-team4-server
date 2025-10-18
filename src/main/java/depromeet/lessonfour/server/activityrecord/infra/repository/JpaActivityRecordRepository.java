@@ -8,5 +8,7 @@ import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
 
 public interface JpaActivityRecordRepository extends JpaRepository<ActivityRecord, Long> {
 
-  Optional<ActivityRecord> findByUser_IdAndIdAndIsDeletedFalse(Long userId, Long activityRecordId);
+  Optional<ActivityRecord> findByIdAndIsDeletedFalse(Long activityRecordId);
+
+  Optional<ActivityRecord> findByUserIdAndIdAndIsDeletedFalse(Long userId, Long activityRecordId);
 }

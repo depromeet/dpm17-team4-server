@@ -1,12 +1,11 @@
 package depromeet.lessonfour.server.user.app.service;
 
+import depromeet.lessonfour.server.user.domain.entity.User;
+import depromeet.lessonfour.server.user.domain.repository.UserRepository;
+import depromeet.lessonfour.server.user.domain.vo.Provider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import depromeet.lessonfour.server.user.domain.entity.User;
-import depromeet.lessonfour.server.user.domain.vo.Provider;
-import depromeet.lessonfour.server.user.infra.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
