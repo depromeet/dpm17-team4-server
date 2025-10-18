@@ -15,7 +15,7 @@ import depromeet.lessonfour.server.auth.api.util.RefreshTokenCookieGenerator;
 import depromeet.lessonfour.server.auth.app.dto.response.AuthResponseDto;
 import depromeet.lessonfour.server.auth.domain.vo.StateData;
 import depromeet.lessonfour.server.auth.infra.security.jwt.TokenManager;
-import depromeet.lessonfour.server.auth.infra.security.oauth.kakao.KakaoOAuthCookie;
+import depromeet.lessonfour.server.auth.infra.security.oauth.kakao.KakaoLoginProcessor;
 import depromeet.lessonfour.server.common.util.UriUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,7 +27,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
   private final TokenManager tokenManager;
   private final OidcStateCodec oidcStateCodec;
-  private final KakaoOAuthCookie kakaoOAuthCookie;
+  private final KakaoLoginProcessor kakaoLoginProcessor;
 
   @Override
   public void onAuthenticationSuccess(
@@ -40,7 +40,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     AuthResponseDto authResponse = null;
     if (token.getAuthorizedClientRegistrationId().equals("kakao")) {
-      authResponse = kakaoOAuthCookie.login(oAuth2User);
+      authResponse = kakaoLoginProcessor.login(oAuth2User);
     }
 
     assert authResponse != null;

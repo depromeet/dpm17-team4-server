@@ -1,13 +1,13 @@
 package depromeet.lessonfour.server.auth.app.dto.response;
 
-import depromeet.lessonfour.server.auth.domain.vo.SocialProvider;
 import depromeet.lessonfour.server.user.domain.entity.User;
+import depromeet.lessonfour.server.user.domain.vo.Provider;
 
 public record AuthResponseDto(
     Long id,
     String email,
     String nickname,
-    SocialProvider provider,
+    Provider.ProviderType provider,
     String profileImage,
     boolean isNew,
     String accessToken,
@@ -18,7 +18,7 @@ public record AuthResponseDto(
         user.getId(),
         user.getEmail(),
         user.getNickname(),
-        SocialProvider.from(user.getProvider()),
+        user.getProvider() != null ? user.getProvider().getType() : null,
         user.getProfileImage(),
         user.isNew(),
         null,
@@ -30,7 +30,7 @@ public record AuthResponseDto(
         user.getId(),
         user.getEmail(),
         user.getNickname(),
-        SocialProvider.from(user.getProvider()),
+        user.getProvider() != null ? user.getProvider().getType() : null,
         user.getProfileImage(),
         user.isNew(),
         token.accessToken(),

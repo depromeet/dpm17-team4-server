@@ -1,24 +1,19 @@
 package depromeet.lessonfour.server.auth.infra.security.oauth.kakao;
 
-import static depromeet.lessonfour.server.auth.domain.vo.SocialProvider.KAKAO;
-
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.auth.app.client.UserServiceClient;
 import depromeet.lessonfour.server.auth.app.dto.response.AuthResponseDto;
 import depromeet.lessonfour.server.user.domain.entity.User;
+import depromeet.lessonfour.server.user.domain.vo.Provider;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class KakaoOAuthCookie {
-
-  @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
-  private String kakaoRedirectUri;
+public class KakaoLoginProcessor {
 
   private final UserServiceClient userServiceClient;
 
@@ -30,7 +25,7 @@ public class KakaoOAuthCookie {
     String nickname = (String) attributes.get("nickname");
     String profileImage = (String) attributes.get("profileImage");
 
-    User user = userServiceClient.findOrCreate(email, nickname, profileImage, KAKAO, sub);
+    User user = userServiceClient.findOrCreate(email, nickname, profileImage, Provider.kakao(sub));
 
     return AuthResponseDto.of(user);
   }

@@ -8,13 +8,13 @@ import depromeet.lessonfour.server.auth.api.code.AuthErrorCode;
 import depromeet.lessonfour.server.auth.app.client.UserServiceClient;
 import depromeet.lessonfour.server.auth.app.dto.response.AuthResponseDto;
 import depromeet.lessonfour.server.auth.app.dto.response.TokenPairDto;
-import depromeet.lessonfour.server.auth.domain.vo.SocialProvider;
 import depromeet.lessonfour.server.auth.infra.security.jwt.TokenManager;
 import depromeet.lessonfour.server.auth.infra.security.oauth.OAuthTokenClient;
 import depromeet.lessonfour.server.auth.infra.security.oauth.OidcTokenDecoder;
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.common.exception.ServerException;
 import depromeet.lessonfour.server.user.domain.entity.User;
+import depromeet.lessonfour.server.user.domain.vo.Provider;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
@@ -27,18 +27,18 @@ public class AuthCodeFlowUseCase {
   private final OAuthTokenClient oAuthTokenClient;
 
   public AuthResponseDto login(String code, String provider, boolean includeAccessToken) {
-    SocialProvider socialProvider = SocialProvider.from(provider);
-    OAuth2AccessTokenResponse response = oAuthTokenClient.requestToken(code, socialProvider);
+    Provider.ProviderType providerType = Provider.ProviderType.from(provider);
+    OAuth2AccessTokenResponse response = oAuthTokenClient.requestToken(code, providerType);
     String idToken = (String) response.getAdditionalParameters().get("id_token");
-    Map<String, Object> claims = oidcTokenDecoder.parseClaims(idToken);
-    User user = extractAndFindUser(claims, socialProvider);
+    Map<String, Object> claims = oidcTokenDecoder.decode(idToken);
+    User user = extractAndFindUser(claims, providerType);
 
     TokenPairDto tokenPair = tokenManager.generateTokens(user, includeAccessToken);
 
     return AuthResponseDto.of(user, tokenPair);
   }
 
-  private User extractAndFindUser(Map<String, Object> claims, SocialProvider socialProvider) {
+  private User extractAndFindUser(Map<String, Object> claims, Provider.ProviderType providerType) {
     String email = (String) claims.get("email");
     String nickname = (String) claims.get("nickname");
     String picture = (String) claims.get("picture");
@@ -52,6 +52,7 @@ public class AuthCodeFlowUseCase {
       throw new ServerException(AuthErrorCode.SUB_REQUIRED_FOR_OIDC);
     }
 
-    return userServiceClient.findOrCreate(email, nickname, picture, socialProvider, sub);
+    Provider provider = Provider.of(providerType, sub);
+    return userServiceClient.findOrCreate(email, nickname, picture, provider);
   }
 }

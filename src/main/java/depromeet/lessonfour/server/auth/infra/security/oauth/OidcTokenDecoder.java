@@ -30,7 +30,7 @@ public class OidcTokenDecoder {
     this.jwtDecoder = decoder;
   }
 
-  public Map<String, Object> parseClaims(String token) {
+  public Map<String, Object> decode(String token) {
     try {
       Jwt jwt = jwtDecoder.decode(token);
       return jwt.getClaims();

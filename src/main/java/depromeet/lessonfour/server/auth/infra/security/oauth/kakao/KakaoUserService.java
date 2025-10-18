@@ -13,10 +13,12 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public class KakaoOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+public class KakaoUserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
   @Override
   public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -29,7 +31,7 @@ public class KakaoOAuth2UserService implements OAuth2UserService<OAuth2UserReque
     String id = String.valueOf(attributes.get("id"));
     String email = (String) kakaoAccount.get("email");
     String nickname = (String) profile.get("nickname");
-    String profileImage = (String) profile.get("profile_image_url");
+    String profileImage = (String) profile.get("profile_image");
 
     return new DefaultOAuth2User(
         Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),

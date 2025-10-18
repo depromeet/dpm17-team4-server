@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class KakaoOAuthTokenClient {
+public class KakaoTokenClient {
   @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
   private String kakaoRedirectUri;
 

@@ -4,21 +4,22 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenRespon
 import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.auth.api.code.AuthErrorCode;
-import depromeet.lessonfour.server.auth.domain.vo.SocialProvider;
-import depromeet.lessonfour.server.auth.infra.security.oauth.kakao.KakaoOAuthTokenClient;
+import depromeet.lessonfour.server.auth.infra.security.oauth.kakao.KakaoTokenClient;
 import depromeet.lessonfour.server.common.exception.ServerException;
+import depromeet.lessonfour.server.user.domain.vo.Provider;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class OAuthTokenClient {
 
-  private final KakaoOAuthTokenClient kakaoOAuthTokenClient;
+  private final KakaoTokenClient kakaoTokenClient;
 
-  public OAuth2AccessTokenResponse requestToken(String code, SocialProvider socialProvider) {
-    return switch (socialProvider) {
-      case KAKAO -> kakaoOAuthTokenClient.token(code);
-      default -> throw new ServerException(AuthErrorCode.OAUTH_PROVIDER_NOT_FOUND);
+  public OAuth2AccessTokenResponse requestToken(String code, Provider.ProviderType providerType) {
+    return switch (providerType) {
+      case KAKAO -> kakaoTokenClient.token(code);
+      case APPLE -> throw new ServerException(AuthErrorCode.OAUTH_PROVIDER_NOT_FOUND);
+      case LOCAL -> throw new ServerException(AuthErrorCode.OAUTH_PROVIDER_NOT_FOUND);
     };
   }
 }

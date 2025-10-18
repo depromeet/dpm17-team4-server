@@ -6,7 +6,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import depromeet.lessonfour.server.auth.infra.security.oauth.kakao.KakaoOAuth2UserService;
+import depromeet.lessonfour.server.auth.infra.security.oauth.kakao.KakaoUserService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 public class DelegatingOAuth2UserService
     implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-  private final KakaoOAuth2UserService kakaoService;
+  private final KakaoUserService kakaoService;
 
   @Override
   public OAuth2User loadUser(OAuth2UserRequest userRequest) {
