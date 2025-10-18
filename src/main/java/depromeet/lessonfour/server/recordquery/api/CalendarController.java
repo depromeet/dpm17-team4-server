@@ -40,7 +40,7 @@ public class CalendarController {
         SuccessCode.SUCCESS_FETCH, getRecordUseCase.getRecordExistenceList(userId, start, end));
   }
 
-  @GetMapping("/toilets")
+  @GetMapping("/poo-records")
   public SuccessResponse<ToiletTimeListResponse> getToiletTimesByDate(
       @AuthenticationPrincipal(expression = "id") Long userId,
       @NotNull(message = "date는 필수입니다") @RequestParam("date")
