@@ -1,13 +1,14 @@
 package depromeet.lessonfour.server.toiletrecord.infra.repository;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
-import depromeet.lessonfour.server.toiletrecord.app.repository.ToiletRecordRepository;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
+import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
+import depromeet.lessonfour.server.toiletrecord.domain.repository.ToiletRecordRepository;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -15,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class ToiletRecordRepositoryImpl implements ToiletRecordRepository {
 
   private final JpaToiletRecordRepository jpa;
-  private final QueryDslToiletRecordRepository query;
+  private final ToiletRecordQuery query;
 
   @Override
   public void save(ToiletRecord record) {
@@ -23,17 +24,17 @@ public class ToiletRecordRepositoryImpl implements ToiletRecordRepository {
   }
 
   @Override
-  public Optional<ToiletRecord> findByUserAndId(Long userId, Long recordId) {
+  public Optional<ToiletRecord> findById(Long userId, Long recordId) {
     return jpa.findByUser_IdAndIdAndIsDeletedFalse(userId, recordId);
   }
 
   @Override
-  public Optional<ToiletRecord> findByIdAndIsDeletedFalse(Long recordId) {
-    return jpa.findByIdAndIsDeletedFalse(recordId);
+  public List<ToiletRecord> findByActivityAt(Long userId, ActivityAt at) {
+    return query.findByDate(userId, at);
   }
 
   @Override
-  public List<ToiletRecord> findByDate(Long userId, LocalDate date) {
-    return query.findByDate(userId, date);
+  public List<DailyExistence> existsByActivityAt(Long userId, ActivityAt start, ActivityAt end) {
+    return query.findDailyExistencesByActivityAt(userId, start, end);
   }
 }

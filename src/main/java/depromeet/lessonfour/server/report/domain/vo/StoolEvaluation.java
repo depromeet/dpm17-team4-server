@@ -1,7 +1,6 @@
 package depromeet.lessonfour.server.report.domain.vo;
 
-import java.time.LocalDateTime;
-
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
@@ -19,7 +18,7 @@ public class StoolEvaluation {
   private final int duration;
   private final double pain;
   private final String note;
-  private final LocalDateTime occurredAt;
+  private final ActivityAt occurredAt;
 
   public static StoolEvaluation from(
       double score, StoolEvaluationLevel level, ToiletRecord record) {
@@ -31,7 +30,7 @@ public class StoolEvaluation {
         .duration(record.getDuration())
         .pain(record.getPain())
         .note(record.getNote())
-        .occurredAt(record.getOccurredAt())
+        .occurredAt(record.getActivityAt())
         .build();
   }
 }

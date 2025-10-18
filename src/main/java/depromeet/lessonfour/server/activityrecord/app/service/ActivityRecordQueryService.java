@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
 import depromeet.lessonfour.server.activityrecord.domain.repository.ActivityRecordRepository;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
+import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,5 +26,9 @@ public class ActivityRecordQueryService {
     ActivityAt to = ActivityAt.from(end);
 
     return activityRecordRepository.findByActivityAtBetween(userId, from, to);
+  }
+
+  public List<DailyExistence> existsByActivityAt(Long userId, ActivityAt start, ActivityAt end) {
+    return activityRecordRepository.existsByActivityAt(userId, start, end);
   }
 }

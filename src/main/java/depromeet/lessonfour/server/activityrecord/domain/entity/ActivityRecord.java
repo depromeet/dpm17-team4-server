@@ -61,7 +61,7 @@ public class ActivityRecord extends BaseTimeEntity {
     @AttributeOverride(name = "date", column = @Column(name = "activity_date")),
     @AttributeOverride(name = "time", column = @Column(name = "activity_time"))
   })
-  @NotNull private ActivityAt activityAt;
+  private ActivityAt activityAt;
 
   @Column(nullable = false)
   @NotNull private boolean isDeleted;
