@@ -33,7 +33,7 @@ public class AuthCodeFlowUseCase {
     Map<String, Object> claims = oidcTokenDecoder.parseClaims(idToken);
     User user = extractAndFindUser(claims, socialProvider);
 
-    TokenPairDto tokenPair = tokenManager.generateToken(user, includeAccessToken);
+    TokenPairDto tokenPair = tokenManager.generateTokens(user, includeAccessToken);
 
     return AuthResponseDto.of(user, tokenPair);
   }

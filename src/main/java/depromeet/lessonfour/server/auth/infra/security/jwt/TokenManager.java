@@ -18,7 +18,7 @@ public class TokenManager {
   private final JwtTokenGenerator jwtTokenGenerator;
   private final UserUpdateService userUpdateService;
 
-  public TokenPairDto generateToken(User user, boolean includeAccessToken) {
+  public TokenPairDto generateTokens(User user, boolean includeAccessToken) {
     String refreshToken = jwtTokenGenerator.generateRefreshToken(AccountContext.of(user));
     user.storeRefreshToken(refreshToken);
 
@@ -30,7 +30,7 @@ public class TokenManager {
     return new TokenPairDto(accessToken, refreshToken);
   }
 
-  public String generateAndStoreTokens(AuthResponseDto authResponse) {
+  public String generateAndStoreRefreshToken(AuthResponseDto authResponse) {
     AccountContext accountContext =
         AccountContext.ofOAuth2(authResponse.id(), authResponse.email(), authResponse.nickname());
     String refreshToken = jwtTokenGenerator.generateRefreshToken(accountContext);

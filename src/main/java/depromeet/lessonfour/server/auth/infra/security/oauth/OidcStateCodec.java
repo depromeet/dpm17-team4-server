@@ -26,6 +26,11 @@ public class OidcStateCodec {
 
   public String encode(String redirectUri, String responseType) {
     try {
+      redirectUri =
+          (redirectUri == null || redirectUri.isBlank()) ? DEFAULT_REDIRECT_URI : redirectUri;
+
+      responseType = (responseType == null) ? DEFAULT_RESPONSE_TYPE : responseType;
+
       Map<String, String> stateMap =
           Map.of(
               "redirectUri", redirectUri,
