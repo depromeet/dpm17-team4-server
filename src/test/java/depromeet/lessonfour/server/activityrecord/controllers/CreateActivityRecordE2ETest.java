@@ -29,7 +29,7 @@ import depromeet.lessonfour.server.auth.infra.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.food.domain.entity.Food;
 import depromeet.lessonfour.server.food.infra.repository.FoodRepository;
 import depromeet.lessonfour.server.user.domain.entity.User;
-import depromeet.lessonfour.server.user.infra.repository.UserRepository;
+import depromeet.lessonfour.server.user.domain.repository.UserRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
@@ -44,7 +44,7 @@ class CreateActivityRecordE2ETest {
   @LocalServerPort private int port;
 
   @Autowired private JwtTokenGenerator jwtTokenGenerator;
-  @Autowired private UserRepository userRepository;
+  @Autowired private UserRepository jpaUserRepository;
   @Autowired private PasswordEncoder passwordEncoder;
   @Autowired private FoodRepository foodRepository;
   @Autowired private JpaActivityRecordRepository activityRecordRepository;
@@ -83,7 +83,7 @@ class CreateActivityRecordE2ETest {
 
   private User createTestUser(String email, String password, String nickname) {
     User user = User.register(email, nickname, passwordEncoder.encode(password));
-    return userRepository.save(user);
+    return jpaUserRepository.save(user);
   }
 
   @Test

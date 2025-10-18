@@ -20,7 +20,7 @@ public class CreateToiletRecordUseCase {
   private final ToiletRecordRepository toiletRecordRepository;
 
   public ToiletRecordResponseDto create(Long userId, ToiletRecordCreateRequestDto dto) {
-    User user = userQueryService.findById(userId);
+    User user = userQueryService.getActivatedUserById(userId);
 
     ToiletRecord record =
         ToiletRecord.register(

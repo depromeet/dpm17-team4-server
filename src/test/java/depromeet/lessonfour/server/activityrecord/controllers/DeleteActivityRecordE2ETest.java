@@ -32,7 +32,7 @@ import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.food.domain.entity.Food;
 import depromeet.lessonfour.server.food.infra.repository.FoodRepository;
 import depromeet.lessonfour.server.user.domain.entity.User;
-import depromeet.lessonfour.server.user.infra.repository.UserRepository;
+import depromeet.lessonfour.server.user.domain.repository.UserRepository;
 import io.restassured.RestAssured;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

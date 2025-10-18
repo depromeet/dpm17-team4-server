@@ -9,7 +9,7 @@ import depromeet.lessonfour.server.auth.infra.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.auth.infra.security.jwt.JwtTokenValidator;
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.user.domain.entity.User;
-import depromeet.lessonfour.server.user.infra.repository.UserRepository;
+import depromeet.lessonfour.server.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @UseCase

@@ -22,6 +22,6 @@ public class AuthTestController {
 
   @GetMapping("/{email}")
   public ResponseEntity<?> getUserByEmail(@PathVariable String email) {
-    return ResponseEntity.ok(userQueryService.findByEmail(email));
+    return ResponseEntity.ok(userQueryService.getUserByEmail(email));
   }
 }
