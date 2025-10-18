@@ -5,10 +5,8 @@ import static depromeet.lessonfour.server.activityrecord.domain.entity.QFoodReco
 import static depromeet.lessonfour.server.food.domain.entity.QFood.food;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.stereotype.Repository;
 
@@ -93,10 +91,9 @@ public class ActivityRecordQuery {
             .distinct()
             .fetch();
 
-    Set<LocalDate> existingSet = new HashSet<>(existingDates);
-
-    return dateRange.stream()
-        .<DailyExistence>map(date -> new DailyExistenceProjection(date, existingSet.contains(date)))
+    // 기록이 있는 날짜만 반환 (false인 경우는 제외)
+    return existingDates.stream()
+        .<DailyExistence>map(date -> new DailyExistenceProjection(date, true))
         .toList();
   }
 }

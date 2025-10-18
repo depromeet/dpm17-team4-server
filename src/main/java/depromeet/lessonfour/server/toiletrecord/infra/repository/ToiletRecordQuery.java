@@ -3,9 +3,7 @@ package depromeet.lessonfour.server.toiletrecord.infra.repository;
 import static depromeet.lessonfour.server.toiletrecord.domain.entity.QToiletRecord.toiletRecord;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.stereotype.Repository;
 
@@ -60,10 +58,9 @@ public class ToiletRecordQuery {
             .distinct()
             .fetch();
 
-    Set<LocalDate> existingSet = new HashSet<>(existingDates);
-
-    return dateRange.stream()
-        .<DailyExistence>map(date -> new DailyExistenceProjection(date, existingSet.contains(date)))
+    // 기록이 있는 날짜만 반환 (false인 경우는 제외)
+    return existingDates.stream()
+        .<DailyExistence>map(date -> new DailyExistenceProjection(date, true))
         .toList();
   }
 }

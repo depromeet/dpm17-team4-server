@@ -1,7 +1,5 @@
 package depromeet.lessonfour.server.recordquery.api.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,6 +14,8 @@ import depromeet.lessonfour.server.common.api.code.SuccessCode;
 import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
 import depromeet.lessonfour.server.recordquery.app.dto.RecordExistenceListResponse;
 import depromeet.lessonfour.server.recordquery.app.service.GetRecordUseCase;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
@@ -28,17 +28,15 @@ public class CalendarController {
 
   private final GetRecordUseCase getRecordUseCase;
 
-  @Operation(
-      summary = "기록 존재 여부 조회",
-      description = "특정 기간 동안의 활동 및 배변 기록 존재 여부를 조회합니다."
-  )
+  @Operation(summary = "기록 존재 여부 조회", description = "특정 기간 동안의 활동 및 배변 기록 존재 여부를 조회합니다.")
   @GetMapping
   public SuccessResponse<RecordExistenceListResponse> getRecordExistences(
       @AuthenticationPrincipal(expression = "id") Long userId,
-      @NotNull(message = "시작 날짜는 필수입니다.") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+      @NotNull(message = "시작 날짜는 필수입니다.") @RequestParam
+          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           LocalDate start,
-      @NotNull(message = "종료 날짜는 필수입니다.")
-      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+      @NotNull(message = "종료 날짜는 필수입니다.") @RequestParam(required = false)
+          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           LocalDate end) {
 
     return SuccessResponse.of(
