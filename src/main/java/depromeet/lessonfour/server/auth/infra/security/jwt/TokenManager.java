@@ -17,10 +17,15 @@ public class TokenManager {
 
   private final JwtTokenGenerator jwtTokenGenerator;
   private final UserUpdateService userUpdateService;
+  private final JwtTokenValidator jwtTokenValidator;
 
-  public TokenPairDto generateTokens(User user, boolean includeAccessToken) {
-    String refreshToken = jwtTokenGenerator.generateRefreshToken(AccountContext.of(user));
-    user.storeRefreshToken(refreshToken);
+  public TokenPairDto generateAndStoreTokens(User user, boolean includeAccessToken) {
+    // 기존 refresh token이 유효하면 재사용
+    String refreshToken = user.getRefreshToken();
+    if (refreshToken == null || !jwtTokenValidator.isValidToken(refreshToken)) {
+      refreshToken = jwtTokenGenerator.generateRefreshToken(AccountContext.of(user));
+      user.storeRefreshToken(refreshToken);
+    }
 
     String accessToken = null;
     if (includeAccessToken) {

@@ -1,7 +1,5 @@
 package depromeet.lessonfour.server.auth.infra.security.oauth;
 
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -11,6 +9,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.auth.api.code.AuthErrorCode;
+import depromeet.lessonfour.server.auth.domain.vo.UserInfo;
 import depromeet.lessonfour.server.common.exception.ServerException;
 
 @Component
@@ -30,10 +29,10 @@ public class OidcTokenDecoder {
     this.jwtDecoder = decoder;
   }
 
-  public Map<String, Object> decode(String token) {
+  public UserInfo decode(String token) {
     try {
       Jwt jwt = jwtDecoder.decode(token);
-      return jwt.getClaims();
+      return UserInfo.from(jwt.getClaims());
     } catch (Exception e) {
       throw new ServerException(AuthErrorCode.INVALID_OIDC_TOKEN);
     }

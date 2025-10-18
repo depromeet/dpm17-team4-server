@@ -1,9 +1,11 @@
 package depromeet.lessonfour.server.auth.api.controller;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,11 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import depromeet.lessonfour.server.auth.api.code.AuthErrorCode;
 import depromeet.lessonfour.server.auth.api.dto.AuthCodeRequestDto;
+import depromeet.lessonfour.server.auth.api.util.RefreshTokenCookieGenerator;
 import depromeet.lessonfour.server.auth.app.dto.response.AuthResponseDto;
 import depromeet.lessonfour.server.auth.app.service.AuthCodeFlowUseCase;
-import depromeet.lessonfour.server.auth.app.service.OAuthCallbackRedirectUseCase;
+import depromeet.lessonfour.server.auth.app.service.OAuthCallbackUseCase;
+import depromeet.lessonfour.server.auth.domain.vo.StateData;
 import depromeet.lessonfour.server.auth.infra.security.oauth.OidcStateCodec;
+import depromeet.lessonfour.server.common.exception.ServerException;
+import depromeet.lessonfour.server.common.util.UriUtils;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -37,7 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OAuthController {
 
   private final AuthCodeFlowUseCase authCodeFlowUseCase;
-  private final OAuthCallbackRedirectUseCase oAuthCallbackRedirectUseCase;
+  private final OAuthCallbackUseCase oAuthCallbackUseCase;
   private final OidcStateCodec oidcStateCodec;
 
   @Operation(summary = "소셜 로그인", description = "소셜 로그인을 진행합니다.")
@@ -79,9 +86,7 @@ public class OAuthController {
   }
 
   @Hidden
-  @Operation(
-      summary = "소셜 로그인 인증 콜백",
-      description = "인가코드를 받습니다. responseType에 따라 인가코드만 전달하거나 Spring OAuth2로 위임합니다.")
+  @Operation(summary = "소셜 로그인 인증 콜백", description = "소셜 로그인 인증 후 콜백을 처리합니다.")
   @GetMapping("/{provider}/callback")
   public void callback(
       @PathVariable("provider") String provider,
@@ -90,6 +95,43 @@ public class OAuthController {
       @Parameter(description = "에러 발생시") @RequestParam(required = false) String error,
       HttpServletResponse response)
       throws IOException {
-    response.sendRedirect(oAuthCallbackRedirectUseCase.getPath(provider, code, state, error));
+    if (error != null) {
+      throw new ServerException(AuthErrorCode.OAUTH_TOKEN_REQUEST_FAILED);
+    }
+
+    StateData stateData = oidcStateCodec.decode(state);
+
+    // auth flow 진행
+    if ("code".equalsIgnoreCase(stateData.responseType())) {
+      response.sendRedirect(
+          UriComponentsBuilder.fromUriString(stateData.redirectUri())
+              .queryParam("code", code)
+              .encode(StandardCharsets.UTF_8)
+              .build()
+              .toUriString());
+      return;
+    }
+
+    String refreshToken = oAuthCallbackUseCase.login(provider, code);
+    String domain = UriUtils.extractDomain(stateData.redirectUri());
+
+    ResponseCookie cookie =
+        (domain != null && !domain.isBlank())
+            ? RefreshTokenCookieGenerator.generate(refreshToken, domain)
+            : RefreshTokenCookieGenerator.generate(refreshToken);
+
+    response.addHeader("Set-Cookie", cookie.toString());
+
+    // same-domain 쿠키도 추가
+    if (domain != null && !domain.isBlank()) {
+      ResponseCookie localCookie = RefreshTokenCookieGenerator.generate(refreshToken);
+      response.addHeader("Set-Cookie", localCookie.toString());
+    }
+
+    response.sendRedirect(
+        UriComponentsBuilder.fromUriString(stateData.redirectUri())
+            .encode(StandardCharsets.UTF_8)
+            .build()
+            .toUriString());
   }
 }
