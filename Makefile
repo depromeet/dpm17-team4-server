@@ -33,6 +33,7 @@ help:
 	@echo "  make format          - Auto-format code (Spotless)"
 	@echo "  make format-check    - Check formatting only (fails if changes needed)"
 	@echo "  make clear-h2        - Remove local H2 files (.h2/)"
+	@echo "  make ssh             - SSH to remote server"
 	@echo ""
 	@echo "Variables:"
 	@echo "  PORT=<int>                 (default: 8080)"
@@ -156,7 +157,7 @@ curl:
 	curl -sS http://localhost:$(PORT)/api/v1/echo || true; echo
 
 ssh:
-	ssh root@${APP__SERVER__URL}
+	ssh root@${APP__SERVER__HOST}
 
 poetry:
 	@command -v poetry >/dev/null 2>&1 || pip install poetry
