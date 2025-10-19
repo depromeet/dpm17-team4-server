@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,10 @@ import org.springframework.web.server.ResponseStatusException;
 import depromeet.lessonfour.server.auth.api.util.RefreshTokenCookieGenerator;
 import depromeet.lessonfour.server.auth.app.dto.request.RefreshTokenRequestDto;
 import depromeet.lessonfour.server.auth.app.dto.response.AuthTokenDto;
+import depromeet.lessonfour.server.auth.app.service.LogoutUseCase;
 import depromeet.lessonfour.server.auth.app.service.RefreshTokenUseCase;
+import depromeet.lessonfour.server.common.api.code.SuccessCode;
+import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
 import depromeet.lessonfour.server.user.app.dto.request.LoginRequestDto;
 import depromeet.lessonfour.server.user.app.dto.request.RegisterRequestDto;
 import depromeet.lessonfour.server.user.app.dto.response.AccessTokenResponseDto;
@@ -38,6 +42,7 @@ public class AuthController {
 
   private final SignupUseCase registerUseCase;
   private final RefreshTokenUseCase refreshTokenUseCase;
+  private final LogoutUseCase logoutUseCase;
 
   @Operation(
       summary = "로컬 회원가입",
@@ -101,5 +106,29 @@ public class AuthController {
         .header("Set-Cookie", refreshTokenCookie.toString())
         .cacheControl(CacheControl.noStore().mustRevalidate())
         .body(new AccessTokenResponseDto(result.accessToken()));
+  }
+
+  @Operation(
+      summary = "로그아웃",
+      description = "현재 로그인한 사용자를 로그아웃합니다. DB에서 refresh token을 제거하여 토큰 갱신을 불가능하게 만듭니다.",
+      security = {@SecurityRequirement(name = "JWT")})
+  @PostMapping(path = "/logout", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<SuccessResponse<Void>> logout(
+      @AuthenticationPrincipal(expression = "id") Long userId) {
+    logoutUseCase.logout(userId);
+
+    // 쿠키에서 refresh token 제거
+    ResponseCookie deleteRefreshTokenCookie =
+        ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, "")
+            .httpOnly(true)
+            .secure(true)
+            .path("/")
+            .maxAge(0)
+            .sameSite("Lax")
+            .build();
+
+    return ResponseEntity.ok()
+        .header("Set-Cookie", deleteRefreshTokenCookie.toString())
+        .body(SuccessResponse.of(SuccessCode.SUCCESS_DELETE));
   }
 }
