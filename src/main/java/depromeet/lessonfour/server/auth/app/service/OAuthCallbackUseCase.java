@@ -29,7 +29,7 @@ public class OAuthCallbackUseCase {
     ProviderType providerType = ProviderType.from(provider);
     OAuth2AccessTokenResponse response = oAuthTokenClient.requestToken(code, providerType);
     String idToken = (String) response.getAdditionalParameters().get("id_token");
-    UserInfo info = oidcTokenDecoder.decode(idToken);
+    UserInfo info = oidcTokenDecoder.decode(idToken, provider);
     User user =
         userServiceClient.findOrCreate(
             info.getEmail(),
