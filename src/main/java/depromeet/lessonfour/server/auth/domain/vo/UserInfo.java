@@ -21,14 +21,23 @@ public class UserInfo {
     userInfo.picture = (String) claims.get("picture");
     userInfo.sub = (String) claims.get("sub");
 
-    if (userInfo.email == null) {
-      throw new ServerException(AuthErrorCode.EMAIL_REQUIRED_FOR_OIDC);
-    }
-
     if (userInfo.sub == null) {
       throw new ServerException(AuthErrorCode.SUB_REQUIRED_FOR_OIDC);
     }
 
+    if (userInfo.nickname == null) {
+      userInfo.nickname = generateDefaultNickname(userInfo.email);
+    }
+
     return userInfo;
+  }
+
+  private static String generateDefaultNickname(String email) {
+    if (email == null) {
+      return "user";
+    }
+    // 이메일 @ 앞부분 사용 (최대 32자)
+    String emailPrefix = email.split("@")[0];
+    return emailPrefix.length() > 32 ? emailPrefix.substring(0, 32) : emailPrefix;
   }
 }

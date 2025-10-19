@@ -1,5 +1,8 @@
 package depromeet.lessonfour.server.auth.infra.security.oauth;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -15,26 +18,55 @@ import depromeet.lessonfour.server.common.exception.ServerException;
 @Component
 public class OidcTokenDecoder {
 
-  private final JwtDecoder jwtDecoder;
+  private final Map<String, JwtDecoder> decoders = new ConcurrentHashMap<>();
 
-  public OidcTokenDecoder(
-      @Value("${spring.security.oauth2.client.provider.kakao.jwk-set-uri}") String jwkSetUri,
-      @Value("${spring.security.oauth2.client.provider.kakao.issuer-uri}") String issuerUri) {
+  @Value("${spring.security.oauth2.client.provider.kakao.jwk-set-uri}")
+  private String kakaoJwkSetUri;
 
-    NimbusJwtDecoder decoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
+  @Value("${spring.security.oauth2.client.provider.kakao.issuer-uri}")
+  private String kakaoIssuerUri;
 
-    OAuth2TokenValidator<Jwt> validator = JwtValidators.createDefaultWithIssuer(issuerUri);
-    decoder.setJwtValidator(validator);
+  @Value("${spring.security.oauth2.client.provider.apple.jwk-set-uri}")
+  private String appleJwkSetUri;
 
-    this.jwtDecoder = decoder;
-  }
+  @Value("${spring.security.oauth2.client.provider.apple.issuer-uri}")
+  private String appleIssuerUri;
 
-  public UserInfo decode(String token) {
+  public UserInfo decode(String token, String provider) {
     try {
-      Jwt jwt = jwtDecoder.decode(token);
+      JwtDecoder decoder = getDecoder(provider);
+      Jwt jwt = decoder.decode(token);
       return UserInfo.from(jwt.getClaims());
     } catch (Exception e) {
       throw new ServerException(AuthErrorCode.INVALID_OIDC_TOKEN);
     }
+  }
+
+  private JwtDecoder getDecoder(String provider) {
+    return decoders.computeIfAbsent(provider.toLowerCase(), this::createDecoder);
+  }
+
+  private JwtDecoder createDecoder(String provider) {
+    String jwkSetUri;
+    String issuerUri;
+
+    switch (provider) {
+      case "kakao":
+        jwkSetUri = kakaoJwkSetUri;
+        issuerUri = kakaoIssuerUri;
+        break;
+      case "apple":
+        jwkSetUri = appleJwkSetUri;
+        issuerUri = appleIssuerUri;
+        break;
+      default:
+        throw new ServerException(AuthErrorCode.INVALID_OIDC_TOKEN);
+    }
+
+    NimbusJwtDecoder decoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
+    OAuth2TokenValidator<Jwt> validator = JwtValidators.createDefaultWithIssuer(issuerUri);
+    decoder.setJwtValidator(validator);
+
+    return decoder;
   }
 }
