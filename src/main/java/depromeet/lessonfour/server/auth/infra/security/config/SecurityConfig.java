@@ -40,6 +40,7 @@ public class SecurityConfig {
     return http.securityMatcher("/swagger-ui/**", "/v3/api-docs/**", "")
         .csrf(AbstractHttpConfigurer::disable)
         .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
+        .logout(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
         .build();
   }
@@ -65,6 +66,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .logout(AbstractHttpConfigurer::disable)
         .httpBasic(AbstractHttpConfigurer::disable)
         .anonymous(AbstractHttpConfigurer::disable)
         .formLogin(AbstractHttpConfigurer::disable)
@@ -109,6 +111,7 @@ public class SecurityConfig {
                     .authenticated())
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .logout(AbstractHttpConfigurer::disable)
         .addFilterBefore(
             new JwtAuthenticationFilter(authenticationManager),
             UsernamePasswordAuthenticationFilter.class)
