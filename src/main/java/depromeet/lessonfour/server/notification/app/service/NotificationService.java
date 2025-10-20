@@ -139,8 +139,21 @@ public class NotificationService {
       throw new ServerException(ErrorCode.ACCESS_DENIED);
     }
 
-    // enabled 값 업데이트
-    settings.updateEnabled(requestDto.enabled());
+    // key가 제공된 경우에만 업데이트
+    if (requestDto.key() != null && !requestDto.key().isBlank()) {
+      // key가 변경되는 경우, 중복 체크
+      if (!settings.getKey().equals(requestDto.key())) {
+        if (notificationSettingsRepository.existsByUserIdAndKey(userId, requestDto.key())) {
+          throw new ServerException(ErrorCode.CONFLICT);
+        }
+        settings.updateKey(requestDto.key());
+      }
+    }
+
+    // enabled가 제공된 경우에만 업데이트
+    if (requestDto.enabled() != null) {
+      settings.updateEnabled(requestDto.enabled());
+    }
 
     // 응답 DTO 생성
     return new UpdateNotificationSettingsResponseDto(

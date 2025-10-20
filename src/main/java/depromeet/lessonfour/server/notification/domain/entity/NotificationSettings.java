@@ -48,6 +48,10 @@ public class NotificationSettings extends BaseTimeEntity {
         .build();
   }
 
+  public void updateKey(String key) {
+    this.key = key;
+  }
+
   public void updateEnabled(Boolean enabled) {
     this.enabled = enabled;
   }
