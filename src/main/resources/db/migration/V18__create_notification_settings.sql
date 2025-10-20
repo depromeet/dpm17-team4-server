@@ -6,7 +6,8 @@ CREATE TABLE notification_settings (
     enabled BOOLEAN NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT uk_notification_settings_user_id_key UNIQUE (user_id, key)
+    CONSTRAINT uk_notification_settings_user_id_key UNIQUE (user_id, key),
+    CONSTRAINT fk_notification_settings_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_notification_settings_user_id ON notification_settings(user_id);
