@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -29,12 +30,15 @@ public class NotificationSettings extends BaseTimeEntity {
   @NotNull @Column(nullable = false)
   private Long userId;
 
+  @NotBlank
   @NotNull @Column(nullable = false, length = 32)
   private String key;
 
+  @NotBlank
   @NotNull @Column(unique = true, nullable = false, length = 512)
   private String registrationToken;
 
+  @NotBlank
   @NotNull @Column(nullable = false)
   private Boolean enabled;
 
