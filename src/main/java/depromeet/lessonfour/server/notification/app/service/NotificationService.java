@@ -1,8 +1,10 @@
 package depromeet.lessonfour.server.notification.app.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +38,28 @@ public class NotificationService {
 
   private final NotificationSettingsRepository notificationSettingsRepository;
 
-  public SendNotificationResponseDto sendNotification(SendNotificationRequestDto requestDto) {
+  @Value("${admin.emails}")
+  private String adminEmailsConfig;
+
+  private List<String> getAdminEmails() {
+    return Arrays.stream(adminEmailsConfig.split(","))
+        .map(String::trim)
+        .filter(email -> !email.isEmpty())
+        .toList();
+  }
+
+  private void validateAdminAccess(String userEmail) {
+    List<String> adminEmails = getAdminEmails();
+    if (!adminEmails.contains(userEmail)) {
+      throw new ServerException(ErrorCode.ACCESS_DENIED);
+    }
+  }
+
+  public SendNotificationResponseDto sendNotification(
+      SendNotificationRequestDto requestDto, String userEmail) {
+    // 관리자 권한 검증
+    validateAdminAccess(userEmail);
+
     int totalSuccessCount = 0;
     int totalFailureCount = 0;
     int page = 0;

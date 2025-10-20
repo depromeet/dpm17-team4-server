@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import depromeet.lessonfour.server.auth.domain.vo.AccountContext;
 import depromeet.lessonfour.server.common.api.code.SuccessCode;
 import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
 import depromeet.lessonfour.server.notification.app.dto.request.SaveNotificationSettingsRequestDto;
@@ -39,17 +40,20 @@ public class NotificationController {
   private final NotificationService notificationService;
 
   @Operation(
-      summary = "푸시 알림 전송",
-      description = "Firebase Cloud Messaging을 사용하여 특정 디바이스에 푸시 알림을 전송합니다.",
+      summary = "푸시 알림 전송 (관리자 전용)",
+      description = "Firebase Cloud Messaging을 사용하여 모든 활성화된 사용자에게 푸시 알림을 전송합니다. 관리자만 접근 가능합니다.",
       security = {@SecurityRequirement(name = "JWT")})
   @PostMapping(
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<SuccessResponse<SendNotificationResponseDto>> sendNotification(
       @Valid @RequestBody SendNotificationRequestDto requestDto,
-      @AuthenticationPrincipal(expression = "id") Long userId) {
+      @AuthenticationPrincipal AccountContext accountContext) {
 
-    SendNotificationResponseDto response = notificationService.sendNotification(requestDto);
+    // TODO: jwt token에 "roles" claim 추가하여 API 단에서 검증
+    // NOTE: 현재는 간단한 구현을 위해 미리 환경 변수에 지정한 관리자 이메일만 허용
+    SendNotificationResponseDto response =
+        notificationService.sendNotification(requestDto, accountContext.getEmail());
 
     return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_SEND, response));
   }

@@ -49,6 +49,9 @@ kakao:
 frontend:
   url: ${FRONTEND__URL:http://localhost:3000}
 
+admin:
+  emails: ${ADMIN__EMAILS:admin@example.com}
+
 springdoc:
   swagger-ui:
     enabled: ${SWAGGER_UI_ENABLED:true}
