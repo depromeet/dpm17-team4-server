@@ -1,7 +1,6 @@
 package depromeet.lessonfour.server.notification.app.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -35,34 +34,64 @@ public class NotificationService {
   private final NotificationSettingsRepository notificationSettingsRepository;
 
   public SendNotificationResponseDto sendNotification(SendNotificationRequestDto requestDto) {
-    List<String> registrationTokens =
-        Arrays.asList("YOUR_REGISTRATION_TOKEN_1", "YOUR_REGISTRATION_TOKEN_n");
-    MulticastMessage message =
-        MulticastMessage.builder()
-            .putData("title", requestDto.title())
-            .putData("body", requestDto.body())
-            .addAllTokens(registrationTokens)
-            .build();
+    int totalSuccessCount = 0;
+    int totalFailureCount = 0;
+    int page = 0;
 
-    BatchResponse response;
-    try {
-      response = FirebaseMessaging.getInstance().sendEachForMulticast(message);
-    } catch (FirebaseMessagingException e) {
-      log.error("Failed to send FCM message", e);
-      throw new RuntimeException("Failed to send push notification: " + e.getMessage(), e);
-    }
-    if (response.getFailureCount() > 0) {
-      List<SendResponse> responses = response.getResponses();
-      List<String> failedTokens = new ArrayList<>();
-      for (int i = 0; i < responses.size(); i++) {
-        if (!responses.get(i).isSuccessful()) {
-          // The order of responses corresponds to the order of the registration tokens.
-          failedTokens.add(registrationTokens.get(i));
-        }
+    while (true) {
+      // 500개씩 페이지네이션으로 토큰 조회
+      List<String> registrationTokens = getEnabledRegistrationTokens(page);
+
+      // 더 이상 토큰이 없으면 종료
+      if (registrationTokens.isEmpty()) {
+        break;
       }
-      log.error("List of tokens that caused failures: " + failedTokens);
+
+      log.info("Sending notification to {} tokens (page: {})", registrationTokens.size(), page);
+
+      // FCM multicast 메시지 생성
+      MulticastMessage message =
+          MulticastMessage.builder()
+              .putData("title", requestDto.title())
+              .putData("body", requestDto.body())
+              .addAllTokens(registrationTokens)
+              .build();
+
+      // FCM 전송
+      BatchResponse response;
+      try {
+        response = FirebaseMessaging.getInstance().sendEachForMulticast(message);
+      } catch (FirebaseMessagingException e) {
+        log.error("Failed to send FCM message for page {}", page, e);
+        throw new RuntimeException("Failed to send push notification: " + e.getMessage(), e);
+      }
+
+      // 성공/실패 카운트 누적
+      totalSuccessCount += response.getSuccessCount();
+      totalFailureCount += response.getFailureCount();
+
+      // 실패한 토큰 로깅
+      if (response.getFailureCount() > 0) {
+        List<SendResponse> responses = response.getResponses();
+        List<String> failedTokens = new ArrayList<>();
+        for (int i = 0; i < responses.size(); i++) {
+          if (!responses.get(i).isSuccessful()) {
+            // The order of responses corresponds to the order of the registration tokens.
+            failedTokens.add(registrationTokens.get(i));
+          }
+        }
+        log.error("List of tokens that caused failures (page {}): {}", page, failedTokens);
+      }
+
+      page++;
     }
-    return new SendNotificationResponseDto(response.getSuccessCount(), response.getFailureCount());
+
+    log.info(
+        "Notification sending completed. Total success: {}, Total failure: {}",
+        totalSuccessCount,
+        totalFailureCount);
+
+    return new SendNotificationResponseDto(totalSuccessCount, totalFailureCount);
   }
 
   @Transactional
