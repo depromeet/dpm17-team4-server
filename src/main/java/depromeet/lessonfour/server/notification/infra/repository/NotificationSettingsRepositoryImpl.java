@@ -1,5 +1,6 @@
 package depromeet.lessonfour.server.notification.infra.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -26,6 +27,11 @@ public class NotificationSettingsRepositoryImpl implements NotificationSettingsR
   @Override
   public Optional<NotificationSettings> findById(Long settingsId) {
     return jpa.findById(settingsId);
+  }
+
+  @Override
+  public List<NotificationSettings> findAllByUserId(Long userId) {
+    return jpa.findAllByUserId(userId);
   }
 
   @Override

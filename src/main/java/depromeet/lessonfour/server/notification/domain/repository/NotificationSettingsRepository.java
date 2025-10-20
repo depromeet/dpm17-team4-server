@@ -1,5 +1,6 @@
 package depromeet.lessonfour.server.notification.domain.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -12,6 +13,8 @@ public interface NotificationSettingsRepository {
   NotificationSettings save(NotificationSettings notificationSettings);
 
   Optional<NotificationSettings> findById(Long settingsId);
+
+  List<NotificationSettings> findAllByUserId(Long userId);
 
   Optional<NotificationSettings> findByRegistrationToken(String registrationToken);
 

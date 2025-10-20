@@ -1,8 +1,11 @@
 package depromeet.lessonfour.server.notification.api.controller;
 
+import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +18,7 @@ import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
 import depromeet.lessonfour.server.notification.app.dto.request.SaveNotificationSettingsRequestDto;
 import depromeet.lessonfour.server.notification.app.dto.request.SendNotificationRequestDto;
 import depromeet.lessonfour.server.notification.app.dto.request.UpdateNotificationSettingsRequestDto;
+import depromeet.lessonfour.server.notification.app.dto.response.GetNotificationSettingsResponseDto;
 import depromeet.lessonfour.server.notification.app.dto.response.SaveNotificationSettingsResponseDto;
 import depromeet.lessonfour.server.notification.app.dto.response.SendNotificationResponseDto;
 import depromeet.lessonfour.server.notification.app.dto.response.UpdateNotificationSettingsResponseDto;
@@ -67,6 +71,35 @@ public class NotificationController {
 
     return ResponseEntity.status(201)
         .body(SuccessResponse.of(SuccessCode.SUCCESS_CREATE, response));
+  }
+
+  @Operation(
+      summary = "알림 설정 목록 조회",
+      description = "사용자의 모든 알림 설정 목록을 조회합니다.",
+      security = {@SecurityRequirement(name = "JWT")})
+  @GetMapping(value = "/settings", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<SuccessResponse<List<GetNotificationSettingsResponseDto>>>
+      getAllNotificationSettings(@AuthenticationPrincipal(expression = "id") Long userId) {
+
+    List<GetNotificationSettingsResponseDto> response =
+        notificationService.getAllNotificationSettings(userId);
+
+    return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_FETCH, response));
+  }
+
+  @Operation(
+      summary = "알림 설정 조회",
+      description = "특정 알림 설정을 조회합니다.",
+      security = {@SecurityRequirement(name = "JWT")})
+  @GetMapping(value = "/settings/{settingsId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<SuccessResponse<GetNotificationSettingsResponseDto>>
+      getNotificationSettings(
+          @PathVariable Long settingsId, @AuthenticationPrincipal(expression = "id") Long userId) {
+
+    GetNotificationSettingsResponseDto response =
+        notificationService.getNotificationSettings(settingsId, userId);
+
+    return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_FETCH, response));
   }
 
   @Operation(

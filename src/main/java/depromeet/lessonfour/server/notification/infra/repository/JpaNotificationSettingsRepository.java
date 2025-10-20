@@ -1,5 +1,6 @@
 package depromeet.lessonfour.server.notification.infra.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -10,6 +11,8 @@ import depromeet.lessonfour.server.notification.domain.entity.NotificationSettin
 
 public interface JpaNotificationSettingsRepository
     extends JpaRepository<NotificationSettings, Long> {
+
+  List<NotificationSettings> findAllByUserId(Long userId);
 
   Optional<NotificationSettings> findByRegistrationToken(String registrationToken);
 

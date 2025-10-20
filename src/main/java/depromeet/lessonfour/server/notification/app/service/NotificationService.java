@@ -20,6 +20,7 @@ import depromeet.lessonfour.server.common.exception.ServerException;
 import depromeet.lessonfour.server.notification.app.dto.request.SaveNotificationSettingsRequestDto;
 import depromeet.lessonfour.server.notification.app.dto.request.SendNotificationRequestDto;
 import depromeet.lessonfour.server.notification.app.dto.request.UpdateNotificationSettingsRequestDto;
+import depromeet.lessonfour.server.notification.app.dto.response.GetNotificationSettingsResponseDto;
 import depromeet.lessonfour.server.notification.app.dto.response.SaveNotificationSettingsResponseDto;
 import depromeet.lessonfour.server.notification.app.dto.response.SendNotificationResponseDto;
 import depromeet.lessonfour.server.notification.app.dto.response.UpdateNotificationSettingsResponseDto;
@@ -184,5 +185,54 @@ public class NotificationService {
    */
   public List<String> getEnabledRegistrationTokens(int page) {
     return getEnabledRegistrationTokens(page, 500);
+  }
+
+  /**
+   * 사용자의 모든 알림 설정 목록을 조회합니다.
+   *
+   * @param userId 사용자 ID
+   * @return 사용자의 알림 설정 목록 (빈 리스트 가능)
+   */
+  public List<GetNotificationSettingsResponseDto> getAllNotificationSettings(Long userId) {
+    List<NotificationSettings> settingsList =
+        notificationSettingsRepository.findAllByUserId(userId);
+    return settingsList.stream()
+        .map(
+            settings ->
+                new GetNotificationSettingsResponseDto(
+                    settings.getId(),
+                    settings.getUserId(),
+                    settings.getKey(),
+                    settings.getRegistrationToken(),
+                    settings.getEnabled()))
+        .toList();
+  }
+
+  /**
+   * 특정 알림 설정을 조회합니다.
+   *
+   * @param settingsId 알림 설정 ID
+   * @param userId 요청한 사용자 ID
+   * @return 알림 설정 정보
+   * @throws ServerException 설정이 존재하지 않거나 권한이 없는 경우
+   */
+  public GetNotificationSettingsResponseDto getNotificationSettings(Long settingsId, Long userId) {
+    // settingsId로 설정 조회
+    NotificationSettings settings =
+        notificationSettingsRepository
+            .findById(settingsId)
+            .orElseThrow(() -> new ServerException(ErrorCode.DATA_NOT_FOUND));
+
+    // userId 검증 (본인의 설정인지 확인)
+    if (!settings.getUserId().equals(userId)) {
+      throw new ServerException(ErrorCode.ACCESS_DENIED);
+    }
+
+    return new GetNotificationSettingsResponseDto(
+        settings.getId(),
+        settings.getUserId(),
+        settings.getKey(),
+        settings.getRegistrationToken(),
+        settings.getEnabled());
   }
 }
