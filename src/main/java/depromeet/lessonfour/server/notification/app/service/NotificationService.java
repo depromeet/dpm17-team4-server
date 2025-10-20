@@ -15,12 +15,12 @@ import com.google.firebase.messaging.SendResponse;
 
 import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.exception.ServerException;
-import depromeet.lessonfour.server.notification.app.dto.request.SaveNotificationSettingRequestDto;
+import depromeet.lessonfour.server.notification.app.dto.request.SaveNotificationSettingsRequestDto;
 import depromeet.lessonfour.server.notification.app.dto.request.SendNotificationRequestDto;
-import depromeet.lessonfour.server.notification.app.dto.response.SaveNotificationSettingResponseDto;
+import depromeet.lessonfour.server.notification.app.dto.response.SaveNotificationSettingsResponseDto;
 import depromeet.lessonfour.server.notification.app.dto.response.SendNotificationResponseDto;
-import depromeet.lessonfour.server.notification.domain.entity.NotificationSetting;
-import depromeet.lessonfour.server.notification.domain.repository.NotificationSettingRepository;
+import depromeet.lessonfour.server.notification.domain.entity.NotificationSettings;
+import depromeet.lessonfour.server.notification.domain.repository.NotificationSettingsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class NotificationService {
 
-  private final NotificationSettingRepository notificationSettingRepository;
+  private final NotificationSettingsRepository notificationSettingsRepository;
 
   public SendNotificationResponseDto sendNotification(SendNotificationRequestDto requestDto) {
     List<String> registrationTokens =
@@ -63,20 +63,20 @@ public class NotificationService {
   }
 
   @Transactional
-  public SaveNotificationSettingResponseDto saveNotificationSetting(
-      SaveNotificationSettingRequestDto requestDto, Long userId) {
+  public SaveNotificationSettingsResponseDto saveNotificationSettings(
+      SaveNotificationSettingsRequestDto requestDto, Long userId) {
     // 이미 존재하는 토큰인지 확인
-    if (notificationSettingRepository.existsByRegistrationToken(requestDto.registrationToken())) {
+    if (notificationSettingsRepository.existsByRegistrationToken(requestDto.registrationToken())) {
       throw new ServerException(ErrorCode.CONFLICT);
     }
 
-    // NotificationSetting 엔티티 생성 및 저장
-    NotificationSetting notificationSetting =
-        NotificationSetting.create(userId, requestDto.registrationToken(), requestDto.enabled());
-    NotificationSetting saved = notificationSettingRepository.save(notificationSetting);
+    // NotificationSettings 엔티티 생성 및 저장
+    NotificationSettings notificationSettings =
+        NotificationSettings.create(userId, requestDto.registrationToken(), requestDto.enabled());
+    NotificationSettings saved = notificationSettingsRepository.save(notificationSettings);
 
     // 응답 DTO 생성
-    return new SaveNotificationSettingResponseDto(
+    return new SaveNotificationSettingsResponseDto(
         saved.getId(), saved.getUserId(), saved.getRegistrationToken(), saved.getEnabled());
   }
 }

@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class NotificationSetting extends BaseTimeEntity {
+public class NotificationSettings extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,8 +35,9 @@ public class NotificationSetting extends BaseTimeEntity {
   @NotNull @Column(nullable = false)
   private Boolean enabled;
 
-  public static NotificationSetting create(Long userId, String registrationToken, Boolean enabled) {
-    return NotificationSetting.builder()
+  public static NotificationSettings create(
+      Long userId, String registrationToken, Boolean enabled) {
+    return NotificationSettings.builder()
         .userId(userId)
         .registrationToken(registrationToken)
         .enabled(enabled)

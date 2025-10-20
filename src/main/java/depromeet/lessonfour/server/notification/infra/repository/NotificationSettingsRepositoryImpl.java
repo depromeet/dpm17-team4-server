@@ -5,24 +5,24 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import depromeet.lessonfour.server.notification.domain.entity.NotificationSetting;
-import depromeet.lessonfour.server.notification.domain.repository.NotificationSettingRepository;
+import depromeet.lessonfour.server.notification.domain.entity.NotificationSettings;
+import depromeet.lessonfour.server.notification.domain.repository.NotificationSettingsRepository;
 import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class NotificationSettingRepositoryImpl implements NotificationSettingRepository {
+public class NotificationSettingsRepositoryImpl implements NotificationSettingsRepository {
 
-  private final JpaNotificationSettingRepository jpa;
+  private final JpaNotificationSettingsRepository jpa;
 
   @Transactional
   @Override
-  public NotificationSetting save(NotificationSetting notificationSetting) {
-    return jpa.save(notificationSetting);
+  public NotificationSettings save(NotificationSettings notificationSettings) {
+    return jpa.save(notificationSettings);
   }
 
   @Override
-  public Optional<NotificationSetting> findByRegistrationToken(String registrationToken) {
+  public Optional<NotificationSettings> findByRegistrationToken(String registrationToken) {
     return jpa.findByRegistrationToken(registrationToken);
   }
 

@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record SaveNotificationSettingRequestDto(
+public record SaveNotificationSettingsRequestDto(
     @Schema(description = "Firebase 등록 토큰", example = "fL8k9X...")
         @NotBlank(message = "등록 토큰은 필수입니다")
         String registrationToken,
