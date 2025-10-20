@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import depromeet.lessonfour.server.common.api.code.SuccessCode;
 import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
+import depromeet.lessonfour.server.notification.app.dto.request.SaveNotificationSettingRequestDto;
 import depromeet.lessonfour.server.notification.app.dto.request.SendNotificationRequestDto;
+import depromeet.lessonfour.server.notification.app.dto.response.SaveNotificationSettingResponseDto;
 import depromeet.lessonfour.server.notification.app.dto.response.SendNotificationResponseDto;
 import depromeet.lessonfour.server.notification.app.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,5 +43,25 @@ public class NotificationController {
     SendNotificationResponseDto response = notificationService.sendNotification(requestDto);
 
     return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_SEND, response));
+  }
+
+  @Operation(
+      summary = "알림 설정 저장",
+      description = "사용자의 Firebase 등록 토큰과 알림 활성화 여부를 저장합니다.",
+      security = {@SecurityRequirement(name = "JWT")})
+  @PostMapping(
+      value = "/settings",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<SuccessResponse<SaveNotificationSettingResponseDto>>
+      saveNotificationSetting(
+          @Valid @RequestBody SaveNotificationSettingRequestDto requestDto,
+          @AuthenticationPrincipal(expression = "id") Long userId) {
+
+    SaveNotificationSettingResponseDto response =
+        notificationService.saveNotificationSetting(requestDto, userId);
+
+    return ResponseEntity.status(201)
+        .body(SuccessResponse.of(SuccessCode.SUCCESS_CREATE, response));
   }
 }
