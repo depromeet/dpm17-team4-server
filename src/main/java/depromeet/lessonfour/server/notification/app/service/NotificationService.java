@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,5 +81,41 @@ public class NotificationService {
     // 응답 DTO 생성
     return new SaveNotificationSettingsResponseDto(
         saved.getId(), saved.getUserId(), saved.getRegistrationToken(), saved.getEnabled());
+  }
+
+  /**
+   * 알림이 활성화된 등록 토큰 목록을 페이지 단위로 조회합니다. FCM multicast는 최대 500개 토큰을 지원합니다.
+   *
+   * @param page 페이지 번호 (0부터 시작)
+   * @param size 페이지 크기 (500을 초과하면 자동으로 500으로 제한됨)
+   * @return enabled=true인 registrationToken 목록
+   * @throws IllegalArgumentException page 또는 size가 음수인 경우
+   */
+  public List<String> getEnabledRegistrationTokens(int page, int size) {
+    if (page < 0) {
+      throw new IllegalArgumentException("페이지 번호는 음수일 수 없습니다: " + page);
+    }
+    if (size < 0) {
+      throw new IllegalArgumentException("페이지 크기는 음수일 수 없습니다: " + size);
+    }
+
+    // FCM multicast 제한: 최대 500개
+    int effectiveSize = Math.min(size, 500);
+    Pageable pageable = PageRequest.of(page, effectiveSize);
+    Page<NotificationSettings> settingsPage =
+        notificationSettingsRepository.findByEnabled(true, pageable);
+    return settingsPage.getContent().stream()
+        .map(NotificationSettings::getRegistrationToken)
+        .toList();
+  }
+
+  /**
+   * 알림이 활성화된 등록 토큰 목록을 페이지 단위로 조회합니다. 페이지 크기는 기본값 500개입니다.
+   *
+   * @param page 페이지 번호 (0부터 시작)
+   * @return enabled=true인 registrationToken 목록 (최대 500개)
+   */
+  public List<String> getEnabledRegistrationTokens(int page) {
+    return getEnabledRegistrationTokens(page, 500);
   }
 }

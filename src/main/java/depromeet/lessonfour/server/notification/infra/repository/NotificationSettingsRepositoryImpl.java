@@ -2,6 +2,8 @@ package depromeet.lessonfour.server.notification.infra.repository;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,5 +31,10 @@ public class NotificationSettingsRepositoryImpl implements NotificationSettingsR
   @Override
   public boolean existsByRegistrationToken(String registrationToken) {
     return jpa.existsByRegistrationToken(registrationToken);
+  }
+
+  @Override
+  public Page<NotificationSettings> findByEnabled(Boolean enabled, Pageable pageable) {
+    return jpa.findByEnabled(enabled, pageable);
   }
 }
