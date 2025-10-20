@@ -126,7 +126,10 @@ public class SecurityConfig {
                         "/api/v1/health",
                         "/api/v1/auth/signup",
                         "/api/v1/auth/refresh",
-                        "/api/v1/auth/kakao/**")
+                        "/api/v1/auth/*/login",
+                        "/api/v1/auth/*/callback",
+                        "/api/v1/config/apple",
+                        "/api/v1/auth/*/token")
                     .permitAll()
                     .anyRequest()
                     .authenticated())

@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.auth.infra.security.oauth.kakao;
+package depromeet.lessonfour.server.auth.infra.security.oauth.apple;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
@@ -17,48 +17,61 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class KakaoTokenClient {
+public class AppleTokenClient {
 
-  @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
-  private String kakaoRedirectUri;
+  @Value("${spring.security.oauth2.client.registration.apple.redirect-uri}")
+  private String appleRedirectUri;
 
   private final ClientRegistrationRepository clientRegistrationRepository;
+  private final AppleClientSecretGenerator appleClientSecretGenerator;
 
   public OAuth2AccessTokenResponse token(String code) {
-    ClientRegistration registration = clientRegistrationRepository.findByRegistrationId("kakao");
+    ClientRegistration registration = clientRegistrationRepository.findByRegistrationId("apple");
     if (registration == null) {
       throw new ServerException(AuthErrorCode.OAUTH_PROVIDER_NOT_FOUND);
     }
+
+    String clientSecret =
+        appleClientSecretGenerator.generate(
+            registration.getClientId(), registration.getProviderDetails().getTokenUri());
 
     OAuth2AuthorizationRequest authRequest =
         OAuth2AuthorizationRequest.authorizationCode()
             .authorizationUri(registration.getProviderDetails().getAuthorizationUri())
             .clientId(registration.getClientId())
-            .redirectUri(kakaoRedirectUri)
+            .redirectUri(appleRedirectUri)
             .build();
 
     OAuth2AuthorizationResponse authResponse =
-        OAuth2AuthorizationResponse.success(code).redirectUri(kakaoRedirectUri).build();
+        OAuth2AuthorizationResponse.success(code).redirectUri(appleRedirectUri).build();
 
-    return getOAuth2AccessTokenResponse(authRequest, authResponse, registration);
+    return getOAuth2AccessTokenResponse(authRequest, authResponse, registration, clientSecret);
   }
 
   private OAuth2AccessTokenResponse getOAuth2AccessTokenResponse(
       OAuth2AuthorizationRequest authRequest,
       OAuth2AuthorizationResponse authResponse,
-      ClientRegistration registration) {
+      ClientRegistration registration,
+      String clientSecret) {
+
     OAuth2AuthorizationExchange exchange =
         new OAuth2AuthorizationExchange(authRequest, authResponse);
+
+    ClientRegistration updatedRegistration =
+        ClientRegistration.withClientRegistration(registration).clientSecret(clientSecret).build();
+
     OAuth2AuthorizationCodeGrantRequest grantRequest =
-        new OAuth2AuthorizationCodeGrantRequest(registration, exchange);
+        new OAuth2AuthorizationCodeGrantRequest(updatedRegistration, exchange);
 
     RestClientAuthorizationCodeTokenResponseClient tokenClient =
         new RestClientAuthorizationCodeTokenResponseClient();
+
     OAuth2AccessTokenResponse tokenResponse = tokenClient.getTokenResponse(grantRequest);
 
     if (!tokenResponse.getAdditionalParameters().containsKey("id_token")) {
       throw new ServerException(AuthErrorCode.ID_TOKEN_REQUIRED);
     }
+
     return tokenResponse;
   }
 }
