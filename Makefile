@@ -4,7 +4,7 @@ SHELL := /bin/sh
 
 PORT ?= 8080
 # Default to local profile for development
-SPRING_PROFILES ?= local
+SPRING_PROFILES ?= dev
 EXTRA_ARGS ?=
 
 GRADLE := ./gradlew

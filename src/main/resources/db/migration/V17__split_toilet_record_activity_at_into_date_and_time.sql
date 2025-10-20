@@ -8,8 +8,8 @@ ALTER TABLE toilet_record
 -- 기존 데이터 분리 복사
 UPDATE toilet_record
 SET
-    activity_date = (activity_at AT TIME ZONE 'UTC')::date,
-    activity_time = (activity_at AT TIME ZONE 'UTC')::time;
+    activity_date = (occurred_at AT TIME ZONE 'UTC')::date,
+    activity_time = (occurred_at AT TIME ZONE 'UTC')::time;
 
 -- null 데이터 검증 (optional, 안전용)
 DO $$
@@ -24,11 +24,12 @@ ALTER TABLE toilet_record
     ALTER COLUMN activity_date SET NOT NULL;
 
 -- 기존 인덱스 삭제 (있다면)
-DROP INDEX IF EXISTS idx_toilet_record_activity_at;
+DROP INDEX IF EXISTS idx_toilet_record_toilet_at;
+DROP INDEX IF EXISTS idx_toilet_record_occurred_at;
 
 -- 기존 컬럼 삭제
 ALTER TABLE toilet_record
-    DROP COLUMN activity_at;
+    DROP COLUMN occurred_at;
 
 -- 활성 레코드(is_deleted=false) 중복 확인
 DO $$
