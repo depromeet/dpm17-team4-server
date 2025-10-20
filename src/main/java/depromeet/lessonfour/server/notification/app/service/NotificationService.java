@@ -248,4 +248,28 @@ public class NotificationService {
         settings.getRegistrationToken(),
         settings.getEnabled());
   }
+
+  /**
+   * 알림 설정을 삭제합니다.
+   *
+   * @param settingsId 알림 설정 ID
+   * @param userId 요청한 사용자 ID
+   * @throws ServerException 설정이 존재하지 않거나 권한이 없는 경우
+   */
+  @Transactional
+  public void deleteNotificationSettings(Long settingsId, Long userId) {
+    // settingsId로 설정 조회
+    NotificationSettings settings =
+        notificationSettingsRepository
+            .findById(settingsId)
+            .orElseThrow(() -> new ServerException(ErrorCode.DATA_NOT_FOUND));
+
+    // userId 검증 (본인의 설정인지 확인)
+    if (!settings.getUserId().equals(userId)) {
+      throw new ServerException(ErrorCode.ACCESS_DENIED);
+    }
+
+    // 삭제
+    notificationSettingsRepository.delete(settings);
+  }
 }

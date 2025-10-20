@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -120,5 +121,18 @@ public class NotificationController {
         notificationService.updateNotificationSettings(settingsId, requestDto, userId);
 
     return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_UPDATE, response));
+  }
+
+  @Operation(
+      summary = "알림 설정 삭제",
+      description = "등록된 알림 설정을 삭제합니다.",
+      security = {@SecurityRequirement(name = "JWT")})
+  @DeleteMapping(value = "/settings/{settingsId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<SuccessResponse<Void>> deleteNotificationSettings(
+      @PathVariable Long settingsId, @AuthenticationPrincipal(expression = "id") Long userId) {
+
+    notificationService.deleteNotificationSettings(settingsId, userId);
+
+    return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_DELETE, null));
   }
 }

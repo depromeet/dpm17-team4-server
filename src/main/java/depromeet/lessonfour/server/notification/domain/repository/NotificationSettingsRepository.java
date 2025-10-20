@@ -22,5 +22,7 @@ public interface NotificationSettingsRepository {
 
   boolean existsByUserIdAndKey(Long userId, String key);
 
+  void delete(NotificationSettings notificationSettings);
+
   Page<NotificationSettings> findByEnabled(Boolean enabled, Pageable pageable);
 }

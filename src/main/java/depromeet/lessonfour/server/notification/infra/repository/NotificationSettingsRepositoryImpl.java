@@ -49,6 +49,12 @@ public class NotificationSettingsRepositoryImpl implements NotificationSettingsR
     return jpa.existsByUserIdAndKey(userId, key);
   }
 
+  @Transactional
+  @Override
+  public void delete(NotificationSettings notificationSettings) {
+    jpa.delete(notificationSettings);
+  }
+
   @Override
   public Page<NotificationSettings> findByEnabled(Boolean enabled, Pageable pageable) {
     return jpa.findByEnabled(enabled, pageable);
