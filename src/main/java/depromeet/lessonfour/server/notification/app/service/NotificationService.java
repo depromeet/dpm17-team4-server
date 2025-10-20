@@ -1,6 +1,5 @@
 package depromeet.lessonfour.server.notification.app.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +14,6 @@ import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.MulticastMessage;
-import com.google.firebase.messaging.SendResponse;
 
 import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.exception.ServerException;
@@ -96,6 +94,7 @@ public class NotificationService {
       totalSuccessCount += response.getSuccessCount();
       totalFailureCount += response.getFailureCount();
 
+      /*
       // 실패한 토큰 로깅
       if (response.getFailureCount() > 0) {
         List<SendResponse> responses = response.getResponses();
@@ -108,6 +107,7 @@ public class NotificationService {
         }
         log.error("List of tokens that caused failures (page {}): {}", page, failedTokens);
       }
+      */
 
       page++;
     }
