@@ -21,21 +21,22 @@ public class FirebaseConfig {
 
   @PostConstruct
   public void initialize() throws IOException {
-    if (FirebaseApp.getApps().isEmpty()) {
-      try (InputStream serviceAccount =
-          new ClassPathResource("firebase-adminsdk.json").getInputStream()) {
+    if (!FirebaseApp.getApps().isEmpty()) {
+      return;
+    }
+    try (InputStream serviceAccount =
+        new ClassPathResource("firebase-adminsdk.json").getInputStream()) {
 
-        FirebaseOptions options =
-            FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .build();
+      FirebaseOptions options =
+          FirebaseOptions.builder()
+              .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+              .build();
 
-        FirebaseApp.initializeApp(options);
-        log.info("Firebase Admin SDK initialized successfully");
-      } catch (IOException e) {
-        log.error("Failed to initialize Firebase Admin SDK", e);
-        throw e;
-      }
+      FirebaseApp.initializeApp(options);
+      log.info("Firebase Admin SDK initialized successfully");
+    } catch (IOException e) {
+      log.error("Failed to initialize Firebase Admin SDK", e);
+      throw e;
     }
   }
 }
