@@ -51,7 +51,12 @@ public enum ErrorCode implements BaseErrorCode {
   /*
   500 INTERNAL SERVER ERROR
   */
-  INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부에서 오류가 발생했습니다.");
+  INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부에서 오류가 발생했습니다."),
+
+  /*
+  503 SERVICE UNAVAILABLE
+  */
+  SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "일시적으로 서비스를 사용할 수 없습니다. 잠시 후 다시 시도해주세요.");
 
   private final HttpStatus httpStatus;
   private final String message;

@@ -87,7 +87,7 @@ public class NotificationService {
         response = FirebaseMessaging.getInstance().sendEachForMulticast(message);
       } catch (FirebaseMessagingException e) {
         log.error("Failed to send FCM message for page {}", page, e);
-        throw new RuntimeException("Failed to send push notification: " + e.getMessage(), e);
+        throw new ServerException(ErrorCode.SERVICE_UNAVAILABLE);
       }
 
       // 성공/실패 카운트 누적
