@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -205,7 +206,7 @@ public class NotificationService {
 
     // FCM multicast 제한: 최대 500개
     int effectiveSize = Math.min(size, 500);
-    Pageable pageable = PageRequest.of(page, effectiveSize);
+    Pageable pageable = PageRequest.of(page, effectiveSize, Sort.by(Sort.Direction.ASC, "id"));
     Page<NotificationSettings> settingsPage =
         notificationSettingsRepository.findByEnabled(true, pageable);
     return settingsPage.getContent().stream()
