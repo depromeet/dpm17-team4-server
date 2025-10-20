@@ -19,8 +19,10 @@ import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.exception.ServerException;
 import depromeet.lessonfour.server.notification.app.dto.request.SaveNotificationSettingsRequestDto;
 import depromeet.lessonfour.server.notification.app.dto.request.SendNotificationRequestDto;
+import depromeet.lessonfour.server.notification.app.dto.request.UpdateNotificationSettingsRequestDto;
 import depromeet.lessonfour.server.notification.app.dto.response.SaveNotificationSettingsResponseDto;
 import depromeet.lessonfour.server.notification.app.dto.response.SendNotificationResponseDto;
+import depromeet.lessonfour.server.notification.app.dto.response.UpdateNotificationSettingsResponseDto;
 import depromeet.lessonfour.server.notification.domain.entity.NotificationSettings;
 import depromeet.lessonfour.server.notification.domain.repository.NotificationSettingsRepository;
 import lombok.RequiredArgsConstructor;
@@ -110,6 +112,31 @@ public class NotificationService {
     // 응답 DTO 생성
     return new SaveNotificationSettingsResponseDto(
         saved.getId(), saved.getUserId(), saved.getRegistrationToken(), saved.getEnabled());
+  }
+
+  @Transactional
+  public UpdateNotificationSettingsResponseDto updateNotificationSettings(
+      Long settingsId, UpdateNotificationSettingsRequestDto requestDto, Long userId) {
+    // id로 설정 조회
+    NotificationSettings settings =
+        notificationSettingsRepository
+            .findById(settingsId)
+            .orElseThrow(() -> new ServerException(ErrorCode.DATA_NOT_FOUND));
+
+    // userId 검증 (본인의 설정인지 확인)
+    if (!settings.getUserId().equals(userId)) {
+      throw new ServerException(ErrorCode.ACCESS_DENIED);
+    }
+
+    // enabled 값 업데이트
+    settings.updateEnabled(requestDto.enabled());
+
+    // 응답 DTO 생성
+    return new UpdateNotificationSettingsResponseDto(
+        settings.getId(),
+        settings.getUserId(),
+        settings.getRegistrationToken(),
+        settings.getEnabled());
   }
 
   /**

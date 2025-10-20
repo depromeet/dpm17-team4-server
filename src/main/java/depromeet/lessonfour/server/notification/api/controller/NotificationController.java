@@ -3,6 +3,8 @@ package depromeet.lessonfour.server.notification.api.controller;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,8 +14,10 @@ import depromeet.lessonfour.server.common.api.code.SuccessCode;
 import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
 import depromeet.lessonfour.server.notification.app.dto.request.SaveNotificationSettingsRequestDto;
 import depromeet.lessonfour.server.notification.app.dto.request.SendNotificationRequestDto;
+import depromeet.lessonfour.server.notification.app.dto.request.UpdateNotificationSettingsRequestDto;
 import depromeet.lessonfour.server.notification.app.dto.response.SaveNotificationSettingsResponseDto;
 import depromeet.lessonfour.server.notification.app.dto.response.SendNotificationResponseDto;
+import depromeet.lessonfour.server.notification.app.dto.response.UpdateNotificationSettingsResponseDto;
 import depromeet.lessonfour.server.notification.app.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -63,5 +67,25 @@ public class NotificationController {
 
     return ResponseEntity.status(201)
         .body(SuccessResponse.of(SuccessCode.SUCCESS_CREATE, response));
+  }
+
+  @Operation(
+      summary = "알림 설정 업데이트",
+      description = "등록된 알림 설정의 활성화 여부를 업데이트합니다.",
+      security = {@SecurityRequirement(name = "JWT")})
+  @PatchMapping(
+      value = "/settings/{settingsId}",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<SuccessResponse<UpdateNotificationSettingsResponseDto>>
+      updateNotificationSettings(
+          @PathVariable Long settingsId,
+          @Valid @RequestBody UpdateNotificationSettingsRequestDto requestDto,
+          @AuthenticationPrincipal(expression = "id") Long userId) {
+
+    UpdateNotificationSettingsResponseDto response =
+        notificationService.updateNotificationSettings(settingsId, requestDto, userId);
+
+    return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_UPDATE, response));
   }
 }

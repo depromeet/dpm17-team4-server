@@ -11,6 +11,8 @@ public interface NotificationSettingsRepository {
 
   NotificationSettings save(NotificationSettings notificationSettings);
 
+  Optional<NotificationSettings> findById(Long settingsId);
+
   Optional<NotificationSettings> findByRegistrationToken(String registrationToken);
 
   boolean existsByRegistrationToken(String registrationToken);

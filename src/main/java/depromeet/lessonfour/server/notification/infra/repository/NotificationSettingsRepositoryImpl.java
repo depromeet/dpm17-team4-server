@@ -24,6 +24,11 @@ public class NotificationSettingsRepositoryImpl implements NotificationSettingsR
   }
 
   @Override
+  public Optional<NotificationSettings> findById(Long settingsId) {
+    return jpa.findById(settingsId);
+  }
+
+  @Override
   public Optional<NotificationSettings> findByRegistrationToken(String registrationToken) {
     return jpa.findByRegistrationToken(registrationToken);
   }
