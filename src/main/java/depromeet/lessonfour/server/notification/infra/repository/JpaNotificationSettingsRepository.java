@@ -15,5 +15,7 @@ public interface JpaNotificationSettingsRepository
 
   boolean existsByRegistrationToken(String registrationToken);
 
+  boolean existsByUserIdAndKey(Long userId, String key);
+
   Page<NotificationSettings> findByEnabled(Boolean enabled, Pageable pageable);
 }

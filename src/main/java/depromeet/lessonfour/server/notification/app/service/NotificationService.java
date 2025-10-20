@@ -99,6 +99,11 @@ public class NotificationService {
   @Transactional
   public SaveNotificationSettingsResponseDto saveNotificationSettings(
       SaveNotificationSettingsRequestDto requestDto, Long userId) {
+    // 같은 userId에서 동일한 key가 이미 존재하는지 확인
+    if (notificationSettingsRepository.existsByUserIdAndKey(userId, requestDto.key())) {
+      throw new ServerException(ErrorCode.CONFLICT);
+    }
+
     // 이미 존재하는 토큰인지 확인
     if (notificationSettingsRepository.existsByRegistrationToken(requestDto.registrationToken())) {
       throw new ServerException(ErrorCode.CONFLICT);
@@ -106,12 +111,17 @@ public class NotificationService {
 
     // NotificationSettings 엔티티 생성 및 저장
     NotificationSettings notificationSettings =
-        NotificationSettings.create(userId, requestDto.registrationToken(), requestDto.enabled());
+        NotificationSettings.create(
+            userId, requestDto.key(), requestDto.registrationToken(), requestDto.enabled());
     NotificationSettings saved = notificationSettingsRepository.save(notificationSettings);
 
     // 응답 DTO 생성
     return new SaveNotificationSettingsResponseDto(
-        saved.getId(), saved.getUserId(), saved.getRegistrationToken(), saved.getEnabled());
+        saved.getId(),
+        saved.getUserId(),
+        saved.getKey(),
+        saved.getRegistrationToken(),
+        saved.getEnabled());
   }
 
   @Transactional
@@ -135,6 +145,7 @@ public class NotificationService {
     return new UpdateNotificationSettingsResponseDto(
         settings.getId(),
         settings.getUserId(),
+        settings.getKey(),
         settings.getRegistrationToken(),
         settings.getEnabled());
   }

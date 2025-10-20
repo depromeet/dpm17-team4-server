@@ -39,6 +39,11 @@ public class NotificationSettingsRepositoryImpl implements NotificationSettingsR
   }
 
   @Override
+  public boolean existsByUserIdAndKey(Long userId, String key) {
+    return jpa.existsByUserIdAndKey(userId, key);
+  }
+
+  @Override
   public Page<NotificationSettings> findByEnabled(Boolean enabled, Pageable pageable) {
     return jpa.findByEnabled(enabled, pageable);
   }
