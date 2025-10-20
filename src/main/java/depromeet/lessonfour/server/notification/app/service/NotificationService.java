@@ -27,6 +27,7 @@ import depromeet.lessonfour.server.notification.app.dto.response.SendNotificatio
 import depromeet.lessonfour.server.notification.app.dto.response.UpdateNotificationSettingsResponseDto;
 import depromeet.lessonfour.server.notification.domain.entity.NotificationSettings;
 import depromeet.lessonfour.server.notification.domain.repository.NotificationSettingsRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,15 +41,18 @@ public class NotificationService {
   @Value("${admin.emails}")
   private String adminEmailsConfig;
 
-  private List<String> getAdminEmails() {
-    return Arrays.stream(adminEmailsConfig.split(","))
-        .map(String::trim)
-        .filter(email -> !email.isEmpty())
-        .toList();
+  private List<String> adminEmails;
+
+  @PostConstruct
+  public void init() {
+    this.adminEmails =
+        Arrays.stream(adminEmailsConfig.split(","))
+            .map(String::trim)
+            .filter(email -> !email.isEmpty())
+            .toList();
   }
 
   private void validateAdminAccess(String userEmail) {
-    List<String> adminEmails = getAdminEmails();
     if (!adminEmails.contains(userEmail)) {
       throw new ServerException(ErrorCode.ACCESS_DENIED);
     }
