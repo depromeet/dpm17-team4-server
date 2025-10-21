@@ -13,13 +13,11 @@ import uuid
 import json
 
 
-app = FastAPI(title="Kakao OAuth Login Service", version="1.0.0")
-SERVICE_PORT = int(os.environ.get("SERVICE_PORT", 3000))
-SERVER_URL = os.environ.get("SERVER_URL", f"http://localhost:8080")
+app = FastAPI(title="OAuth Login Service (Kakao & Apple)", version="1.0.0")
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    """홈페이지 - 카카오 로그인 버튼 및 로그인 정보 표시"""
+    """홈페이지 - 카카오/애플 로그인 버튼 및 로그인 정보 표시"""
     print("Set-Cookie headers:", request.headers.get("cookie"))
 
     # URL 파라미터에서 사용자 정보 추출
@@ -63,12 +61,14 @@ async def home(request: Request):
     # auth code 섹션 HTML 생성
     auth_code_section = ""
     if auth_code:
+        # provider_type을 URL에서 가져오거나 기본값 'kakao' 사용
         auth_code_section = f"""
         <div class="auth-code-info">
             <h2>받은 Auth Code</h2>
             <div class="code-display">{auth_code}</div>
-            <button onclick="getTokenFromCode('{auth_code}')" class="token-btn" style="margin-top: 15px;">2단계: Get Token</button>
-            
+            <p style="color: #666; font-size: 14px;">Provider: {provider_type.lower() or 'kakao'}</p>
+            <button onclick="getTokenFromCode('{auth_code}', '{provider_type.lower() or 'kakao'}')" class="token-btn" style="margin-top: 15px;">2단계: Get Token</button>
+
             <div id="codeTokenInfo" class="token-info" style="display: none; margin-top: 15px;">
                 <h3>Auth Code Flow 결과</h3>
                 <div id="codeTokenDisplay"></div>
@@ -81,23 +81,36 @@ async def home(request: Request):
     <!DOCTYPE html>
     <html>
     <head>
-        <title>카카오 로그인 테스트</title>
+        <title>OAuth 로그인 테스트</title>
         <meta charset="utf-8">
         <style>
             body {{ font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }}
-            .login-btn {{ 
-                background-color: #FEE500; 
-                color: #000; 
-                padding: 15px 30px; 
-                border: none; 
-                border-radius: 8px; 
-                font-size: 16px; 
-                cursor: pointer; 
+            .login-btn {{
+                background-color: #FEE500;
+                color: #000;
+                padding: 15px 30px;
+                border: none;
+                border-radius: 8px;
+                font-size: 16px;
+                cursor: pointer;
                 text-decoration: none;
                 display: inline-block;
                 margin: 10px;
             }}
             .login-btn:hover {{ background-color: #FFD700; }}
+            .apple-btn {{
+                background-color: #000000;
+                color: #fff;
+                padding: 15px 30px;
+                border: none;
+                border-radius: 8px;
+                font-size: 16px;
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-block;
+                margin: 10px;
+            }}
+            .apple-btn:hover {{ background-color: #333333; }}
             .token-btn {{
                 background-color: #007bff; 
                 color: #fff; 
@@ -224,13 +237,14 @@ async def home(request: Request):
         </style>
     </head>
     <body>
-        <h1>카카오 OAuth 로그인 테스트</h1>
-        <p>아래 버튼을 클릭하여 카카오로 로그인하세요</p>
-        
+        <h1>OAuth 로그인 테스트</h1>
+        <p>아래 버튼을 클릭하여 로그인하세요</p>
+
         <div style="margin: 20px 0;">
             <h3>토큰 직접 발급 방식</h3>
-            <p style="margin-bottom: 15px; color: #666;">카카오 인증 후 바로 토큰을 발급받아 쿠키로 설정</p>
-            <button onclick="loginWithResponseType()" class="login-btn">카카오로 로그인 (토큰 방식)</button>
+            <p style="margin-bottom: 15px; color: #666;">인증 후 바로 토큰을 발급받아 쿠키로 설정</p>
+            <button onclick="loginWithResponseType('kakao')" class="login-btn">카카오로 로그인 (토큰 방식)</button>
+            <button onclick="loginWithResponseType('apple')" class="apple-btn">🍎 Apple로 로그인 (토큰 방식)</button>
             
             <div class="token-section" style="margin-top: 20px;">
                 <div class="token-input-group">
@@ -251,7 +265,8 @@ async def home(request: Request):
             <h3>Auth Code Flow 방식</h3>
             <p style="margin-bottom: 15px; color: #666;">1단계: Auth Code 받기 → 2단계: Code로 토큰 발급</p>
             <div style="margin: 15px 0;">
-                <button onclick="loginWithResponseType('code')" class="success-btn">1단계: Get Auth Code</button>
+                <button onclick="loginWithResponseType('kakao', 'code')" class="success-btn">1단계: Kakao Auth Code</button>
+                <button onclick="loginWithResponseType('apple', 'code')" class="success-btn" style="background-color: #000; margin-left: 10px;">1단계: 🍎 Apple Auth Code</button>
                 <p style="margin: 10px 0; font-size: 14px; color: #666;">
                     💡 responseType=code로 설정하면 auth code만 받습니다
                 </p>
@@ -307,16 +322,27 @@ async def home(request: Request):
                 }}
             }}
             
-            function loginWithResponseType(responseType) {{
-                // 선택한 responseType으로 카카오 로그인 시작
+            function loginWithResponseType(provider, responseType) {{
+                // provider가 responseType일 수 있음 (하위 호환성)
+                if (!responseType && (provider === 'code' || !provider)) {{
+                    responseType = provider;
+                    provider = 'kakao';
+                }}
+
+                // 기본값 설정
+                provider = provider || 'kakao';
+
+                // 선택한 provider와 responseType으로 로그인 시작
                 const redirectUri = encodeURIComponent('http://localhost:{SERVICE_PORT}');
-                let loginUrl = `{SERVER_URL}/api/v1/auth/kakao/login?redirectUri=${{redirectUri}}`;
-                
+                let loginUrl = `{SERVER_URL}/api/v1/auth/${{provider}}/login?redirectUri=${{redirectUri}}`;
+
                 // responseType이 있는 경우에만 추가
                 if (responseType) {{
                     loginUrl += `&responseType=${{responseType}}`;
                 }}
-                
+
+                console.log('🔐 Login URL:', loginUrl, 'Provider:', provider, 'ResponseType:', responseType);
+
                 // POST 요청을 위한 form 생성 및 제출
                 const form = document.createElement('form');
                 form.method = 'POST';
@@ -326,9 +352,15 @@ async def home(request: Request):
                 form.submit();
             }}
             
-            async function getTokenFromCode(code) {{
+            async function getTokenFromCode(code, provider) {{
                 try {{
-                    const response = await fetch(`{SERVER_URL}/api/v1/auth/kakao/token`, {{
+                    // provider 기본값 설정 (URL에서 provider 타입 추론)
+                    if (!provider) {{
+                        const urlParams = new URLSearchParams(window.location.search);
+                        provider = urlParams.get('providerType') || 'kakao';
+                    }}
+
+                    const response = await fetch(`{SERVER_URL}/api/v1/auth/${{provider}}/token`, {{
                         method: 'POST',
                         headers: {{
                             'Content-Type': 'application/json',
@@ -361,7 +393,7 @@ async def home(request: Request):
                             <p><strong>닉네임:</strong> ${{data.nickname || 'N/A'}}</p>
                             <p><strong>프로필 이미지:</strong> ${{data.profileImage ? `<img src="${{data.profileImage}}" style="width: 30px; height: 30px; border-radius: 50%;">` : 'N/A'}}</p>
                             <p><strong>신규 사용자:</strong> ${{data.isNew || 'N/A'}}</p>
-                            <p><strong>제공자:</strong> ${{data.provider?.type || 'N/A'}}</p>
+                            <p><strong>제공자:</strong> ${{data.socialProvider?.type || 'N/A'}}</p>
                         `;
                         document.getElementById('userInfoFromToken').innerHTML = userInfoHtml;
                         document.getElementById('codeTokenInfo').style.display = 'block';
@@ -518,8 +550,11 @@ async def home(request: Request):
 
 
 if __name__ == "__main__":
+    SERVICE_PORT = int(os.environ.get("SERVICE_PORT", 3000))
+    SERVER_URL = os.environ.get("SERVER_URL", "http://localhost:8080")
     print("🚀 카카오 OAuth 로그인 서비스 시작 중...")
-    print(f"SERVER_URL: {SERVER_URL}")
+    print("SERVER_URL:", SERVER_URL)
+
     uvicorn.run(
         app,
         host="0.0.0.0",
