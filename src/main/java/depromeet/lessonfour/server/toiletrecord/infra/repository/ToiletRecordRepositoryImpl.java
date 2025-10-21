@@ -32,7 +32,7 @@ public class ToiletRecordRepositoryImpl implements ToiletRecordRepository {
   }
 
   @Override
-  public List<ToiletRecord> findAllByActivityAtBetween(Long userId, ActivityAt at) {
+  public List<ToiletRecord> findAllByActivityAt(Long userId, ActivityAt at) {
     return query.findByDate(userId, at);
   }
 

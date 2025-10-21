@@ -13,7 +13,7 @@ public interface ToiletRecordRepository {
 
   Optional<ToiletRecord> findById(Long userId, Long recordId);
 
-  List<ToiletRecord> findAllByActivityAtBetween(Long userId, ActivityAt at);
+  List<ToiletRecord> findAllByActivityAt(Long userId, ActivityAt at);
 
   List<DailyExistence> findDailyExistencesBetween(Long userId, ActivityAt start, ActivityAt end);
 }
