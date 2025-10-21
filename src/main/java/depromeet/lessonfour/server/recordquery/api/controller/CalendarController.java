@@ -35,7 +35,7 @@ public class CalendarController {
       @NotNull(message = "시작 날짜는 필수입니다.") @RequestParam
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           LocalDate start,
-      @NotNull(message = "종료 날짜는 필수입니다.") @RequestParam(required = false)
+      @NotNull(message = "종료 날짜는 필수입니다.") @RequestParam
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           LocalDate end) {
 
