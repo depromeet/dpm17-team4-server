@@ -59,4 +59,18 @@ public class ToiletRecordQuery {
         .<DailyExistence>map(date -> new DailyExistenceProjection(date, existingSet.contains(date)))
         .toList();
   }
+
+  public int countByActivityAt(Long userId, ActivityAt activityAt) {
+    Long count =
+        queryFactory
+            .select(toiletRecord.count())
+            .from(toiletRecord)
+            .where(
+                toiletRecord.user.id.eq(userId),
+                toiletRecord.activityAt.date.eq(activityAt.toDate()),
+                toiletRecord.isDeleted.isFalse())
+            .fetchOne();
+
+    return count != null ? count.intValue() : 0;
+  }
 }

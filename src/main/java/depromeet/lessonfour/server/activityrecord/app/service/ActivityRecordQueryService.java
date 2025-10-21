@@ -31,4 +31,8 @@ public class ActivityRecordQueryService {
   public List<DailyExistence> existsByActivityAt(Long userId, ActivityAt start, ActivityAt end) {
     return activityRecordRepository.existsByActivityAt(userId, start, end);
   }
+
+  public int countByActivityAt(Long userId, ActivityAt activityAt) {
+    return activityRecordRepository.countByActivityAt(userId, activityAt);
+  }
 }

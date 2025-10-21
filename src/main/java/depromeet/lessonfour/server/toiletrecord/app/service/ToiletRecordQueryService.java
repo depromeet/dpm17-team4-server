@@ -24,4 +24,8 @@ public class ToiletRecordQueryService {
   public List<DailyExistence> existsByActivityAt(Long userId, ActivityAt start, ActivityAt end) {
     return toiletRecordRepository.existsByActivityAt(userId, start, end);
   }
+
+  public int countByActivityAt(Long userId, ActivityAt at) {
+    return toiletRecordRepository.countByActivityAt(userId, at);
+  }
 }
