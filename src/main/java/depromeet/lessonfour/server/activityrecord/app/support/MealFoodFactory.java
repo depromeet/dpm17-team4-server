@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import depromeet.lessonfour.server.activityrecord.app.dto.request.CreateActivityRecordsRequest.CreateFoodRequestDto;
+import depromeet.lessonfour.server.activityrecord.app.dto.request.ActivityRecordDto.FoodDto;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealFood;
 import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.exception.ServerException;
@@ -22,8 +22,11 @@ public class MealFoodFactory {
 
   private final FoodQueryService foodQueryService;
 
-  public List<MealFood> createMealFoods(List<CreateFoodRequestDto> dtos) {
-    if (dtos == null || dtos.isEmpty()) {
+  public List<MealFood> createMealFoods(List<FoodDto> dtos) {
+    if (dtos == null) {
+      return null;
+    }
+    if (dtos.isEmpty()) {
       return List.of();
     }
     Map<Long, Food> foodMap = getFoodMap(dtos);
@@ -40,8 +43,8 @@ public class MealFoodFactory {
         .toList();
   }
 
-  private Map<Long, Food> getFoodMap(List<CreateFoodRequestDto> dtos) {
-    List<Long> foodIds = dtos.stream().map(CreateFoodRequestDto::id).distinct().toList();
+  private Map<Long, Food> getFoodMap(List<FoodDto> dtos) {
+    List<Long> foodIds = dtos.stream().map(FoodDto::id).distinct().toList();
 
     return foodQueryService.findByIds(foodIds).stream()
         .collect(Collectors.toMap(Food::getId, food -> food, (a, b) -> a));

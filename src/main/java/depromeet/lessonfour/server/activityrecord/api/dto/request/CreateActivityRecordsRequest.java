@@ -1,10 +1,12 @@
-package depromeet.lessonfour.server.activityrecord.app.dto.request;
+package depromeet.lessonfour.server.activityrecord.api.dto.request;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import depromeet.lessonfour.server.activityrecord.app.dto.request.ActivityRecordDto;
+import depromeet.lessonfour.server.activityrecord.app.dto.request.ActivityRecordDto.FoodDto;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealTime;
 import depromeet.lessonfour.server.activityrecord.domain.vo.StressLevel;
 import depromeet.lessonfour.server.common.annotation.ValidEnum;
@@ -24,4 +26,12 @@ public record CreateActivityRecordsRequest(
       @NotNull(message = "음식 id는 필수입니다") Long id,
       @NotNull(message = "식사 시간은 필수입니다") @ValidEnum(enumClass = MealTime.class, message = "유효하지 않은 식사시간입니다")
           MealTime mealTime) {}
+
+  public ActivityRecordDto to() {
+    List<FoodDto> foods = null;
+    if (this.foods != null) {
+      foods = this.foods.stream().map(fr -> new FoodDto(fr.id(), fr.mealTime())).toList();
+    }
+    return new ActivityRecordDto(foods, this.water, this.stress, this.occurredAt);
+  }
 }
