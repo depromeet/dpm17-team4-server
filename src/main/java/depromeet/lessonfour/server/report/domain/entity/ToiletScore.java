@@ -34,4 +34,8 @@ public class ToiletScore {
   private int score;
 
   private LocalDate date;
+
+  public static ToiletScore of(Long userId, int score, LocalDate date) {
+    return new ToiletScore(null, userId, score, date);
+  }
 }
