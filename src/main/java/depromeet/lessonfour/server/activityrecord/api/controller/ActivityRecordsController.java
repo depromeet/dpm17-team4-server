@@ -15,12 +15,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import depromeet.lessonfour.server.activityrecord.app.dto.request.CreateActivityRecordsRequest;
-import depromeet.lessonfour.server.activityrecord.app.dto.request.UpdateActivityRecordsRequest;
+import depromeet.lessonfour.server.activityrecord.api.dto.request.CreateActivityRecordsRequest;
+import depromeet.lessonfour.server.activityrecord.api.dto.request.UpdateActivityRecordsRequest;
 import depromeet.lessonfour.server.activityrecord.app.dto.response.GetActivityRecordsResponse;
 import depromeet.lessonfour.server.activityrecord.app.service.CreateActivityRecordUseCase;
 import depromeet.lessonfour.server.activityrecord.app.service.DeleteActivityRecordUseCase;
 import depromeet.lessonfour.server.activityrecord.app.service.QueryActivityRecordUseCase;
+import depromeet.lessonfour.server.activityrecord.app.service.UpdateActivityRecordUseCase;
 import depromeet.lessonfour.server.common.api.code.SuccessCode;
 import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 public class ActivityRecordsController {
 
   private final CreateActivityRecordUseCase createActivityRecordUseCase;
+  private final UpdateActivityRecordUseCase updateActivityRecordUseCase;
   private final DeleteActivityRecordUseCase deleteActivityRecordUseCase;
   private final QueryActivityRecordUseCase queryActivityRecordUseCase;
 
@@ -48,7 +50,7 @@ public class ActivityRecordsController {
   public SuccessResponse<?> createActivityRecord(
       @AuthenticationPrincipal(expression = "id") Long userId,
       @RequestBody @Valid CreateActivityRecordsRequest dto) {
-    createActivityRecordUseCase.saveActivityRecord(userId, dto);
+    createActivityRecordUseCase.saveActivityRecord(userId, dto.to());
 
     return SuccessResponse.of(SuccessCode.SUCCESS_CREATE);
   }
@@ -59,8 +61,10 @@ public class ActivityRecordsController {
       security = {@SecurityRequirement(name = "JWT")})
   @PatchMapping("/{activityRecordId}")
   public SuccessResponse<?> updateActivityRecord(
+      @AuthenticationPrincipal(expression = "id") Long userId,
       @PathVariable("activityRecordId") Long activityRecordId,
       @RequestBody @Valid UpdateActivityRecordsRequest dto) {
+    updateActivityRecordUseCase.updateActivityRecord(userId, activityRecordId, dto.to());
     return SuccessResponse.of(SuccessCode.SUCCESS_UPDATE);
   }
 
