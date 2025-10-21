@@ -14,6 +14,7 @@ public interface JpaActivityRecordRepository extends JpaRepository<ActivityRecor
 
   Optional<ActivityRecord> findByUserIdAndIdAndIsDeletedFalse(Long userId, Long activityRecordId);
 
+  /** test용 메서드 */
   @Query(
       "SELECT ar FROM ActivityRecord ar LEFT JOIN FETCH ar.foodRecords WHERE ar.id = :id AND ar.isDeleted = false")
   Optional<ActivityRecord> findByIdWithFoodRecords(@Param("id") Long id);
