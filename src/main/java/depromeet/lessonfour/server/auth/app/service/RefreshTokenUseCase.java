@@ -3,7 +3,7 @@ package depromeet.lessonfour.server.auth.app.service;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.transaction.annotation.Transactional;
 
-import depromeet.lessonfour.server.auth.app.dto.response.AuthTokenDto;
+import depromeet.lessonfour.server.auth.app.dto.response.TokenPairDto;
 import depromeet.lessonfour.server.auth.domain.vo.AccountContext;
 import depromeet.lessonfour.server.auth.infra.security.jwt.JwtTokenGenerator;
 import depromeet.lessonfour.server.auth.infra.security.jwt.JwtTokenValidator;
@@ -21,7 +21,7 @@ public class RefreshTokenUseCase {
   private final JwtTokenValidator jwtTokenValidator;
   private final JwtTokenGenerator jwtTokenGenerator;
 
-  public AuthTokenDto refresh(String refreshToken) {
+  public TokenPairDto refresh(String refreshToken) {
     validateRefreshToken(refreshToken);
 
     String userId = jwtTokenValidator.extractSubject(refreshToken);
@@ -51,12 +51,12 @@ public class RefreshTokenUseCase {
     }
   }
 
-  private AuthTokenDto generateNewToken(User user) {
+  private TokenPairDto generateNewToken(User user) {
     AccountContext accountContext = AccountContext.of(user);
     String newAccessToken = jwtTokenGenerator.generateAccessToken(accountContext);
     String newRefreshToken = jwtTokenGenerator.generateRefreshToken(accountContext);
     user.storeRefreshToken(newRefreshToken);
     userRepository.save(user);
-    return new AuthTokenDto(newAccessToken, newRefreshToken);
+    return new TokenPairDto(newAccessToken, newRefreshToken);
   }
 }
