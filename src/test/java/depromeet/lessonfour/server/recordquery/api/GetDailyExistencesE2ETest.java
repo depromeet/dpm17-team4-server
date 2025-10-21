@@ -46,7 +46,7 @@ import io.restassured.RestAssured;
     scripts = "/sql/cleanup.sql",
     config = @SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-class CalendarControllerE2ETest {
+class GetDailyExistencesE2ETest {
 
   @LocalServerPort private int port;
 
@@ -288,7 +288,7 @@ class CalendarControllerE2ETest {
 
     // 다른 사용자의 기록 생성
     List<Food> foods = foodRepository.findAll();
-    List<MealFood> mealFoods = List.of(new MealFood(MealTime.BREAKFAST, foods.get(0)));
+    List<MealFood> mealFoods = List.of(new MealFood(MealTime.BREAKFAST, foods.getFirst()));
     activityRecordRepository.save(
         ActivityRecord.createWithMeals(
             otherUser.getId(),
