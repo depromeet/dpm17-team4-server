@@ -10,9 +10,6 @@ import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
 import depromeet.lessonfour.server.activityrecord.domain.repository.ActivityRecordRepository;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
-import depromeet.lessonfour.server.common.domain.view.DailyExistenceView;
-import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
-import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
 import lombok.RequiredArgsConstructor;
 
 @Service

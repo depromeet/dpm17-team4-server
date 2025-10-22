@@ -7,9 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
-import depromeet.lessonfour.server.common.domain.view.DailyExistenceView;
-import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
-import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 import depromeet.lessonfour.server.toiletrecord.domain.repository.ToiletRecordRepository;
 import lombok.RequiredArgsConstructor;
