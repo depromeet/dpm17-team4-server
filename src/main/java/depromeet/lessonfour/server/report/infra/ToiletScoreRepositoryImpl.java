@@ -1,5 +1,8 @@
 package depromeet.lessonfour.server.report.infra;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 import org.springframework.stereotype.Repository;
 
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
@@ -20,7 +23,12 @@ public class ToiletScoreRepositoryImpl implements ToiletScoreRepository {
   }
 
   @Override
-  public void save(ToiletScore toiletScore) {
-    jpa.save(toiletScore);
+  public Optional<ToiletScore> findByDate(Long userId, LocalDate date) {
+    return jpa.findByUserIdAndDate(userId, date);
+  }
+
+  @Override
+  public ToiletScore save(ToiletScore toiletScore) {
+    return jpa.save(toiletScore);
   }
 }

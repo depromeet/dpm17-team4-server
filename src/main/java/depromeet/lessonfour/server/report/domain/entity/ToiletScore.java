@@ -38,4 +38,10 @@ public class ToiletScore {
   public static ToiletScore of(Long userId, int score, LocalDate date) {
     return new ToiletScore(null, userId, score, date);
   }
+
+  public void updateScore(int newScore) {
+    if (this.score != newScore) {
+      this.score = newScore;
+    }
+  }
 }
