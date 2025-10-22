@@ -17,13 +17,13 @@ public class ActivityRecordService implements ActivityRecordClient {
   private final ActivityRecordQueryService activityRecordQueryService;
 
   @Override
-  public List<DailyExistence> existsByActivityAtBetween(
+  public List<DailyExistence> getDailyExistencesByActivityAtBetween(
       Long userId, ActivityAt start, ActivityAt end) {
-    return activityRecordQueryService.existsByActivityAt(userId, start, end);
+    return activityRecordQueryService.findDailyExistencesByActivityAtBetween(userId, start, end);
   }
 
   @Override
-  public int getActivityRecordCountByActivityAt(Long userId, ActivityAt activityAt) {
-    return activityRecordQueryService.countByActivityAt(userId, activityAt);
+  public boolean existsByActivityAt(Long userId, ActivityAt activityAt) {
+    return activityRecordQueryService.existsByActivityAt(userId, activityAt);
   }
 }

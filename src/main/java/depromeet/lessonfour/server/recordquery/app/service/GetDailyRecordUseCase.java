@@ -23,9 +23,8 @@ public class GetDailyRecordUseCase {
 
     int score = reportClient.getScoreByActivityAt(userId, activityAt);
     int toiletRecordCount = toiletRecordClient.getToiletRecordCountByActivityAt(userId, activityAt);
-    int activityRecordCount =
-        activityRecordClient.getActivityRecordCountByActivityAt(userId, activityAt);
+    boolean activityRecordExists = activityRecordClient.existsByActivityAt(userId, activityAt);
 
-    return new DailyRecordResponse(score, toiletRecordCount, activityRecordCount);
+    return new DailyRecordResponse(score, toiletRecordCount, activityRecordExists);
   }
 }

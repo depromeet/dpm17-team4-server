@@ -17,7 +17,8 @@ public interface ActivityRecordRepository {
 
   List<ActivityRecord> findByActivityAtBetween(Long userId, ActivityAt start, ActivityAt end);
 
-  List<DailyExistence> existsByActivityAt(Long userId, ActivityAt start, ActivityAt end);
+  List<DailyExistence> findDailyExistencesByActivityAtBetween(
+      Long userId, ActivityAt start, ActivityAt end);
 
-  int countByActivityAt(Long userId, ActivityAt activityAt);
+  boolean existsByActivityAt(Long userId, ActivityAt activityAt);
 }

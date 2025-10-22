@@ -34,7 +34,8 @@ public class ToiletRecordRepositoryImpl implements ToiletRecordRepository {
   }
 
   @Override
-  public List<DailyExistence> existsByActivityAt(Long userId, ActivityAt start, ActivityAt end) {
+  public List<DailyExistence> findDailyExistencesByActivityAtBetween(
+      Long userId, ActivityAt start, ActivityAt end) {
     return query.findDailyExistencesByActivityAt(userId, start, end);
   }
 
