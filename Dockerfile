@@ -1,5 +1,5 @@
 FROM eclipse-temurin:21-jre
-ARG JAR_FILE=build/libs/app.jar
+ARG JAR_FILE=build/libs/server-*.jar
 
 COPY ${JAR_FILE} /app.jar
 
