@@ -38,7 +38,6 @@ import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
 import depromeet.lessonfour.server.user.domain.entity.User;
 import depromeet.lessonfour.server.user.domain.repository.UserRepository;
-import depromeet.lessonfour.server.user.infra.repository.UserRepository;
 import io.restassured.RestAssured;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
