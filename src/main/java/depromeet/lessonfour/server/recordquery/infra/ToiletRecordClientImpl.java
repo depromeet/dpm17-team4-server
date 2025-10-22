@@ -10,9 +10,9 @@ import depromeet.lessonfour.server.recordquery.app.client.ToiletRecordClient;
 import depromeet.lessonfour.server.toiletrecord.app.service.ToiletRecordQueryService;
 import lombok.RequiredArgsConstructor;
 
-@Component
+@Component("recordQueryToiletRecordClient")
 @RequiredArgsConstructor
-public class ToiletRecordService implements ToiletRecordClient {
+public class ToiletRecordClientImpl implements ToiletRecordClient {
 
   private final ToiletRecordQueryService toiletRecordQueryService;
 
