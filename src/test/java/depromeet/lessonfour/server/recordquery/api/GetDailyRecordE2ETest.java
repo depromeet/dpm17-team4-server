@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -55,7 +56,7 @@ public class GetDailyRecordE2ETest {
   @Autowired private FoodRepository foodRepository;
   @Autowired private JpaActivityRecordRepository activityRecordRepository;
   @Autowired private ToiletRecordRepository toiletRecordRepository;
-  @Autowired private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
+  @Autowired private JdbcTemplate jdbcTemplate;
 
   private String validJwtToken;
   private Long testUserId;
@@ -142,11 +143,11 @@ public class GetDailyRecordE2ETest {
         .body("status", equalTo(200))
         .body("data.score", equalTo(75))
         .body("data.toiletRecordCount", equalTo(2))
-        .body("data.activityRecordCount", equalTo(1));
+        .body("data.activityRecordCount", equalTo(true));
   }
 
   @Test
-  @DisplayName("기록이 없는 날짜의 일일 기록 조회 시 모든 카운트와 점수가 0이다")
+  @DisplayName("기록이 없는 날짜의 일일 기록 조회 시 배변 기록 카운트가 0이고 생활 기록 존재 여부가 false로 반환된다")
   void givenNoRecordData_whenGetDailyRecord_thenReturnsZeroValues() {
     // Given
     LocalDate targetDate = LocalDate.of(2024, 1, 15);
@@ -166,7 +167,7 @@ public class GetDailyRecordE2ETest {
         .body("status", equalTo(200))
         .body("data.score", equalTo(0))
         .body("data.toiletRecordCount", equalTo(0))
-        .body("data.activityRecordCount", equalTo(0));
+        .body("data.activityRecordCount", equalTo(false));
   }
 
   @Test
@@ -253,7 +254,7 @@ public class GetDailyRecordE2ETest {
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .body("status", equalTo(200))
         .body("data.toiletRecordCount", equalTo(0))
-        .body("data.activityRecordCount", equalTo(0));
+        .body("data.activityRecordCount", equalTo(false));
   }
 
   @Test
@@ -305,7 +306,7 @@ public class GetDailyRecordE2ETest {
         .body("status", equalTo(200))
         .body("data.score", equalTo(0))
         .body("data.toiletRecordCount", equalTo(0))
-        .body("data.activityRecordCount", equalTo(0));
+        .body("data.activityRecordCount", equalTo(false));
   }
 
   @Test
@@ -360,7 +361,7 @@ public class GetDailyRecordE2ETest {
         .body("status", equalTo(200))
         .body("data.score", equalTo(50))
         .body("data.toiletRecordCount", equalTo(0))
-        .body("data.activityRecordCount", equalTo(0));
+        .body("data.activityRecordCount", equalTo(false));
   }
 
   @Test
@@ -387,6 +388,6 @@ public class GetDailyRecordE2ETest {
         .body("status", equalTo(200))
         .body("data.score", equalTo(100))
         .body("data.toiletRecordCount", equalTo(1))
-        .body("data.activityRecordCount", equalTo(1));
+        .body("data.activityRecordCount", equalTo(true));
   }
 }
