@@ -1,8 +1,5 @@
 package depromeet.lessonfour.server.toiletrecord.app.service;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.toiletrecord.app.dto.request.ToiletRecordCreateRequestDto;
@@ -17,13 +14,12 @@ public class CreateToiletRecordUseCase {
 
   private final ToiletRecordService toiletRecordService;
   private final ToiletRecordEventPublisher toiletRecordEventPublisher;
-  private final Clock clock;
 
   public ToiletRecordResponseDto create(Long userId, ToiletRecordCreateRequestDto dto) {
     ToiletRecordResponseDto response = toiletRecordService.create(userId, dto);
     toiletRecordEventPublisher.publishCreated(
         "CreateToiletRecordUseCase:create",
-        new ToiletRecordEvent(userId, ActivityAt.from(LocalDateTime.now(clock))));
+        new ToiletRecordEvent(userId, ActivityAt.from(response.occurredAt())));
 
     return response;
   }
