@@ -15,6 +15,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
+import depromeet.lessonfour.server.common.infra.DailyExistenceProjection;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 
@@ -91,7 +92,6 @@ public class ActivityRecordQuery {
             .distinct()
             .fetch();
 
-    // 기록이 있는 날짜만 반환 (false인 경우는 제외)
     return existingDates.stream()
         .<DailyExistence>map(date -> new DailyExistenceProjection(date, true))
         .toList();
