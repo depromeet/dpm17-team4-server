@@ -9,4 +9,4 @@ public record CommonEvent<T>(
     String source,
     LocalDateTime occurredAt,
     String traceId,
-    T data) {}
+    T payload) {}
