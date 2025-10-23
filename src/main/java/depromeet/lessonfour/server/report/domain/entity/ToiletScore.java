@@ -1,0 +1,49 @@
+package depromeet.lessonfour.server.report.domain.entity;
+
+import java.time.LocalDate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "toilet_score")
+@Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ToiletScore {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @Column(nullable = false, updatable = false)
+  private Long userId;
+
+  @Column
+  @Min(0)
+  @Max(100)
+  private int score;
+
+  @Column(nullable = false, updatable = false)
+  private LocalDate date;
+
+  public static ToiletScore of(Long userId, int score, LocalDate date) {
+    return new ToiletScore(null, userId, score, date);
+  }
+
+  public void updateScore(int newScore) {
+    if (this.score != newScore) {
+      this.score = newScore;
+    }
+  }
+}

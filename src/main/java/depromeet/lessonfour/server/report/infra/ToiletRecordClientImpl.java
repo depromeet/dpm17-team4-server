@@ -10,7 +10,7 @@ import depromeet.lessonfour.server.toiletrecord.app.service.ToiletRecordQuerySer
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 import lombok.RequiredArgsConstructor;
 
-@Component
+@Component("reportToiletRecordClient")
 @RequiredArgsConstructor
 public class ToiletRecordClientImpl implements ToiletRecordClient {
 

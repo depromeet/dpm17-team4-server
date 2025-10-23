@@ -19,4 +19,6 @@ public interface ActivityRecordRepository {
 
   List<DailyExistence> findDailyExistencesBetween(
       Long userId, ActivityAt startInclude, ActivityAt endInclude);
+
+  int countByActivityAt(Long userId, ActivityAt activityAt);
 }

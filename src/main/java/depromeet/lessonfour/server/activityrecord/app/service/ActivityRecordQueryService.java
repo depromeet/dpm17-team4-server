@@ -32,4 +32,8 @@ public class ActivityRecordQueryService {
       Long userId, ActivityAt startInclude, ActivityAt endInclude) {
     return activityRecordRepository.findDailyExistencesBetween(userId, startInclude, endInclude);
   }
+
+  public int countByActivityAt(Long userId, ActivityAt activityAt) {
+    return activityRecordRepository.countByActivityAt(userId, activityAt);
+  }
 }

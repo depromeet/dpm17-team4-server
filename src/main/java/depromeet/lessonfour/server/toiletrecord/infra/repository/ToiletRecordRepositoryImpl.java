@@ -38,4 +38,9 @@ public class ToiletRecordRepositoryImpl implements ToiletRecordRepository {
       Long userId, ActivityAt startInclude, ActivityAt endInclude) {
     return query.findDailyExistencesBetween(userId, startInclude, endInclude);
   }
+
+  @Override
+  public int countByActivityAt(Long userId, ActivityAt at) {
+    return query.countByActivityAt(userId, at);
+  }
 }

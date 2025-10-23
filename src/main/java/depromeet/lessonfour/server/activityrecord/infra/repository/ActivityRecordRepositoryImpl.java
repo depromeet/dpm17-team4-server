@@ -44,4 +44,9 @@ public class ActivityRecordRepositoryImpl implements ActivityRecordRepository {
       Long userId, ActivityAt startInclude, ActivityAt endInclude) {
     return query.findDailyExistencesBetween(userId, startInclude, endInclude);
   }
+
+  @Override
+  public int countByActivityAt(Long userId, ActivityAt activityAt) {
+    return query.countByActivityAt(userId, activityAt);
+  }
 }

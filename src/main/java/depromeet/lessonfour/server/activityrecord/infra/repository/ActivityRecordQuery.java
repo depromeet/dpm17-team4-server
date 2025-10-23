@@ -96,4 +96,18 @@ public class ActivityRecordQuery {
         .<DailyExistence>map(date -> new DailyExistenceProjection(date, true))
         .toList();
   }
+
+  public int countByActivityAt(Long userId, ActivityAt activityAt) {
+    Long count =
+        queryFactory
+            .select(activityRecord.count())
+            .from(activityRecord)
+            .where(
+                activityRecord.userId.eq(userId),
+                activityRecord.activityAt.date.eq(activityAt.toDate()),
+                activityRecord.isDeleted.eq(false))
+            .fetchOne();
+
+    return count != null ? count.intValue() : 0;
+  }
 }

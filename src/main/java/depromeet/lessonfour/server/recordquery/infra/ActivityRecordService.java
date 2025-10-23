@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component;
 import depromeet.lessonfour.server.activityrecord.app.service.ActivityRecordQueryService;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
-import depromeet.lessonfour.server.recordquery.app.service.ActivityRecordExistenceClient;
+import depromeet.lessonfour.server.recordquery.app.client.ActivityRecordClient;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class ActivityRecordExistenceService implements ActivityRecordExistenceClient {
+public class ActivityRecordService implements ActivityRecordClient {
 
   private final ActivityRecordQueryService activityRecordQueryService;
 
@@ -20,5 +20,10 @@ public class ActivityRecordExistenceService implements ActivityRecordExistenceCl
   public List<DailyExistence> getDailyExistencesBetween(
       Long userId, ActivityAt startInclude, ActivityAt endInclude) {
     return activityRecordQueryService.findDailyExistencesBetween(userId, startInclude, endInclude);
+  }
+
+  @Override
+  public int getActivityRecordCountByActivityAt(Long userId, ActivityAt activityAt) {
+    return activityRecordQueryService.countByActivityAt(userId, activityAt);
   }
 }

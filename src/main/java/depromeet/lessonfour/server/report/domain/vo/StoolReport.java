@@ -28,18 +28,16 @@ public class StoolReport {
       return empty();
     }
 
-    double averageScore = getTotalScore(evaluations);
+    double averageScore =
+        evaluations.stream()
+            .map(StoolEvaluation::getScore)
+            .mapToDouble(Double::doubleValue)
+            .average()
+            .orElse(0);
+
     StoolEvaluationLevel level = StoolEvaluationLevel.from((int) (averageScore));
 
     return new StoolReport(averageScore, level, evaluations);
-  }
-
-  private static double getTotalScore(List<StoolEvaluation> evaluations) {
-    return evaluations.stream()
-        .map(StoolEvaluation::getScore)
-        .mapToDouble(Double::doubleValue)
-        .average()
-        .orElse(0);
   }
 
   public boolean hasBlood() {

@@ -25,4 +25,8 @@ public class ToiletRecordQueryService {
       Long userId, ActivityAt startInclude, ActivityAt endInclude) {
     return toiletRecordRepository.findDailyExistencesBetween(userId, startInclude, endInclude);
   }
+
+  public int countByActivityAt(Long userId, ActivityAt at) {
+    return toiletRecordRepository.countByActivityAt(userId, at);
+  }
 }

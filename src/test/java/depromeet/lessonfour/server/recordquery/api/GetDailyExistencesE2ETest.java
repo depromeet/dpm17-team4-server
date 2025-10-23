@@ -46,7 +46,7 @@ import io.restassured.RestAssured;
     scripts = "/sql/cleanup.sql",
     config = @SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-class CalendarControllerE2ETest {
+class GetDailyExistencesE2ETest {
 
   @LocalServerPort private int port;
 
