@@ -11,7 +11,9 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Repository;
 
 import depromeet.lessonfour.server.term.api.dto.response.TermItemDto;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Repository
 public class TermResourceRepository {
 
@@ -44,7 +46,8 @@ public class TermResourceRepository {
       return result;
 
     } catch (IOException e) {
-      return List.of(); // 필요하면 커스텀 예외로 변환
+      log.error("약관 리소스 로딩 실패: {}", e.getMessage(), e);
+      return List.of();
     }
   }
 
