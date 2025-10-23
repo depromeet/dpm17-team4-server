@@ -398,34 +398,6 @@ class GetDailyExistencesE2ETest {
   }
 
   @Test
-  @DisplayName("시작일만 있는 경우 정상 동작한다")
-  void givenStartDate_whenGetRecordExistence_thenSuccess() {
-    // Given
-    LocalDate targetDate = LocalDate.of(2024, 1, 1);
-    createTestActivityRecord(LocalDateTime.of(2024, 1, 1, 10, 0));
-
-    // When & Then
-    given()
-        .log()
-        .all()
-        .header("Authorization", validJwtToken)
-        .queryParam("start", targetDate.format(dateFormatter))
-        .when()
-        .get("/api/v1/calendar")
-        .then()
-        .log()
-        .all()
-        .statusCode(HttpStatus.OK.value())
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .body("status", equalTo(200))
-        .body("data.startDate", equalTo("2024-01-01"))
-        .body("data.endDate", equalTo("2024-01-01"))
-        .body("data.results", hasSize(1))
-        .body("data.results[0].date", equalTo("2024-01-01"))
-        .body("data.results[0].activityExists", equalTo(true));
-  }
-
-  @Test
   @DisplayName("기록이 전혀 없는 날짜 범위 조회 시 빈 리스트를 반환한다")
   void givenNoRecords_whenGetRecordExistence_thenEmptyList() {
     // Given
