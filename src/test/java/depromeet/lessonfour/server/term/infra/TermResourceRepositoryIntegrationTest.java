@@ -25,9 +25,8 @@ class TermResourceRepositoryIntegrationTest {
     List<TermItemDto> items = repository.loadAll();
 
     // then
-    assertThat(items).isNotNull();
-    // 최소 2개(서비스이용약관, 개인정보처리방침)
-    assertThat(items.size()).isGreaterThanOrEqualTo(2);
+    // 정확히 2개(서비스이용약관, 개인정보처리방침)
+    assertThat(items).hasSize(2);
 
     // 첫 두 개가 기대 순서인지(서비스이용약관 → 개인정보처리방침)
     assertThat(items.get(0).title()).isEqualTo("서비스이용약관");
