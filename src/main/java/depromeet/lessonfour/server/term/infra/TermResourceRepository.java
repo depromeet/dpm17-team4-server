@@ -42,7 +42,7 @@ public class TermResourceRepository {
       }
 
       // 응답 순서 고정: 서비스이용약관 → 개인정보처리방침
-      result.sort(Comparator.comparingInt(t -> rankByTitle(t.termTitle())));
+      result.sort(Comparator.comparingInt(t -> rankByTitle(t.title())));
       return result;
 
     } catch (IOException e) {

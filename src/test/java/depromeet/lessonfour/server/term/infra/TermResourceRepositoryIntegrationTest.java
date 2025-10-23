@@ -30,20 +30,20 @@ class TermResourceRepositoryIntegrationTest {
     assertThat(items.size()).isGreaterThanOrEqualTo(2);
 
     // 첫 두 개가 기대 순서인지(서비스이용약관 → 개인정보처리방침)
-    assertThat(items.get(0).termTitle()).isEqualTo("서비스이용약관");
-    assertThat(items.get(1).termTitle()).isEqualTo("개인정보처리방침");
+    assertThat(items.get(0).title()).isEqualTo("서비스이용약관");
+    assertThat(items.get(1).title()).isEqualTo("개인정보처리방침");
 
     // 타이틀 셋 포함 여부
-    assertThat(items.stream().map(TermItemDto::termTitle)).contains("서비스이용약관", "개인정보처리방침");
+    assertThat(items.stream().map(TermItemDto::title)).contains("서비스이용약관", "개인정보처리방침");
 
     // 본문은 비어있지 않고 개행이 \n 기준으로 들어오는지(정규화 확인)
-    assertThat(items.get(0).termContent()).isNotBlank();
-    assertThat(items.get(1).termContent()).isNotBlank();
-    assertThat(items.get(0).termContent()).doesNotContain("\r\n");
-    assertThat(items.get(1).termContent()).doesNotContain("\r\n");
+    assertThat(items.get(0).content()).isNotBlank();
+    assertThat(items.get(1).content()).isNotBlank();
+    assertThat(items.get(0).content()).doesNotContain("\r\n");
+    assertThat(items.get(1).content()).doesNotContain("\r\n");
 
     // H1 타이틀 추출 또는 파일명 매핑이 정상 동작해서 한글 타이틀로 들어왔는지
-    assertThat(items.get(0).termTitle()).isIn("서비스이용약관", "개인정보처리방침");
-    assertThat(items.get(1).termTitle()).isIn("서비스이용약관", "개인정보처리방침");
+    assertThat(items.get(0).title()).isIn("서비스이용약관", "개인정보처리방침");
+    assertThat(items.get(1).title()).isIn("서비스이용약관", "개인정보처리방침");
   }
 }

@@ -65,14 +65,14 @@ class TermsControllerE2ETest {
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .body("status", equalTo(200))
         .body("data", hasSize(2))
-        .body("data.termTitle", containsInAnyOrder("서비스이용약관", "개인정보처리방침"))
+        .body("data.title", containsInAnyOrder("서비스이용약관", "개인정보처리방침"))
         .body(
-            "data.find { it.termTitle == '개인정보처리방침' }.termContent",
+            "data.find { it.title == '개인정보처리방침' }.content",
             allOf(
                 containsString("개인정보처리방침"),
                 anyOf(containsString("개인정보 보호법"), containsString("본 방침은"))))
         .body(
-            "data.find { it.termTitle == '서비스이용약관' }.termContent",
+            "data.find { it.title == '서비스이용약관' }.content",
             anyOf(containsString("서비스"), containsString("이용약관")));
   }
 
