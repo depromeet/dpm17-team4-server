@@ -20,29 +20,31 @@ import lombok.extern.slf4j.Slf4j;
 public class KakaoAdminClient {
 
   private final RestTemplate restTemplate = new RestTemplate();
-  
+
   @Value("${spring.security.oauth2.client.registration.kakao.admin-key}")
   private String adminKey;
-  
+
   @Value("${spring.security.oauth2.client.registration.kakao.unlink-uri}")
   private String unlinkUri;
 
   public void unlinkUser(String userId) {
     log.debug("Unlinking Kakao user: {}", userId);
-    
+
     try {
       HttpHeaders headers = createHeaders();
       MultiValueMap<String, String> requestBody = createRequestBody(userId);
       HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(requestBody, headers);
 
-      ResponseEntity<String> response = restTemplate.exchange(
-          unlinkUri, HttpMethod.POST, entity, String.class);
+      ResponseEntity<String> response =
+          restTemplate.exchange(unlinkUri, HttpMethod.POST, entity, String.class);
 
       if (response.getStatusCode().is2xxSuccessful()) {
         log.info("Kakao user unlink successful for user {}: {}", userId, response.getBody());
       } else {
-        log.warn("Kakao user unlink failed for user {} with status: {}", 
-            userId, response.getStatusCode());
+        log.warn(
+            "Kakao user unlink failed for user {} with status: {}",
+            userId,
+            response.getStatusCode());
       }
     } catch (Exception e) {
       log.error("Failed to unlink Kakao user {}", userId, e);
