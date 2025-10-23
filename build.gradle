@@ -58,6 +58,9 @@ dependencies {
     // Swagger(OpenAPI) 공통
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.1'
 
+    // Firebase Cloud Messaging
+    implementation 'com.google.firebase:firebase-admin:9.7.0'
+
     // QueryDSL
     implementation "com.querydsl:querydsl-jpa:5.0.0:jakarta"
     annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
