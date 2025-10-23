@@ -7,8 +7,8 @@ ENV TZ=Asia/Seoul \
     JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75 -XX:+ExitOnOutOfMemoryError -XX:+UseStringDeduplication"
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo "$TZ" > /etc/timezone \
- && addgroup --system app && adduser --system --ingroup app app \
- && chown app:app /app.jar \
+    && addgroup --system app && adduser --system --ingroup app app \
+    && chown app:app /app.jar
 
 USER app
 

@@ -5,10 +5,8 @@ import static depromeet.lessonfour.server.activityrecord.domain.entity.QFoodReco
 import static depromeet.lessonfour.server.food.domain.entity.QFood.food;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.stereotype.Repository;
 
@@ -74,10 +72,14 @@ public class ActivityRecordQuery {
         .fetch();
   }
 
-  public List<DailyExistence> findDailyExistencesByActivityAt(
+  public List<DailyExistence> findDailyExistencesBetween(
       Long userId, ActivityAt start, @Nullable ActivityAt end) {
 
     List<LocalDate> dateRange = start.datesUntil(end);
+
+    if (dateRange.isEmpty()) {
+      return List.of();
+    }
 
     List<LocalDate> existingDates =
         queryFactory
@@ -90,10 +92,8 @@ public class ActivityRecordQuery {
             .distinct()
             .fetch();
 
-    Set<LocalDate> existingSet = new HashSet<>(existingDates);
-
-    return dateRange.stream()
-        .<DailyExistence>map(date -> new DailyExistenceProjection(date, existingSet.contains(date)))
+    return existingDates.stream()
+        .<DailyExistence>map(date -> new DailyExistenceProjection(date, true))
         .toList();
   }
 }

@@ -37,6 +37,10 @@ public record RecordExistenceListResponse(
                         toiletRecordMap.getOrDefault(date, false)))
             .toList();
 
+    if (merged.isEmpty()) {
+      return new RecordExistenceListResponse(null, null, merged);
+    }
+
     return new RecordExistenceListResponse(
         merged.getFirst().date(), merged.getLast().date(), merged);
   }
