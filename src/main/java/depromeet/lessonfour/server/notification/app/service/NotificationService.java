@@ -150,7 +150,7 @@ public class NotificationService {
         saved.getUserId(),
         saved.getKey(),
         saved.getRegistrationToken(),
-        saved.getEnabled());
+        saved.isEnabled());
   }
 
   @Transactional
@@ -189,7 +189,7 @@ public class NotificationService {
         settings.getUserId(),
         settings.getKey(),
         settings.getRegistrationToken(),
-        settings.getEnabled());
+        settings.isEnabled());
   }
 
   /**
@@ -245,7 +245,7 @@ public class NotificationService {
                     settings.getUserId(),
                     settings.getKey(),
                     settings.getRegistrationToken(),
-                    settings.getEnabled()))
+                    settings.isEnabled()))
         .toList();
   }
 
@@ -274,7 +274,7 @@ public class NotificationService {
         settings.getUserId(),
         settings.getKey(),
         settings.getRegistrationToken(),
-        settings.getEnabled());
+        settings.isEnabled());
   }
 
   /**

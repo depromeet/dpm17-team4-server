@@ -38,9 +38,8 @@ public class NotificationSettings extends BaseTimeEntity {
   @NotNull @Column(unique = true, nullable = false, length = 512)
   private String registrationToken;
 
-  @NotBlank
-  @NotNull @Column(nullable = false)
-  private Boolean enabled;
+  @Column(nullable = false)
+  private boolean enabled;
 
   public static NotificationSettings create(
       Long userId, String key, String registrationToken, Boolean enabled) {
@@ -56,7 +55,7 @@ public class NotificationSettings extends BaseTimeEntity {
     this.key = key;
   }
 
-  public void updateEnabled(Boolean enabled) {
+  public void updateEnabled(boolean enabled) {
     this.enabled = enabled;
   }
 }
