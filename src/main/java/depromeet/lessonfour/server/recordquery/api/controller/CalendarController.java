@@ -48,6 +48,7 @@ public class CalendarController {
         getDailyExistencesUseCase.getRecordExistenceList(userId, start, end));
   }
 
+  @Operation(summary = "일일 기록 조회", description = "특정 날짜의 활동 및 배변 기록을 조회합니다.")
   @GetMapping("/{date}")
   public SuccessResponse<DailyRecordResponse> getDailyRecord(
       @AuthenticationPrincipal(expression = "id") Long userId,
