@@ -122,7 +122,8 @@ public class User extends BaseTimeEntity {
     this.isDeleted = true;
   }
 
-  public void updateProfile(String nickname, String profileImage, Gender gender, Integer birthYear) {
+  public void updateProfile(
+      String nickname, String profileImage, Gender gender, Integer birthYear) {
     if (nickname != null && !nickname.isBlank()) {
       this.nickname = nickname;
     }

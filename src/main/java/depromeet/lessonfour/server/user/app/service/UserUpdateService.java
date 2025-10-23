@@ -27,16 +27,16 @@ public class UserUpdateService {
   }
 
   public User updateUserProfile(Long userId, UpdateUserProfileRequestDto requestDto) {
-    User user = userRepository
-        .findActiveById(userId)
-        .orElseThrow(() -> new ServerException(ErrorCode.USER_NOT_FOUND));
-    
+    User user =
+        userRepository
+            .findActiveById(userId)
+            .orElseThrow(() -> new ServerException(ErrorCode.USER_NOT_FOUND));
+
     user.updateProfile(
         requestDto.nickname(),
         requestDto.profileImage(),
         requestDto.gender(),
-        requestDto.birthYear()
-    );
+        requestDto.birthYear());
     return user;
   }
 }
