@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
 public record UpdateActivityRecordsRequest(
-    @Nullable @Valid List<UpdateFoodRequestDto> foods,
+    @Nullable @Valid List<@NotNull UpdateFoodRequestDto> foods,
     @Nullable @PositiveOrZero(message = "마신 물의 잔 수는 0 이상이어야 합니다") Integer water,
     @Nullable @ValidEnum(enumClass = StressLevel.class, message = "유효하지 않은 스트레스 지수입니다")
         StressLevel stress) {
