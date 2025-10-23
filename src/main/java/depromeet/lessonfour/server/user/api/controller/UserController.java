@@ -89,10 +89,11 @@ public class UserController {
 
   @Operation(
       summary = "회원 탈퇴",
-      description = "현재 로그인한 사용자의 계정을 삭제합니다.",
+      description = "현재 로그인한 사용자의 계정을 삭제합니다. Kakao 사용자의 경우 Kakao 연동도 해제됩니다.",
       security = {@SecurityRequirement(name = "JWT")})
   @DeleteMapping("/me")
   public SuccessResponse<Void> delete(@AuthenticationPrincipal(expression = "id") Long userId) {
+
     userDeleteUseCase.delete(userId);
 
     return SuccessResponse.of(SuccessCode.SUCCESS_DELETE);

@@ -16,12 +16,17 @@ public class UserService {
 
   @Transactional
   public User findOrCreate(String email, String nickname, String profileImage, Provider provider) {
-    return userRepository
+    User user = userRepository
         .findByEmail(email)
         .orElseGet(
             () -> {
               User newUser = User.register(email, nickname, null, profileImage, provider);
               return userRepository.save(newUser);
             });
+    if (user.isDeleted()) {
+      user.activate();
+      userRepository.save(user);
+    }
+    return user;
   }
 }
