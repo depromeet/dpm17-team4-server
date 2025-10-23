@@ -143,7 +143,7 @@ public class GetDailyRecordE2ETest {
         .body("status", equalTo(200))
         .body("data.score", equalTo(75))
         .body("data.toiletRecordCount", equalTo(2))
-        .body("data.activityRecordCount", equalTo(true));
+        .body("data.hasActivityRecord", equalTo(true));
   }
 
   @Test
@@ -167,7 +167,7 @@ public class GetDailyRecordE2ETest {
         .body("status", equalTo(200))
         .body("data.score", equalTo(0))
         .body("data.toiletRecordCount", equalTo(0))
-        .body("data.activityRecordCount", equalTo(false));
+        .body("data.hasActivityRecord", equalTo(false));
   }
 
   @Test
@@ -254,7 +254,7 @@ public class GetDailyRecordE2ETest {
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .body("status", equalTo(200))
         .body("data.toiletRecordCount", equalTo(0))
-        .body("data.activityRecordCount", equalTo(false));
+        .body("data.hasActivityRecord", equalTo(false));
   }
 
   @Test
@@ -306,7 +306,7 @@ public class GetDailyRecordE2ETest {
         .body("status", equalTo(200))
         .body("data.score", equalTo(0))
         .body("data.toiletRecordCount", equalTo(0))
-        .body("data.activityRecordCount", equalTo(false));
+        .body("data.hasActivityRecord", equalTo(false));
   }
 
   @Test
@@ -361,7 +361,7 @@ public class GetDailyRecordE2ETest {
         .body("status", equalTo(200))
         .body("data.score", equalTo(50))
         .body("data.toiletRecordCount", equalTo(0))
-        .body("data.activityRecordCount", equalTo(false));
+        .body("data.hasActivityRecord", equalTo(false));
   }
 
   @Test
@@ -388,6 +388,6 @@ public class GetDailyRecordE2ETest {
         .body("status", equalTo(200))
         .body("data.score", equalTo(100))
         .body("data.toiletRecordCount", equalTo(1))
-        .body("data.activityRecordCount", equalTo(true));
+        .body("data.hasActivityRecord", equalTo(true));
   }
 }
