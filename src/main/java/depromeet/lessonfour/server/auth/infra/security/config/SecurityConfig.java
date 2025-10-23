@@ -18,6 +18,7 @@ import depromeet.lessonfour.server.auth.infra.security.jwt.JwtAuthenticationFilt
 import depromeet.lessonfour.server.auth.infra.security.jwt.JwtAuthenticationProvider;
 import depromeet.lessonfour.server.auth.infra.security.jwt.entrypoint.JwtAuthenticationEntryPoint;
 import depromeet.lessonfour.server.auth.infra.security.jwt.handler.JwtAccessDeniedHandler;
+import depromeet.lessonfour.server.auth.infra.security.oauth.OAuthorizationRequestResolver;
 import depromeet.lessonfour.server.auth.infra.security.rest.RestAuthenticationFilter;
 import depromeet.lessonfour.server.auth.infra.security.rest.RestAuthenticationProvider;
 import depromeet.lessonfour.server.auth.infra.security.rest.handler.RestAuthenticationFailureHandler;
@@ -81,9 +82,29 @@ public class SecurityConfig {
         .build();
   }
 
-  /** 일반 API 요청에 대한 필터 체인 */
   @Bean
   @Order(2)
+  public SecurityFilterChain oAuth2LoginFilterChain(
+      HttpSecurity http, OAuthorizationRequestResolver oAuthorizationRequestResolver)
+      throws Exception {
+    http.securityMatcher("/oauth2/**", "/login/oauth2/**")
+        .csrf(AbstractHttpConfigurer::disable)
+        .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+        .oauth2Login(
+            oauth2 ->
+                oauth2.authorizationEndpoint(
+                    endpoint ->
+                        endpoint
+                            .baseUri("/oauth2/authorization")
+                            .authorizationRequestResolver(oAuthorizationRequestResolver)));
+
+    return http.build();
+  }
+
+  /** 일반 API 요청에 대한 필터 체인 */
+  @Bean
+  @Order(3)
   public SecurityFilterChain apiFilterChain(
       HttpSecurity http,
       JwtAuthenticationProvider jwtAuthenticationProvider,
@@ -105,7 +126,10 @@ public class SecurityConfig {
                         "/api/v1/health",
                         "/api/v1/auth/signup",
                         "/api/v1/auth/refresh",
-                        "/api/v1/auth/kakao/**")
+                        "/api/v1/auth/*/login",
+                        "/api/v1/auth/*/callback",
+                        "/api/v1/config/apple",
+                        "/api/v1/auth/*/token")
                     .permitAll()
                     .anyRequest()
                     .authenticated())

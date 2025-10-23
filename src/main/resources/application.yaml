@@ -8,6 +8,50 @@ spring:
       add-mappings: false
   jpa:
     open-in-view: false
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${KAKAO__CLIENT_ID:your-kakao-client-id}
+            client-secret: ${KAKAO__CLIENT_SECRET:your-kakao-client-secret}
+            redirect-uri: ${KAKAO__REDIRECT_URL:http://localhost:8080/api/v1/auth/kakao/callback}
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
+            client-name: Kakao
+            scope:
+              - openid
+              - profile_nickname
+              - profile_image
+              - account_email
+              - gender
+              - age_range
+          apple:
+            client-id: ${APPLE_CLIENT_ID:your-apple-client-id}
+            redirect-uri: ${APPLE_REDIRECT_URI:http://localhost:8080/api/v1/auth/apple/callback}
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
+            client-name: Apple
+            scope:
+              - name
+              - email
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: sub
+            jwk-set-uri: https://kauth.kakao.com/.well-known/jwks.json
+            issuer-uri: https://kauth.kakao.com
+          apple:
+            authorization-uri: https://appleid.apple.com/auth/authorize
+            token-uri: https://appleid.apple.com/auth/token
+            user-info-uri: https://appleid.apple.com/auth/token
+            user-name-attribute: sub
+            jwk-set-uri: https://appleid.apple.com/auth/keys
+            issuer-uri: https://appleid.apple.com
+
+
 
 jwt:
   secret: ${JWT_SECRET:mySecretKeyForJWTWhichShouldBeAtLeast256BitsLongToEnsureSecurityAndCompliance}
@@ -38,16 +82,13 @@ server:
       file-date-format: .yyyy-MM-dd
       rotate: true
 
-kakao:
-  client-id: ${KAKAO__CLIENT_ID:your-kakao-client-id}
-  client-secret: ${KAKAO__CLIENT_SECRET:your-kakao-client-secret}
-  redirect-url: ${KAKAO__REDIRECT_URL:http://localhost:8080/api/auth/kakao/callback}
-  issuer-url: ${KAKAO__ISSUER_URL:https://kauth.kakao.com}
-  auth-url: ${KAKAO__AUTH_URL:https://kauth.kakao.com/oauth/authorize}
-  token-url: ${KAKAO__TOKEN_URL:https://kauth.kakao.com/oauth/token}
-
 frontend:
   url: ${FRONTEND__URL:http://localhost:3000}
+
+apple:
+  team-id: ${APPLE_TEAM_ID:your-apple-team-id}
+  key-id: ${APPLE_KEY_ID:your-apple-key-id}
+  private-key: ${APPLE_PRIVATE_KEY:your-apple-private-key}
 
 admin:
   emails: ${ADMIN__EMAILS:admin@example.com}

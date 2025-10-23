@@ -1,0 +1,57 @@
+package depromeet.lessonfour.server.auth.infra.security.oauth;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import depromeet.lessonfour.server.auth.domain.vo.StateData;
+import lombok.RequiredArgsConstructor;
+
+@Component
+@RequiredArgsConstructor
+public class OidcStateCodec {
+
+  @Value("${frontend.url}")
+  private String DEFAULT_REDIRECT_URI;
+
+  private static final String DEFAULT_RESPONSE_TYPE = "";
+
+  private final ObjectMapper objectMapper;
+
+  public String encode(String redirectUri, String responseType) {
+    try {
+      redirectUri =
+          (redirectUri == null || redirectUri.isBlank()) ? DEFAULT_REDIRECT_URI : redirectUri;
+
+      responseType = (responseType == null) ? DEFAULT_RESPONSE_TYPE : responseType;
+
+      Map<String, String> stateMap =
+          Map.of(
+              "redirectUri", redirectUri,
+              "responseType", responseType);
+      String json = objectMapper.writeValueAsString(stateMap);
+      return Base64.getUrlEncoder().encodeToString(json.getBytes(StandardCharsets.UTF_8));
+    } catch (Exception e) {
+      throw new IllegalStateException("Failed to encode state", e);
+    }
+  }
+
+  public StateData decode(String encodedState) {
+    try {
+      String json = new String(Base64.getUrlDecoder().decode(encodedState), StandardCharsets.UTF_8);
+      Map<String, String> stateMap = objectMapper.readValue(json, new TypeReference<>() {});
+
+      return new StateData(
+          stateMap.getOrDefault("redirectUri", DEFAULT_REDIRECT_URI),
+          stateMap.getOrDefault("responseType", DEFAULT_RESPONSE_TYPE));
+    } catch (Exception e) {
+      throw new IllegalStateException("Failed to decode state", e);
+    }
+  }
+}

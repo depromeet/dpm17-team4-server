@@ -2,6 +2,8 @@ package depromeet.lessonfour.server.user.domain.vo;
 
 import java.util.Objects;
 
+import depromeet.lessonfour.server.auth.api.code.AuthErrorCode;
+import depromeet.lessonfour.server.common.exception.ServerException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
@@ -18,11 +20,26 @@ import lombok.ToString;
 @NoArgsConstructor
 public final class Provider {
 
+  @Getter
   public enum ProviderType {
-    KAKAO,
-    APPLE,
-    LOCAL,
-    // GOOGLE
+    KAKAO("kakao"),
+    APPLE("apple"),
+    LOCAL("local");
+
+    private final String value;
+
+    ProviderType(String value) {
+      this.value = value;
+    }
+
+    public static ProviderType from(String value) {
+      for (ProviderType type : values()) {
+        if (type.name().equalsIgnoreCase(value)) {
+          return type;
+        }
+      }
+      throw new ServerException(AuthErrorCode.OAUTH_PROVIDER_NOT_FOUND);
+    }
   }
 
   @Enumerated(EnumType.STRING)
@@ -46,5 +63,13 @@ public final class Provider {
 
   public static Provider local() {
     return of(ProviderType.LOCAL, null);
+  }
+
+  public static Provider kakao(String providerId) {
+    return of(ProviderType.KAKAO, providerId);
+  }
+
+  public static Provider apple(String providerId) {
+    return of(ProviderType.APPLE, providerId);
   }
 }
