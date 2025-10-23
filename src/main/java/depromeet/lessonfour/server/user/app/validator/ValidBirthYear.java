@@ -14,7 +14,7 @@ import jakarta.validation.Payload;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidBirthYear {
-  String message() default "출생연도는 1900년보다 크고 현재 연도보다 작거나 같아야 합니다";
+  String message() default "출생연도는 1900년 이상 현재 연도 이하여야 합니다";
 
   Class<?>[] groups() default {};
 

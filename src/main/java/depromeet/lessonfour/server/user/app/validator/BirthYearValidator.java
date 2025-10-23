@@ -16,6 +16,6 @@ public class BirthYearValidator implements ConstraintValidator<ValidBirthYear, I
     }
 
     int currentYear = LocalDate.now().getYear();
-    return birthYear > MIN_BIRTH_YEAR && birthYear <= currentYear;
+    return birthYear >= MIN_BIRTH_YEAR && birthYear <= currentYear;
   }
 }
