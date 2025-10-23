@@ -15,9 +15,10 @@ public interface ActivityRecordRepository {
 
   void save(ActivityRecord activityRecord);
 
-  List<ActivityRecord> findByActivityAtBetween(Long userId, ActivityAt start, ActivityAt end);
+  List<ActivityRecord> findAllByActivityAtBetween(Long userId, ActivityAt start, ActivityAt end);
 
-  List<DailyExistence> existsByActivityAt(Long userId, ActivityAt start, ActivityAt end);
+  List<DailyExistence> findDailyExistencesBetween(
+      Long userId, ActivityAt startInclude, ActivityAt endInclude);
 
   int countByActivityAt(Long userId, ActivityAt activityAt);
 }

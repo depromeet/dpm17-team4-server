@@ -17,9 +17,9 @@ public class ToiletRecordClientImpl implements ToiletRecordClient {
   private final ToiletRecordQueryService toiletRecordQueryService;
 
   @Override
-  public List<DailyExistence> existsByActivityAtBetween(
-      Long userId, ActivityAt start, ActivityAt end) {
-    return toiletRecordQueryService.existsByActivityAt(userId, start, end);
+  public List<DailyExistence> getDailyExistencesBetween(
+      Long userId, ActivityAt startInclude, ActivityAt endInclude) {
+    return toiletRecordQueryService.findDailyExistencesBetween(userId, startInclude, endInclude);
   }
 
   @Override

@@ -138,8 +138,8 @@ class GetDailyExistencesE2ETest {
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .body("status", equalTo(200))
         .body("data.startDate", equalTo("2024-01-01"))
-        .body("data.endDate", equalTo("2024-01-05")) // 요청한 범위의 endDate가 그대로 반환됨
-        .body("data.results", hasSize(5)) // 요청한 날짜 범위 전체에 대한 결과 반환
+        .body("data.endDate", equalTo("2024-01-03")) // 실제 기록이 있는 마지막 날짜
+        .body("data.results", hasSize(3)) // 기록이 있는 날짜만 반환
         .body("data.results[0].date", equalTo("2024-01-01"))
         .body("data.results[0].activityExists", equalTo(true))
         .body("data.results[0].toiletExists", equalTo(false))
@@ -148,13 +148,7 @@ class GetDailyExistencesE2ETest {
         .body("data.results[1].toiletExists", equalTo(true))
         .body("data.results[2].date", equalTo("2024-01-03"))
         .body("data.results[2].activityExists", equalTo(true))
-        .body("data.results[2].toiletExists", equalTo(true))
-        .body("data.results[3].date", equalTo("2024-01-04"))
-        .body("data.results[3].activityExists", equalTo(false))
-        .body("data.results[3].toiletExists", equalTo(false))
-        .body("data.results[4].date", equalTo("2024-01-05"))
-        .body("data.results[4].activityExists", equalTo(false))
-        .body("data.results[4].toiletExists", equalTo(false));
+        .body("data.results[2].toiletExists", equalTo(true));
   }
 
   @Test
@@ -271,11 +265,7 @@ class GetDailyExistencesE2ETest {
         .statusCode(HttpStatus.OK.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .body("status", equalTo(200))
-        .body("data.results", hasSize(2))
-        .body("data.results[0].activityExists", equalTo(false))
-        .body("data.results[0].toiletExists", equalTo(false))
-        .body("data.results[1].activityExists", equalTo(false))
-        .body("data.results[1].toiletExists", equalTo(false));
+        .body("data.results", hasSize(0)); // 삭제된 기록은 포함되지 않으므로 빈 리스트
   }
 
   @Test
@@ -324,11 +314,7 @@ class GetDailyExistencesE2ETest {
         .statusCode(HttpStatus.OK.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .body("status", equalTo(200))
-        .body("data.results", hasSize(2))
-        .body("data.results[0].activityExists", equalTo(false))
-        .body("data.results[0].toiletExists", equalTo(false))
-        .body("data.results[1].activityExists", equalTo(false))
-        .body("data.results[1].toiletExists", equalTo(false));
+        .body("data.results", hasSize(0)); // 다른 사용자의 기록은 포함되지 않으므로 빈 리스트
   }
 
   @Test
@@ -394,7 +380,28 @@ class GetDailyExistencesE2ETest {
         .body("status", equalTo(200))
         .body("data.startDate", equalTo("2024-01-01"))
         .body("data.endDate", equalTo("2024-01-31"))
-        .body("data.results", hasSize(31)); // 요청한 날짜 범위 전체 반환
+        .body("data.results", hasSize(3)); // 기록이 있는 날짜만 반환 (1일, 15일, 31일)
+  }
+
+  @Test
+  @DisplayName("시작일만 있는 경우 정상 실패한다")
+  void givenStartDate_whenGetRecordExistence_thenFail() {
+    // Given
+    LocalDate targetDate = LocalDate.of(2024, 1, 1);
+    createTestActivityRecord(LocalDateTime.of(2024, 1, 1, 10, 0));
+
+    // When & Then
+    given()
+        .log()
+        .all()
+        .header("Authorization", validJwtToken)
+        .queryParam("start", targetDate.format(dateFormatter))
+        .when()
+        .get("/api/v1/calendar")
+        .then()
+        .log()
+        .all()
+        .statusCode(HttpStatus.BAD_REQUEST.value());
   }
 
   @Test
@@ -416,6 +423,9 @@ class GetDailyExistencesE2ETest {
         .then()
         .log()
         .all()
-        .statusCode(HttpStatus.OK.value());
+        .statusCode(HttpStatus.OK.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("status", equalTo(200))
+        .body("data.results", hasSize(0)); // 기록이 없으면 빈 리스트 반환
   }
 }

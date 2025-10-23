@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
-import depromeet.lessonfour.server.activityrecord.app.dto.request.CreateActivityRecordsRequest;
+import depromeet.lessonfour.server.activityrecord.app.dto.request.ActivityRecordDto;
 import depromeet.lessonfour.server.activityrecord.app.support.MealFoodFactory;
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
 import depromeet.lessonfour.server.activityrecord.domain.repository.ActivityRecordRepository;
@@ -24,7 +24,7 @@ public class CreateActivityRecordUseCase {
   private final ActivityRecordRepository activityRecordRepository;
   private final MealFoodFactory mealFoodFactory;
 
-  public void saveActivityRecord(Long userId, CreateActivityRecordsRequest dto) {
+  public void saveActivityRecord(Long userId, ActivityRecordDto dto) {
     List<MealFood> mealFoods = mealFoodFactory.createMealFoods(dto.foods());
     ActivityRecord activityRecord =
         ActivityRecord.createWithMeals(

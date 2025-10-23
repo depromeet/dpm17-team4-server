@@ -7,7 +7,8 @@ import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
 
 public interface ActivityRecordClient {
 
-  List<DailyExistence> existsByActivityAtBetween(Long userId, ActivityAt start, ActivityAt end);
+  List<DailyExistence> getDailyExistencesBetween(
+      Long userId, ActivityAt startInclude, ActivityAt endInclude);
 
   int getActivityRecordCountByActivityAt(Long userId, ActivityAt activityAt);
 }

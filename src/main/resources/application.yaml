@@ -90,6 +90,9 @@ apple:
   key-id: ${APPLE_KEY_ID:your-apple-key-id}
   private-key: ${APPLE_PRIVATE_KEY:your-apple-private-key}
 
+admin:
+  emails: ${ADMIN__EMAILS:admin@example.com}
+
 springdoc:
   swagger-ui:
     enabled: ${SWAGGER_UI_ENABLED:true}

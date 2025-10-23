@@ -3,7 +3,9 @@ package depromeet.lessonfour.server.common.domain.vo;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Stream;
 
 import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.exception.ServerException;
@@ -28,6 +30,7 @@ public class ActivityAt {
   private LocalTime time;
 
   private static final ActivityAt EMPTY = new ActivityAt(LocalDate.MIN, LocalTime.MIN);
+  private static final int MAX_RANGE_DAYS = 366;
 
   public static ActivityAt of(LocalDate date) {
     if (date == null) {
@@ -60,14 +63,19 @@ public class ActivityAt {
   }
 
   public List<LocalDate> datesUntil(@Nullable ActivityAt end) {
+    if (this.equals(EMPTY)) {
+      throw new ServerException(ErrorCode.INVALID_FIELD_ERROR);
+    }
     if (end == null || end.equals(EMPTY)) {
       return List.of(date);
     }
-
     if (date.isAfter(end.date)) {
       throw new ServerException(ErrorCode.INVALID_FIELD_ERROR);
     }
-
-    return date.datesUntil(end.date.plusDays(1)).toList();
+    long days = ChronoUnit.DAYS.between(date, end.date) + 1;
+    if (days > MAX_RANGE_DAYS) {
+      throw new ServerException(ErrorCode.INVALID_FIELD_ERROR);
+    }
+    return Stream.iterate(date, d -> d.plusDays(1)).limit(days).toList();
   }
 }

@@ -3,9 +3,7 @@ package depromeet.lessonfour.server.toiletrecord.infra.repository;
 import static depromeet.lessonfour.server.toiletrecord.domain.entity.QToiletRecord.toiletRecord;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.stereotype.Repository;
 
@@ -30,17 +28,22 @@ public class ToiletRecordQuery {
             .selectFrom(toiletRecord)
             .where(
                 toiletRecord.user.id.eq(userId),
-                toiletRecord.activityAt.date.eq(activityAt.toDate()))
-            .orderBy(toiletRecord.activityAt.date.asc())
+                toiletRecord.activityAt.date.eq(activityAt.toDate()),
+                toiletRecord.isDeleted.isFalse())
+            .orderBy(toiletRecord.activityAt.date.asc(), toiletRecord.activityAt.time.asc())
             .fetch();
 
-    return records == null ? List.of() : records;
+    return records;
   }
 
-  public List<DailyExistence> findDailyExistencesByActivityAt(
-      Long userId, ActivityAt start, @Nullable ActivityAt end) {
+  public List<DailyExistence> findDailyExistencesBetween(
+      Long userId, ActivityAt startInclude, @Nullable ActivityAt endInclude) {
 
-    List<LocalDate> dateRange = start.datesUntil(end);
+    List<LocalDate> dateRange = startInclude.datesUntil(endInclude);
+
+    if (dateRange.isEmpty()) {
+      return List.of();
+    }
 
     List<LocalDate> existingDates =
         queryFactory
@@ -53,10 +56,9 @@ public class ToiletRecordQuery {
             .distinct()
             .fetch();
 
-    Set<LocalDate> existingSet = new HashSet<>(existingDates);
-
-    return dateRange.stream()
-        .<DailyExistence>map(date -> new DailyExistenceProjection(date, existingSet.contains(date)))
+    // 기록이 있는 날짜만 반환 (false인 경우는 제외)
+    return existingDates.stream()
+        .<DailyExistence>map(date -> new DailyExistenceProjection(date, true))
         .toList();
   }
 
