@@ -456,6 +456,8 @@ async def home(request: Request):
                             <p><strong>이메일:</strong> ${{profileData.email}}</p>
                             <p><strong>닉네임:</strong> ${{profileData.nickname}}</p>
                             <p><strong>프로필 이미지:</strong> ${{profileData.profileImage ? `<img src="${{profileData.profileImage}}" style="width: 50px; height: 50px; border-radius: 50%;">` : 'N/A'}}</p>
+                            <p><strong>성별:</strong> ${{profileData.gender || 'N/A'}}</p>
+                            <p><strong>출생연도:</strong> ${{profileData.birthYear || 'N/A'}}</p>
                         `;
                         document.getElementById('profileDisplay').innerHTML = profileHtml;
                         document.getElementById('profileInfo').style.display = 'block';
@@ -518,6 +520,8 @@ async def home(request: Request):
                             <p><strong>이메일:</strong> ${{profileData.email}}</p>
                             <p><strong>닉네임:</strong> ${{profileData.nickname}}</p>
                             <p><strong>프로필 이미지:</strong> ${{profileData.profileImage ? `<img src="${{profileData.profileImage}}" style="width: 50px; height: 50px; border-radius: 50%;">` : 'N/A'}}</p>
+                            <p><strong>성별:</strong> ${{profileData.gender || 'N/A'}}</p>
+                            <p><strong>출생연도:</strong> ${{profileData.birthYear || 'N/A'}}</p>
                         `;
                         document.getElementById('myProfileDisplay').innerHTML = profileHtml;
                         document.getElementById('myProfileInfo').style.display = 'block';
