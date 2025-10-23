@@ -272,7 +272,7 @@ class CreateActivityRecordE2ETest {
         .then()
         .statusCode(HttpStatus.BAD_REQUEST.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .body("message", containsString("마신 물의 잔 수는 양수여야 합니다"));
+        .body("message", containsString("요청 필드 값이 유효하지 않습니다.: water: 마신 물의 잔 수는 0 이상이어야 합니다"));
   }
 
   @Test

@@ -2,7 +2,6 @@ package depromeet.lessonfour.server.activityrecord.app.service;
 
 import java.util.List;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import depromeet.lessonfour.server.activityrecord.app.dto.request.ActivityRecordDto;
@@ -12,28 +11,29 @@ import depromeet.lessonfour.server.activityrecord.domain.repository.ActivityReco
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealFood;
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.common.api.code.ErrorCode;
-import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.exception.ServerException;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
 @Transactional
 @RequiredArgsConstructor
-public class CreateActivityRecordUseCase {
+public class UpdateActivityRecordUseCase {
 
   private final ActivityRecordRepository activityRecordRepository;
   private final MealFoodFactory mealFoodFactory;
 
-  public void saveActivityRecord(Long userId, ActivityRecordDto dto) {
-    List<MealFood> mealFoods = mealFoodFactory.createMealFoods(dto.foods());
+  public void updateActivityRecord(Long userId, Long activityRecordId, ActivityRecordDto dto) {
     ActivityRecord activityRecord =
-        ActivityRecord.createWithMeals(
-            userId, dto.water(), dto.stress(), ActivityAt.from(dto.occurredAt()), mealFoods);
+        activityRecordRepository
+            .findById(activityRecordId)
+            .orElseThrow(() -> new ServerException(ErrorCode.DATA_NOT_FOUND));
 
-    try {
-      activityRecordRepository.save(activityRecord);
-    } catch (DataIntegrityViolationException e) {
-      throw new ServerException(ErrorCode.CONFLICT);
+    if (!activityRecord.isOwnedBy(userId)) {
+      throw new ServerException(ErrorCode.ACCESS_DENIED);
     }
+
+    List<MealFood> mealFoods = mealFoodFactory.createMealFoods(dto.foods());
+
+    activityRecord.update(dto.water(), dto.stress(), mealFoods);
   }
 }

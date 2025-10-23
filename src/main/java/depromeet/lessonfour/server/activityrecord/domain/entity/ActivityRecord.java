@@ -88,11 +88,13 @@ public class ActivityRecord extends BaseTimeEntity {
             .activityAt(activityAt)
             .build();
 
-    mealFoods.stream()
-        .map(
-            mealFood ->
-                FoodRecord.createRecord(activityRecord, mealFood.food(), mealFood.mealTime()))
-        .forEach(activityRecord.foodRecords::add);
+    if (mealFoods != null) {
+      mealFoods.stream()
+          .map(
+              mealFood ->
+                  FoodRecord.createRecord(activityRecord, mealFood.food(), mealFood.mealTime()))
+          .forEach(activityRecord.foodRecords::add);
+    }
 
     return activityRecord;
   }
@@ -103,5 +105,16 @@ public class ActivityRecord extends BaseTimeEntity {
 
   public boolean isOwnedBy(Long userId) {
     return this.userId.equals(userId);
+  }
+
+  public void update(Integer water, StressLevel stress, List<MealFood> mealFoods) {
+    if (water != null) this.waterIntakeCups = water;
+    if (stress != null) this.stressLevel = stress;
+    if (mealFoods != null) {
+      this.foodRecords.clear();
+      mealFoods.stream()
+          .map(mealFood -> FoodRecord.createRecord(this, mealFood.food(), mealFood.mealTime()))
+          .forEach(this.foodRecords::add);
+    }
   }
 }

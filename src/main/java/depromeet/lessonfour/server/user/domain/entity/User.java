@@ -47,7 +47,7 @@ public class User extends BaseTimeEntity {
 
   @Transient @Builder.Default private boolean isNew = false;
 
-  @Column @NotNull private boolean isDeleted = false;
+  @Column @NotNull @Builder.Default private boolean isDeleted = false;
 
   public static User register(
       String email, String nickname, String password, String profileImage, Provider provider) {
