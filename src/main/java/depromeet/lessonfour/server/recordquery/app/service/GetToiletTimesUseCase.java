@@ -17,14 +17,15 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class GetToiletTimesUseCase {
 
-	private final ToiletRecordTimesClient toiletRecordTimesClient;
+  private final ToiletRecordTimesClient toiletRecordTimesClient;
 
-	public ToiletTimeListResponse getToiletTimes(Long userId, LocalDate date) {
-		List<RecordTime> toiletRecords =
-			toiletRecordTimesClient.findTimesByDate(userId, ActivityAt.of(date));
+  public ToiletTimeListResponse getToiletTimes(Long userId, LocalDate date) {
+    List<RecordTime> toiletRecords =
+        toiletRecordTimesClient.findTimesByDate(userId, ActivityAt.of(date));
 
-		var items = toiletRecords.stream().map(t -> new ToiletTimeItemDto(t.id(), t.activityTime())).toList();
+    var items =
+        toiletRecords.stream().map(t -> new ToiletTimeItemDto(t.id(), t.activityTime())).toList();
 
-		return new ToiletTimeListResponse(date, items);
-	}
+    return new ToiletTimeListResponse(date, items);
+  }
 }

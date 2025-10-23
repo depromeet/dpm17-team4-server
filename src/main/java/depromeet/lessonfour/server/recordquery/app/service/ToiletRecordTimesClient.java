@@ -6,5 +6,5 @@ import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.domain.vo.RecordTime;
 
 public interface ToiletRecordTimesClient {
-	List<RecordTime> findTimesByDate(Long userId, ActivityAt date);
+  List<RecordTime> findTimesByDate(Long userId, ActivityAt date);
 }

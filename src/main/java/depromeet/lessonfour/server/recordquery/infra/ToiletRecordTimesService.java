@@ -14,10 +14,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ToiletRecordTimesService implements ToiletRecordTimesClient {
 
-	private final ToiletRecordQueryService toiletRecordQueryService;
+  private final ToiletRecordQueryService toiletRecordQueryService;
 
-	@Override
-	public List<RecordTime> findTimesByDate(Long userId, ActivityAt date) {
-		return toiletRecordQueryService.findTimesByDate(userId, date);
-	}
+  @Override
+  public List<RecordTime> findTimesByDate(Long userId, ActivityAt date) {
+    return toiletRecordQueryService.findTimesByDate(userId, date);
+  }
 }
