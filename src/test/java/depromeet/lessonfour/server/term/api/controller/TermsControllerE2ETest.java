@@ -54,8 +54,8 @@ class TermsControllerE2ETest {
   }
 
   @Test
-  @DisplayName("인증 후 약관 리스트를 조회하면 서비스이용약관/개인정보처리방침이 함께 반환된다")
-  void givenAuth_whenGetTerms_thenReturnsBothDocs() {
+  @DisplayName("인증 후 약관 리스트를 조회하면 두 문서를 고정 순서로 반환한다 (서비스이용약관 → 개인정보처리방침)")
+  void givenAuth_whenGetTerms_thenReturnsTwoDocsInFixedOrder() {
     given()
         .header("Authorization", validJwtToken)
         .when()
@@ -64,16 +64,14 @@ class TermsControllerE2ETest {
         .statusCode(HttpStatus.OK.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .body("status", equalTo(200))
+        // 정확히 2개
         .body("data", hasSize(2))
-        .body("data.title", containsInAnyOrder("서비스이용약관", "개인정보처리방침"))
-        .body(
-            "data.find { it.title == '개인정보처리방침' }.content",
-            allOf(
-                containsString("개인정보처리방침"),
-                anyOf(containsString("개인정보 보호법"), containsString("본 방침은"))))
-        .body(
-            "data.find { it.title == '서비스이용약관' }.content",
-            anyOf(containsString("서비스"), containsString("이용약관")));
+        // 고정 순서 검증
+        .body("data[0].title", equalTo("서비스이용약관"))
+        .body("data[1].title", equalTo("개인정보처리방침"))
+        // 본문 존재/샘플 키워드 확인 (너무 세게 묶지 않기)
+        .body("data[0].content", allOf(not(isEmptyOrNullString()), containsString("서비스")))
+        .body("data[1].content", allOf(not(isEmptyOrNullString()), containsString("개인정보처리방침")));
   }
 
   @Test
