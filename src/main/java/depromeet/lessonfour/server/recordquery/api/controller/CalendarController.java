@@ -1,9 +1,10 @@
-package depromeet.lessonfour.server.recordquery.api;
+package depromeet.lessonfour.server.recordquery.api.controller;
 
 import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,11 +14,13 @@ import depromeet.lessonfour.server.common.api.code.SuccessCode;
 import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
 import depromeet.lessonfour.server.recordquery.app.dto.RecordExistenceListResponse;
 import depromeet.lessonfour.server.recordquery.app.service.GetRecordUseCase;
-import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
-@Valid
+@Validated
+@Tag(name = "캘린더", description = "캘린더 관련 API 문서입니다.")
 @RestController
 @RequestMapping("/api/v1/calendar")
 @RequiredArgsConstructor
@@ -25,12 +28,15 @@ public class CalendarController {
 
   private final GetRecordUseCase getRecordUseCase;
 
+  @Operation(summary = "기록 존재 여부 조회", description = "특정 기간 동안의 활동 및 배변 기록 존재 여부를 조회합니다.")
   @GetMapping
-  public SuccessResponse<RecordExistenceListResponse> getSingleRecord(
+  public SuccessResponse<RecordExistenceListResponse> getRecordExistences(
       @AuthenticationPrincipal(expression = "id") Long userId,
-      @NotNull(message = "날짜는 필수입니다") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+      @NotNull(message = "시작 날짜는 필수입니다.") @RequestParam
+          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           LocalDate start,
-      @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+      @NotNull(message = "종료 날짜는 필수입니다.") @RequestParam
+          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
           LocalDate end) {
 
     return SuccessResponse.of(

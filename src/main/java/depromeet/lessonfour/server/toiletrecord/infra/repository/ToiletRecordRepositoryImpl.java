@@ -29,12 +29,13 @@ public class ToiletRecordRepositoryImpl implements ToiletRecordRepository {
   }
 
   @Override
-  public List<ToiletRecord> findByActivityAt(Long userId, ActivityAt at) {
+  public List<ToiletRecord> findAllByActivityAt(Long userId, ActivityAt at) {
     return query.findByDate(userId, at);
   }
 
   @Override
-  public List<DailyExistence> existsByActivityAt(Long userId, ActivityAt start, ActivityAt end) {
-    return query.findDailyExistencesByActivityAt(userId, start, end);
+  public List<DailyExistence> findDailyExistencesBetween(
+      Long userId, ActivityAt startInclude, ActivityAt endInclude) {
+    return query.findDailyExistencesBetween(userId, startInclude, endInclude);
   }
 }

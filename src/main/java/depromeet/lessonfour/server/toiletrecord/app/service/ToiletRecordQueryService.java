@@ -18,10 +18,11 @@ public class ToiletRecordQueryService {
   private final ToiletRecordRepository toiletRecordRepository;
 
   public List<ToiletRecord> findByDate(Long userId, LocalDate date) {
-    return toiletRecordRepository.findByActivityAt(userId, ActivityAt.of(date));
+    return toiletRecordRepository.findAllByActivityAt(userId, ActivityAt.of(date));
   }
 
-  public List<DailyExistence> existsByActivityAt(Long userId, ActivityAt start, ActivityAt end) {
-    return toiletRecordRepository.existsByActivityAt(userId, start, end);
+  public List<DailyExistence> findDailyExistencesBetween(
+      Long userId, ActivityAt startInclude, ActivityAt endInclude) {
+    return toiletRecordRepository.findDailyExistencesBetween(userId, startInclude, endInclude);
   }
 }
