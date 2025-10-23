@@ -1,5 +1,8 @@
 package depromeet.lessonfour.server.user.domain.vo;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -11,6 +14,12 @@ public enum Gender {
 
   private final String value;
 
+  @JsonValue
+  public String getValue() {
+    return value;
+  }
+
+  @JsonCreator
   public static Gender from(String value) {
     if (value == null) {
       return null;
@@ -20,6 +29,6 @@ public enum Gender {
         return gender;
       }
     }
-    throw new IllegalArgumentException("Invalid gender value: " + value);
+    throw new IllegalArgumentException("성별은 \"M\" 또는 \"F\" 중 하나여야 합니다. 입력된 값: " + value);
   }
 }
