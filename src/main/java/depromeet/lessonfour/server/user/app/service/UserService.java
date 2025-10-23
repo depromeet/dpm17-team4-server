@@ -26,7 +26,6 @@ public class UserService {
                 });
     if (user.isDeleted()) {
       user.activate();
-      userRepository.save(user);
     }
     return user;
   }
