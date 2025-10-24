@@ -1,10 +1,13 @@
 package depromeet.lessonfour.server.user.api.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,12 +15,16 @@ import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.api.code.SuccessCode;
 import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
 import depromeet.lessonfour.server.common.exception.ServerException;
+import depromeet.lessonfour.server.user.app.dto.request.UpdateUserProfileRequestDto;
+import depromeet.lessonfour.server.user.app.dto.response.UpdateUserProfileResponseDto;
 import depromeet.lessonfour.server.user.app.dto.response.UserProfileResponseDto;
 import depromeet.lessonfour.server.user.app.service.UserDeleteUseCase;
 import depromeet.lessonfour.server.user.app.service.UserQueryService;
+import depromeet.lessonfour.server.user.app.service.UserUpdateService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Tag(name = "사용자", description = "사용자 관련 API 문서입니다.")
@@ -27,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
   private final UserQueryService userQueryService;
+  private final UserUpdateService userUpdateService;
   private final UserDeleteUseCase userDeleteUseCase;
 
   @Operation(
@@ -62,11 +70,30 @@ public class UserController {
   }
 
   @Operation(
+      summary = "내 프로필 수정",
+      description = "현재 로그인한 사용자의 프로필 정보를 수정합니다. 일부 필드만 수정 가능합니다.",
+      security = {@SecurityRequirement(name = "JWT")})
+  @PatchMapping(
+      value = "/me",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<SuccessResponse<UpdateUserProfileResponseDto>> updateMyProfile(
+      @Valid @RequestBody UpdateUserProfileRequestDto requestDto,
+      @AuthenticationPrincipal(expression = "id") Long authenticatedUserId) {
+
+    var updatedUser = userUpdateService.updateUserProfile(authenticatedUserId, requestDto);
+    UpdateUserProfileResponseDto response = UpdateUserProfileResponseDto.of(updatedUser);
+
+    return ResponseEntity.ok(SuccessResponse.of(SuccessCode.SUCCESS_UPDATE, response));
+  }
+
+  @Operation(
       summary = "회원 탈퇴",
-      description = "현재 로그인한 사용자의 계정을 삭제합니다.",
+      description = "현재 로그인한 사용자의 계정을 삭제합니다. Kakao 사용자의 경우 Kakao 연동도 해제됩니다.",
       security = {@SecurityRequirement(name = "JWT")})
   @DeleteMapping("/me")
   public SuccessResponse<Void> delete(@AuthenticationPrincipal(expression = "id") Long userId) {
+
     userDeleteUseCase.delete(userId);
 
     return SuccessResponse.of(SuccessCode.SUCCESS_DELETE);
