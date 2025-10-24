@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
+import depromeet.lessonfour.server.common.domain.vo.RecordTime;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 
 public interface ToiletRecordRepository {
@@ -13,10 +14,13 @@ public interface ToiletRecordRepository {
 
   Optional<ToiletRecord> findById(Long userId, Long recordId);
 
-  List<ToiletRecord> findByActivityAt(Long userId, ActivityAt at);
+  List<ToiletRecord> findByDate(Long userId, ActivityAt at);
 
-  List<DailyExistence> findDailyExistencesByActivityAtBetween(
-      Long userId, ActivityAt start, ActivityAt end);
+  List<RecordTime> findTimesByDate(Long userId, ActivityAt activityAt);
+
+  List<ToiletRecord> findAllByActivityAt(Long userId, ActivityAt at);
+
+  List<DailyExistence> findDailyExistencesBetween(Long userId, ActivityAt start, ActivityAt end);
 
   int countByActivityAt(Long userId, ActivityAt at);
 }

@@ -1,10 +1,13 @@
 package depromeet.lessonfour.server.user.domain.entity;
 
 import depromeet.lessonfour.server.common.domain.entity.BaseTimeEntity;
+import depromeet.lessonfour.server.user.domain.vo.Gender;
 import depromeet.lessonfour.server.user.domain.vo.Provider;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -45,9 +48,15 @@ public class User extends BaseTimeEntity {
   @Column(length = 512)
   private String refreshToken;
 
+  @Column(length = 1)
+  @Enumerated(EnumType.STRING)
+  private Gender gender;
+
+  @Column private Integer birthYear;
+
   @Transient @Builder.Default private boolean isNew = false;
 
-  @Column @NotNull private boolean isDeleted = false;
+  @Column @NotNull @Builder.Default private boolean isDeleted = false;
 
   public static User register(
       String email, String nickname, String password, String profileImage, Provider provider) {
@@ -72,11 +81,64 @@ public class User extends BaseTimeEntity {
     return register(email, nickname, password, profileImage, null);
   }
 
+  public static User register(
+      String email,
+      String nickname,
+      String password,
+      String profileImage,
+      Gender gender,
+      Integer birthYear) {
+    return register(email, nickname, password, profileImage, null, gender, birthYear);
+  }
+
+  public static User register(
+      String email,
+      String nickname,
+      String password,
+      String profileImage,
+      Provider provider,
+      Gender gender,
+      Integer birthYear) {
+    if (provider == null) {
+      provider = Provider.local();
+    }
+    return User.builder()
+        .email(email)
+        .nickname(nickname)
+        .password(password)
+        .profileImage(profileImage)
+        .provider(provider)
+        .gender(gender)
+        .birthYear(birthYear)
+        .isNew(true)
+        .build();
+  }
+
   public void storeRefreshToken(String refreshToken) {
     this.refreshToken = refreshToken;
   }
 
   public void deactivate() {
     this.isDeleted = true;
+  }
+
+  public void activate() {
+    this.isDeleted = false;
+  }
+
+  public void updateProfile(
+      String nickname, String profileImage, Gender gender, Integer birthYear) {
+    if (nickname != null && !nickname.isBlank()) {
+      this.nickname = nickname;
+    }
+    if (profileImage != null) {
+      this.profileImage = profileImage;
+    }
+    if (gender != null) {
+      this.gender = gender;
+    }
+    if (birthYear != null) {
+      this.birthYear = birthYear;
+    }
   }
 }

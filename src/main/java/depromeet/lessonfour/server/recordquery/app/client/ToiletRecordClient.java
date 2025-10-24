@@ -7,8 +7,8 @@ import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
 
 public interface ToiletRecordClient {
 
-  List<DailyExistence> getDailyExistencesByActivityAtBetween(
-      Long userId, ActivityAt start, ActivityAt end);
+  List<DailyExistence> getDailyExistencesBetween(
+      Long userId, ActivityAt startInclude, ActivityAt endInclude);
 
   int getToiletRecordCountByActivityAt(Long userId, ActivityAt activityAt);
 }

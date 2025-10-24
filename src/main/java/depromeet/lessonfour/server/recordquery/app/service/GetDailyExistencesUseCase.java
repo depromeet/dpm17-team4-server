@@ -27,9 +27,9 @@ public class GetDailyExistencesUseCase {
     ActivityAt end = ActivityAt.of(endDate);
 
     List<DailyExistence> activityRecords =
-        activityRecordClient.getDailyExistencesByActivityAtBetween(userId, start, end);
+        activityRecordClient.getDailyExistencesBetween(userId, start, end);
     List<DailyExistence> toiletRecords =
-        toiletRecordClient.getDailyExistencesByActivityAtBetween(userId, start, end);
+        toiletRecordClient.getDailyExistencesBetween(userId, start, end);
 
     return RecordExistenceListResponse.from(activityRecords, toiletRecords);
   }

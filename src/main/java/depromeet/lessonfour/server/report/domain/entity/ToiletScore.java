@@ -26,6 +26,7 @@ public class ToiletScore {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(nullable = false, updatable = false)
   private Long userId;
 
   @Column
@@ -33,6 +34,7 @@ public class ToiletScore {
   @Max(100)
   private int score;
 
+  @Column(nullable = false, updatable = false)
   private LocalDate date;
 
   public static ToiletScore of(Long userId, int score, LocalDate date) {

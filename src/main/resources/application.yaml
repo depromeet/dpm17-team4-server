@@ -16,6 +16,8 @@ spring:
             client-id: ${KAKAO__CLIENT_ID:your-kakao-client-id}
             client-secret: ${KAKAO__CLIENT_SECRET:your-kakao-client-secret}
             redirect-uri: ${KAKAO__REDIRECT_URL:http://localhost:8080/api/v1/auth/kakao/callback}
+            admin-key: ${KAKAO__ADMIN_KEY:your-kakao-admin-key}
+            unlink-uri: https://kapi.kakao.com/v1/user/unlink
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
             client-name: Kakao
@@ -89,6 +91,9 @@ apple:
   team-id: ${APPLE_TEAM_ID:your-apple-team-id}
   key-id: ${APPLE_KEY_ID:your-apple-key-id}
   private-key: ${APPLE_PRIVATE_KEY:your-apple-private-key}
+
+admin:
+  emails: ${ADMIN__EMAILS:admin@example.com}
 
 springdoc:
   swagger-ui:

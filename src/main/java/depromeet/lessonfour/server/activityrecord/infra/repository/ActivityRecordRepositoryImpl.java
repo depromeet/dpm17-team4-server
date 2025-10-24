@@ -34,15 +34,15 @@ public class ActivityRecordRepositoryImpl implements ActivityRecordRepository {
   }
 
   @Override
-  public List<ActivityRecord> findByActivityAtBetween(
+  public List<ActivityRecord> findAllByActivityAtBetween(
       Long userId, ActivityAt start, ActivityAt end) {
     return query.findByActivityAtBetween(userId, start, end);
   }
 
   @Override
-  public List<DailyExistence> findDailyExistencesByActivityAtBetween(
-      Long userId, ActivityAt start, ActivityAt end) {
-    return query.findDailyExistencesByActivityAt(userId, start, end);
+  public List<DailyExistence> findDailyExistencesBetween(
+      Long userId, ActivityAt startInclude, ActivityAt endInclude) {
+    return query.findDailyExistencesBetween(userId, startInclude, endInclude);
   }
 
   @Override

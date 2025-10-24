@@ -17,9 +17,9 @@ public class ActivityRecordService implements ActivityRecordClient {
   private final ActivityRecordQueryService activityRecordQueryService;
 
   @Override
-  public List<DailyExistence> getDailyExistencesByActivityAtBetween(
-      Long userId, ActivityAt start, ActivityAt end) {
-    return activityRecordQueryService.findDailyExistencesByActivityAtBetween(userId, start, end);
+  public List<DailyExistence> getDailyExistencesBetween(
+      Long userId, ActivityAt startInclude, ActivityAt endInclude) {
+    return activityRecordQueryService.findDailyExistencesBetween(userId, startInclude, endInclude);
   }
 
   @Override
