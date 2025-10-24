@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
+import depromeet.lessonfour.server.common.domain.vo.RecordTime;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 import depromeet.lessonfour.server.toiletrecord.domain.repository.ToiletRecordRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,10 @@ public class ToiletRecordQueryService {
 
   public List<ToiletRecord> findByDate(Long userId, LocalDate date) {
     return toiletRecordRepository.findAllByActivityAt(userId, ActivityAt.of(date));
+  }
+
+  public List<RecordTime> findTimesByDate(Long userId, ActivityAt at) {
+    return toiletRecordRepository.findTimesByDate(userId, at);
   }
 
   public List<DailyExistence> findDailyExistencesBetween(

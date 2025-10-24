@@ -15,8 +15,10 @@ import depromeet.lessonfour.server.common.api.code.SuccessCode;
 import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
 import depromeet.lessonfour.server.recordquery.app.dto.DailyRecordResponse;
 import depromeet.lessonfour.server.recordquery.app.dto.RecordExistenceListResponse;
+import depromeet.lessonfour.server.recordquery.app.dto.ToiletTimeListResponse;
 import depromeet.lessonfour.server.recordquery.app.service.GetDailyExistencesUseCase;
 import depromeet.lessonfour.server.recordquery.app.service.GetDailyRecordUseCase;
+import depromeet.lessonfour.server.recordquery.app.service.GetToiletTimesUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
@@ -31,6 +33,7 @@ public class CalendarController {
 
   private final GetDailyExistencesUseCase getDailyExistencesUseCase;
   private final GetDailyRecordUseCase getDailyRecordUseCase;
+  private final GetToiletTimesUseCase getToiletTimesUseCase;
 
   @Operation(summary = "기록 존재 여부 조회", description = "특정 기간 동안의 활동 및 배변 기록 존재 여부를 조회합니다.")
   @GetMapping
@@ -55,5 +58,16 @@ public class CalendarController {
       @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
     return SuccessResponse.of(
         SuccessCode.SUCCESS_FETCH, getDailyRecordUseCase.getDailyRecord(userId, date));
+  }
+
+  @Operation(summary = "캘린더 배변기록 목록 조회", description = "특정 날짜의 배변 기록 시간 및 pk 목록을 조회합니다.")
+  @GetMapping("/poo-records")
+  public SuccessResponse<ToiletTimeListResponse> getToiletTimesByDate(
+      @AuthenticationPrincipal(expression = "id") Long userId,
+      @NotNull(message = "date는 필수입니다") @RequestParam("date")
+          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+          LocalDate date) {
+    return SuccessResponse.of(
+        SuccessCode.SUCCESS_FETCH, getToiletTimesUseCase.getToiletTimes(userId, date));
   }
 }

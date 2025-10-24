@@ -7,11 +7,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
+import depromeet.lessonfour.server.common.domain.vo.RecordTime;
 import depromeet.lessonfour.server.common.infra.DailyExistenceProjection;
+import depromeet.lessonfour.server.common.infra.RecordTimeProjection;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +33,31 @@ public class ToiletRecordQuery {
                 toiletRecord.user.id.eq(userId),
                 toiletRecord.activityAt.date.eq(activityAt.toDate()),
                 toiletRecord.isDeleted.isFalse())
-            .orderBy(toiletRecord.activityAt.date.asc(), toiletRecord.activityAt.time.asc())
+            .orderBy(toiletRecord.activityAt.time.asc())
             .fetch();
 
-    return records;
+    return records == null ? List.of() : records;
+  }
+
+  public List<RecordTime> findTimesByDate(Long userId, ActivityAt activityAt) {
+    List<Tuple> recordTimes =
+        queryFactory
+            .select(toiletRecord.id, toiletRecord.activityAt.time)
+            .from(toiletRecord)
+            .where(
+                toiletRecord.user.id.eq(userId),
+                toiletRecord.activityAt.date.eq(activityAt.toDate()),
+                toiletRecord.isDeleted.isFalse())
+            .orderBy(toiletRecord.activityAt.time.asc())
+            .fetch();
+
+    return recordTimes.stream()
+        .map(
+            t ->
+                new RecordTimeProjection(
+                    t.get(toiletRecord.id), t.get(toiletRecord.activityAt.time)))
+        .map(RecordTime.class::cast)
+        .toList();
   }
 
   public List<DailyExistence> findDailyExistencesBetween(

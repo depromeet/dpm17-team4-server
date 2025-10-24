@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
+import depromeet.lessonfour.server.common.domain.vo.RecordTime;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 import depromeet.lessonfour.server.toiletrecord.domain.repository.ToiletRecordRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,16 @@ public class ToiletRecordRepositoryImpl implements ToiletRecordRepository {
   @Override
   public Optional<ToiletRecord> findById(Long userId, Long recordId) {
     return jpa.findByUser_IdAndIdAndIsDeletedFalse(userId, recordId);
+  }
+
+  @Override
+  public List<ToiletRecord> findByDate(Long userId, ActivityAt at) {
+    return query.findByDate(userId, at);
+  }
+
+  @Override
+  public List<RecordTime> findTimesByDate(Long userId, ActivityAt activityAt) {
+    return query.findTimesByDate(userId, activityAt);
   }
 
   @Override
