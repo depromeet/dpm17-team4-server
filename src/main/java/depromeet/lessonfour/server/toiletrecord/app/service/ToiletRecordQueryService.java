@@ -23,7 +23,7 @@ public class ToiletRecordQueryService {
   }
 
   public List<RecordTime> findTimesByDate(Long userId, ActivityAt at) {
-	return toiletRecordRepository.findTimesByDate(userId, at);
+    return toiletRecordRepository.findTimesByDate(userId, at);
   }
 
   public List<DailyExistence> findDailyExistencesBetween(

@@ -3,9 +3,7 @@ package depromeet.lessonfour.server.toiletrecord.infra.repository;
 import static depromeet.lessonfour.server.toiletrecord.domain.entity.QToiletRecord.toiletRecord;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.stereotype.Repository;
 
@@ -41,26 +39,26 @@ public class ToiletRecordQuery {
     return records == null ? List.of() : records;
   }
 
-	public List<RecordTime> findTimesByDate(Long userId, ActivityAt activityAt) {
-		List<Tuple> recordTimes =
-			queryFactory
-				.select(toiletRecord.id, toiletRecord.activityAt.time)
-				.from(toiletRecord)
-				.where(
-					toiletRecord.user.id.eq(userId),
-					toiletRecord.activityAt.date.eq(activityAt.toDate()),
-					toiletRecord.isDeleted.isFalse())
-				.orderBy(toiletRecord.activityAt.time.asc())
-				.fetch();
+  public List<RecordTime> findTimesByDate(Long userId, ActivityAt activityAt) {
+    List<Tuple> recordTimes =
+        queryFactory
+            .select(toiletRecord.id, toiletRecord.activityAt.time)
+            .from(toiletRecord)
+            .where(
+                toiletRecord.user.id.eq(userId),
+                toiletRecord.activityAt.date.eq(activityAt.toDate()),
+                toiletRecord.isDeleted.isFalse())
+            .orderBy(toiletRecord.activityAt.time.asc())
+            .fetch();
 
-		return recordTimes.stream()
-			.map(
-				t ->
-					new RecordTimeProjection(
-						t.get(toiletRecord.id), t.get(toiletRecord.activityAt.time)))
-			.map(RecordTime.class::cast)
-			.toList();
-	}
+    return recordTimes.stream()
+        .map(
+            t ->
+                new RecordTimeProjection(
+                    t.get(toiletRecord.id), t.get(toiletRecord.activityAt.time)))
+        .map(RecordTime.class::cast)
+        .toList();
+  }
 
   public List<DailyExistence> findDailyExistencesBetween(
       Long userId, ActivityAt startInclude, @Nullable ActivityAt endInclude) {
