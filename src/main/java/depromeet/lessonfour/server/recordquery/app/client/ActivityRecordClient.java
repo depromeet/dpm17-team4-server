@@ -10,5 +10,5 @@ public interface ActivityRecordClient {
   List<DailyExistence> getDailyExistencesBetween(
       Long userId, ActivityAt startInclude, ActivityAt endInclude);
 
-  int getActivityRecordCountByActivityAt(Long userId, ActivityAt activityAt);
+  boolean existsByActivityAt(Long userId, ActivityAt activityAt);
 }

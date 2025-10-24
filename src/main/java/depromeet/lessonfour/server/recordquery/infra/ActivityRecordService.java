@@ -23,7 +23,7 @@ public class ActivityRecordService implements ActivityRecordClient {
   }
 
   @Override
-  public int getActivityRecordCountByActivityAt(Long userId, ActivityAt activityAt) {
-    return activityRecordQueryService.countByActivityAt(userId, activityAt);
+  public boolean existsByActivityAt(Long userId, ActivityAt activityAt) {
+    return activityRecordQueryService.existsByActivityAt(userId, activityAt);
   }
 }

@@ -97,17 +97,17 @@ public class ActivityRecordQuery {
         .toList();
   }
 
-  public int countByActivityAt(Long userId, ActivityAt activityAt) {
-    Long count =
+  public boolean existsByActivityAt(Long userId, ActivityAt activityAt) {
+    Integer count =
         queryFactory
-            .select(activityRecord.count())
+            .selectOne()
             .from(activityRecord)
             .where(
                 activityRecord.userId.eq(userId),
                 activityRecord.activityAt.date.eq(activityAt.toDate()),
-                activityRecord.isDeleted.eq(false))
-            .fetchOne();
+                activityRecord.isDeleted.isFalse())
+            .fetchFirst();
 
-    return count != null ? count.intValue() : 0;
+    return count != null;
   }
 }

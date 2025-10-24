@@ -46,7 +46,7 @@ public class ActivityRecordRepositoryImpl implements ActivityRecordRepository {
   }
 
   @Override
-  public int countByActivityAt(Long userId, ActivityAt activityAt) {
-    return query.countByActivityAt(userId, activityAt);
+  public boolean existsByActivityAt(Long userId, ActivityAt activityAt) {
+    return query.existsByActivityAt(userId, activityAt);
   }
 }
