@@ -47,10 +47,11 @@ public class SwaggerConfig {
     // HTTP와 HTTPS 서버 모두 추가 (SSL 문제 해결을 위해)
     return new OpenAPI()
         .addServersItem(
+            new Server().url("https://kkruk.com").description("Production Server (HTTPS)"))
+        .addServersItem(
             new Server()
                 .url(serverUrl.replace("https://", "http://"))
                 .description("HTTP Server (No SSL)"))
-        .addServersItem(new Server().url(serverUrl).description("Production Server (HTTPS)"))
         .components(components)
         .info(apiInfo())
         .addSecurityItem(securityRequirement);
