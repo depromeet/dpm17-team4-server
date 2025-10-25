@@ -143,24 +143,31 @@ public class OAuthController {
       return;
     }
 
-    String refreshToken = oAuthCallbackUseCase.login(provider, code);
+    AuthResponseDto authResponseDto = oAuthCallbackUseCase.login(provider, code);
     String domain = UriUtils.extractDomain(stateData.redirectUri());
 
     ResponseCookie cookie =
         (domain != null && !domain.isBlank())
-            ? RefreshTokenCookieGenerator.generate(refreshToken, domain)
-            : RefreshTokenCookieGenerator.generate(refreshToken);
+            ? RefreshTokenCookieGenerator.generate(authResponseDto.refreshToken(), domain)
+            : RefreshTokenCookieGenerator.generate(authResponseDto.refreshToken());
 
     response.addHeader("Set-Cookie", cookie.toString());
 
     // same-domain 쿠키도 추가
     if (domain != null && !domain.isBlank()) {
-      ResponseCookie localCookie = RefreshTokenCookieGenerator.generate(refreshToken);
+      ResponseCookie localCookie =
+          RefreshTokenCookieGenerator.generate(authResponseDto.refreshToken());
       response.addHeader("Set-Cookie", localCookie.toString());
     }
 
     response.sendRedirect(
         UriComponentsBuilder.fromUriString(stateData.redirectUri())
+            .queryParam("id", authResponseDto.id())
+            .queryParam("email", authResponseDto.email())
+            .queryParam("nickname", authResponseDto.nickname())
+            .queryParam("providerType", authResponseDto.provider())
+            .queryParam("profileImage", authResponseDto.profileImage())
+            .queryParam("isNew", authResponseDto.isNew())
             .encode(StandardCharsets.UTF_8)
             .build()
             .toUriString());
