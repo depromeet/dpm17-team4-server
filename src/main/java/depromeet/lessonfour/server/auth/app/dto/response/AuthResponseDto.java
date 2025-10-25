@@ -1,14 +1,17 @@
 package depromeet.lessonfour.server.auth.app.dto.response;
 
 import depromeet.lessonfour.server.user.domain.entity.User;
+import depromeet.lessonfour.server.user.domain.vo.Gender;
 import depromeet.lessonfour.server.user.domain.vo.Provider;
 
 public record AuthResponseDto(
     Long id,
     String email,
     String nickname,
-    Provider.ProviderType provider,
+    Provider.ProviderType providerType,
     String profileImage,
+    Integer birthYear,
+    Gender gender,
     boolean isNew,
     String accessToken,
     String refreshToken) {
@@ -20,6 +23,8 @@ public record AuthResponseDto(
         user.getNickname(),
         user.getProvider() != null ? user.getProvider().getType() : null,
         user.getProfileImage(),
+        user.getBirthYear(),
+        user.getGender(),
         user.isNew(),
         null,
         null);
@@ -32,6 +37,8 @@ public record AuthResponseDto(
         user.getNickname(),
         user.getProvider() != null ? user.getProvider().getType() : null,
         user.getProfileImage(),
+        user.getBirthYear(),
+        user.getGender(),
         user.isNew(),
         token.accessToken(),
         token.refreshToken());
