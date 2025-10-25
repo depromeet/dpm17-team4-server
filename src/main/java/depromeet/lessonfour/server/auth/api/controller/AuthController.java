@@ -2,8 +2,6 @@ package depromeet.lessonfour.server.auth.api.controller;
 
 import static depromeet.lessonfour.server.auth.infra.security.jwt.JwtConstants.REFRESH_TOKEN_COOKIE_NAME;
 
-import java.net.URI;
-
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,9 +23,7 @@ import depromeet.lessonfour.server.auth.app.service.RefreshTokenUseCase;
 import depromeet.lessonfour.server.common.api.code.SuccessCode;
 import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
 import depromeet.lessonfour.server.user.app.dto.request.LoginRequestDto;
-import depromeet.lessonfour.server.user.app.dto.request.RegisterRequestDto;
 import depromeet.lessonfour.server.user.app.dto.response.AccessTokenResponseDto;
-import depromeet.lessonfour.server.user.app.service.SignupUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,22 +36,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
-  private final SignupUseCase registerUseCase;
   private final RefreshTokenUseCase refreshTokenUseCase;
   private final LogoutUseCase logoutUseCase;
-
-  @Operation(
-      summary = "로컬 회원가입",
-      description = "이메일과 비밀번호로 회원가입을 진행합니다. 성공 시 201 Created와 함께 생성된 유저 정보를 반환합니다.")
-  @PostMapping(
-      path = "/signup",
-      consumes = MediaType.APPLICATION_JSON_VALUE,
-      produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<?> signup(@Valid @RequestBody RegisterRequestDto dto) {
-    // TODO: RESTful하게 users 도메인으로 옮기는 것은 어떨까? e.g. POST users
-    var user = registerUseCase.signup(dto);
-    return ResponseEntity.created(URI.create("/api/v1/users/" + user.id())).body(user);
-  }
 
   @Operation(
       summary = "로컬 로그인",
