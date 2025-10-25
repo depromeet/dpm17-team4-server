@@ -10,14 +10,15 @@ import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
 
 public record GetDailyReportResponseDto(
     LocalDateTime updatedAt,
-    StoolDailyReport poo,
+    ToiletDailyReport toiletReport,
     FoodDailyReport food,
     WaterReport water,
     StressReport stress,
     SuggestionDto suggestion) {
 
   // POO
-  public record StoolDailyReport(double score, StoolSummary summary, List<StoolReportItem> items) {}
+  public record ToiletDailyReport(
+      double score, StoolSummary summary, List<StoolReportItem> items) {}
 
   public record StoolSummary(
       String image, List<String> backgroundColors, String caption, String message) {}
