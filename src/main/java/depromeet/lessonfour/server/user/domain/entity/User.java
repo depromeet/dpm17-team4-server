@@ -141,4 +141,8 @@ public class User extends BaseTimeEntity {
       this.birthYear = birthYear;
     }
   }
+
+  public void setNew(boolean isNew) {
+    this.isNew = isNew;
+  }
 }

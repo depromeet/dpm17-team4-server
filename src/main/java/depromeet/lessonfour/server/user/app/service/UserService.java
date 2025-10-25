@@ -16,6 +16,9 @@ public class UserService {
 
   @Transactional
   public User findOrCreate(String email, String nickname, String profileImage, Provider provider) {
+    User existingUser = userRepository.findByEmail(email).orElse(null);
+    boolean isNewUser = existingUser == null || existingUser.isDeleted();
+
     User user =
         userRepository
             .findByEmail(email)
@@ -27,6 +30,12 @@ public class UserService {
     if (user.isDeleted()) {
       user.activate();
     }
+
+    // 새로운 사용자인 경우 isNew를 true로 설정
+    if (isNewUser) {
+      user.setNew(true);
+    }
+
     return user;
   }
 }

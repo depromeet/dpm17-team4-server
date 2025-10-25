@@ -11,6 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import depromeet.lessonfour.server.auth.api.code.AuthErrorCode;
 import depromeet.lessonfour.server.auth.api.util.RefreshTokenCookieGenerator;
+import depromeet.lessonfour.server.auth.app.dto.response.AuthResponseDto;
 import depromeet.lessonfour.server.auth.app.service.AppleUserCache;
 import depromeet.lessonfour.server.auth.app.service.OAuthCallbackUseCase;
 import depromeet.lessonfour.server.auth.domain.vo.StateData;
@@ -78,24 +79,33 @@ public class AppleController {
       return;
     }
 
-    String refreshToken = oAuthCallbackUseCase.login(provider, code);
+    AuthResponseDto authResponseDto = oAuthCallbackUseCase.login(provider, code);
     String domain = UriUtils.extractDomain(stateData.redirectUri());
 
     ResponseCookie cookie =
         (domain != null && !domain.isBlank())
-            ? RefreshTokenCookieGenerator.generate(refreshToken, domain)
-            : RefreshTokenCookieGenerator.generate(refreshToken);
+            ? RefreshTokenCookieGenerator.generate(authResponseDto.refreshToken(), domain)
+            : RefreshTokenCookieGenerator.generate(authResponseDto.refreshToken());
 
     response.addHeader("Set-Cookie", cookie.toString());
 
     // same-domain 쿠키도 추가
     if (domain != null && !domain.isBlank()) {
-      ResponseCookie localCookie = RefreshTokenCookieGenerator.generate(refreshToken);
+      ResponseCookie localCookie =
+          RefreshTokenCookieGenerator.generate(authResponseDto.refreshToken());
       response.addHeader("Set-Cookie", localCookie.toString());
     }
 
     response.sendRedirect(
         UriComponentsBuilder.fromUriString(stateData.redirectUri())
+            .queryParam("id", authResponseDto.id())
+            .queryParam("email", authResponseDto.email())
+            .queryParam("nickname", authResponseDto.nickname())
+            .queryParam("providerType", authResponseDto.providerType())
+            .queryParam("profileImage", authResponseDto.profileImage())
+            .queryParam("birthYear", authResponseDto.birthYear())
+            .queryParam("gender", authResponseDto.gender())
+            .queryParam("isNew", authResponseDto.isNew())
             .encode(StandardCharsets.UTF_8)
             .build()
             .toUriString());
