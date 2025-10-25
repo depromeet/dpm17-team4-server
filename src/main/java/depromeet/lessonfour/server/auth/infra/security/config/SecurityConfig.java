@@ -124,7 +124,7 @@ public class SecurityConfig {
             auth ->
                 auth.requestMatchers(
                         "/api/v1/health",
-                        "/api/v1/auth/signup",
+                        "/api/v1/users/signup",
                         "/api/v1/auth/refresh",
                         "/api/v1/auth/*/login",
                         "/api/v1/auth/*/callback",

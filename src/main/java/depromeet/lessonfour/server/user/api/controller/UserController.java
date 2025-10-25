@@ -1,5 +1,7 @@
 package depromeet.lessonfour.server.user.api.controller;
 
+import java.net.URI;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,9 +18,11 @@ import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.api.code.SuccessCode;
 import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
 import depromeet.lessonfour.server.common.exception.ServerException;
+import depromeet.lessonfour.server.user.app.dto.request.RegisterRequestDto;
 import depromeet.lessonfour.server.user.app.dto.request.UpdateUserProfileRequestDto;
 import depromeet.lessonfour.server.user.app.dto.response.UpdateUserProfileResponseDto;
 import depromeet.lessonfour.server.user.app.dto.response.UserProfileResponseDto;
+import depromeet.lessonfour.server.user.app.service.SignupUseCase;
 import depromeet.lessonfour.server.user.app.service.UserDeleteUseCase;
 import depromeet.lessonfour.server.user.app.service.UserQueryService;
 import depromeet.lessonfour.server.user.app.service.UserUpdateService;
@@ -36,6 +41,19 @@ public class UserController {
   private final UserQueryService userQueryService;
   private final UserUpdateService userUpdateService;
   private final UserDeleteUseCase userDeleteUseCase;
+  private final SignupUseCase signupUseCase;
+
+  @Operation(
+      summary = "로컬 회원가입",
+      description = "이메일과 비밀번호로 회원가입을 진행합니다. 성공 시 201 Created와 함께 생성된 유저 정보를 반환합니다.")
+  @PostMapping(
+      path = "/signup",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<?> signup(@Valid @RequestBody RegisterRequestDto dto) {
+    var user = signupUseCase.signup(dto);
+    return ResponseEntity.created(URI.create("/api/v1/users/" + user.id())).body(user);
+  }
 
   @Operation(
       summary = "내 정보 조회",
