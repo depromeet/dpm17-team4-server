@@ -7,24 +7,24 @@ import org.springframework.stereotype.Service;
 
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.report.app.client.ToiletRecordClient;
-import depromeet.lessonfour.server.report.domain.service.StoolEvaluationService;
-import depromeet.lessonfour.server.report.domain.vo.StoolReport;
+import depromeet.lessonfour.server.report.domain.service.ToiletEvaluationService;
+import depromeet.lessonfour.server.report.domain.vo.ToiletReport;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class StoolReportService {
+public class ToiletReportService {
 
   private final ToiletRecordClient toiletRecordClient;
-  private final StoolEvaluationService stoolEvaluationService;
+  private final ToiletEvaluationService toiletEvaluationService;
   private final ToiletScoreService toiletScoreService;
 
-  public StoolReport generateDailyReport(Long userId, LocalDateTime baseDateTime) {
+  public ToiletReport generateDailyReport(Long userId, LocalDateTime baseDateTime) {
     List<ToiletRecord> dailyRecords =
         toiletRecordClient.getToiletRecordsByDate(userId, baseDateTime.toLocalDate());
 
-    StoolReport report = stoolEvaluationService.summarize(dailyRecords);
+    ToiletReport report = toiletEvaluationService.summarize(dailyRecords);
     toiletScoreService.updateScore(
         userId, (int) report.getStoolScore(), ActivityAt.from(baseDateTime));
 

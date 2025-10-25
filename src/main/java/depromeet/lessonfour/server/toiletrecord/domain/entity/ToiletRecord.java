@@ -2,8 +2,8 @@ package depromeet.lessonfour.server.toiletrecord.domain.entity;
 
 import depromeet.lessonfour.server.common.domain.entity.BaseTimeEntity;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
-import depromeet.lessonfour.server.report.domain.policy.StoolEvaluationPolicy;
-import depromeet.lessonfour.server.report.domain.vo.StoolEvaluation;
+import depromeet.lessonfour.server.report.domain.policy.ToiletEvaluationPolicy;
+import depromeet.lessonfour.server.report.domain.vo.ToiletEvaluation;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
 import depromeet.lessonfour.server.user.domain.entity.User;
@@ -121,7 +121,7 @@ public class ToiletRecord extends BaseTimeEntity {
     this.isDeleted = true;
   }
 
-  public StoolEvaluation evaluatePoo(StoolEvaluationPolicy policy) {
+  public ToiletEvaluation evaluatePoo(ToiletEvaluationPolicy policy) {
     return policy.evaluate(this);
   }
 }
