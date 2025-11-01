@@ -2,6 +2,7 @@ package depromeet.lessonfour.server.report.domain.vo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -41,13 +42,13 @@ public class StoolReport {
   }
 
   public boolean hasBlood() {
-    return items.stream().anyMatch(item -> item.getColor() == ToiletColor.RED);
+    return items.stream().map(StoolEvaluation::getColor).anyMatch(c -> c == ToiletColor.RED);
   }
 
   public boolean hasAbnormalColor() {
     return items.stream()
-        .anyMatch(
-            item -> item.getColor() == ToiletColor.GREEN || item.getColor() == ToiletColor.GRAY);
+        .map(StoolEvaluation::getColor)
+        .anyMatch(c -> c == ToiletColor.GREEN || c == ToiletColor.GRAY);
   }
 
   public boolean drunkAlcohol() {
@@ -77,6 +78,7 @@ public class StoolReport {
   public ToiletShape getMostFrequentShape() {
     return items.stream()
         .map(StoolEvaluation::getShape)
+        .filter(Objects::nonNull)
         .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
         .entrySet()
         .stream()
@@ -88,6 +90,7 @@ public class StoolReport {
   public ToiletColor getMostFrequentColor() {
     return items.stream()
         .map(StoolEvaluation::getColor)
+        .filter(Objects::nonNull)
         .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
         .entrySet()
         .stream()
@@ -97,7 +100,8 @@ public class StoolReport {
   }
 
   public boolean hasGoodShape() {
-    return getMostFrequentShape() == ToiletShape.BANANA;
+    ToiletShape shape = getMostFrequentShape();
+    return shape == ToiletShape.BANANA;
   }
 
   public boolean hasGoodColor() {
