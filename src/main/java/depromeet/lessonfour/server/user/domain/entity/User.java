@@ -120,10 +120,18 @@ public class User extends BaseTimeEntity {
 
   public void deactivate() {
     this.isDeleted = true;
+    // 이메일을 랜덤 문자열로 변경하여 재가입 시 새로운 사용자로 인식되도록 함
+    this.email = generateRandomEmail();
   }
 
   public void activate() {
     this.isDeleted = false;
+    // 탈퇴한 사용자가 다시 로그인하는 경우이므로 새로운 사용자로 처리됨
+  }
+
+  private String generateRandomEmail() {
+    // UUID를 사용하여 고유한 랜덤 문자열 생성 (이메일 형식 유지)
+    return "deleted_" + java.util.UUID.randomUUID().toString().replace("-", "") + "@deleted.local";
   }
 
   public void updateProfile(
