@@ -57,6 +57,9 @@ public class StoolMapper {
       return null;
     }
     HeroCharacter heroCharacter = characterMap.get(stoolReport.getLevel());
+    if (heroCharacter == null) {
+      heroCharacter = characterMap.get(StoolEvaluationLevel.AVERAGE);
+    }
     return new StoolDailyReport(
         stoolReport.getStoolScore(),
         new StoolSummary(
