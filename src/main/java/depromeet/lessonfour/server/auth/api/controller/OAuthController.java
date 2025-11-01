@@ -153,13 +153,6 @@ public class OAuthController {
 
     response.addHeader("Set-Cookie", cookie.toString());
 
-    // same-domain 쿠키도 추가
-    if (domain != null && !domain.isBlank()) {
-      ResponseCookie localCookie =
-          RefreshTokenCookieGenerator.generate(authResponseDto.refreshToken());
-      response.addHeader("Set-Cookie", localCookie.toString());
-    }
-
     response.sendRedirect(
         UriComponentsBuilder.fromUriString(stateData.redirectUri())
             .queryParam("id", authResponseDto.id())
