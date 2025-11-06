@@ -2,11 +2,13 @@ package depromeet.lessonfour.server.report.api.dto.response;
 
 import java.util.List;
 
+import depromeet.lessonfour.server.report.app.dto.response.MonthlyScore;
 import depromeet.lessonfour.server.report.app.dto.response.ToiletColorCount;
 import depromeet.lessonfour.server.report.domain.vo.monthly.ToiletTimeDistribution;
 
 public record GetMonthlyReportResponseDto(
     MonthlyRecordCount recordCount,
+    MonthlyScore monthlyScore,
     List<MonthlyToiletShape> shape,
     MonthlyToiletTime timeDistribution,
     MonthlyToiletColor color,

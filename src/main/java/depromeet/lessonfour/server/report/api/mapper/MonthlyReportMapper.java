@@ -19,6 +19,7 @@ public class MonthlyReportMapper {
 
     return new GetMonthlyReportResponseDto(
         from(monthlyReport.recordCounts()),
+        monthlyReport.monthlyScore(),
         toiletReportMapper.mapShape(monthlyReport.shape()),
         MonthlyToiletTime.from(monthlyReport.timeDistribution()),
         toiletReportMapper.mapColor(monthlyReport.color()),
