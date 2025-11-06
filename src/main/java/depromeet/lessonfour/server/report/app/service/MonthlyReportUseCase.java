@@ -24,7 +24,7 @@ public class MonthlyReportUseCase {
   private final ActivityReportService activityReportService;
   private final SuggestionService suggestionService;
 
-  public MonthlyReport getMonthlyReport(Long userId, YearMonth month) {
+  public MonthlyReport generateMonthlyReport(Long userId, YearMonth month) {
     ActivityAt monthStart = ActivityAt.of(month.atDay(1));
     ActivityAt monthEndExclusive = ActivityAt.of(month.atEndOfMonth().plusDays(1));
 
@@ -35,11 +35,9 @@ public class MonthlyReportUseCase {
         activityReportService.generateMonthlyReport(userId, monthStart, monthEndExclusive);
 
     Suggestion suggestion = suggestionService.suggest(activityReport, toiletReport);
-    // 기록수
-    RecordCounts recordCounts = RecordCounts.of(activityReport.size(), toiletReport.size());
 
     return new MonthlyReport(
-        recordCounts,
+        RecordCounts.of(activityReport.size(), toiletReport.size()),
         MonthlyScore.from(toiletReport.scoreSummary()),
         toiletReport.shapeCount(),
         toiletReport.timeDistribution(),
