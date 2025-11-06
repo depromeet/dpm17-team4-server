@@ -7,9 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.report.app.dto.response.DailyReport;
 import depromeet.lessonfour.server.report.domain.service.SuggestionService;
-import depromeet.lessonfour.server.report.domain.vo.ActivityReport;
+import depromeet.lessonfour.server.report.domain.vo.DailyActivityReport;
+import depromeet.lessonfour.server.report.domain.vo.DailyToiletReport;
 import depromeet.lessonfour.server.report.domain.vo.Suggestion;
-import depromeet.lessonfour.server.report.domain.vo.ToiletReport;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
@@ -22,10 +22,11 @@ public class GetDailyReportUseCase {
   private final SuggestionService suggestionService;
 
   public DailyReport getDailyReport(Long userId, LocalDateTime dateTime) {
-    ActivityReport activityReport = activityReportService.generateDailyReport(userId, dateTime);
-    ToiletReport toiletReport = toiletReportService.generateDailyReport(userId, dateTime);
-    Suggestion suggestion = suggestionService.suggest(activityReport, toiletReport);
+    DailyActivityReport dailyActivityReport =
+        activityReportService.generateDailyReport(userId, dateTime);
+    DailyToiletReport dailyToiletReport = toiletReportService.generateDailyReport(userId, dateTime);
+    Suggestion suggestion = suggestionService.suggest(dailyActivityReport, dailyToiletReport);
 
-    return new DailyReport(activityReport, toiletReport, suggestion);
+    return new DailyReport(dailyActivityReport, dailyToiletReport, suggestion);
   }
 }

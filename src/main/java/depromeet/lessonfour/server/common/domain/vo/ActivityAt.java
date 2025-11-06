@@ -62,6 +62,14 @@ public class ActivityAt {
     return date;
   }
 
+  public ActivityAt getLastMonth() {
+    if (this.equals(EMPTY)) {
+      throw new ServerException(ErrorCode.INVALID_FIELD_ERROR);
+    }
+    LocalDate lastMonthDate = date.minusMonths(1);
+    return ActivityAt.from(lastMonthDate.atStartOfDay());
+  }
+
   public List<LocalDate> datesUntil(@Nullable ActivityAt end) {
     if (this.equals(EMPTY)) {
       throw new ServerException(ErrorCode.INVALID_FIELD_ERROR);

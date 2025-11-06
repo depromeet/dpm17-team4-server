@@ -15,17 +15,17 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ToiletReport {
+public class DailyToiletReport {
 
   private final double toiletScore;
   private final ToiletEvaluationLevel level;
   private final List<ToiletEvaluation> items;
 
-  private static ToiletReport empty() {
-    return new ToiletReport(0, ToiletEvaluationLevel.NONE, List.of());
+  private static DailyToiletReport empty() {
+    return new DailyToiletReport(0, ToiletEvaluationLevel.NONE, List.of());
   }
 
-  public static ToiletReport summarize(List<ToiletEvaluation> evaluations) {
+  public static DailyToiletReport summarize(List<ToiletEvaluation> evaluations) {
     if (evaluations.isEmpty()) {
       return empty();
     }
@@ -39,7 +39,7 @@ public class ToiletReport {
 
     ToiletEvaluationLevel level = ToiletEvaluationLevel.from((int) (averageScore));
 
-    return new ToiletReport(averageScore, level, evaluations);
+    return new DailyToiletReport(averageScore, level, evaluations);
   }
 
   public boolean hasBlood() {

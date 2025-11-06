@@ -21,10 +21,10 @@ public class DailyReportMapper {
   public GetDailyReportResponseDto map(DailyReport dailyReport, LocalDateTime updatedAt) {
     return new GetDailyReportResponseDto(
         updatedAt,
-        toiletReportMapper.map(dailyReport.toiletReport()),
-        foodMapper.map(dailyReport.activityReport().getFoodEvaluations()),
-        waterMapper.map(dailyReport.activityReport().getWaterEvaluations()),
-        stressMapper.map(dailyReport.activityReport().getStressEvaluation()),
+        toiletReportMapper.map(dailyReport.dailyToiletReport()),
+        foodMapper.map(dailyReport.dailyActivityReport().getFoodEvaluations()),
+        waterMapper.map(dailyReport.dailyActivityReport().getWaterEvaluations()),
+        stressMapper.map(dailyReport.dailyActivityReport().getStressEvaluation()),
         suggestionMapper.map(dailyReport.suggestion()));
   }
 }

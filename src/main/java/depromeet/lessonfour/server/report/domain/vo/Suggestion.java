@@ -12,6 +12,13 @@ import lombok.Getter;
 @AllArgsConstructor
 public class Suggestion {
 
+  public static Suggestion dummy() {
+    return new Suggestion(
+        WaterSuggestion.STANDARD,
+        ToiletSuggestion.HEALTHY_REGULAR,
+        List.of(HabitSuggestion.REGULAR_TOILET_HABITS));
+  }
+
   private WaterSuggestion waterSuggestion;
   private ToiletSuggestion toiletSuggestion;
   private List<HabitSuggestion> habitSuggestion;

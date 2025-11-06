@@ -31,4 +31,14 @@ public class ToiletScoreRepositoryImpl implements ToiletScoreRepository {
   public ToiletScore save(ToiletScore toiletScore) {
     return jpa.save(toiletScore);
   }
+
+  @Override
+  public Optional<ToiletScore> findMaxScoreBetween(Long userId, ActivityAt start, ActivityAt end) {
+    return query.findMaxScoreBetween(userId, start, end);
+  }
+
+  @Override
+  public Optional<ToiletScore> findMinScoreBetween(Long userId, ActivityAt start, ActivityAt end) {
+    return query.findMinScoreBetween(userId, start, end);
+  }
 }

@@ -9,7 +9,7 @@ import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
 import depromeet.lessonfour.server.report.domain.policy.FoodEvaluationPolicy;
 import depromeet.lessonfour.server.report.domain.policy.StressEvaluationPolicy;
 import depromeet.lessonfour.server.report.domain.policy.WaterEvaluationPolicy;
-import depromeet.lessonfour.server.report.domain.vo.ActivityReport;
+import depromeet.lessonfour.server.report.domain.vo.DailyActivityReport;
 import depromeet.lessonfour.server.report.domain.vo.DayType;
 import depromeet.lessonfour.server.report.domain.vo.FoodEvaluation;
 import depromeet.lessonfour.server.report.domain.vo.StressEvaluation;
@@ -24,7 +24,7 @@ public class ActivityEvaluationService {
   private final WaterEvaluationPolicy waterEvaluationPolicy;
   private final StressEvaluationPolicy stressEvaluationPolicy;
 
-  public ActivityReport evaluate(ActivityRecord previous, ActivityRecord current) {
+  public DailyActivityReport evaluate(ActivityRecord previous, ActivityRecord current) {
     List<FoodEvaluation> foodEvaluations = new ArrayList<>();
     List<WaterEvaluation> waterEvaluations = new ArrayList<>();
     StressEvaluation stressEvaluation = StressEvaluation.empty();
@@ -43,6 +43,6 @@ public class ActivityEvaluationService {
       stressEvaluation = stressEvaluationPolicy.calculate(current.getStressLevel());
     }
 
-    return new ActivityReport(foodEvaluations, waterEvaluations, stressEvaluation);
+    return new DailyActivityReport(foodEvaluations, waterEvaluations, stressEvaluation);
   }
 }

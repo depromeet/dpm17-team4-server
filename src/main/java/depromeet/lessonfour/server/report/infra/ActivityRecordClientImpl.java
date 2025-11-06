@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.activityrecord.app.service.ActivityRecordQueryService;
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.report.app.client.ActivityRecordClient;
 import lombok.RequiredArgsConstructor;
 
@@ -23,8 +24,11 @@ public class ActivityRecordClientImpl implements ActivityRecordClient {
   @Override
   public Map<LocalDate, ActivityRecord> getActivityRecordsBetween(
       Long userId, LocalDateTime start, LocalDateTime end) {
+    ActivityAt from = ActivityAt.from(start);
+    ActivityAt to = ActivityAt.from(end);
+
     List<ActivityRecord> records =
-        activityRecordQueryService.getActivityRecordsBetween(userId, start, end);
+        activityRecordQueryService.getActivityRecordsBetween(userId, from, to);
     return groupByDate(records);
   }
 
@@ -35,5 +39,11 @@ public class ActivityRecordClientImpl implements ActivityRecordClient {
                 record -> record.getActivityAt().toDate(),
                 Function.identity(),
                 (existing, replacement) -> existing));
+  }
+
+  @Override
+  public List<ActivityRecord> getActivityRecordsBetween(
+      Long userId, ActivityAt startAt, ActivityAt endAt) {
+    return activityRecordQueryService.getActivityRecordsBetween(userId, startAt, endAt);
   }
 }
