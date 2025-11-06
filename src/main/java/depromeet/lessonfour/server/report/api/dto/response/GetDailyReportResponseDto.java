@@ -10,7 +10,7 @@ import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
 
 public record GetDailyReportResponseDto(
     LocalDateTime updatedAt,
-    ToiletDailyReport toiletReport,
+    ToiletDailyReport poo,
     FoodDailyReport food,
     WaterReport water,
     StressReport stress,

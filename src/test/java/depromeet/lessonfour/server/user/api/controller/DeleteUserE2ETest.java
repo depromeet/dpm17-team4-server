@@ -123,7 +123,7 @@ class DeleteUserE2ETest {
   }
 
   @Test
-  @DisplayName("이미 삭제된 사용자 계정 삭제 요청시에도 멱등성을 보장한다")
+  @DisplayName("이미 삭제된 사용자 계정 삭제 요청시 401 에러가 발생한다")
   void givenAlreadyDeletedUser_whenDeleteUser_thenSuccessIdempotently() {
     // 먼저 사용자를 삭제
     testUser.deactivate();
@@ -138,7 +138,7 @@ class DeleteUserE2ETest {
         .then()
         .log()
         .all()
-        .statusCode(HttpStatus.OK.value())
+        .statusCode(HttpStatus.UNAUTHORIZED.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE);
   }
 

@@ -58,7 +58,7 @@ public class ToiletReportMapper {
     }
     HeroCharacter heroCharacter = characterMap.get(toiletReport.getLevel());
     return new ToiletDailyReport(
-        toiletReport.getStoolScore(),
+        toiletReport.getToiletScore(),
         new ToiletSummary(
             heroCharacter.getImage(),
             heroCharacter.getBackgroundColors(),

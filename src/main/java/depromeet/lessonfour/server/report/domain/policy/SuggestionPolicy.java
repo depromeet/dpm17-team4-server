@@ -62,14 +62,15 @@ public class SuggestionPolicy {
       result.add(HabitSuggestion.STRESS_MANAGEMENT);
     }
 
-    if (toiletReport.getStoolScore() >= VERY_GOOD_CONDITION_THRESHOLD) {
+    if (toiletReport.getToiletScore() >= VERY_GOOD_CONDITION_THRESHOLD) {
       result.add(HabitSuggestion.REGULAR_TOILET_HABITS);
     }
   }
 
   private ToiletSuggestion generatePooSuggestions(ToiletReport toiletReport) {
 
-    ToiletShape shape = toiletReport.getMostFrequentShape();
+    ToiletShape shape = toiletReport.getMostFrequentShape().orElse(null);
+
     // 가장 심각한 증상부터 체크
     if (toiletReport.hasBlood()) {
       return BLOODY_STOOL;

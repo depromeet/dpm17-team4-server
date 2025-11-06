@@ -26,7 +26,7 @@ public class ToiletReportService {
 
     ToiletReport report = toiletEvaluationService.summarize(dailyRecords);
     toiletScoreService.updateScore(
-        userId, (int) report.getStoolScore(), ActivityAt.from(baseDateTime));
+        userId, (int) report.getToiletScore(), ActivityAt.from(baseDateTime));
 
     return report;
   }

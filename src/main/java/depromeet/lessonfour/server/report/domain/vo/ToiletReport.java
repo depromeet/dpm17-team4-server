@@ -2,6 +2,8 @@ package depromeet.lessonfour.server.report.domain.vo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -15,7 +17,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ToiletReport {
 
-  private final double stoolScore;
+  private final double toiletScore;
   private final ToiletEvaluationLevel level;
   private final List<ToiletEvaluation> items;
 
@@ -74,34 +76,42 @@ public class ToiletReport {
     return items.size();
   }
 
-  public ToiletShape getMostFrequentShape() {
-    return items.stream()
+  public Optional<ToiletShape> getMostFrequentShape() {
+    return Optional.ofNullable(items).stream()
+        .flatMap(List::stream) // Optional<List> → Stream<ToiletEvaluation>
+        .filter(Objects::nonNull)
         .map(ToiletEvaluation::getShape)
+        .filter(Objects::nonNull)
         .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
         .entrySet()
         .stream()
         .max(Map.Entry.comparingByValue())
-        .map(Map.Entry::getKey)
-        .orElse(null);
+        .map(Map.Entry::getKey);
   }
 
-  public ToiletColor getMostFrequentColor() {
+  public Optional<ToiletColor> getMostFrequentColor() {
+    if (items == null || items.isEmpty()) {
+      return Optional.empty();
+    }
+
     return items.stream()
+        .filter(Objects::nonNull)
         .map(ToiletEvaluation::getColor)
+        .filter(Objects::nonNull)
         .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
         .entrySet()
         .stream()
         .max(Map.Entry.comparingByValue())
-        .map(Map.Entry::getKey)
-        .orElse(null);
+        .map(Map.Entry::getKey);
   }
 
   public boolean hasGoodShape() {
-    return getMostFrequentShape() == ToiletShape.BANANA;
+    return getMostFrequentShape().map(shape -> shape == ToiletShape.BANANA).orElse(false);
   }
 
   public boolean hasGoodColor() {
-    ToiletColor color = getMostFrequentColor();
-    return color == ToiletColor.DARK_BROWN || color == ToiletColor.GOLD;
+    return getMostFrequentColor()
+        .map(color -> color == ToiletColor.DARK_BROWN || color == ToiletColor.GOLD)
+        .orElse(false);
   }
 }
