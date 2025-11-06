@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DailyReportMapper {
 
-  private final StoolMapper stoolMapper;
+  private final ToiletReportMapper toiletReportMapper;
   private final FoodMapper foodMapper;
   private final WaterMapper waterMapper;
   private final StressMapper stressMapper;
@@ -21,7 +21,7 @@ public class DailyReportMapper {
   public GetDailyReportResponseDto map(DailyReport dailyReport, LocalDateTime updatedAt) {
     return new GetDailyReportResponseDto(
         updatedAt,
-        stoolMapper.map(dailyReport.stoolReport()),
+        toiletReportMapper.map(dailyReport.toiletReport()),
         foodMapper.map(dailyReport.activityReport().getFoodEvaluations()),
         waterMapper.map(dailyReport.activityReport().getWaterEvaluations()),
         stressMapper.map(dailyReport.activityReport().getStressEvaluation()),

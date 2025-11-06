@@ -43,7 +43,6 @@ public class UserDeleteUseCase {
 
     // DB에서 사용자 비활성화 및 refresh token 제거
     user.deactivate();
-    user.storeRefreshToken(null);
 
     log.info("User {} has been successfully deleted", userId);
   }

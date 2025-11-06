@@ -10,9 +10,9 @@ import lombok.Getter;
 
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
-public class StoolEvaluation {
+public class ToiletEvaluation {
   private final double score;
-  private final StoolEvaluationLevel level;
+  private final ToiletEvaluationLevel level;
   private final ToiletColor color;
   private final ToiletShape shape;
   private final int duration;
@@ -20,9 +20,9 @@ public class StoolEvaluation {
   private final String note;
   private final ActivityAt occurredAt;
 
-  public static StoolEvaluation from(
-      double score, StoolEvaluationLevel level, ToiletRecord record) {
-    return StoolEvaluation.builder()
+  public static ToiletEvaluation from(
+      double score, ToiletEvaluationLevel level, ToiletRecord record) {
+    return ToiletEvaluation.builder()
         .score(score)
         .level(level)
         .color(record.getColor())
