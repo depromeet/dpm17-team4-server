@@ -15,12 +15,9 @@ public record MonthlyScore(Score best, Score worst) {
     ToiletScore best = scoreSummary.best();
     ToiletScore worst = scoreSummary.worst();
 
-    if (best == null && worst == null) {
+    if (best == null || worst == null) {
       return null;
     }
-
-    assert best != null;
-    assert worst != null;
 
     Score bestScore = new Score(best.getDate(), best.getScore());
     Score worstScore = new Score(worst.getDate(), worst.getScore());
