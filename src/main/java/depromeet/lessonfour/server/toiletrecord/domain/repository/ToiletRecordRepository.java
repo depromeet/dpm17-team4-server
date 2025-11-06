@@ -23,4 +23,6 @@ public interface ToiletRecordRepository {
   List<DailyExistence> findDailyExistencesBetween(Long userId, ActivityAt start, ActivityAt end);
 
   int countByActivityAt(Long userId, ActivityAt at);
+
+  List<ToiletRecord> findAllByActivityAtBetween(Long userId, ActivityAt startAt, ActivityAt endAt);
 }

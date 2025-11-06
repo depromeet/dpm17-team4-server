@@ -13,4 +13,8 @@ public interface ToiletScoreRepository {
   Optional<ToiletScore> findByDate(Long userId, LocalDate date);
 
   ToiletScore save(ToiletScore toiletScore);
+
+  Optional<ToiletScore> findMaxScoreBetween(Long userId, ActivityAt start, ActivityAt end);
+
+  Optional<ToiletScore> findMinScoreBetween(Long userId, ActivityAt start, ActivityAt end);
 }

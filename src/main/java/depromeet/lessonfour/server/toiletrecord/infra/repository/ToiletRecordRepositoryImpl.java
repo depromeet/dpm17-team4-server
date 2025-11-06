@@ -54,4 +54,10 @@ public class ToiletRecordRepositoryImpl implements ToiletRecordRepository {
   public int countByActivityAt(Long userId, ActivityAt at) {
     return query.countByActivityAt(userId, at);
   }
+
+  @Override
+  public List<ToiletRecord> findAllByActivityAtBetween(
+      Long userId, ActivityAt startAt, ActivityAt endAt) {
+    return query.findAllByActivityAtBetween(userId, startAt, endAt);
+  }
 }

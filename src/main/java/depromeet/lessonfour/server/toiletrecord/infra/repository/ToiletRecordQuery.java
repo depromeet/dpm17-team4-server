@@ -99,4 +99,20 @@ public class ToiletRecordQuery {
 
     return count != null ? count.intValue() : 0;
   }
+
+  public List<ToiletRecord> findAllByActivityAtBetween(
+      Long userId, ActivityAt startAt, ActivityAt endAt) {
+    List<ToiletRecord> records =
+        queryFactory
+            .selectFrom(toiletRecord)
+            .where(
+                toiletRecord.user.id.eq(userId),
+                toiletRecord.activityAt.date.goe(startAt.toDate()),
+                toiletRecord.activityAt.date.lt(endAt.toDate()),
+                toiletRecord.isDeleted.isFalse())
+            .orderBy(toiletRecord.activityAt.date.asc(), toiletRecord.activityAt.time.asc())
+            .fetch();
+
+    return records == null ? List.of() : records;
+  }
 }

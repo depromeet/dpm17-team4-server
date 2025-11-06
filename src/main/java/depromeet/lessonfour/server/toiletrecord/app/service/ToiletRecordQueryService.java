@@ -34,4 +34,9 @@ public class ToiletRecordQueryService {
   public int countByActivityAt(Long userId, ActivityAt at) {
     return toiletRecordRepository.countByActivityAt(userId, at);
   }
+
+  public List<ToiletRecord> findByActivityAtBetween(
+      Long userId, ActivityAt startAt, ActivityAt endAt) {
+    return toiletRecordRepository.findAllByActivityAtBetween(userId, startAt, endAt);
+  }
 }
