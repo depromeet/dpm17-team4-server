@@ -13,7 +13,7 @@ import depromeet.lessonfour.server.report.domain.vo.ToiletReport;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class GetDailyReportUseCase {
 

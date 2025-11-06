@@ -27,9 +27,6 @@ public class UserService {
                   User newUser = User.register(email, nickname, null, profileImage, provider);
                   return userRepository.save(newUser);
                 });
-    if (user.isDeleted()) {
-      user.activate();
-    }
 
     // 새로운 사용자인 경우 isNew를 true로 설정
     if (isNewUser) {

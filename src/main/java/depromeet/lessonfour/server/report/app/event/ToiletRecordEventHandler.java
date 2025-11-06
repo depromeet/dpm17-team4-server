@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.report.event;
+package depromeet.lessonfour.server.report.app.event;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
