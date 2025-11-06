@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import depromeet.lessonfour.server.report.domain.entity.ToiletScore;
 import depromeet.lessonfour.server.report.domain.vo.monthly.ScoreSummary;
 
-public record MonthlyScore(MonthlyScore.Score best, MonthlyScore.Score worst) {
+public record MonthlyScore(Score best, Score worst) {
 
   public static MonthlyScore from(ScoreSummary scoreSummary) {
     if (scoreSummary == null) {
