@@ -18,9 +18,9 @@ public record GetDailyReportResponseDto(
 
   // POO
   public record ToiletDailyReport(
-      double score, StoolSummary summary, List<StoolReportItem> items) {}
+      double score, ToiletSummary summary, List<StoolReportItem> items) {}
 
-  public record StoolSummary(
+  public record ToiletSummary(
       String image, List<String> backgroundColors, String caption, String message) {}
 
   public record StoolReportItem(

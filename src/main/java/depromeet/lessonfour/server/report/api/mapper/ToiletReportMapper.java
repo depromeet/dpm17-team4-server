@@ -6,8 +6,8 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.StoolReportItem;
-import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.StoolSummary;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.ToiletDailyReport;
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.ToiletSummary;
 import depromeet.lessonfour.server.report.domain.vo.ToiletEvaluationLevel;
 import depromeet.lessonfour.server.report.domain.vo.ToiletReport;
 import lombok.AllArgsConstructor;
@@ -59,7 +59,7 @@ public class ToiletReportMapper {
     HeroCharacter heroCharacter = characterMap.get(toiletReport.getLevel());
     return new ToiletDailyReport(
         toiletReport.getStoolScore(),
-        new StoolSummary(
+        new ToiletSummary(
             heroCharacter.getImage(),
             heroCharacter.getBackgroundColors(),
             heroCharacter.getCaption(),
