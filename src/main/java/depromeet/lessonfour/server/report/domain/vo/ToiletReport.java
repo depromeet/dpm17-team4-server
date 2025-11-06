@@ -3,6 +3,7 @@ package depromeet.lessonfour.server.report.domain.vo;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -14,41 +15,41 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class StoolReport {
+public class ToiletReport {
 
-  private final double stoolScore;
-  private final StoolEvaluationLevel level;
-  private final List<StoolEvaluation> items;
+  private final double toiletScore;
+  private final ToiletEvaluationLevel level;
+  private final List<ToiletEvaluation> items;
 
-  private static StoolReport empty() {
-    return new StoolReport(0, StoolEvaluationLevel.NONE, List.of());
+  private static ToiletReport empty() {
+    return new ToiletReport(0, ToiletEvaluationLevel.NONE, List.of());
   }
 
-  public static StoolReport summarize(List<StoolEvaluation> evaluations) {
+  public static ToiletReport summarize(List<ToiletEvaluation> evaluations) {
     if (evaluations.isEmpty()) {
       return empty();
     }
 
     double averageScore =
         evaluations.stream()
-            .map(StoolEvaluation::getScore)
+            .map(ToiletEvaluation::getScore)
             .mapToDouble(Double::doubleValue)
             .average()
             .orElse(0);
 
-    StoolEvaluationLevel level = StoolEvaluationLevel.from((int) (averageScore));
+    ToiletEvaluationLevel level = ToiletEvaluationLevel.from((int) (averageScore));
 
-    return new StoolReport(averageScore, level, evaluations);
+    return new ToiletReport(averageScore, level, evaluations);
   }
 
   public boolean hasBlood() {
-    return items.stream().map(StoolEvaluation::getColor).anyMatch(c -> c == ToiletColor.RED);
+    return items.stream().anyMatch(item -> item.getColor() == ToiletColor.RED);
   }
 
   public boolean hasAbnormalColor() {
     return items.stream()
-        .map(StoolEvaluation::getColor)
-        .anyMatch(c -> c == ToiletColor.GREEN || c == ToiletColor.GRAY);
+        .anyMatch(
+            item -> item.getColor() == ToiletColor.GREEN || item.getColor() == ToiletColor.GRAY);
   }
 
   public boolean drunkAlcohol() {
@@ -64,48 +65,53 @@ public class StoolReport {
   }
 
   public double getAverageDuration() {
-    return items.stream().mapToInt(StoolEvaluation::getDuration).average().orElse(0);
+    return items.stream().mapToInt(ToiletEvaluation::getDuration).average().orElse(0);
   }
 
   public double getAveragePain() {
-    return items.stream().mapToDouble(StoolEvaluation::getPain).average().orElse(0);
+    return items.stream().mapToDouble(ToiletEvaluation::getPain).average().orElse(0);
   }
 
   public int getNumberOfRecords() {
     return items.size();
   }
 
-  public ToiletShape getMostFrequentShape() {
-    return items.stream()
-        .map(StoolEvaluation::getShape)
+  public Optional<ToiletShape> getMostFrequentShape() {
+    return Optional.ofNullable(items).stream()
+        .flatMap(List::stream) // Optional<List> → Stream<ToiletEvaluation>
+        .filter(Objects::nonNull)
+        .map(ToiletEvaluation::getShape)
         .filter(Objects::nonNull)
         .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
         .entrySet()
         .stream()
         .max(Map.Entry.comparingByValue())
-        .map(Map.Entry::getKey)
-        .orElse(null);
+        .map(Map.Entry::getKey);
   }
 
-  public ToiletColor getMostFrequentColor() {
+  public Optional<ToiletColor> getMostFrequentColor() {
+    if (items == null || items.isEmpty()) {
+      return Optional.empty();
+    }
+
     return items.stream()
-        .map(StoolEvaluation::getColor)
+        .filter(Objects::nonNull)
+        .map(ToiletEvaluation::getColor)
         .filter(Objects::nonNull)
         .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
         .entrySet()
         .stream()
         .max(Map.Entry.comparingByValue())
-        .map(Map.Entry::getKey)
-        .orElse(null);
+        .map(Map.Entry::getKey);
   }
 
   public boolean hasGoodShape() {
-    ToiletShape shape = getMostFrequentShape();
-    return shape == ToiletShape.BANANA;
+    return getMostFrequentShape().map(shape -> shape == ToiletShape.BANANA).orElse(false);
   }
 
   public boolean hasGoodColor() {
-    ToiletColor color = getMostFrequentColor();
-    return color == ToiletColor.DARK_BROWN || color == ToiletColor.GOLD;
+    return getMostFrequentColor()
+        .map(color -> color == ToiletColor.DARK_BROWN || color == ToiletColor.GOLD)
+        .orElse(false);
   }
 }

@@ -13,7 +13,7 @@ import lombok.Getter;
 public class Suggestion {
 
   private WaterSuggestion waterSuggestion;
-  private StoolSuggestion stoolSuggestion;
+  private ToiletSuggestion toiletSuggestion;
   private List<HabitSuggestion> habitSuggestion;
 
   @Getter
@@ -41,7 +41,7 @@ public class Suggestion {
   }
 
   @Getter
-  public enum StoolSuggestion {
+  public enum ToiletSuggestion {
     CONSTIPATION(NEGATIVE), // 변비 (배변 횟수 적음, 딱딱함)
     DIARRHEA(NEGATIVE), // 설사 (묽고 잦음)
     HARD_STOOL(NEGATIVE), // 딱딱한 변
@@ -60,7 +60,7 @@ public class Suggestion {
 
     private final Quality quality;
 
-    StoolSuggestion(Quality quality) {
+    ToiletSuggestion(Quality quality) {
       this.quality = quality;
     }
   }

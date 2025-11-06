@@ -121,6 +121,7 @@ public class User extends BaseTimeEntity {
   public void deactivate() {
     this.isDeleted = true;
     // 이메일을 랜덤 문자열로 변경하여 재가입 시 새로운 사용자로 인식되도록 함
+    storeRefreshToken(null);
     this.email = generateRandomEmail();
   }
 

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.common.domain.event.CommonEvent;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
-import depromeet.lessonfour.server.report.app.service.StoolReportService;
+import depromeet.lessonfour.server.report.app.service.ToiletReportService;
 import depromeet.lessonfour.server.toiletrecord.app.event.ToiletRecordEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ToiletRecordEventHandler {
 
-  private final StoolReportService stoolReportService;
+  private final ToiletReportService toiletReportService;
 
   @EventListener
   public void handle(CommonEvent<?> event) {
@@ -27,7 +27,7 @@ public class ToiletRecordEventHandler {
     ActivityAt date = payload.date();
 
     log.info("Handling ToiletRecord event - traceId: {}", event.traceId());
-    stoolReportService.generateDailyReport(userId, date.toDateTime());
+    toiletReportService.generateDailyReport(userId, date.toDateTime());
     log.info("ToiletScore saved - traceId: {}", event.traceId());
   }
 }

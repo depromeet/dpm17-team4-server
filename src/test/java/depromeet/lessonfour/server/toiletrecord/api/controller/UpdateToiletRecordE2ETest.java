@@ -54,7 +54,9 @@ class UpdateToiletRecordE2ETest {
     me =
         userRepository.save(
             User.register(
-                "poo-update@example.com", "update-user", passwordEncoder.encode("pw1234")));
+                "toiletReport-update@example.com",
+                "update-user",
+                passwordEncoder.encode("pw1234")));
     token = "Bearer " + jwtTokenGenerator.generateAccessToken(AccountContext.of(me));
   }
 

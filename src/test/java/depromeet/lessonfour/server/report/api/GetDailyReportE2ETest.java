@@ -1,7 +1,10 @@
 package depromeet.lessonfour.server.report.api;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -55,7 +57,6 @@ class GetDailyReportE2ETest {
   @Autowired private FoodRepository foodRepository;
   @Autowired private JpaActivityRecordRepository activityRecordRepository;
   @Autowired private ToiletRecordRepository toiletRecordRepository;
-  @Autowired private JdbcTemplate jdbcTemplate;
 
   private String validJwtToken;
   private Long testUserId;
