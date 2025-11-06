@@ -84,9 +84,10 @@ public class ToiletReportService {
         periodCount);
   }
 
-  public List<ToiletShapeCount> getMostShape(List<ToiletRecord> toiletRecords) {
+  List<ToiletShapeCount> getMostShape(List<ToiletRecord> toiletRecords) {
     Map<ToiletShape, Long> shapeCountMap =
         toiletRecords.stream()
+            .filter(record -> record.getShape() != null)
             .collect(Collectors.groupingBy(ToiletRecord::getShape, Collectors.counting()));
 
     return shapeCountMap.entrySet().stream()
@@ -96,9 +97,10 @@ public class ToiletReportService {
         .toList();
   }
 
-  public List<ToiletColorCount> getMostColor(List<ToiletRecord> toiletRecords) {
+  List<ToiletColorCount> getMostColor(List<ToiletRecord> toiletRecords) {
     Map<ToiletColor, Long> colorCountMap =
         toiletRecords.stream()
+            .filter(record -> record.getColor() != null) // NPE 방지: null color 필터링
             .collect(Collectors.groupingBy(ToiletRecord::getColor, Collectors.counting()));
 
     return colorCountMap.entrySet().stream()
@@ -108,16 +110,16 @@ public class ToiletReportService {
         .toList();
   }
 
-  public ToiletTimeDistribution getTimeDistributions(List<ToiletRecord> toiletRecords) {
+  ToiletTimeDistribution getTimeDistributions(List<ToiletRecord> toiletRecords) {
     return toiletEvaluationService.getTimeDistributions(toiletRecords);
   }
 
-  public ToiletPainDistribution getPainDistribution(
+  ToiletPainDistribution getPainDistribution(
       List<ToiletRecord> currentMonth, List<ToiletRecord> lastMonth) {
     return toiletEvaluationService.getPainDistribution(currentMonth, lastMonth);
   }
 
-  public List<ToiletPeriodCount> getPeriodDistribution(List<ToiletRecord> toiletRecords) {
+  List<ToiletPeriodCount> getPeriodDistribution(List<ToiletRecord> toiletRecords) {
     return toiletEvaluationService.getPeriodDistribution(toiletRecords);
   }
 }
