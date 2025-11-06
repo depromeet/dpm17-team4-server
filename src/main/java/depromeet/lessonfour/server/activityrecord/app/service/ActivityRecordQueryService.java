@@ -1,6 +1,5 @@
 package depromeet.lessonfour.server.activityrecord.app.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -20,12 +19,9 @@ public class ActivityRecordQueryService {
   private final ActivityRecordRepository activityRecordRepository;
 
   public List<ActivityRecord> getActivityRecordsBetween(
-      Long userId, LocalDateTime start, LocalDateTime end) {
+      Long userId, ActivityAt start, ActivityAt end) {
 
-    ActivityAt from = ActivityAt.from(start);
-    ActivityAt to = ActivityAt.from(end);
-
-    return activityRecordRepository.findAllByActivityAtBetween(userId, from, to);
+    return activityRecordRepository.findAllByActivityAtBetween(userId, start, end);
   }
 
   public List<DailyExistence> findDailyExistencesBetween(
