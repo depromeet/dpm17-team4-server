@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.StoolReportItem;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.ToiletDailyReport;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.ToiletSummary;
+import depromeet.lessonfour.server.report.domain.vo.DailyToiletReport;
 import depromeet.lessonfour.server.report.domain.vo.ToiletEvaluationLevel;
-import depromeet.lessonfour.server.report.domain.vo.ToiletReport;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -52,19 +52,19 @@ public class ToiletReportMapper {
   private final String message =
       "전문가의 상담이 필요해요. 복통이 매우 심했다면 단순한 식사 문제를 넘어서 장염이나 자극적인 음식으로 인한 장 트러블일 수 있습니다.";
 
-  public ToiletDailyReport map(ToiletReport toiletReport) {
-    if (toiletReport.getLevel() == ToiletEvaluationLevel.NONE) {
+  public ToiletDailyReport map(DailyToiletReport dailyToiletReport) {
+    if (dailyToiletReport.getLevel() == ToiletEvaluationLevel.NONE) {
       return null;
     }
-    HeroCharacter heroCharacter = characterMap.get(toiletReport.getLevel());
+    HeroCharacter heroCharacter = characterMap.get(dailyToiletReport.getLevel());
     return new ToiletDailyReport(
-        toiletReport.getToiletScore(),
+        dailyToiletReport.getToiletScore(),
         new ToiletSummary(
             heroCharacter.getImage(),
             heroCharacter.getBackgroundColors(),
             heroCharacter.getCaption(),
             heroCharacter.getMessage()),
-        toiletReport.getItems().stream()
+        dailyToiletReport.getItems().stream()
             .map(
                 item ->
                     new StoolReportItem(

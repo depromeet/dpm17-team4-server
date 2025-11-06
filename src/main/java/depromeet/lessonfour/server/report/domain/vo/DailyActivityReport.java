@@ -2,23 +2,16 @@ package depromeet.lessonfour.server.report.domain.vo;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-public class ActivityReport {
+@AllArgsConstructor
+public class DailyActivityReport {
 
   private final List<FoodEvaluation> foodEvaluations;
   private final List<WaterEvaluation> waterEvaluations;
   private final StressEvaluation stressEvaluation;
-
-  public ActivityReport(
-      List<FoodEvaluation> foodEvaluations,
-      List<WaterEvaluation> waterEvaluations,
-      StressEvaluation stressEvaluation) {
-    this.foodEvaluations = foodEvaluations;
-    this.waterEvaluations = waterEvaluations;
-    this.stressEvaluation = stressEvaluation;
-  }
 
   public boolean hasStress() {
     return stressEvaluation == StressEvaluation.HIGH
