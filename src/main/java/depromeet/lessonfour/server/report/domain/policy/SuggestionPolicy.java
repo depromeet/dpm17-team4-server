@@ -369,12 +369,9 @@ public class SuggestionPolicy {
       } else if (avgMinutes > NORMAL_DURATION_THRESHOLD) {
         toiletSuggestion = Suggestion.ToiletSuggestion.LONG_DEFECATION_TIME;
       } else {
-        if (goodShape)
-          toiletSuggestion = Suggestion.ToiletSuggestion.IDEAL_SHAPE;
-        else if (goodColor)
-          toiletSuggestion = Suggestion.ToiletSuggestion.HEALTHY_COLOR;
-        else
-          toiletSuggestion = Suggestion.ToiletSuggestion.HEALTHY_REGULAR;
+        if (goodShape) toiletSuggestion = Suggestion.ToiletSuggestion.IDEAL_SHAPE;
+        else if (goodColor) toiletSuggestion = Suggestion.ToiletSuggestion.HEALTHY_COLOR;
+        else toiletSuggestion = Suggestion.ToiletSuggestion.HEALTHY_REGULAR;
       }
     }
 
