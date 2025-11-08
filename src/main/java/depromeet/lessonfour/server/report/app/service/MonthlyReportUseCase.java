@@ -23,6 +23,7 @@ public class MonthlyReportUseCase {
   private final ToiletReportService toiletReportService;
   private final ActivityReportService activityReportService;
   private final SuggestionService suggestionService;
+  private final ToiletScoreService toiletScoreService;
 
   public MonthlyReport generateMonthlyReport(Long userId, YearMonth month) {
     ActivityAt monthStart = ActivityAt.of(month.atDay(1));
@@ -34,16 +35,23 @@ public class MonthlyReportUseCase {
     MonthlyActivityReport activityReport =
         activityReportService.generateMonthlyReport(userId, monthStart, monthEndExclusive);
 
+    // 월간 배변 점수 통계 (전체 평균 + 주차별 평균)
+    ToiletScoreService.MonthlyScoreStats scoreStats =
+        toiletScoreService.getMonthlyScoreStats(userId, monthStart, monthEndExclusive);
+
     Suggestion suggestion = suggestionService.suggest(activityReport, toiletReport);
 
     return new MonthlyReport(
         RecordCounts.of(activityReport.size(), toiletReport.size()),
         MonthlyScore.from(toiletReport.scoreSummary()),
+        scoreStats.averageScore(),
+        scoreStats.weeklyAverageScores(),
         toiletReport.shapeCount(),
         toiletReport.timeDistribution(),
         toiletReport.colorCount(),
         toiletReport.painDistribution(),
         toiletReport.periodCount(),
-        suggestion);
+        suggestion,
+        activityReport);
   }
 }
