@@ -18,4 +18,8 @@ public class WaterEvaluation {
   public static WaterEvaluation empty() {
     return new WaterEvaluation(0, WaterLevel.NONE, DayType.NONE);
   }
+
+  public static WaterEvaluation empty(DayType dayType) {
+    return new WaterEvaluation(0, WaterLevel.NONE, dayType);
+  }
 }
