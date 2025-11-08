@@ -34,13 +34,14 @@ public class WaterMapper {
 
   private static String getMessage(WaterEvaluation evaluation) {
     if (evaluation == null) {
-      return "물 섭취 기록이 없어요\n물을 자주 마셔주세요";
+      return "물 섭취 기록이 없어요. 물을 자주 마셔주세요";
     }
     WaterLevel waterLevel = evaluation.getLevel();
     return switch (waterLevel) {
-      case HIGH, MEDIUM -> "물을 잘 섭취하고 계시군요!\n앞으로도 잘 유지해봐요";
-      case LOW -> "장이 말라가고 있어요!\n물 섭취량을 늘려야 해요";
-      case NONE -> "물 섭취 기록이 없어요\n물을 자주 마셔주세요";
+      case HIGH -> "훌륭해요! 물 섭취 만점입니다. 앞으로도 잘 유지해봐요";
+      case MEDIUM -> "보통 수준이에요. 조금 더 자주 물을 마셔보세요!";
+      case LOW -> "장이 말라가고 있어요! 물 섭취량을 늘려야 해요";
+      case NONE -> "물 섭취 기록이 없어요. 물을 자주 마셔주세요";
     };
   }
 
