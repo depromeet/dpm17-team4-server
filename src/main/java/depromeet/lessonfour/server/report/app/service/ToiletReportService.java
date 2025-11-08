@@ -1,6 +1,5 @@
 package depromeet.lessonfour.server.report.app.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,13 +30,12 @@ public class ToiletReportService {
   private final ToiletEvaluationService toiletEvaluationService;
   private final ToiletScoreService toiletScoreService;
 
-  public DailyToiletReport generateDailyReport(Long userId, LocalDateTime baseDateTime) {
+  public DailyToiletReport generateDailyReport(Long userId, ActivityAt activityAt) {
     List<ToiletRecord> dailyRecords =
-        toiletRecordClient.getToiletRecordsByDate(userId, baseDateTime.toLocalDate());
+        toiletRecordClient.getToiletRecordsByActivityAt(userId, activityAt);
 
     DailyToiletReport report = toiletEvaluationService.summarize(dailyRecords);
-    toiletScoreService.updateScore(
-        userId, (int) report.getToiletScore(), ActivityAt.from(baseDateTime));
+    toiletScoreService.updateScore(userId, (int) report.getToiletScore(), activityAt);
 
     return report;
   }

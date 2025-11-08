@@ -1,6 +1,5 @@
 package depromeet.lessonfour.server.toiletrecord.app.service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -18,8 +17,8 @@ public class ToiletRecordQueryService {
 
   private final ToiletRecordRepository toiletRecordRepository;
 
-  public List<ToiletRecord> findByDate(Long userId, LocalDate date) {
-    return toiletRecordRepository.findAllByActivityAt(userId, ActivityAt.of(date));
+  public List<ToiletRecord> findAllByActivityAt(Long userId, ActivityAt activityAt) {
+    return toiletRecordRepository.findAllByActivityAt(userId, activityAt);
   }
 
   public List<RecordTime> findTimesByDate(Long userId, ActivityAt at) {

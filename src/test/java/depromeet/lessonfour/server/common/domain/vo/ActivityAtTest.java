@@ -362,4 +362,168 @@ class ActivityAtTest {
       assertThat(activityAt1).isNotEqualTo(activityAt2);
     }
   }
+
+  @Nested
+  @DisplayName("isSameDate() 날짜 비교")
+  class IsSameDateMethod {
+
+    @Test
+    @DisplayName("같은 날짜를 가진 ActivityAt은 true를 반환한다")
+    void givenSameDate_whenIsSameDate_thenReturnsTrue() {
+      // given
+      LocalDate date = LocalDate.of(2024, 1, 15);
+      ActivityAt activityAt1 = ActivityAt.of(date);
+      ActivityAt activityAt2 = ActivityAt.of(date);
+
+      // when
+      boolean result = activityAt1.isSameDate(activityAt2);
+
+      // then
+      assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("같은 날짜지만 다른 시간을 가진 ActivityAt은 true를 반환한다")
+    void givenSameDateDifferentTime_whenIsSameDate_thenReturnsTrue() {
+      // given
+      ActivityAt activityAt1 = ActivityAt.from(LocalDateTime.of(2024, 1, 15, 10, 0, 0));
+      ActivityAt activityAt2 = ActivityAt.from(LocalDateTime.of(2024, 1, 15, 15, 30, 0));
+
+      // when
+      boolean result = activityAt1.isSameDate(activityAt2);
+
+      // then
+      assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("다른 날짜를 가진 ActivityAt은 false를 반환한다")
+    void givenDifferentDate_whenIsSameDate_thenReturnsFalse() {
+      // given
+      ActivityAt activityAt1 = ActivityAt.of(LocalDate.of(2024, 1, 15));
+      ActivityAt activityAt2 = ActivityAt.of(LocalDate.of(2024, 1, 16));
+
+      // when
+      boolean result = activityAt1.isSameDate(activityAt2);
+
+      // then
+      assertThat(result).isFalse();
+    }
+
+    @Test
+    @DisplayName("null과 비교하면 false를 반환한다")
+    void givenNull_whenIsSameDate_thenReturnsFalse() {
+      // given
+      ActivityAt activityAt = ActivityAt.of(LocalDate.of(2024, 1, 15));
+
+      // when
+      boolean result = activityAt.isSameDate(null);
+
+      // then
+      assertThat(result).isFalse();
+    }
+  }
+
+  @Nested
+  @DisplayName("isDayBefore() 전날 확인")
+  class IsDayBeforeMethod {
+
+    @Test
+    @DisplayName("전날 관계인 경우 true를 반환한다")
+    void givenDayBefore_whenIsDayBefore_thenReturnsTrue() {
+      // given
+      ActivityAt yesterday = ActivityAt.of(LocalDate.of(2024, 1, 14));
+      ActivityAt today = ActivityAt.of(LocalDate.of(2024, 1, 15));
+
+      // when
+      boolean result = yesterday.isDayBefore(today);
+
+      // then
+      assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("전날이 아닌 경우 false를 반환한다")
+    void givenNotDayBefore_whenIsDayBefore_thenReturnsFalse() {
+      // given
+      ActivityAt someDay = ActivityAt.of(LocalDate.of(2024, 1, 13));
+      ActivityAt today = ActivityAt.of(LocalDate.of(2024, 1, 15));
+
+      // when
+      boolean result = someDay.isDayBefore(today);
+
+      // then
+      assertThat(result).isFalse();
+    }
+
+    @Test
+    @DisplayName("같은 날인 경우 false를 반환한다")
+    void givenSameDay_whenIsDayBefore_thenReturnsFalse() {
+      // given
+      LocalDate date = LocalDate.of(2024, 1, 15);
+      ActivityAt activityAt1 = ActivityAt.of(date);
+      ActivityAt activityAt2 = ActivityAt.of(date);
+
+      // when
+      boolean result = activityAt1.isDayBefore(activityAt2);
+
+      // then
+      assertThat(result).isFalse();
+    }
+
+    @Test
+    @DisplayName("이후 날짜인 경우 false를 반환한다")
+    void givenAfterDay_whenIsDayBefore_thenReturnsFalse() {
+      // given
+      ActivityAt tomorrow = ActivityAt.of(LocalDate.of(2024, 1, 16));
+      ActivityAt today = ActivityAt.of(LocalDate.of(2024, 1, 15));
+
+      // when
+      boolean result = tomorrow.isDayBefore(today);
+
+      // then
+      assertThat(result).isFalse();
+    }
+
+    @Test
+    @DisplayName("null과 비교하면 false를 반환한다")
+    void givenNull_whenIsDayBefore_thenReturnsFalse() {
+      // given
+      ActivityAt yesterday = ActivityAt.of(LocalDate.of(2024, 1, 14));
+
+      // when
+      boolean result = yesterday.isDayBefore(null);
+
+      // then
+      assertThat(result).isFalse();
+    }
+
+    @Test
+    @DisplayName("월 경계를 넘는 전날 관계도 정확하게 판단한다")
+    void givenCrossMonthBoundary_whenIsDayBefore_thenReturnsTrue() {
+      // given
+      ActivityAt jan31 = ActivityAt.of(LocalDate.of(2024, 1, 31));
+      ActivityAt feb1 = ActivityAt.of(LocalDate.of(2024, 2, 1));
+
+      // when
+      boolean result = jan31.isDayBefore(feb1);
+
+      // then
+      assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("연 경계를 넘는 전날 관계도 정확하게 판단한다")
+    void givenCrossYearBoundary_whenIsDayBefore_thenReturnsTrue() {
+      // given
+      ActivityAt dec31 = ActivityAt.of(LocalDate.of(2023, 12, 31));
+      ActivityAt jan1 = ActivityAt.of(LocalDate.of(2024, 1, 1));
+
+      // when
+      boolean result = dec31.isDayBefore(jan1);
+
+      // then
+      assertThat(result).isTrue();
+    }
+  }
 }
