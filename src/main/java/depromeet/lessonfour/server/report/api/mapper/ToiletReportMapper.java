@@ -1,5 +1,6 @@
 package depromeet.lessonfour.server.report.api.mapper;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +30,13 @@ public class ToiletReportMapper {
   // 일간 리포트
   public DailyToiletReportResponse map(DailyToiletReport dailyToiletReport) {
     return DailyMapper.map(dailyToiletReport);
+  }
+
+  public record ToiletHeroAssets(String image, List<String> backgroundColors) {}
+
+  public ToiletHeroAssets heroAssetsByLevel(ToiletEvaluationLevel level) {
+    var hero = DailyMapper.lookupHero(level); // 내부 맵 재사용
+    return new ToiletHeroAssets(hero.image(), hero.backgroundColors());
   }
 
   // 월간 리포트
@@ -85,6 +93,15 @@ public class ToiletReportMapper {
                 "기분 좋은 대장",
                 "장 컨디션 아주 굿!",
                 List.of("#0C7C30", "#7DD357")));
+
+    // 내부 맵을 안전하게 노출하는 조회 함수 (NONE/NULL 폴백 포함)
+    static HeroCharacter lookupHero(ToiletEvaluationLevel level) {
+      ToiletEvaluationLevel safeLevel =
+          (level == null || level == ToiletEvaluationLevel.NONE)
+              ? ToiletEvaluationLevel.AVERAGE
+              : level;
+      return characterMap.getOrDefault(safeLevel, characterMap.get(ToiletEvaluationLevel.AVERAGE));
+    }
 
     private static final String message =
         "전문가의 상담이 필요해요. 복통이 매우 심했다면 단순한 식사 문제를 넘어서 장염이나 자극적인 음식으로 인한 장 트러블일 수 있습니다.";
@@ -149,16 +166,28 @@ public class ToiletReportMapper {
 
       List<ColorCount> items = safe.stream().map(ColorCount::from).toList();
 
-      String message =
+      // 경고 메시지 (RED / GRAY / BLACK 우선)
+      String colorMessage =
           PRIORITY.stream()
               .filter(
                   priorityColor ->
                       safe.stream().anyMatch(c -> c.color() == priorityColor && c.count() > 0))
               .map(MESSAGE_BY_COLOR::get)
               .findFirst()
-              .orElse(null); // 경고 색상이 없으면 메시지 없이
+              .orElse(null);
 
-      return new MonthlyToiletColor(items, message);
+      // 타이틀 메시지: 가장 많이 등장한 색상 기준
+      String titleMessage = null;
+      if (!safe.isEmpty()) {
+        ToiletColorCount top =
+            safe.stream()
+                .max(Comparator.comparingInt(ToiletColorCount::count))
+                .orElse(safe.getFirst());
+        // enum의 value 그대로 사용 (예: DARK_BROWN, GOLD 등)
+        titleMessage = "가장 많이 확인한 색상은\n" + top.color().getValue() + "이에요";
+      }
+
+      return new MonthlyToiletColor(items, colorMessage, titleMessage);
     }
 
     static ToiletPainComparison fromPainDiff(int painDiff) {
@@ -172,12 +201,23 @@ public class ToiletReportMapper {
     }
 
     static MonthlyToiletPain fromPain(ToiletPainDistribution toiletPainDistribution) {
+      int veryLow = toiletPainDistribution.veryLow();
+      int low = toiletPainDistribution.low();
+      int medium = toiletPainDistribution.medium();
+      int high = toiletPainDistribution.high();
+      int veryHigh = toiletPainDistribution.veryHigh();
+
+      int painfulDays = medium + high + veryHigh;
+
+      String titleMessage = "이번 달은 배를 부여잡은 날들이\n" + painfulDays + "회 있었어요";
+
       return new MonthlyToiletPain(
-          toiletPainDistribution.veryLow(),
-          toiletPainDistribution.low(),
-          toiletPainDistribution.medium(),
-          toiletPainDistribution.high(),
-          toiletPainDistribution.veryHigh(),
+          titleMessage,
+          veryLow,
+          low,
+          medium,
+          high,
+          veryHigh,
           fromPainDiff(toiletPainDistribution.painDiff()));
     }
 
