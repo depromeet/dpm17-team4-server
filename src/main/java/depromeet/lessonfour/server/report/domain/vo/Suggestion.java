@@ -25,17 +25,11 @@ public class Suggestion {
 
   @Getter
   public enum WaterSuggestion {
-    STANDARD("#4E5560"),
-    HIGH("#23ABFF"),
-    MEDIUM("#F4B005"),
-    LOW("#F13A49"),
-    NONE("#D9D9D9");
-
-    private final String color;
-
-    WaterSuggestion(String color) {
-      this.color = color;
-    }
+    STANDARD,
+    HIGH,
+    MEDIUM,
+    LOW,
+    NONE;
 
     public static WaterSuggestion from(WaterLevel level) {
       return switch (level) {
