@@ -86,7 +86,7 @@ class HomeE2ETest {
 
   private ActivityRecord createActivity(LocalDateTime dt) {
     List<Food> foods = foodRepository.findAll();
-    var items = List.of(new MealFood(MealTime.BREAKFAST, foods.getFirst()));
+    var items = List.of(new MealFood(MealTime.BREAKFAST, foods.get(0)));
     return activityRecordRepository.save(
         ActivityRecord.createWithMeals(
             testUserId, 5, StressLevel.MEDIUM, ActivityAt.from(dt), items));
@@ -278,7 +278,7 @@ class HomeE2ETest {
 
     // 다른 사용자 기록/점수
     var foods = foodRepository.findAll();
-    var items = List.of(new MealFood(MealTime.BREAKFAST, foods.getFirst()));
+    var items = List.of(new MealFood(MealTime.BREAKFAST, foods.get(0)));
     activityRecordRepository.save(
         ActivityRecord.createWithMeals(
             other.getId(),

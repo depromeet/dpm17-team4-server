@@ -1,6 +1,7 @@
 package depromeet.lessonfour.server.report.domain.service;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -100,16 +101,21 @@ public class ActivityEvaluationService {
             .toList();
 
     // 1~7 / 8~14 / 15~21 / 22~28 / 29~end 버킷팅
-    LocalDate start = monthFirstDay;
-    LocalDate end = monthLastDay;
-
     List<MonthlyActivityReport.WeeklyGroup> groups = new ArrayList<>();
     int[] cuts = new int[] {7, 14, 21, 28, Integer.MAX_VALUE};
 
+    int monthLength = YearMonth.from(monthFirstDay).lengthOfMonth();
+
     for (int wi = 0; wi < 5; wi++) {
-      final int upper = cuts[wi];
-      LocalDate wStart = (wi == 0) ? start : start.withDayOfMonth(cuts[wi - 1] + 1);
-      LocalDate wEnd = (upper == Integer.MAX_VALUE) ? end : start.withDayOfMonth(upper);
+      int lowerBound = (wi == 0) ? 1 : (cuts[wi - 1] + 1);
+      if (lowerBound > monthLength) {
+        break; // 더 이상 유효한 주차 없음
+      }
+      int upperBound = Math.min(cuts[wi], monthLength);
+
+      LocalDate wStart = monthFirstDay.withDayOfMonth(lowerBound);
+      LocalDate wEnd = monthFirstDay.withDayOfMonth(upperBound);
+
       List<ActivityRecord> inWeek =
           sorted.stream()
               .filter(
