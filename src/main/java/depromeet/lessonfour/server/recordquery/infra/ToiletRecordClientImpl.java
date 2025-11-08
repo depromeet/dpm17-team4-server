@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
 import depromeet.lessonfour.server.recordquery.app.client.ToiletRecordClient;
+import depromeet.lessonfour.server.report.api.mapper.ToiletReportMapper;
+import depromeet.lessonfour.server.report.domain.vo.ToiletEvaluationLevel;
 import depromeet.lessonfour.server.toiletrecord.app.service.ToiletRecordQueryService;
 import lombok.RequiredArgsConstructor;
 
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class ToiletRecordClientImpl implements ToiletRecordClient {
 
   private final ToiletRecordQueryService toiletRecordQueryService;
+  private final ToiletReportMapper toiletReportMapper;
 
   @Override
   public List<DailyExistence> getDailyExistencesBetween(
@@ -25,5 +28,12 @@ public class ToiletRecordClientImpl implements ToiletRecordClient {
   @Override
   public int getToiletRecordCountByActivityAt(Long userId, ActivityAt activityAt) {
     return toiletRecordQueryService.countByActivityAt(userId, activityAt);
+  }
+
+  @Override
+  public ToiletRecordClient.HeroAssets getToiletHeroAssets(int score) {
+    var level = ToiletEvaluationLevel.from(score);
+    var assets = toiletReportMapper.heroAssetsByLevel(level);
+    return new ToiletRecordClient.HeroAssets(assets.image(), assets.backgroundColors());
   }
 }

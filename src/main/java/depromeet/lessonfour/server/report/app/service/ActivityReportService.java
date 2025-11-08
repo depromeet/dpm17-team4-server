@@ -13,6 +13,7 @@ import depromeet.lessonfour.server.report.app.client.ActivityRecordClient;
 import depromeet.lessonfour.server.report.domain.service.ActivityEvaluationService;
 import depromeet.lessonfour.server.report.domain.vo.DailyActivityReport;
 import depromeet.lessonfour.server.report.domain.vo.monthly.MonthlyActivityReport;
+import depromeet.lessonfour.server.report.domain.vo.weekly.WeeklyActivityReport;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -34,11 +35,24 @@ public class ActivityReportService {
     return activityEvaluationService.evaluate(previousRecord, currentRecord);
   }
 
-  // TODO : 다른 통계치 추가하기
-  public MonthlyActivityReport generateMonthlyReport(
+  public WeeklyActivityReport generateWeeklyReport(
       Long userId, ActivityAt startAt, ActivityAt endAt) {
     List<ActivityRecord> records =
         activityRecordClient.getActivityRecordsBetween(userId, startAt, endAt);
-    return MonthlyActivityReport.dummy();
+    return activityEvaluationService.evaluateWeekly(records);
+  }
+
+  public MonthlyActivityReport generateMonthlyReport(
+      Long userId, ActivityAt startAt, ActivityAt endAt) {
+    List<ActivityRecord> current =
+        activityRecordClient.getActivityRecordsBetween(userId, startAt, endAt);
+    ActivityAt lastMonthStart = startAt.getLastMonth();
+    List<ActivityRecord> last =
+        activityRecordClient.getActivityRecordsBetween(userId, lastMonthStart, startAt);
+
+    LocalDate monthFirstDay = startAt.toDate();
+    LocalDate monthLastDay = endAt.toDate().minusDays(1);
+
+    return activityEvaluationService.evaluateMonthly(current, last, monthFirstDay, monthLastDay);
   }
 }

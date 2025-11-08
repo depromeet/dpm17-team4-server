@@ -1,5 +1,6 @@
 package depromeet.lessonfour.server.report.app.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import depromeet.lessonfour.server.report.domain.vo.monthly.ScoreSummary;
 import depromeet.lessonfour.server.report.domain.vo.monthly.ToiletPainDistribution;
 import depromeet.lessonfour.server.report.domain.vo.monthly.ToiletPeriodCount;
 import depromeet.lessonfour.server.report.domain.vo.monthly.ToiletTimeDistribution;
+import depromeet.lessonfour.server.report.domain.vo.weekly.WeeklyToiletReport;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
@@ -40,6 +42,26 @@ public class ToiletReportService {
         userId, (int) report.getToiletScore(), ActivityAt.from(baseDateTime));
 
     return report;
+  }
+
+  public WeeklyToiletReport generateWeeklyReport(
+      Long userId, ActivityAt start, ActivityAt endExclusive) {
+
+    // 일단 [start, end) 범위의 전체 기록 가져오기
+    List<ToiletRecord> records =
+        toiletRecordClient.getToiletRecordsByActivityAtBetween(userId, start, endExclusive);
+
+    // 날짜 기준으로 groupBy 해서 일별로 DailyToiletReport 생성
+    Map<LocalDate, List<ToiletRecord>> recordsByDate =
+        records.stream().collect(Collectors.groupingBy(r -> r.getActivityAt().toDate()));
+
+    List<DailyToiletReport> dailyReports =
+        recordsByDate.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey()) // 날짜 오름차순
+            .map(entry -> toiletEvaluationService.summarize(entry.getValue()))
+            .toList();
+
+    return new WeeklyToiletReport(dailyReports);
   }
 
   public MonthlyToiletReport generateMonthlyReport(

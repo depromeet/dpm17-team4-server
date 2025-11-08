@@ -9,6 +9,10 @@ import depromeet.lessonfour.server.report.domain.vo.StressEvaluation;
 public class StressMapper {
 
   public StressReport map(StressEvaluation stressEvaluation) {
+    if (stressEvaluation == null) {
+      return null;
+    }
+
     return switch (stressEvaluation) {
       case VERY_LOW -> new StressReport(
           "삐용삐용! 스트레스 만땅! 산책이나 명상을 해볼까요?",
