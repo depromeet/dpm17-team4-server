@@ -16,9 +16,8 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 public record CreateActivityRecordsRequest(
     @Valid List<CreateFoodRequestDto> foods,
-    @PositiveOrZero(message = "마신 물의 잔 수는 0 이상이어야 합니다") int water,
-    @NotNull(message = "스트레스 지수는 필수입니다") @ValidEnum(enumClass = StressLevel.class, message = "유효하지 않은 스트레스 지수입니다")
-        StressLevel stress,
+    @PositiveOrZero(message = "마신 물의 잔 수는 0 이상이어야 합니다") Integer water,
+    @ValidEnum(enumClass = StressLevel.class, message = "유효하지 않은 스트레스 지수입니다") StressLevel stress,
     @NotNull(message = "선택한 날짜와 시간은 필수입니다") @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
         LocalDateTime occurredAt) {
 
