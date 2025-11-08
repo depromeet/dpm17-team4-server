@@ -92,7 +92,7 @@ class GetMonthlyReportE2ETest {
       StressLevel stress) {
     List<Food> foods =
         foodRepository.findAll().stream().filter(f -> f.getName().equals(foodName)).toList();
-    Food chosen = foods.isEmpty() ? foodRepository.findAll().getFirst() : foods.getFirst();
+    Food chosen = foods.isEmpty() ? foodRepository.findAll().get(0) : foods.get(0);
     List<MealFood> meals = List.of(new MealFood(mealTime, chosen));
     return activityRecordRepository.save(
         ActivityRecord.createWithMeals(
@@ -498,5 +498,86 @@ class GetMonthlyReportE2ETest {
         .body("data.water.message", anyOf(containsString("유지"), containsString("잘 섭취")))
         // 주 아이템 값들에 LOW(600.0)과 HIGH(2000.0)가 공존해야 함
         .body("data.water.items.value", hasItems(600.0F, 2000.0F));
+  }
+
+  @Test
+  @DisplayName("[E2E][monthly] 2월(평년, 28일) → weeklyGroups는 4개, 4주차 endDate=말일(28)")
+  void februaryNonLeap_hasFourWeeklyGroups() {
+    YearMonth ym = YearMonth.of(2023, 2); // 28일
+    LocalDate first = ym.atDay(1);
+
+    // 최소 1건 생성(weeklyGroups 비지 않도록)
+    createActivity(first.atTime(9, 0), "사과", MealTime.BREAKFAST, 4, StressLevel.LOW);
+
+    given()
+        .header("Authorization", validJwtToken)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .when()
+        .post(monthlyUrl(ym))
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("status", equalTo(201))
+        // 4주차까지만 생성
+        .body("data.food.weeklyGroups.size()", equalTo(4))
+        // 4주차의 endDate는 2월 28일
+        .body("data.food.weeklyGroups[3].endDate", equalTo(ym.atEndOfMonth().toString()))
+        // 5주차가 없어야 함
+        .body("data.food.weeklyGroups.find { it.weekLabel == '5주차' }", nullValue());
+  }
+
+  @Test
+  @DisplayName("[E2E][monthly] 2월(윤년, 29일) → weeklyGroups는 5개, 5주차 범위=29~29")
+  void februaryLeap_hasFiveWeeklyGroups() {
+    YearMonth ym = YearMonth.of(2024, 2); // 윤년 29일
+    LocalDate first = ym.atDay(1);
+
+    // 최소 1건 생성
+    createActivity(first.atTime(9, 0), "사과", MealTime.BREAKFAST, 4, StressLevel.LOW);
+
+    given()
+        .header("Authorization", validJwtToken)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .when()
+        .post(monthlyUrl(ym))
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("status", equalTo(201))
+        // 5주차까지 생성
+        .body("data.food.weeklyGroups.size()", equalTo(5))
+        // 5주차는 29~29
+        .body("data.food.weeklyGroups[4].startDate", equalTo(ym.atDay(29).toString()))
+        .body("data.food.weeklyGroups[4].endDate", equalTo(ym.atDay(29).toString()))
+        .body("data.food.weeklyGroups[4].weekLabel", equalTo("5주차"));
+  }
+
+  @Test
+  @DisplayName("[E2E][monthly] 31일인 달 → weeklyGroups는 5개, 5주차 범위=29~말일(31)")
+  void month31_hasFiveWeeklyGroupsAndFifthCovers29ToEnd() {
+    YearMonth ym = YearMonth.of(2024, 7); // 31일인 달
+    LocalDate first = ym.atDay(1);
+
+    // 최소 1건 생성
+    createActivity(first.atTime(9, 0), "사과", MealTime.BREAKFAST, 4, StressLevel.LOW);
+
+    given()
+        .header("Authorization", validJwtToken)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .when()
+        .post(monthlyUrl(ym))
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("status", equalTo(201))
+        // 5주차까지 생성
+        .body("data.food.weeklyGroups.size()", equalTo(5))
+        // 5주차는 29일부터 말일까지
+        .body("data.food.weeklyGroups[4].startDate", equalTo(ym.atDay(29).toString()))
+        .body("data.food.weeklyGroups[4].endDate", equalTo(ym.atEndOfMonth().toString()))
+        .body("data.food.weeklyGroups[4].weekLabel", equalTo("5주차"));
   }
 }
