@@ -9,10 +9,8 @@ import depromeet.lessonfour.server.report.domain.vo.StressEvaluation;
 public class StressMapper {
 
   public StressReport map(StressEvaluation stressEvaluation) {
-    if (stressEvaluation == null || stressEvaluation == StressEvaluation.NONE) {
-      return new StressReport(
-          "스트레스 기록이 없어요\n마음 편한 하루였네요!",
-          "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/condition_medium.png");
+    if (stressEvaluation == null) {
+      return null;
     }
 
     return switch (stressEvaluation) {
@@ -31,7 +29,7 @@ public class StressMapper {
       case VERY_HIGH -> new StressReport(
           "스트레스 Zero! 행복한 하루가 되셨군요?",
           "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/condition_very_good.png");
-      case NONE -> throw new IllegalStateException("unreachable");
+      case NONE -> null;
     };
   }
 }
