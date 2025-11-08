@@ -8,6 +8,7 @@ import depromeet.lessonfour.server.recordquery.app.client.ActivityRecordClient;
 import depromeet.lessonfour.server.recordquery.app.client.ReportClient;
 import depromeet.lessonfour.server.recordquery.app.client.ToiletRecordClient;
 import depromeet.lessonfour.server.recordquery.app.dto.DailyRecordResponse;
+import depromeet.lessonfour.server.recordquery.app.dto.HomeResponseDto;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
@@ -26,5 +27,18 @@ public class GetDailyRecordUseCase {
     boolean activityRecordExists = activityRecordClient.existsByActivityAt(userId, activityAt);
 
     return new DailyRecordResponse(score, toiletRecordCount, activityRecordExists);
+  }
+
+  public HomeResponseDto getHomeRecord(Long userId, LocalDate date) {
+    ActivityAt activityAt = ActivityAt.of(date);
+
+    int score = reportClient.getScoreByActivityAt(userId, activityAt);
+    var hero = toiletRecordClient.getToiletHeroAssets(score);
+
+    int toiletRecordCount = toiletRecordClient.getToiletRecordCountByActivityAt(userId, activityAt);
+    boolean activityRecordExists = activityRecordClient.existsByActivityAt(userId, activityAt);
+
+    return new HomeResponseDto(
+        toiletRecordCount, activityRecordExists, hero.image(), hero.backgroundColors());
   }
 }
