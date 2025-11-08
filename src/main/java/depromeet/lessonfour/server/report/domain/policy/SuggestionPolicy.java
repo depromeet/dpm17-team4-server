@@ -225,6 +225,11 @@ public class SuggestionPolicy {
     // 기존 generatePooSuggestions(DailyToiletReport) 로직을
     // WeeklyToiletReport의 평균/any 기반 API로 그대로 적용
 
+    // 무기록: 분석 스킵
+    if (weekly.getNumberOfRecords() == 0) {
+      return null; // 상위에서 null-safe 처리
+    }
+
     // 가장 심각한 증상부터 체크
     if (weekly.hasBlood()) {
       return ToiletSuggestion.BLOODY_STOOL;
@@ -351,21 +356,26 @@ public class SuggestionPolicy {
     boolean goodShape = MonthlyToiletStats.goodShapeMostly(monthlyToiletReport.shapeCount());
     boolean goodColor = MonthlyToiletStats.goodColorMostly(monthlyToiletReport.colorCount());
 
-    Suggestion.ToiletSuggestion toiletSuggestion;
-    if (hasBlood) {
-      toiletSuggestion = Suggestion.ToiletSuggestion.BLOODY_STOOL;
-    } else if (colorAbn) {
-      toiletSuggestion = Suggestion.ToiletSuggestion.COLOR_ABNORMAL;
-    } else if (avgPain >= PAINFUL_THRESHOLD) {
-      toiletSuggestion = Suggestion.ToiletSuggestion.PAINFUL_DEFECATION;
-    } else if (totalRecords < CONSTIPATION_THRESHOLD) {
-      toiletSuggestion = Suggestion.ToiletSuggestion.CONSTIPATION;
-    } else if (avgMinutes > NORMAL_DURATION_THRESHOLD) {
-      toiletSuggestion = Suggestion.ToiletSuggestion.LONG_DEFECATION_TIME;
-    } else {
-      if (goodShape) toiletSuggestion = Suggestion.ToiletSuggestion.IDEAL_SHAPE;
-      else if (goodColor) toiletSuggestion = Suggestion.ToiletSuggestion.HEALTHY_COLOR;
-      else toiletSuggestion = Suggestion.ToiletSuggestion.HEALTHY_REGULAR;
+    Suggestion.ToiletSuggestion toiletSuggestion = null;
+    if (totalRecords > 0) {
+      if (hasBlood) {
+        toiletSuggestion = Suggestion.ToiletSuggestion.BLOODY_STOOL;
+      } else if (colorAbn) {
+        toiletSuggestion = Suggestion.ToiletSuggestion.COLOR_ABNORMAL;
+      } else if (avgPain >= PAINFUL_THRESHOLD) {
+        toiletSuggestion = Suggestion.ToiletSuggestion.PAINFUL_DEFECATION;
+      } else if (totalRecords < CONSTIPATION_THRESHOLD) {
+        toiletSuggestion = Suggestion.ToiletSuggestion.CONSTIPATION;
+      } else if (avgMinutes > NORMAL_DURATION_THRESHOLD) {
+        toiletSuggestion = Suggestion.ToiletSuggestion.LONG_DEFECATION_TIME;
+      } else {
+        if (goodShape)
+          toiletSuggestion = Suggestion.ToiletSuggestion.IDEAL_SHAPE;
+        else if (goodColor)
+          toiletSuggestion = Suggestion.ToiletSuggestion.HEALTHY_COLOR;
+        else
+          toiletSuggestion = Suggestion.ToiletSuggestion.HEALTHY_REGULAR;
+      }
     }
 
     // 3) 습관 권고: 스트레스/물 기준(주간과 유사)

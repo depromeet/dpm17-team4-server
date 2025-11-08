@@ -204,6 +204,8 @@ public class WeeklyReportMapper {
         thisWeek.getDailyReports().stream()
             .map(DailyActivityReport::getStressEvaluation)
             .filter(s -> s != null && s != StressEvaluation.NONE)
+            // NOTE: enum 선언이 VERY_LOW(최악) → ... → VERY_HIGH(최상), NONE(제외)
+            // 낮을수록(ordinal 작을수록) 더 나쁜 상태이므로 min이 "최악"을 의미한다.
             .min(Comparator.comparingInt(Enum::ordinal))
             .orElse(StressEvaluation.NONE);
 
@@ -226,7 +228,9 @@ public class WeeklyReportMapper {
     int idx = 0;
     for (DailyActivityReport daily : thisWeek.getDailyReports()) {
       String day = idx < dayNames.length ? dayNames[idx] : "DAY_" + (idx + 1);
-      items.add(new StressItem(day, daily.getStressEvaluation().name()));
+      StressEvaluation ev = daily.getStressEvaluation();
+      String label = (ev == null ? StressEvaluation.NONE : ev).name(); // NULL-SAFE
+      items.add(new StressItem(day, label));
       idx++;
     }
 

@@ -31,9 +31,9 @@ public class ToiletRecordClientImpl implements ToiletRecordClient {
   }
 
   @Override
-  public HeroAssets getToiletHeroAssets(int score) {
+  public ToiletRecordClient.HeroAssets getToiletHeroAssets(int score) {
     var level = ToiletEvaluationLevel.from(score);
     var assets = toiletReportMapper.heroAssetsByLevel(level);
-    return new HeroAssets(assets.image(), assets.backgroundColors());
+    return new ToiletRecordClient.HeroAssets(assets.image(), assets.backgroundColors());
   }
 }
