@@ -49,7 +49,7 @@ public class ActivityRecord extends BaseTimeEntity {
   @Column
   @Min(0)
   @Max(10)
-  private int waterIntakeCups;
+  private Integer waterIntakeCups;
 
   // 스트레스 레벨 (5단계 Enum)
   @Column
@@ -76,7 +76,7 @@ public class ActivityRecord extends BaseTimeEntity {
 
   public static ActivityRecord createWithMeals(
       Long userId,
-      int waterIntakeCups,
+      Integer waterIntakeCups,
       StressLevel stressLevel,
       ActivityAt activityAt,
       List<MealFood> mealFoods) {
