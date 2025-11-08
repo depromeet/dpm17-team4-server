@@ -8,6 +8,8 @@ import depromeet.lessonfour.server.report.domain.vo.DailyToiletReport;
 import depromeet.lessonfour.server.report.domain.vo.Suggestion;
 import depromeet.lessonfour.server.report.domain.vo.monthly.MonthlyActivityReport;
 import depromeet.lessonfour.server.report.domain.vo.monthly.MonthlyToiletReport;
+import depromeet.lessonfour.server.report.domain.vo.weekly.WeeklyActivityReport;
+import depromeet.lessonfour.server.report.domain.vo.weekly.WeeklyToiletReport;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -22,7 +24,12 @@ public class SuggestionService {
   }
 
   public Suggestion suggest(
+      WeeklyActivityReport weeklyActivityReport, WeeklyToiletReport weeklyToiletReport) {
+    return suggestionPolicy.evaluateWeekly(weeklyActivityReport, weeklyToiletReport);
+  }
+
+  public Suggestion suggest(
       MonthlyActivityReport monthlyActivityReport, MonthlyToiletReport monthlyToiletReport) {
-    return Suggestion.dummy();
+    return suggestionPolicy.evaluateMonthly(monthlyActivityReport, monthlyToiletReport);
   }
 }
