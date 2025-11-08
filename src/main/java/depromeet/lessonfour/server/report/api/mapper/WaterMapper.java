@@ -1,6 +1,7 @@
 package depromeet.lessonfour.server.report.api.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,14 @@ import depromeet.lessonfour.server.report.domain.vo.WaterLevel;
 
 @Component
 public class WaterMapper {
+
+  static Map<WaterSuggestion, String> COLOR_MAP =
+      Map.of(
+          WaterSuggestion.STANDARD, "#4E5560",
+          WaterSuggestion.HIGH, "#23ABFF",
+          WaterSuggestion.MEDIUM, "#F4B005",
+          WaterSuggestion.LOW, "#F13A49",
+          WaterSuggestion.NONE, "#D9D9D9");
 
   public WaterReport map(List<WaterEvaluation> waterEvaluations) {
     if (waterEvaluations == null || waterEvaluations.isEmpty()) {
@@ -48,10 +57,10 @@ public class WaterMapper {
   private static WaterReportItem mapItem(String name, double value, WaterEvaluation evaluation) {
     if (evaluation == null) {
       return new WaterReportItem(
-          name, value, WaterSuggestion.NONE.getColor(), WaterSuggestion.NONE);
+          name, value, COLOR_MAP.get(WaterSuggestion.NONE), WaterSuggestion.NONE);
     }
     WaterSuggestion suggestion = WaterSuggestion.from(evaluation.getLevel());
-    return new WaterReportItem(name, value, suggestion.getColor(), suggestion);
+    return new WaterReportItem(name, value, COLOR_MAP.get(suggestion), suggestion);
   }
 
   private static WaterEvaluation getEvaluationByDay(
