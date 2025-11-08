@@ -1,6 +1,7 @@
 package depromeet.lessonfour.server.report.domain.repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
@@ -17,4 +18,6 @@ public interface ToiletScoreRepository {
   Optional<ToiletScore> findMaxScoreBetween(Long userId, ActivityAt start, ActivityAt end);
 
   Optional<ToiletScore> findMinScoreBetween(Long userId, ActivityAt start, ActivityAt end);
+
+  List<ToiletScore> findAllBetween(Long userId, ActivityAt start, ActivityAt end);
 }
