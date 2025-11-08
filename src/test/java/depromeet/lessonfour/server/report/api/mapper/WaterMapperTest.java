@@ -32,35 +32,30 @@ class WaterMapperTest {
   @DisplayName("map() 메서드 테스트")
   class MapMethod {
 
-    @Nested
-    @DisplayName("입력값이 null이거나 비어있는 경우")
-    class WhenInputIsNullOrEmpty {
+    @Test
+    @DisplayName("null이 입력되면 null을 반환한다")
+    void shouldReturnNullWhenInputIsNull() {
+      // given
+      List<WaterEvaluation> waterEvaluations = null;
 
-      @Test
-      @DisplayName("null이 입력되면 null을 반환한다")
-      void shouldReturnNullWhenInputIsNull() {
-        // given
-        List<WaterEvaluation> waterEvaluations = null;
+      // when
+      WaterReport result = waterMapper.map(waterEvaluations);
 
-        // when
-        WaterReport result = waterMapper.map(waterEvaluations);
+      // then
+      assertThat(result).isNull();
+    }
 
-        // then
-        assertThat(result).isNull();
-      }
+    @Test
+    @DisplayName("빈 리스트가 입력되면 null을 반환한다")
+    void shouldReturnNullWhenInputIsEmpty() {
+      // given
+      List<WaterEvaluation> waterEvaluations = Collections.emptyList();
 
-      @Test
-      @DisplayName("빈 리스트가 입력되면 null을 반환한다")
-      void shouldReturnNullWhenInputIsEmpty() {
-        // given
-        List<WaterEvaluation> waterEvaluations = Collections.emptyList();
+      // when
+      WaterReport result = waterMapper.map(waterEvaluations);
 
-        // when
-        WaterReport result = waterMapper.map(waterEvaluations);
-
-        // then
-        assertThat(result).isNull();
-      }
+      // then
+      assertThat(result).isNull();
     }
 
     @Nested
@@ -225,26 +220,21 @@ class WaterMapperTest {
       }
     }
 
-    @Nested
-    @DisplayName("quantity가 0인 경우")
-    class WhenQuantityIsZero {
+    @Test
+    @DisplayName("quantity가 0이면 value도 0이 된다")
+    void shouldHandleZeroQuantity() {
+      // given
+      WaterEvaluation today = new WaterEvaluation(0, WaterLevel.NONE, DayType.TODAY);
+      WaterEvaluation yesterday = new WaterEvaluation(0, WaterLevel.NONE, DayType.YESTERDAY);
+      List<WaterEvaluation> waterEvaluations = List.of(today, yesterday);
 
-      @Test
-      @DisplayName("quantity가 0이면 value도 0이 된다")
-      void shouldHandleZeroQuantity() {
-        // given
-        WaterEvaluation today = new WaterEvaluation(0, WaterLevel.NONE, DayType.TODAY);
-        WaterEvaluation yesterday = new WaterEvaluation(0, WaterLevel.NONE, DayType.YESTERDAY);
-        List<WaterEvaluation> waterEvaluations = List.of(today, yesterday);
+      // when
+      WaterReport result = waterMapper.map(waterEvaluations);
 
-        // when
-        WaterReport result = waterMapper.map(waterEvaluations);
-
-        // then
-        assertThat(result).isNotNull();
-        assertThat(result.items().get(1).value()).isEqualTo(0.0); // YESTERDAY
-        assertThat(result.items().get(2).value()).isEqualTo(0.0); // TODAY
-      }
+      // then
+      assertThat(result).isNotNull();
+      assertThat(result.items().get(1).value()).isEqualTo(0.0); // YESTERDAY
+      assertThat(result.items().get(2).value()).isEqualTo(0.0); // TODAY
     }
   }
 
@@ -397,6 +387,23 @@ class WaterMapperTest {
 
       // then
       assertThat(result.items().get(2).value()).isEqualTo(3000.0); // 15 * 200
+    }
+
+    @Test
+    @DisplayName("quantity가 null인 경우 0으로 처리한다")
+    void shouldHandleZeroQuantity() {
+      // given
+      WaterEvaluation today = new WaterEvaluation(null, WaterLevel.NONE, DayType.TODAY);
+      WaterEvaluation yesterday = new WaterEvaluation(null, WaterLevel.NONE, DayType.YESTERDAY);
+      List<WaterEvaluation> waterEvaluations = List.of(today, yesterday);
+
+      // when
+      WaterReport result = waterMapper.map(waterEvaluations);
+
+      // then
+      assertThat(result).isNotNull();
+      assertThat(result.items().get(1).value()).isEqualTo(0.0);
+      assertThat(result.items().get(2).value()).isEqualTo(0.0);
     }
   }
 }

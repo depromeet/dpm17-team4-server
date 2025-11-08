@@ -36,9 +36,8 @@ public class WaterMapper {
         message,
         List.of(
             mapItem("STANDARD", 2000.0, null),
-            mapItem(
-                "YESTERDAY", yesterday != null ? yesterday.getQuantity() * 200 : 0.0, yesterday),
-            mapItem("TODAY", today != null ? today.getQuantity() * 200 : 0.0, today)));
+            mapItem("YESTERDAY", yesterday.getQuantity() * 200, yesterday),
+            mapItem("TODAY", today.getQuantity() * 200, today)));
   }
 
   private static String getMessage(WaterEvaluation evaluation) {
@@ -56,9 +55,11 @@ public class WaterMapper {
 
   private static WaterReportItem mapItem(String name, double value, WaterEvaluation evaluation) {
     if (evaluation == null) {
+      // STANDARD 항목인 경우
       return new WaterReportItem(
           name, value, COLOR_MAP.get(WaterSuggestion.NONE), WaterSuggestion.NONE);
     }
+
     WaterSuggestion suggestion = WaterSuggestion.from(evaluation.getLevel());
     return new WaterReportItem(name, value, COLOR_MAP.get(suggestion), suggestion);
   }
@@ -68,6 +69,6 @@ public class WaterMapper {
     return evaluations.stream()
         .filter(evaluation -> evaluation.getDayType() == dayType)
         .findFirst()
-        .orElse(null);
+        .orElseGet(() -> WaterEvaluation.empty(dayType));
   }
 }
