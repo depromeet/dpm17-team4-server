@@ -62,7 +62,6 @@ public class WeeklyReportMapper {
 
     SuggestionSection suggestionSection = mapSuggestionSection(weeklyReport.suggestion());
 
-    // TODO: externalLink 은 일단 null 로 두고, 나중에 채우기
     return new GetWeeklyReportResponseDto(
         updatedAt,
         defecationScore,
@@ -70,8 +69,7 @@ public class WeeklyReportMapper {
         foodSection,
         waterSection,
         stressSection,
-        suggestionSection,
-        null);
+        suggestionSection);
   }
 
   private static UserAverage mapUserAverage(double thisWeekAverageScore) {
