@@ -10,8 +10,7 @@ public record GetWeeklyReportResponseDto(
     FoodSection food,
     WaterSection water,
     StressSection stress,
-    SuggestionSection suggestion,
-    String externalLink) {
+    SuggestionSection suggestion) {
 
   public record DefecationScore(double lastWeek, double thisWeek, List<Double> dailyScore) {}
 
