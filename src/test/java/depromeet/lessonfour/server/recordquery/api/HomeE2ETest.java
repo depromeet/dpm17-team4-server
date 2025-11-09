@@ -224,8 +224,8 @@ class HomeE2ETest {
   }
 
   @Test
-  @DisplayName("[home] 점수/활동/배변 모두 없음 → 카운트0/false, hero=VERY_BAD 기본 에셋")
-  void home_noData_defaultsToVeryBad() {
+  @DisplayName("[home] 점수/활동/배변 모두 없음 → 카운트0/false, hero=AVERAGE 기본 에셋")
+  void home_noData_defaultsToAverage() {
     // Given: 아무 데이터도 넣지 않음
     LocalDate date = LocalDate.of(2024, 10, 12);
 
@@ -241,9 +241,9 @@ class HomeE2ETest {
         .body("status", equalTo(200))
         .body("data.toiletRecordCount", equalTo(0))
         .body("data.hasActivityRecord", equalTo(false))
-        // 점수 미기록 → ReportClient가 0으로 보고 → VERY_BAD 매핑
-        .body("data.heroImage", containsString("colon_very_bad.png"))
-        .body("data.heroBackgroundColors", hasItems("#A4141E", "#FF535F"));
+        // 점수 미기록 → ReportClient가 0으로 보고 → AVERAGE 매핑
+        .body("data.heroImage", containsString("colon_medium.png"))
+        .body("data.heroBackgroundColors", hasItems("#2B42B4", "#8F58FF"));
   }
 
   @Test
@@ -302,7 +302,7 @@ class HomeE2ETest {
         date,
         95);
 
-    // 현재 사용자로 조회 → 0/false + hero는 기본(점수 없으면 VERY_BAD로 매핑됨? 구현체에 따라 0점 처리)
+    // 현재 사용자로 조회 → 0/false + hero는 기본(점수 없으면 AVERAGE로 매핑됨)
     given()
         .header("Authorization", validJwtToken)
         .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -313,8 +313,8 @@ class HomeE2ETest {
         .body("status", equalTo(200))
         .body("data.toiletRecordCount", equalTo(0))
         .body("data.hasActivityRecord", equalTo(false))
-        // 점수 미기록이면 0 → VERY_BAD 매핑(영웅 이미지는 very_bad)
-        .body("data.heroImage", containsString("colon_very_bad.png"))
-        .body("data.heroBackgroundColors", hasItems("#A4141E", "#FF535F"));
+        // 점수 미기록이면 0 → AVERAGE 매핑(영웅 이미지는 AVERAGE)
+        .body("data.heroImage", containsString("colon_medium.png"))
+        .body("data.heroBackgroundColors", hasItems("#2B42B4", "#8F58FF"));
   }
 }
