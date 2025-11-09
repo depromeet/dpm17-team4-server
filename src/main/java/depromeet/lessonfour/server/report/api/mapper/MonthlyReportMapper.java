@@ -104,8 +104,8 @@ public class MonthlyReportMapper {
   }
 
   private static UserAverage mapUserAverage(double myAverage) {
-    double overallAvg = myAverage; // 전체 평균 미정 → 우선 동일값
-    double topPercent = (myAverage >= 80) ? 20.0 : (myAverage >= 60) ? 50.0 : 80.0;
+    double overallAvg = 60.0; // 전체 평균 미정 → 우선 주간과 동일값
+    double topPercent = ReportMapperUtils.estimateTopPercent(myAverage, overallAvg);
     String title = String.format("이번 달 배변 점수는\n상위 %.0f%%예요", topPercent);
     return new UserAverage(myAverage, overallAvg, topPercent, title);
   }
@@ -358,7 +358,7 @@ public class MonthlyReportMapper {
 
     if (ar == null || ar.weeklyGroups() == null || ar.weeklyGroups().isEmpty()) {
       return new GetMonthlyReportResponseDto.StressSection(
-          "스트레스 기록이 없어요\n마음 편한 한 달이었네요!",
+          "스트레스 기록이 없어요\n오늘부터 간단히 남겨봐요!",
           "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/condition_medium.png",
           items);
     }
@@ -394,7 +394,7 @@ public class MonthlyReportMapper {
     if (base == null) {
       base =
           new GetDailyReportResponseDto.StressReport(
-              "스트레스 기록이 없어요\n마음 편한 한 달이었네요!",
+              "스트레스 기록이 없어요\n오늘부터 간단히 남겨봐요!",
               "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/condition_medium.png");
     }
 

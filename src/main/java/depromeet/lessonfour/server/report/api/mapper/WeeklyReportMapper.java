@@ -75,14 +75,7 @@ public class WeeklyReportMapper {
   private static UserAverage mapUserAverage(double thisWeekAverageScore) {
     double me = thisWeekAverageScore;
     double average = 60.0; // TODO: 실제 전체 평균으로 치환 예정
-    double topPercent;
-    if (me >= 80) {
-      topPercent = 20.0;
-    } else if (me >= 60) {
-      topPercent = 50.0;
-    } else {
-      topPercent = 80.0;
-    }
+    double topPercent = ReportMapperUtils.estimateTopPercent(me, average);
     return new UserAverage(me, average, topPercent);
   }
 
@@ -192,7 +185,7 @@ public class WeeklyReportMapper {
         || thisWeek.getDailyReports().isEmpty()) {
 
       return new StressSection(
-          "스트레스 기록이 없어요\n마음 편한 한 주였네요!",
+          "스트레스 기록이 없어요\n오늘부터 간단히 남겨봐요!",
           "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/condition_medium.png",
           items);
     }
@@ -214,7 +207,7 @@ public class WeeklyReportMapper {
       // NONE 등에 대해 StressMapper가 null을 주는 경우를 위한 안전장치
       base =
           new GetDailyReportResponseDto.StressReport(
-              "스트레스 기록이 없어요\n마음 편한 한 주였네요!",
+              "스트레스 기록이 없어요\n오늘부터 간단히 남겨봐요!",
               "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/condition_medium.png");
     }
 
