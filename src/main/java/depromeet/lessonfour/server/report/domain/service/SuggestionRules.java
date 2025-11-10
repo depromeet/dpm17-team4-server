@@ -33,20 +33,6 @@ public class SuggestionRules {
         }
       };
     }
-
-    /** 수분 섭취가 [보통] or [부족]인 경우 */
-    @Bean
-    public SuggestionRule checkWaterNormalOrLack() {
-      return (context, types) -> {
-        boolean hasNormalOrLack =
-            context.getWaterEvaluations().stream()
-                .anyMatch(evaluation -> evaluation.isNormal() || evaluation.isLack());
-
-        if (hasNormalOrLack) {
-          types.add(SuggestionType.WATER_LACK);
-        }
-      };
-    }
   }
 
   @Configuration
