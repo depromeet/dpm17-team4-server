@@ -16,15 +16,21 @@ public enum ToiletEvaluationLevel {
   public static ToiletEvaluationLevel from(int score) {
     if (score >= VERY_GOOD_THRESHOLD) {
       return VERY_GOOD;
-    } else if (score >= GOOD_THRESHOLD) {
-      return GOOD;
-    } else if (score >= AVERAGE_THRESHOLD) {
-      return AVERAGE;
-    } else if (score >= BAD_THRESHOLD) {
-      return BAD;
-    } else {
-      return VERY_BAD;
     }
+
+    if (score >= GOOD_THRESHOLD) {
+      return GOOD;
+    }
+
+    if (score >= AVERAGE_THRESHOLD) {
+      return AVERAGE;
+    }
+
+    if (score >= BAD_THRESHOLD) {
+      return BAD;
+    }
+
+    return VERY_BAD;
   }
 
   public static ToiletEvaluationLevel from(double score) {
