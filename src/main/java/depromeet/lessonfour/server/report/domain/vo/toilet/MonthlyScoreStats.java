@@ -22,13 +22,16 @@ public record MonthlyScoreStats(List<ToiletScore> scores) {
   }
 
   public double getAverageScore() {
-    return scores.stream().mapToInt(ToiletScore::getScore).average().orElse(0.0);
+    return scores.stream()
+        .mapToInt(ToiletScore::getScore)
+        .average()
+        .orElseThrow(() -> new ServerException(ErrorCode.INSUFFICIENT_DATA_FOR_REPORT));
   }
 
   public List<Integer> getWeeklyAverageScore() {
     if (scores.isEmpty()) {
-      // 평균 0, 주차별 0으로 채운 5칸
-      return IntStream.rangeClosed(1, 5).map(i -> 0).boxed().toList();
+      // 2주차 이상의 데이터 필요
+      throw new ServerException(ErrorCode.INSUFFICIENT_DATA_FOR_REPORT);
     }
 
     // 날짜 → 주차 인덱스(1~5)
