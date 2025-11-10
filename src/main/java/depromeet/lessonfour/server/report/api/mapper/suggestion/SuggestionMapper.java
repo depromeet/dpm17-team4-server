@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.report.api.mapper;
+package depromeet.lessonfour.server.report.api.mapper.suggestion;
 
 import java.util.List;
 

@@ -5,22 +5,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.StressReport;
-import depromeet.lessonfour.server.report.domain.vo.StressEvaluation;
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.DailyStressReport;
+import depromeet.lessonfour.server.report.api.mapper.activity.StressMapper;
+import depromeet.lessonfour.server.report.domain.vo.activity.StressEvaluation;
 
-@DisplayName("StressMapper 테스트")
 class StressMapperTest {
 
   StressMapper mapper = new StressMapper();
 
   @Test
   @DisplayName("VERY_LOW 스트레스 평가는 적절한 메시지와 이미지를 반환한다")
-  void givenVeryLowStressEvaluation_whenMap_thenReturnCorrectStressReport() {
+  void givenVeryLowStressEvaluation_whenMap_Daily_thenReturnCorrectStressReport() {
     // given
     StressEvaluation evaluation = StressEvaluation.VERY_LOW;
 
     // when
-    StressReport result = mapper.map(evaluation);
+    DailyStressReport result = mapper.mapDaily(evaluation);
 
     // then
     assertThat(result).isNotNull();
@@ -32,12 +32,12 @@ class StressMapperTest {
 
   @Test
   @DisplayName("LOW 스트레스 평가는 적절한 메시지와 이미지를 반환한다")
-  void givenLowStressEvaluation_whenMap_thenReturnCorrectStressReport() {
+  void givenLowStressEvaluation_whenMap_Daily_thenReturnCorrectStressReport() {
     // given
     StressEvaluation evaluation = StressEvaluation.LOW;
 
     // when
-    StressReport result = mapper.map(evaluation);
+    DailyStressReport result = mapper.mapDaily(evaluation);
 
     // then
     assertThat(result).isNotNull();
@@ -49,12 +49,12 @@ class StressMapperTest {
 
   @Test
   @DisplayName("MEDIUM 스트레스 평가는 적절한 메시지와 이미지를 반환한다")
-  void givenMediumStressEvaluation_whenMap_thenReturnCorrectStressReport() {
+  void givenMediumStressEvaluation_whenMap_Daily_thenReturnCorrectStressReport() {
     // given
     StressEvaluation evaluation = StressEvaluation.MEDIUM;
 
     // when
-    StressReport result = mapper.map(evaluation);
+    DailyStressReport result = mapper.mapDaily(evaluation);
 
     // then
     assertThat(result).isNotNull();
@@ -66,12 +66,12 @@ class StressMapperTest {
 
   @Test
   @DisplayName("HIGH 스트레스 평가는 적절한 메시지와 이미지를 반환한다")
-  void givenHighStressEvaluation_whenMap_thenReturnCorrectStressReport() {
+  void givenHighStressEvaluation_whenMap_Daily_thenReturnCorrectStressReport() {
     // given
     StressEvaluation evaluation = StressEvaluation.HIGH;
 
     // when
-    StressReport result = mapper.map(evaluation);
+    DailyStressReport result = mapper.mapDaily(evaluation);
 
     // then
     assertThat(result).isNotNull();
@@ -83,12 +83,12 @@ class StressMapperTest {
 
   @Test
   @DisplayName("VERY_HIGH 스트레스 평가는 적절한 메시지와 이미지를 반환한다")
-  void givenVeryHighStressEvaluation_whenMap_thenReturnCorrectStressReport() {
+  void givenVeryHighStressEvaluation_whenMap_Daily_thenReturnCorrectStressReport() {
     // given
     StressEvaluation evaluation = StressEvaluation.VERY_HIGH;
 
     // when
-    StressReport result = mapper.map(evaluation);
+    DailyStressReport result = mapper.mapDaily(evaluation);
 
     // then
     assertThat(result).isNotNull();
@@ -100,12 +100,12 @@ class StressMapperTest {
 
   @Test
   @DisplayName("NONE 스트레스 평가는 null을 반환한다")
-  void givenNoneStressEvaluation_whenMap_thenReturnNull() {
+  void givenNoneStressEvaluation_whenMap_Daily_thenReturnNull() {
     // given
     StressEvaluation evaluation = StressEvaluation.NONE;
 
     // when
-    StressReport result = mapper.map(evaluation);
+    DailyStressReport result = mapper.mapDaily(evaluation);
 
     // then
     assertThat(result).isNull();

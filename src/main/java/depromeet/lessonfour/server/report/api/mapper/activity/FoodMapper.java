@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toList;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -17,11 +18,15 @@ import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportRespons
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.MonthlyFoodSection;
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.MonthlyFoodSection.MonthlyComparison;
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.MonthlyFoodSection.WeeklyFoodGroup;
+import depromeet.lessonfour.server.report.api.dto.response.GetWeeklyReportResponseDto.WeeklyFoodSection;
+import depromeet.lessonfour.server.report.api.dto.response.GetWeeklyReportResponseDto.WeeklyFoodSection.FoodItem;
+import depromeet.lessonfour.server.report.api.dto.response.GetWeeklyReportResponseDto.WeeklyFoodSection.WeeklyComparison;
 import depromeet.lessonfour.server.report.app.dto.response.MonthlyReport;
 import depromeet.lessonfour.server.report.domain.vo.activity.DailyActivityReport;
 import depromeet.lessonfour.server.report.domain.vo.activity.DayType;
 import depromeet.lessonfour.server.report.domain.vo.activity.FoodEvaluation;
 import depromeet.lessonfour.server.report.domain.vo.activity.MonthlyActivityReport;
+import depromeet.lessonfour.server.report.domain.vo.activity.WeeklyActivityReport;
 import depromeet.lessonfour.server.report.domain.vo.activity.WeeklyActivityReportGroup;
 import lombok.RequiredArgsConstructor;
 
@@ -109,6 +114,49 @@ public class FoodMapper {
     boolean eatDangerousFood = foodEvaluations.stream().anyMatch(FoodEvaluation::isDangerous);
 
     return eatDangerousFood ? DANGEROUS_MESSAGE : SAFE_MESSAGE;
+  }
+
+  /** 주간 음식 섹션 매핑 */
+  public WeeklyFoodSection mapWeekly(
+      WeeklyActivityReport lastWeek, WeeklyActivityReport thisWeek, LocalDate thisWeekStartDate) {
+
+    int lastWeekDangerous = (int) lastWeek.dangerousFoodDays();
+    int thisWeekDangerous = (int) thisWeek.dangerousFoodDays();
+
+    String message;
+    if (thisWeekDangerous >= 10) {
+      message = "자극적인 음식을 10회 이상 섭취했어요\n식단 관리가 필요해요!";
+    } else if (thisWeekDangerous > 0) {
+      message = "자극적인 음식을 10회 미만으로 섭취했어요.\n지속적으로 줄여나가요!";
+    } else {
+      message = "건강한 식단을\n열심히 유지하고 계시네요!";
+    }
+
+    WeeklyComparison comparison = new WeeklyComparison(lastWeekDangerous, thisWeekDangerous);
+
+    // 주간 아이템: 이번 주 DailyActivityReport 기준으로 쭉 펼치기
+    List<FoodItem> items = new ArrayList<>();
+
+    int dayIndex = 0;
+    for (DailyActivityReport daily : thisWeek.getDailyReports()) {
+      LocalDate date = thisWeekStartDate.plusDays(dayIndex);
+      for (FoodEvaluation eval :
+          (daily.getFoodEvaluations() == null
+              ? List.<FoodEvaluation>of()
+              : daily.getFoodEvaluations())) {
+        eval.getFoodsByMealTime()
+            .forEach(
+                (mealTime, foods) -> {
+                  if (foods != null && !foods.isEmpty()) {
+                    items.add(new FoodItem(date.toString(), mealTime.name(), foods));
+                  }
+                });
+      }
+
+      dayIndex++;
+    }
+
+    return new WeeklyFoodSection(message, comparison, items);
   }
 
   /** 월간 음식 섹션 매핑 */

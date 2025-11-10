@@ -9,12 +9,14 @@ import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportRespons
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.WaterReportItem;
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.MonthlyWaterSection;
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.MonthlyWaterSection.WaterItem;
+import depromeet.lessonfour.server.report.api.dto.response.GetWeeklyReportResponseDto.WeeklyWaterSection;
 import depromeet.lessonfour.server.report.app.dto.response.MonthlyReport;
 import depromeet.lessonfour.server.report.domain.vo.activity.DailyActivityReport;
 import depromeet.lessonfour.server.report.domain.vo.activity.DayType;
 import depromeet.lessonfour.server.report.domain.vo.activity.MonthlyActivityReport;
 import depromeet.lessonfour.server.report.domain.vo.activity.WaterEvaluation;
 import depromeet.lessonfour.server.report.domain.vo.activity.WaterLevel;
+import depromeet.lessonfour.server.report.domain.vo.activity.WeeklyActivityReport;
 import depromeet.lessonfour.server.report.domain.vo.activity.WeeklyActivityReportGroup;
 
 @Component
@@ -62,6 +64,61 @@ public class WaterMapper {
         .filter(evaluation -> evaluation.getDayType() == dayType)
         .findFirst()
         .orElseGet(() -> WaterEvaluation.empty(dayType));
+  }
+
+  /** 주간 물 보고서 매핑 */
+  public WeeklyWaterSection mapWeekly(WeeklyActivityReport thisWeek) {
+    // WaterLevel → 대략적인 ml 값
+    double highValue = 2000.0;
+    double mediumValue = 1200.0;
+    double lowValue = 600.0;
+
+    List<WeeklyWaterSection.WaterItem> items = new ArrayList<>();
+
+    String[] dayNames = {
+      "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"
+    };
+
+    int idx = 0;
+    for (DailyActivityReport daily : thisWeek.getDailyReports()) {
+      WaterLevel level =
+          daily.getWaterEvaluations().isEmpty()
+              ? WaterLevel.NONE
+              : daily.getWaterEvaluations().get(0).getLevel();
+
+      double value =
+          switch (level) {
+            case HIGH -> highValue;
+            case MEDIUM -> mediumValue;
+            case LOW -> lowValue;
+            case NONE -> 0.0;
+          };
+
+      String name = idx < dayNames.length ? dayNames[idx] : "DAY_" + (idx + 1);
+      items.add(new WeeklyWaterSection.WaterItem(name, value));
+      idx++;
+    }
+
+    // 메시지: 가장 높은 수준의 WaterLevel 기준
+    WaterLevel maxLevel = WaterLevel.NONE;
+    for (DailyActivityReport daily : thisWeek.getDailyReports()) {
+      for (WaterEvaluation eval : daily.getWaterEvaluations()) {
+        if (eval.getLevel().ordinal() > maxLevel.ordinal()) {
+          maxLevel = eval.getLevel();
+        }
+      }
+    }
+
+    String message;
+    if (thisWeek.getDailyReports().isEmpty() || maxLevel == WaterLevel.NONE) {
+      message = "물 섭취 기록이 없어요\n물을 자주 마셔주세요";
+    } else if (maxLevel == WaterLevel.LOW) {
+      message = "장이 말라가고 있어요!\n물 섭취량을 늘려야 해요";
+    } else {
+      message = "물을 잘 섭취하고 계시군요!\n앞으로도 잘 유지해봐요";
+    }
+
+    return new WeeklyWaterSection(message, items);
   }
 
   /** 월간 물 보고서 매핑 */
