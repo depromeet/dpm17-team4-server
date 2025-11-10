@@ -20,6 +20,7 @@ public enum ErrorCode implements BaseErrorCode {
   BUSINESS_LOGIC_ERROR(HttpStatus.BAD_REQUEST, "비즈니스 로직 처리 중 오류가 발생했습니다."),
   INVALID_CURSOR_FORMAT(HttpStatus.BAD_REQUEST, "유효하지 않은 커서입니다."),
   INVALID_SORT_OPTION(HttpStatus.BAD_REQUEST, "유효하지 않은 정렬기준입니다."),
+  INSUFFICIENT_DATA_FOR_REPORT(HttpStatus.BAD_REQUEST, "리포트 생성에 필요한 데이터가 부족합니다."),
 
   /*
   401 UNAUTHORIZED
