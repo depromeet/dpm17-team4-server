@@ -9,10 +9,10 @@ import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.report.app.dto.response.MonthlyReport;
 import depromeet.lessonfour.server.report.domain.service.SuggestionService;
-import depromeet.lessonfour.server.report.domain.vo.SuggestionType;
-import depromeet.lessonfour.server.report.domain.vo.monthly.MonthlyActivityReport;
-import depromeet.lessonfour.server.report.domain.vo.monthly.MonthlyScoreStats;
-import depromeet.lessonfour.server.report.domain.vo.monthly.MonthlyToiletReport;
+import depromeet.lessonfour.server.report.domain.vo.activity.MonthlyActivityReport;
+import depromeet.lessonfour.server.report.domain.vo.suggestion.SuggestionType;
+import depromeet.lessonfour.server.report.domain.vo.toilet.MonthlyScoreStats;
+import depromeet.lessonfour.server.report.domain.vo.toilet.MonthlyToiletReport;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
