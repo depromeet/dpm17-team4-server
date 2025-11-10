@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.report.app.dto.response;
+package depromeet.lessonfour.server.report.domain.vo;
 
 import java.util.List;
 

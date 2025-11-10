@@ -18,7 +18,7 @@ import depromeet.lessonfour.server.report.api.mapper.activity.ReportMapperUtils;
 import depromeet.lessonfour.server.report.api.mapper.activity.StressMapper;
 import depromeet.lessonfour.server.report.api.mapper.activity.WaterMapper;
 import depromeet.lessonfour.server.report.api.mapper.suggestion.SuggestionMapper;
-import depromeet.lessonfour.server.report.app.dto.response.WeeklyReport;
+import depromeet.lessonfour.server.report.domain.vo.WeeklyReport;
 import lombok.RequiredArgsConstructor;
 
 @Component

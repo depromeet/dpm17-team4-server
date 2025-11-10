@@ -21,7 +21,7 @@ import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportRespo
 import depromeet.lessonfour.server.report.api.dto.response.GetWeeklyReportResponseDto.WeeklyFoodSection;
 import depromeet.lessonfour.server.report.api.dto.response.GetWeeklyReportResponseDto.WeeklyFoodSection.FoodItem;
 import depromeet.lessonfour.server.report.api.dto.response.GetWeeklyReportResponseDto.WeeklyFoodSection.WeeklyComparison;
-import depromeet.lessonfour.server.report.app.dto.response.MonthlyReport;
+import depromeet.lessonfour.server.report.domain.vo.MonthlyReport;
 import depromeet.lessonfour.server.report.domain.vo.activity.DailyActivityReport;
 import depromeet.lessonfour.server.report.domain.vo.activity.DayType;
 import depromeet.lessonfour.server.report.domain.vo.activity.FoodEvaluation;

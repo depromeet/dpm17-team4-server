@@ -11,7 +11,7 @@ import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportRespons
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.MonthlyStressSection;
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.MonthlyStressSection.StressItem;
 import depromeet.lessonfour.server.report.api.dto.response.GetWeeklyReportResponseDto.WeeklyStressSection;
-import depromeet.lessonfour.server.report.app.dto.response.MonthlyReport;
+import depromeet.lessonfour.server.report.domain.vo.MonthlyReport;
 import depromeet.lessonfour.server.report.domain.vo.activity.DailyActivityReport;
 import depromeet.lessonfour.server.report.domain.vo.activity.StressEvaluation;
 import depromeet.lessonfour.server.report.domain.vo.activity.WeeklyActivityReport;

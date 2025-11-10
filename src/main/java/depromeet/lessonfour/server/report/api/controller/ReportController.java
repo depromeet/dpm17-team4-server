@@ -19,12 +19,12 @@ import depromeet.lessonfour.server.report.api.dto.response.GetWeeklyReportRespon
 import depromeet.lessonfour.server.report.api.mapper.DailyReportMapper;
 import depromeet.lessonfour.server.report.api.mapper.MonthlyReportMapper;
 import depromeet.lessonfour.server.report.api.mapper.WeeklyReportMapper;
-import depromeet.lessonfour.server.report.app.dto.response.DailyReport;
-import depromeet.lessonfour.server.report.app.dto.response.MonthlyReport;
-import depromeet.lessonfour.server.report.app.dto.response.WeeklyReport;
 import depromeet.lessonfour.server.report.app.service.GetDailyReportUseCase;
 import depromeet.lessonfour.server.report.app.service.MonthlyReportUseCase;
 import depromeet.lessonfour.server.report.app.service.WeeklyReportUseCase;
+import depromeet.lessonfour.server.report.domain.vo.DailyReport;
+import depromeet.lessonfour.server.report.domain.vo.MonthlyReport;
+import depromeet.lessonfour.server.report.domain.vo.WeeklyReport;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

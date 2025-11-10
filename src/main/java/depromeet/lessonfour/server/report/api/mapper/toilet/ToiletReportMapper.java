@@ -17,7 +17,7 @@ import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportRespo
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.MonthlyShapeSection;
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.MonthlyTimeDistributionSection;
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.MonthlyToiletShape;
-import depromeet.lessonfour.server.report.app.dto.response.MonthlyReport;
+import depromeet.lessonfour.server.report.domain.vo.MonthlyReport;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletColorCount;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletEvaluationLevel;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletPainDistribution;

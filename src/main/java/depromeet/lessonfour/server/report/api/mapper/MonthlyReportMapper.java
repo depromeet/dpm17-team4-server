@@ -23,8 +23,8 @@ import depromeet.lessonfour.server.report.api.mapper.activity.StressMapper;
 import depromeet.lessonfour.server.report.api.mapper.activity.WaterMapper;
 import depromeet.lessonfour.server.report.api.mapper.suggestion.SuggestionMapper;
 import depromeet.lessonfour.server.report.api.mapper.toilet.ToiletReportMapper;
-import depromeet.lessonfour.server.report.app.dto.response.MonthlyReport;
-import depromeet.lessonfour.server.report.app.dto.response.MonthlyScore;
+import depromeet.lessonfour.server.report.domain.vo.MonthlyReport;
+import depromeet.lessonfour.server.report.domain.vo.MonthlyScore;
 import lombok.RequiredArgsConstructor;
 
 @Component

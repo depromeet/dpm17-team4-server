@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
-import depromeet.lessonfour.server.report.app.dto.response.WeeklyReport;
 import depromeet.lessonfour.server.report.domain.service.SuggestionService;
+import depromeet.lessonfour.server.report.domain.vo.WeeklyReport;
 import depromeet.lessonfour.server.report.domain.vo.activity.WeeklyActivityReport;
 import depromeet.lessonfour.server.report.domain.vo.suggestion.SuggestionType;
 import depromeet.lessonfour.server.report.domain.vo.toilet.WeeklyToiletReport;

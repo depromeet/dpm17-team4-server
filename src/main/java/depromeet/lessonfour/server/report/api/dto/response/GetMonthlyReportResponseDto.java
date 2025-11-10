@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import depromeet.lessonfour.server.report.app.dto.response.MonthlyScore;
+import depromeet.lessonfour.server.report.domain.vo.MonthlyScore;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletColorCount;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
 

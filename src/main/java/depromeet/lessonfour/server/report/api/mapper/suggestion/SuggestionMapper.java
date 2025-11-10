@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.report.api.dto.response.SuggestionSection;
 import depromeet.lessonfour.server.report.api.dto.response.SuggestionSection.SuggestionItem;
-import depromeet.lessonfour.server.report.app.dto.response.MonthlyReport;
-import depromeet.lessonfour.server.report.app.dto.response.WeeklyReport;
+import depromeet.lessonfour.server.report.domain.vo.MonthlyReport;
+import depromeet.lessonfour.server.report.domain.vo.WeeklyReport;
 import depromeet.lessonfour.server.report.domain.vo.suggestion.SuggestionType;
 
 @Component

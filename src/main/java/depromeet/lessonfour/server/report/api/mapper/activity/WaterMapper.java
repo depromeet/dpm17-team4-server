@@ -10,7 +10,7 @@ import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportRespons
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.MonthlyWaterSection;
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.MonthlyWaterSection.WaterItem;
 import depromeet.lessonfour.server.report.api.dto.response.GetWeeklyReportResponseDto.WeeklyWaterSection;
-import depromeet.lessonfour.server.report.app.dto.response.MonthlyReport;
+import depromeet.lessonfour.server.report.domain.vo.MonthlyReport;
 import depromeet.lessonfour.server.report.domain.vo.activity.DailyActivityReport;
 import depromeet.lessonfour.server.report.domain.vo.activity.DayType;
 import depromeet.lessonfour.server.report.domain.vo.activity.MonthlyActivityReport;

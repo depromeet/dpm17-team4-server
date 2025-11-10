@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.transaction.annotation.Transactional;
 
 import depromeet.lessonfour.server.common.annotation.UseCase;
-import depromeet.lessonfour.server.report.app.dto.response.DailyReport;
+import depromeet.lessonfour.server.report.domain.vo.DailyReport;
 import depromeet.lessonfour.server.report.domain.vo.activity.DailyActivityReport;
 import depromeet.lessonfour.server.report.domain.vo.toilet.DailyToiletReport;
 import lombok.RequiredArgsConstructor;

@@ -9,7 +9,7 @@ import depromeet.lessonfour.server.report.api.mapper.activity.FoodMapper;
 import depromeet.lessonfour.server.report.api.mapper.activity.StressMapper;
 import depromeet.lessonfour.server.report.api.mapper.activity.WaterMapper;
 import depromeet.lessonfour.server.report.api.mapper.toilet.ToiletReportMapper;
-import depromeet.lessonfour.server.report.app.dto.response.DailyReport;
+import depromeet.lessonfour.server.report.domain.vo.DailyReport;
 import lombok.RequiredArgsConstructor;
 
 @Component
