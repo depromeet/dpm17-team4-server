@@ -154,7 +154,8 @@ public class MonthlyToiletReport {
     long currentMonthPainCount =
         painMap.entrySet().stream()
             .filter(e -> "HIGH".equals(e.getKey()) || "VERY_HIGH".equals(e.getKey()))
-            .count();
+            .mapToLong(Entry::getValue)
+            .sum();
 
     int painDiff = (int) (currentMonthPainCount - lastMonthPainfulDays);
 
