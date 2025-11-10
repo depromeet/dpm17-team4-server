@@ -16,7 +16,6 @@ public class DailyReportMapper {
   private final FoodMapper foodMapper;
   private final WaterMapper waterMapper;
   private final StressMapper stressMapper;
-  private final SuggestionMapper suggestionMapper;
 
   public GetDailyReportResponseDto map(DailyReport dailyReport, LocalDateTime updatedAt) {
     return new GetDailyReportResponseDto(
@@ -24,7 +23,6 @@ public class DailyReportMapper {
         toiletReportMapper.map(dailyReport.dailyToiletReport()),
         foodMapper.map(dailyReport.dailyActivityReport().getFoodEvaluations()),
         waterMapper.map(dailyReport.dailyActivityReport().getWaterEvaluations()),
-        stressMapper.map(dailyReport.dailyActivityReport().getStressEvaluation()),
-        suggestionMapper.map(dailyReport.suggestion()));
+        stressMapper.map(dailyReport.dailyActivityReport().getStressEvaluation()));
   }
 }
