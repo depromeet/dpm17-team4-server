@@ -4,20 +4,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealTime;
-import depromeet.lessonfour.server.report.domain.vo.Suggestion.WaterSuggestion;
+import depromeet.lessonfour.server.report.domain.vo.activity.WaterLevel;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
 
 public record GetDailyReportResponseDto(
     LocalDateTime updatedAt,
-    DailyToiletReportResponse poo,
-    FoodDailyReport food,
-    WaterReport water,
-    StressReport stress,
-    SuggestionDto suggestion) {
+    DailyToiletReport poo,
+    DailyFoodReport food,
+    DailyWaterReport water,
+    DailyStressReport stress) {
 
   // POO
-  public record DailyToiletReportResponse(
+  public record DailyToiletReport(
       double score, ToiletSummary summary, List<ToiletReportItem> items) {}
 
   public record ToiletSummary(
@@ -33,22 +32,17 @@ public record GetDailyReportResponseDto(
       String note) {}
 
   // FOOD
-  public record FoodDailyReport(String message, List<FoodReportItem> items) {}
+  public record DailyFoodReport(String message, List<FoodReportItem> items) {}
 
-  public record FoodReportItem(LocalDateTime occurredAt, List<FoodReportMeal> meals) {}
+  public record FoodReportItem(LocalDateTime occurredAt, List<DailyFoodReportMeal> meals) {}
 
-  public record FoodReportMeal(MealTime mealTime, boolean dangerous, List<String> foods) {}
+  public record DailyFoodReportMeal(MealTime mealTime, boolean dangerous, List<String> foods) {}
 
   // WATER
-  public record WaterReport(String message, List<WaterReportItem> items) {}
+  public record DailyWaterReport(String message, List<WaterReportItem> items) {}
 
-  public record WaterReportItem(String name, double value, String color, WaterSuggestion level) {}
+  public record WaterReportItem(String name, double value, String color, WaterLevel level) {}
 
   // STRESS
-  public record StressReport(String message, String image) {}
-
-  // SUGGESTION
-  public record SuggestionDto(String message, List<SuggestionItem> items) {}
-
-  public record SuggestionItem(String image, String title, String content) {}
+  public record DailyStressReport(String message, String image) {}
 }
