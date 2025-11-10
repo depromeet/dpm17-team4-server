@@ -36,7 +36,7 @@ public record MonthlyActivityReport(
     int lastMonthDangerousDays = countDangerousFoodDays(lastMonth);
 
     return new MonthlyActivityReport(
-        currentMonthDangerousDays, lastMonthDangerousDays, weeklyGroups);
+        lastMonthDangerousDays, currentMonthDangerousDays, weeklyGroups);
   }
 
   /** 주차별 활동 기록 그룹 생성 월간 리포트를 5개 주차로 나눔: 1~7일, 8~14일, 15~21일, 22~28일, 29~말일 */
