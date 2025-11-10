@@ -82,6 +82,11 @@ public class ToiletReportMapper {
 
     List<ToiletColorCount> colorCounts = report.getMostFrequentToiletColors();
 
+    // 색상 기록이 없는 경우
+    if (colorCounts.isEmpty()) {
+      return new MonthlyColorSection("이번 달 배변 색상 기록이 없어요", "", List.of());
+    }
+
     // 가장 많이 등장한 색상, 여러 개인 경우 모두 노출
     ToiletColorCount mostFrequentColor = colorCounts.getFirst();
     String titleMessage = "가장 많이 확인한 색상은\n" + mostFrequentColor.color().getValue() + "이에요";
@@ -174,7 +179,7 @@ public class ToiletReportMapper {
     }
 
     String titleMessage =
-        getTimeDistributionTitleMessage(maxCountOccurrences, within5min, over5min, over10min);
+        getTimeDistributionTitleMessage(maxCount, maxCountOccurrences, within5min, over5min);
 
     String warningMessage = over10min == maxCount ? "소요 시간이 10분이 넘으면 변비 · 치질 위험도가 올라가요" : null;
 
@@ -183,17 +188,17 @@ public class ToiletReportMapper {
   }
 
   private String getTimeDistributionTitleMessage(
-      int maxCountOccurrences, int within5min, int over5min, int over10min) {
+      int maxCount, int maxCountOccurrences, int within5min, int over5min) {
     if (maxCountOccurrences == 3) {
       return "이번 달은 화장실에서\n보낸 시간이 매번 달랐어요";
     }
     if (maxCountOccurrences == 2) {
       return "이번 달은 화장실에서\n짧고 긴 시간 모두를 경험했어요";
     }
-    if (maxCountOccurrences == within5min) {
+    if (maxCount == within5min) {
       return "배변 소요 시간은\n주로 5분 이내였어요";
     }
-    if (maxCountOccurrences == over5min) {
+    if (maxCount == over5min) {
       return "배변 소요 시간은\n주로 5분 이상이었어요";
     }
     return "배변 소요 시간은\n주로 10분 이상이었어요";

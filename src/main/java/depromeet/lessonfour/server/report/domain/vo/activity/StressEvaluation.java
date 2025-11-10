@@ -21,19 +21,23 @@ public enum StressEvaluation {
   }
 
   public static StressEvaluation calculate(StressLevel stressLevel) {
+    if (stressLevel == null) {
+      return NONE;
+    }
     return switch (stressLevel) {
       case VERY_LOW -> VERY_LOW;
       case LOW -> LOW;
       case MEDIUM -> MEDIUM;
       case HIGH -> HIGH;
       case VERY_HIGH -> VERY_HIGH;
-      case null -> NONE;
     };
   }
 
   /** 점수를 스트레스 레벨로 변환 가장 가까운 레벨을 반환 */
   public static StressEvaluation fromScore(double score) {
-    if (score <= 0) return NONE;
+    if (score <= 0) {
+      return NONE;
+    }
 
     return Arrays.stream(values())
         .filter(s -> s != NONE)

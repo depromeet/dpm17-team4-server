@@ -46,11 +46,14 @@ public class StressMapper {
 
   /** 일간 스트레스 리포트 매핑 */
   public DailyStressReport mapDaily(StressEvaluation stressEvaluation) {
-    if (stressEvaluation == StressEvaluation.NONE) {
+    if (stressEvaluation == null || stressEvaluation == StressEvaluation.NONE) {
       return null;
     }
 
     StressMapping mapped = STRESS_MAPPINGS.get(stressEvaluation);
+    if (mapped == null) {
+      return null;
+    }
     return new DailyStressReport(mapped.message, mapped.image);
   }
 
