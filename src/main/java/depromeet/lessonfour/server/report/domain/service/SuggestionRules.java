@@ -61,18 +61,18 @@ public class SuggestionRules {
 
     /** 식단에 유제품이 있는 경우 */
     @Bean
-    public SuggestionRule checkDailyProduct() {
-      List<String> dailyProducts = List.of("우유", "치즈", "요거트", "버터");
+    public SuggestionRule checkDairyProduct() {
+      List<String> dairyProducts = List.of("우유", "치즈", "요거트", "버터");
 
       return (context, types) -> {
         boolean hasDailyProduct =
             context.getFoodEvaluations().stream()
                 .flatMap(evaluation -> evaluation.getFoodsByMealTime().values().stream())
                 .flatMap(List::stream)
-                .anyMatch(food -> dailyProducts.stream().anyMatch(food::contains));
+                .anyMatch(food -> dairyProducts.stream().anyMatch(food::contains));
 
         if (hasDailyProduct) {
-          types.add(SuggestionType.DAILY_PRODUCT);
+          types.add(SuggestionType.DAIRY_PRODUCT);
         }
       };
     }
