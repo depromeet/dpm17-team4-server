@@ -46,7 +46,7 @@ public class FoodEvaluation {
   }
 
   public static FoodEvaluation calculate(List<FoodRecord> records, DayType dayType) {
-    if (records.isEmpty()) {
+    if (records == null || records.isEmpty()) {
       return new FoodEvaluation(false, Map.of(), dayType, Set.of());
     }
 

@@ -211,7 +211,12 @@ public class FoodMapper {
                     return List.<WeeklyFoodGroup.FoodItem>of();
                   }
 
-                  return dailyReport.getFoodEvaluations().stream()
+                  List<FoodEvaluation> evaluations = dailyReport.getFoodEvaluations();
+                  if (evaluations == null) {
+                    return List.<WeeklyFoodGroup.FoodItem>of();
+                  }
+
+                  return evaluations.stream()
                       .flatMap(
                           foodEvaluation ->
                               foodEvaluation.getFoodsByMealTime().entrySet().stream()
