@@ -1,11 +1,11 @@
 package depromeet.lessonfour.server.report.domain.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import depromeet.lessonfour.server.report.domain.policy.SuggestionPolicy;
-import depromeet.lessonfour.server.report.domain.vo.DailyActivityReport;
-import depromeet.lessonfour.server.report.domain.vo.DailyToiletReport;
-import depromeet.lessonfour.server.report.domain.vo.Suggestion;
+import depromeet.lessonfour.server.report.domain.vo.SuggestionType;
 import depromeet.lessonfour.server.report.domain.vo.monthly.MonthlyActivityReport;
 import depromeet.lessonfour.server.report.domain.vo.monthly.MonthlyToiletReport;
 import depromeet.lessonfour.server.report.domain.vo.weekly.WeeklyActivityReport;
@@ -18,17 +18,12 @@ public class SuggestionService {
 
   private final SuggestionPolicy suggestionPolicy;
 
-  public Suggestion suggest(
-      DailyActivityReport dailyActivityReport, DailyToiletReport dailyToiletReport) {
-    return suggestionPolicy.evaluate(dailyActivityReport, dailyToiletReport);
-  }
-
-  public Suggestion suggest(
+  public List<SuggestionType> suggest(
       WeeklyActivityReport weeklyActivityReport, WeeklyToiletReport weeklyToiletReport) {
     return suggestionPolicy.evaluateWeekly(weeklyActivityReport, weeklyToiletReport);
   }
 
-  public Suggestion suggest(
+  public List<SuggestionType> suggest(
       MonthlyActivityReport monthlyActivityReport, MonthlyToiletReport monthlyToiletReport) {
     return suggestionPolicy.evaluateMonthly(monthlyActivityReport, monthlyToiletReport);
   }
