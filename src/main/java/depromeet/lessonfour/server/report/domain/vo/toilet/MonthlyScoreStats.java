@@ -14,6 +14,13 @@ import depromeet.lessonfour.server.report.domain.entity.ToiletScore;
 
 public record MonthlyScoreStats(List<ToiletScore> scores) {
 
+  public MonthlyScoreStats {
+    if (scores == null) {
+      throw new ServerException(ErrorCode.INSUFFICIENT_DATA_FOR_REPORT);
+    }
+    scores = List.copyOf(scores);
+  }
+
   public double getAverageScore() {
     return scores.stream().mapToInt(ToiletScore::getScore).average().orElse(0.0);
   }

@@ -62,7 +62,7 @@ public class ToiletReportMapper {
                     new MonthlyToiletShape(
                         shape.shape().getValue(),
                         shape.count(),
-                        MESSAGE_BY_SHAPE.get(shape.shape())))
+                        MESSAGE_BY_SHAPE.getOrDefault(shape.shape(), "")))
             .toList();
 
     return new MonthlyShapeSection(titleMessage, items);
