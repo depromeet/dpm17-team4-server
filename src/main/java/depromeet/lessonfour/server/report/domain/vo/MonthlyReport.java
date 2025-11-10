@@ -62,11 +62,11 @@ public record MonthlyReport(
   }
 
   public ToiletScore getMaxToiletScore() {
-    return scores.getMaxScore().orElseGet(ToiletScore::empty);
+    return scores.getMaxScore();
   }
 
   public ToiletScore getMinToiletScore() {
-    return scores.getMinScore().orElseGet(ToiletScore::empty);
+    return scores.getMinScore();
   }
 
   /** 주차별 평균 스트레스 점수 계산 */

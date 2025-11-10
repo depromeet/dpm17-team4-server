@@ -5,10 +5,11 @@ import java.util.Comparator;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import depromeet.lessonfour.server.common.api.code.ErrorCode;
+import depromeet.lessonfour.server.common.exception.ServerException;
 import depromeet.lessonfour.server.report.domain.entity.ToiletScore;
 
 public record MonthlyScoreStats(List<ToiletScore> scores) {
@@ -49,11 +50,15 @@ public record MonthlyScoreStats(List<ToiletScore> scores) {
         .toList();
   }
 
-  public Optional<ToiletScore> getMaxScore() {
-    return scores.stream().max(Comparator.comparingInt(ToiletScore::getScore));
+  public ToiletScore getMaxScore() {
+    return scores.stream()
+        .max(Comparator.comparingInt(ToiletScore::getScore))
+        .orElseThrow(() -> new ServerException(ErrorCode.INSUFFICIENT_DATA_FOR_REPORT));
   }
 
-  public Optional<ToiletScore> getMinScore() {
-    return scores.stream().min(Comparator.comparingInt(ToiletScore::getScore));
+  public ToiletScore getMinScore() {
+    return scores.stream()
+        .min(Comparator.comparingInt(ToiletScore::getScore))
+        .orElseThrow(() -> new ServerException(ErrorCode.INSUFFICIENT_DATA_FOR_REPORT));
   }
 }
