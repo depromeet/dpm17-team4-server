@@ -20,6 +20,7 @@ public class SuggestionRules {
 
   @Configuration
   static class WaterRules {
+
     /** 수분 섭취량이 [부족]인 경우 */
     @Bean
     public SuggestionRule checkWaterLack() {
@@ -50,6 +51,7 @@ public class SuggestionRules {
 
   @Configuration
   static class FoodRules {
+
     /** 채소나 과일 섭취가 2일 이상 연속 없는 경우 */
     @Bean
     public SuggestionRule checkFiberLack() {
@@ -176,7 +178,7 @@ public class SuggestionRules {
      *   <li>복통 정도가 [70%] 이상인 경우
      * </ul>
      *
-     * 2) 생활 기반
+     * <p>2) 생활 기반
      *
      * <ul>
      *   <li>기름진 음식, 튀김류, 매운 음식 이틀 이상 기록
@@ -284,6 +286,7 @@ public class SuggestionRules {
 
   @Configuration
   static class StressRules {
+
     /** 스트레스가 [조금 심함] or [심함]인 경우 */
     @Bean
     public SuggestionRule checkStress() {
@@ -317,6 +320,7 @@ public class SuggestionRules {
 
   @Configuration
   static class ToiletRules {
+
     /** 배변 기록을 주 3일 이하로 기록한 경우 */
     @Bean
     public SuggestionRule checkRecordLack() {
@@ -421,7 +425,9 @@ public class SuggestionRules {
      */
     @Bean
     public SuggestionRule checkInconsistentTime() {
-      return null;
+      return (context, types) -> {
+        // TODO: 배변 시간 불규칙 판별 로직 구현
+      };
     }
 
     /** 생리 : 특이사항에 [생리]가 기록된 경우 */
