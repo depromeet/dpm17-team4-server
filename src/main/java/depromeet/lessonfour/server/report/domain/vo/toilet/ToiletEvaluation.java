@@ -1,13 +1,18 @@
-package depromeet.lessonfour.server.report.domain.policy;
+package depromeet.lessonfour.server.report.domain.vo.toilet;
 
-import org.springframework.stereotype.Component;
+import java.util.List;
 
-import depromeet.lessonfour.server.report.domain.vo.ToiletEvaluation;
-import depromeet.lessonfour.server.report.domain.vo.ToiletEvaluationLevel;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
+import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
+import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
 
-@Component
-public class ToiletEvaluationPolicy {
+@Getter
+@Builder(access = AccessLevel.PRIVATE)
+public class ToiletEvaluation {
 
   // 가중치
   private static final int SUCCESS_WEIGHT = 5;
@@ -31,7 +36,23 @@ public class ToiletEvaluationPolicy {
   // 소요시간 threshold
   private static final int DURATION_LONG_THRESHOLD = 10;
 
-  public ToiletEvaluation evaluate(ToiletRecord record) {
+  private final double score;
+  private final ToiletEvaluationLevel level;
+  private final ToiletColor color;
+  private final ToiletShape shape;
+  private final int duration;
+  private final double pain;
+  private final String note;
+  private final ActivityAt occurredAt;
+  private final boolean isSuccess;
+
+  public static DailyToiletReport summarize(List<ToiletRecord> records) {
+    List<ToiletEvaluation> evaluations = records.stream().map(ToiletEvaluation::evaluate).toList();
+
+    return DailyToiletReport.summarize(evaluations);
+  }
+
+  private static ToiletEvaluation evaluate(ToiletRecord record) {
     double score = BASE_SCORE;
 
     score += successScore(record.isSuccessful()) * SUCCESS_WEIGHT;
@@ -75,5 +96,24 @@ public class ToiletEvaluationPolicy {
       return -10;
     }
     return 0;
+  }
+
+  public static ToiletEvaluation from(
+      double score, ToiletEvaluationLevel level, ToiletRecord record) {
+    return ToiletEvaluation.builder()
+        .score(score)
+        .level(level)
+        .color(record.getColor())
+        .shape(record.getShape())
+        .duration(record.getDuration())
+        .pain(record.getPain())
+        .note(record.getNote())
+        .occurredAt(record.getActivityAt())
+        .isSuccess(record.isSuccessful())
+        .build();
+  }
+
+  public boolean failed() {
+    return !isSuccess;
   }
 }
