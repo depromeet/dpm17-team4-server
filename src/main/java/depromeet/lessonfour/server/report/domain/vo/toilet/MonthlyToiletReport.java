@@ -36,7 +36,7 @@ public class MonthlyToiletReport {
                 Collectors.groupingBy(
                     r -> {
                       LocalDate d = r.getActivityAt().toDate();
-                      return d.get(wf.weekOfMonth()); // 1~5(또는 6)주차
+                      return d.get(wf.weekOfMonth()); // 0 ~ 5(또는 6)주차
                     }));
 
     List<WeeklyToiletReport> weeklyReports =
