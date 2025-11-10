@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.report.domain.policy;
+package depromeet.lessonfour.server.report.domain.service;
 
 import static depromeet.lessonfour.server.activityrecord.domain.vo.MealTime.BREAKFAST;
 
@@ -7,11 +7,11 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import depromeet.lessonfour.server.report.domain.vo.StressEvaluation;
-import depromeet.lessonfour.server.report.domain.vo.SuggestionRule;
-import depromeet.lessonfour.server.report.domain.vo.SuggestionType;
-import depromeet.lessonfour.server.report.domain.vo.ToiletEvaluation;
-import depromeet.lessonfour.server.report.domain.vo.WaterEvaluation;
+import depromeet.lessonfour.server.report.domain.vo.activity.StressEvaluation;
+import depromeet.lessonfour.server.report.domain.vo.activity.WaterEvaluation;
+import depromeet.lessonfour.server.report.domain.vo.suggestion.SuggestionRule;
+import depromeet.lessonfour.server.report.domain.vo.suggestion.SuggestionType;
+import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletEvaluation;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
 
@@ -454,7 +454,7 @@ public class SuggestionRules {
     @Bean
     public SuggestionRule checkConsultationNeeded() {
       final List<ToiletColor> abnormalShapes =
-          List.of(ToiletColor.RED, ToiletColor.BLACK, ToiletColor.GRAY);
+          List.of(ToiletColor.RED, ToiletColor.BLACK, ToiletColor.WHITE);
 
       final int BAD_SCORE_THRESHOLD = 25;
 

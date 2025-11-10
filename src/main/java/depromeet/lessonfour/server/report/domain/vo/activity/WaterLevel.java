@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.report.domain.vo;
+package depromeet.lessonfour.server.report.domain.vo.activity;
 
 import lombok.Getter;
 

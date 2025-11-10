@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.report.domain.vo.monthly;
+package depromeet.lessonfour.server.report.domain.vo.toilet;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

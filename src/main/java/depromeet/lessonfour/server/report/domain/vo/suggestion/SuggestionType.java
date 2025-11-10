@@ -1,4 +1,4 @@
-package depromeet.lessonfour.server.report.domain.vo;
+package depromeet.lessonfour.server.report.domain.vo.suggestion;
 
 public enum SuggestionType {
   WATER_LACK,
