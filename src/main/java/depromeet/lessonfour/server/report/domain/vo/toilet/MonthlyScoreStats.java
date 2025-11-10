@@ -11,12 +11,15 @@ import java.util.stream.IntStream;
 import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.exception.ServerException;
 import depromeet.lessonfour.server.report.domain.entity.ToiletScore;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public record MonthlyScoreStats(List<ToiletScore> scores) {
 
   public MonthlyScoreStats {
     if (scores == null) {
-      throw new ServerException(ErrorCode.INSUFFICIENT_DATA_FOR_REPORT);
+      log.warn("배변 점수 리스트 null 발생");
+      throw new ServerException(ErrorCode.INTERNAL_SERVER_ERROR);
     }
     scores = List.copyOf(scores);
   }
