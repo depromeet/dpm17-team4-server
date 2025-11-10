@@ -44,7 +44,7 @@ public class SuggestionMapper {
           "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion%3Aspicy_food_at_breakfast.png",
           "공복에 자극적인 음식을 피해주세요", "맵거나 기름진 음식은 공복에 피하는 게 좋아요");
       case DAIRY_PRODUCT -> new SuggestionItem(
-          "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion%3Adaily_product.png",
+          "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion%3Adairy_product.png",
           "유제품이 장에 부담을 줄 수 있어요", "우유, 치즈, 요거트 섭취 후 불편함이 있었다면 주의!");
       case CAFFEINE -> new SuggestionItem(
           "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion%3Acaffeine.png",
