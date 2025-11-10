@@ -12,9 +12,9 @@ import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.report.app.dto.response.WeeklyReport;
 import depromeet.lessonfour.server.report.domain.service.SuggestionService;
-import depromeet.lessonfour.server.report.domain.vo.SuggestionType;
-import depromeet.lessonfour.server.report.domain.vo.weekly.WeeklyActivityReport;
-import depromeet.lessonfour.server.report.domain.vo.weekly.WeeklyToiletReport;
+import depromeet.lessonfour.server.report.domain.vo.activity.WeeklyActivityReport;
+import depromeet.lessonfour.server.report.domain.vo.suggestion.SuggestionType;
+import depromeet.lessonfour.server.report.domain.vo.toilet.WeeklyToiletReport;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
