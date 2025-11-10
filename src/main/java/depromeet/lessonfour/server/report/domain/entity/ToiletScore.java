@@ -41,6 +41,10 @@ public class ToiletScore {
     return new ToiletScore(null, userId, score, date);
   }
 
+  public static ToiletScore empty() {
+    return new ToiletScore(null, null, 0, null);
+  }
+
   public void updateScore(int newScore) {
     if (this.score != newScore) {
       this.score = newScore;
