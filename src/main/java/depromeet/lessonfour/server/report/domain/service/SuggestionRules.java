@@ -445,21 +445,21 @@ public class SuggestionRules {
     /** 전문가 상담이 필요한 경우 */
     @Bean
     public SuggestionRule checkConsultationNeeded() {
-      final List<ToiletColor> abnormalShapes =
+      final List<ToiletColor> abnormalColors =
           List.of(ToiletColor.RED, ToiletColor.BLACK, ToiletColor.WHITE);
 
       final int BAD_SCORE_THRESHOLD = 25;
 
       return (context, types) -> {
-        boolean hasAbnormalShape =
+        boolean hasAbnormalColor =
             context.getToiletEvaluations().stream()
-                .anyMatch(evaluation -> abnormalShapes.contains(evaluation.getColor()));
+                .anyMatch(evaluation -> abnormalColors.contains(evaluation.getColor()));
 
         boolean hasBadScore =
             context.getToiletEvaluations().stream()
                 .anyMatch(evaluation -> evaluation.getScore() <= BAD_SCORE_THRESHOLD);
 
-        if (hasAbnormalShape || hasBadScore) {
+        if (hasAbnormalColor || hasBadScore) {
           types.add(SuggestionType.NEED_MEDICAL_EXAMINATION);
         }
       };
