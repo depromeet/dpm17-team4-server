@@ -39,7 +39,7 @@ public class SuggestionMapper {
           "충분한 식이섬유가 중요해요", "과일과 채소를 섭취하면 좋은 흐름이 유지돼요");
       case RECORD_LACK -> new SuggestionItem(
           "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion%3Arecord_lack.png",
-          "충분한 식이섬유가 중요해요", "과일과 채소를 섭취하면 좋은 흐림이 유지돼요");
+          "지속적으로 배변을 기록해요", "배변이 잘 되는 나만의 루틴을 만들 수 있어요");
       case SPICY_FOOD_AT_BREAKFAST -> new SuggestionItem(
           "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion%3Aspicy_food_at_breakfast.png",
           "공복에 자극적인 음식을 피해주세요", "맵거나 기름진 음식은 공복에 피하는 게 좋아요");
