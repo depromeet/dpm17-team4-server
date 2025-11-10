@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto;
+import depromeet.lessonfour.server.report.api.mapper.activity.FoodMapper;
+import depromeet.lessonfour.server.report.api.mapper.activity.StressMapper;
+import depromeet.lessonfour.server.report.api.mapper.activity.WaterMapper;
 import depromeet.lessonfour.server.report.app.dto.response.DailyReport;
 import lombok.RequiredArgsConstructor;
 
@@ -20,9 +23,9 @@ public class DailyReportMapper {
   public GetDailyReportResponseDto map(DailyReport dailyReport, LocalDateTime updatedAt) {
     return new GetDailyReportResponseDto(
         updatedAt,
-        toiletReportMapper.map(dailyReport.dailyToiletReport()),
-        foodMapper.map(dailyReport.dailyActivityReport().getFoodEvaluations()),
-        waterMapper.map(dailyReport.dailyActivityReport().getWaterEvaluations()),
-        stressMapper.map(dailyReport.dailyActivityReport().getStressEvaluation()));
+        toiletReportMapper.mapDaily(dailyReport.dailyToiletReport()),
+        foodMapper.mapDaily(dailyReport.dailyActivityReport().getFoodEvaluations()),
+        waterMapper.mapDaily(dailyReport.dailyActivityReport().getWaterEvaluations()),
+        stressMapper.mapDaily(dailyReport.dailyActivityReport().getStressEvaluation()));
   }
 }
