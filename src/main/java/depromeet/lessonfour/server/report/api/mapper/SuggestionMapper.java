@@ -4,20 +4,29 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.SuggestionDto;
-import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.SuggestionItem;
-import depromeet.lessonfour.server.report.domain.vo.SuggestionType;
+import depromeet.lessonfour.server.report.api.dto.response.SuggestionSection;
+import depromeet.lessonfour.server.report.api.dto.response.SuggestionSection.SuggestionItem;
+import depromeet.lessonfour.server.report.app.dto.response.MonthlyReport;
+import depromeet.lessonfour.server.report.app.dto.response.WeeklyReport;
+import depromeet.lessonfour.server.report.domain.vo.suggestion.SuggestionType;
 
 @Component
 public class SuggestionMapper {
 
   private static final String titleMessage = "장 상태를 개선하려면\n" + "이런 습관을 추천해요";
 
-  public SuggestionDto map(List<SuggestionType> suggestions) {
-    List<SuggestionItem> recommendSuggestions =
-        suggestions.stream().map(this::mapSuggestionItem).toList();
+  public SuggestionSection map(WeeklyReport report) {
+    List<SuggestionItem> items =
+        report.suggestions().stream().map(this::mapSuggestionItem).toList();
 
-    return new SuggestionDto(titleMessage, recommendSuggestions);
+    return new SuggestionSection(titleMessage, items);
+  }
+
+  public SuggestionSection map(MonthlyReport report) {
+    List<SuggestionItem> recommendSuggestions =
+        report.suggestions().stream().map(this::mapSuggestionItem).toList();
+
+    return new SuggestionSection(titleMessage, recommendSuggestions);
   }
 
   public SuggestionItem mapSuggestionItem(SuggestionType suggestion) {
