@@ -255,7 +255,7 @@ class ToiletRecordQueryTest {
     ToiletRecord midnight =
         createToiletRecord(testUser, today.atTime(0, 0), ToiletColor.DARK_BROWN, ToiletShape.CORN);
     ToiletRecord almostMidnight =
-        createToiletRecord(testUser, today.atTime(23, 59), ToiletColor.RED, ToiletShape.ROCK);
+        createToiletRecord(testUser, today.atTime(23, 59), ToiletColor.RED, ToiletShape.CORN);
 
     ActivityAt activityAt = ActivityAt.of(today);
 
