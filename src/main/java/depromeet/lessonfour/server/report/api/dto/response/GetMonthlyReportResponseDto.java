@@ -47,7 +47,7 @@ public record GetMonthlyReportResponseDto(
 
     public static ColorCount from(ToiletColorCount toiletColorCount) {
       return new ColorCount(
-          toiletColorCount.color().getValue(),
+          toiletColorCount.color().name(),
           toiletColorCount.count(),
           toiletColorCount.color().equals(ToiletColor.RED) ? "전문가 상담 권장" : null);
     }

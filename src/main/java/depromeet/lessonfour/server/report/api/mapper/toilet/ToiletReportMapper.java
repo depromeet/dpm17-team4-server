@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import depromeet.lessonfour.server.common.api.code.ErrorCode;
+import depromeet.lessonfour.server.common.exception.ServerException;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.DailyToiletReport;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.ToiletReportItem;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.ToiletSummary;
@@ -25,7 +27,9 @@ import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletPeriodCount;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletTimeDistribution;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 public class ToiletReportMapper {
 
@@ -60,7 +64,7 @@ public class ToiletReportMapper {
             .map(
                 shape ->
                     new MonthlyToiletShape(
-                        shape.shape().getValue(),
+                        shape.shape().name(),
                         shape.count(),
                         MESSAGE_BY_SHAPE.getOrDefault(shape.shape(), "")))
             .toList();
@@ -82,9 +86,10 @@ public class ToiletReportMapper {
 
     List<ToiletColorCount> colorCounts = report.getMostFrequentToiletColors();
 
-    // 색상 기록이 없는 경우
+    // 색상 기록이 없는 경우 - 월별 2건 이상의 주간 리포트, 주별 2건 이상의 일간 리포트가 필요하므로 발생하지 않아야 함
     if (colorCounts.isEmpty()) {
-      return new MonthlyColorSection("이번 달 배변 색상 기록이 없어요", "", List.of());
+      log.error("Monthly toilet color report mapping failed - no color records found");
+      throw new ServerException(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
     // 가장 많이 등장한 색상, 여러 개인 경우 모두 노출
