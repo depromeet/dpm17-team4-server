@@ -53,13 +53,17 @@ public class SuggestionMapper {
           "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion%3Aalcohol.png",
           "과도한 음주는 피해주세요", "음주는 장 점막을 자극해 배변에 영향을 줄 수 있어요");
       case HIGH_PROTEIN -> new SuggestionItem(
-          "", "반찬에 샐러드나 과일도 곁들여보세요", "단백질 위주 식사는 변비를 유발할 수 있어요");
+          "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion%3Ahigh_protein.png",
+          "반찬에 샐러드나 과일도 곁들여보세요", "단백질 위주 식사는 변비를 유발할 수 있어요");
       case HIGH_FAT -> new SuggestionItem(
-          "", "텐동, 치킨 같은 튀김류 당분간 참아보세요", "기름진 음식은 소화에 부담을 주고 장을 무겁게 만들어요");
-      case SPICY_FOOD -> new SuggestionItem(
-          "", "자극적인 음식은 장에 부담을 줄 수 있어요", "너무 맵거나 기름진 음식은 장을 예민하게 만들어요");
-      case OVEREATING -> new SuggestionItem(
-          "", "과식을 피하고 적정량을 나눠 드세요", "한 끼에 많은 양을 드셨다면 다음 식사는 가볍게 드세요");
+          "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion%3Ahigh_fat.png",
+          "텐동, 치킨 같은 튀김류 당분간 참아보세요", "기름진 음식은 소화에 부담을 주고 장을 무겁게 만들어요");
+      case SPICY -> new SuggestionItem(
+          "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion%3Aspicy.png",
+          "자극적인 음식은 장에 부담을 줄 수 있어요", "너무 맵거나 기름진 음식은 장을 예민하게 만들어요");
+      case OVEREAT -> new SuggestionItem(
+          "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion%3Aovereat.png",
+          "과식을 피하고 적정량을 나눠 드세요", "한 끼에 많은 양을 드셨다면 다음 식사는 가볍게 드세요");
       case HIGH_STRESS -> new SuggestionItem(
           "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion%3Ahigh_stress.png",
           "스트레스를 풀 나만의 방법을 찾아보세요", "스트레스가 장 운동과 배변 상태를 악화시킬 수 있어요");
@@ -91,7 +95,8 @@ public class SuggestionMapper {
           "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion%3Abreakfast_lack.png",
           "아침밥을 챙겨 먹어보세요", "하루 세끼 규칙적인 식사는 쾌변을 도와요");
       case WATER_MEDIUM -> new SuggestionItem(
-          "", "아침에 일어나 물 한 잔 드셔보세요", "아침 물 한 잔은 장을 깨우는 데 효과적이에요");
+          "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion%3Awater_medium.png",
+          "아침에 일어나 물 한 잔 드셔보세요", "아침 물 한 잔은 장을 깨우는 데 효과적이에요");
       case LONG_TOILET_TIME -> new SuggestionItem(
           "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/suggestion%3Along_toilet_time.png",
           "화장실에 너무 오래 앉아있지 마세요", "오랜 시간 앉아 있을수록 치질 위험이 증가합니다");
