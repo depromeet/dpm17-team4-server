@@ -206,7 +206,7 @@ class GetWeeklyReportE2ETest {
         monday.plusDays(3).withHour(8),
         true,
         ToiletColor.DEFAULT,
-        ToiletShape.ROCK,
+        ToiletShape.CORN,
         20,
         8,
         null); // 목
@@ -258,7 +258,7 @@ class GetWeeklyReportE2ETest {
 
     // 토: toilet만 있음
     createToilet(
-        monday.plusDays(5).withHour(9), true, ToiletColor.GOLD, ToiletShape.ROCK, 15, 6, null);
+        monday.plusDays(5).withHour(9), true, ToiletColor.GOLD, ToiletShape.CORN, 15, 6, null);
 
     // 일: 아무 기록 없음
 
@@ -356,7 +356,7 @@ class GetWeeklyReportE2ETest {
         monday.plusDays(1).withHour(9),
         true,
         ToiletColor.DARK_BROWN,
-        ToiletShape.ROCK,
+        ToiletShape.CORN,
         15,
         6,
         "화요일");

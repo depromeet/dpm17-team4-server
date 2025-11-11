@@ -111,7 +111,7 @@ class UpdateToiletRecordE2ETest {
         {
           "isSuccessful": false,
           "color": "RED",
-          "shape": "ROCK",
+          "shape": "CORN",
           "pain": 50,
           "duration": 12,
           "note": "수정된 배변 기록"
@@ -132,7 +132,7 @@ class UpdateToiletRecordE2ETest {
         .body("data.id", equalTo(toiletRecordId.intValue()))
         .body("data.isSuccessful", equalTo(false))
         .body("data.color", equalTo("RED"))
-        .body("data.shape", equalTo("ROCK"))
+        .body("data.shape", equalTo("CORN"))
         .body("data.pain", equalTo(50))
         .body("data.duration", equalTo(12))
         .body("data.note", equalTo("수정된 배변 기록"));
@@ -563,7 +563,7 @@ class UpdateToiletRecordE2ETest {
   @Test
   @DisplayName("모든 형태 타입으로 수정 가능하다")
   void givenAllShapeTypes_whenUpdateToiletRecord_thenSuccess() {
-    String[] shapes = {"RABBIT", "ROCK", "CORN", "BANANA", "CREAM", "PORRIDGE"};
+    String[] shapes = {"RABBIT", "WATER", "CORN", "BANANA", "CREAM", "PORRIDGE"};
 
     for (String shape : shapes) {
       // 배변기록 생성
@@ -650,7 +650,7 @@ class UpdateToiletRecordE2ETest {
         {
           "isSuccessful": false,
           "color": "RED",
-          "shape": "ROCK",
+          "shape": "RABBIT",
           "pain": 80
         }
         """;

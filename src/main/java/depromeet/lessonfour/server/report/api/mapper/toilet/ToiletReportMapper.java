@@ -5,7 +5,9 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.DailyToiletReport;
+import depromeet.lessonfour.server.common.api.code.ErrorCode;
+import depromeet.lessonfour.server.common.exception.ServerException;
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.DailyToiletReportDto;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.ToiletReportItem;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.ToiletSummary;
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.ColorCount;
@@ -18,6 +20,7 @@ import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportRespo
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.MonthlyTimeDistributionSection;
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.MonthlyToiletShape;
 import depromeet.lessonfour.server.report.domain.vo.MonthlyReport;
+import depromeet.lessonfour.server.report.domain.vo.toilet.DailyToiletReport;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletColorCount;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletEvaluationLevel;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletPainDistribution;
@@ -25,13 +28,14 @@ import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletPeriodCount;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletTimeDistribution;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 public class ToiletReportMapper {
 
   // 일간 리포트
-  public DailyToiletReport mapDaily(
-      depromeet.lessonfour.server.report.domain.vo.toilet.DailyToiletReport dailyToiletReport) {
+  public DailyToiletReportDto mapDaily(DailyToiletReport dailyToiletReport) {
     return DailyMapper.map(dailyToiletReport);
   }
 
@@ -48,7 +52,6 @@ public class ToiletReportMapper {
     final Map<ToiletShape, String> MESSAGE_BY_SHAPE =
         Map.of(
             ToiletShape.RABBIT, "변비 주의",
-            ToiletShape.ROCK, "",
             ToiletShape.BANANA, "",
             ToiletShape.CORN, "수분 충전 필요",
             ToiletShape.CREAM, "설사 주의",
@@ -60,7 +63,7 @@ public class ToiletReportMapper {
             .map(
                 shape ->
                     new MonthlyToiletShape(
-                        shape.shape().getValue(),
+                        shape.shape().name(),
                         shape.count(),
                         MESSAGE_BY_SHAPE.getOrDefault(shape.shape(), "")))
             .toList();
@@ -69,7 +72,6 @@ public class ToiletReportMapper {
   }
 
   /** 배변 색상 섹션 매핑 */
-  // TODO : 색상 우선 순위 적용
   public MonthlyColorSection mapColor(MonthlyReport report) {
     final Map<ToiletColor, String> COLOR_MESSAGE_MAP =
         Map.of(
@@ -77,25 +79,49 @@ public class ToiletReportMapper {
             ToiletColor.WHITE, "흰색은 건강의 적신호예요. 간이나 담도가 좋지 않은 상태일 수도 있어요. 빠른 병원 방문을 권장해요.",
             ToiletColor.BLACK, "흑변은 건강의 적신호예요. 위궤양, 위암 등 위 관련 문제일 수도 있어요. 즉시 병원을 방문하셔야 해요");
 
-    final List<ToiletColor> PRIORITY =
-        List.of(ToiletColor.RED, ToiletColor.WHITE, ToiletColor.BLACK);
+    // 색상 우선순위: 적색 > 흑색 > 흰색 > 녹색 > 황금색 > 갈색
+    final Map<ToiletColor, Integer> COLOR_PRIORITY =
+        Map.of(
+            ToiletColor.RED, 1,
+            ToiletColor.BLACK, 2,
+            ToiletColor.WHITE, 3,
+            ToiletColor.GREEN, 4,
+            ToiletColor.GOLD, 5,
+            ToiletColor.DARK_BROWN, 6);
 
     List<ToiletColorCount> colorCounts = report.getMostFrequentToiletColors();
 
-    // 색상 기록이 없는 경우
+    // 색상 기록이 없는 경우 - 월별 2건 이상의 주간 리포트, 주별 2건 이상의 일간 리포트가 필요하므로 발생하지 않아야 함
     if (colorCounts.isEmpty()) {
-      return new MonthlyColorSection("이번 달 배변 색상 기록이 없어요", "", List.of());
+      log.error("Monthly toilet color report mapping failed - no color records found");
+      throw new ServerException(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
-    // 가장 많이 등장한 색상, 여러 개인 경우 모두 노출
-    ToiletColorCount mostFrequentColor = colorCounts.getFirst();
+    // 색상 우선순위에 따라 정렬 (빈도수가 같으면 우선순위 높은 색상이 먼저)
+    List<ToiletColorCount> sortedColorCounts =
+        colorCounts.stream()
+            .sorted(
+                (a, b) -> {
+                  // 빈도수가 다르면 빈도수로 내림차순 정렬
+                  if (a.count() != b.count()) {
+                    return Integer.compare(b.count(), a.count());
+                  }
+                  // 빈도수가 같으면 우선순위로 오름차순 정렬
+                  return Integer.compare(
+                      COLOR_PRIORITY.getOrDefault(a.color(), 999),
+                      COLOR_PRIORITY.getOrDefault(b.color(), 999));
+                })
+            .toList();
+
+    // 가장 많이 등장한 색상 (우선순위가 적용된 첫 번째 색상)
+    ToiletColorCount mostFrequentColor = sortedColorCounts.getFirst();
     String titleMessage = "가장 많이 확인한 색상은\n" + mostFrequentColor.color().getValue() + "이에요";
 
     // 색상에 따른 경고 메시지
     String colorWarningMessage = COLOR_MESSAGE_MAP.getOrDefault(mostFrequentColor.color(), "");
 
     // item 매핑
-    List<ColorCount> monthlyColorCount = colorCounts.stream().map(ColorCount::from).toList();
+    List<ColorCount> monthlyColorCount = sortedColorCounts.stream().map(ColorCount::from).toList();
 
     return new MonthlyColorSection(titleMessage, colorWarningMessage, monthlyColorCount);
   }
@@ -136,11 +162,11 @@ public class ToiletReportMapper {
 
     // title message
     StringBuilder builder = new StringBuilder(mostFrequent.period().getValue());
-    if (periodCounts.get(1).count() == mostFrequent.count()) {
+    if (periodCounts.size() >= 2 && periodCounts.get(1).count() == mostFrequent.count()) {
       builder.append(",").append(periodCounts.get(1).period().getValue());
     }
 
-    if (periodCounts.getLast().count() == mostFrequent.count()) {
+    if (periodCounts.size() >= 3 && periodCounts.getLast().count() == mostFrequent.count()) {
       builder.append(",").append(periodCounts.getLast().period().getValue());
     }
 
@@ -254,13 +280,13 @@ public class ToiletReportMapper {
     private static final String message =
         "전문가의 상담이 필요해요. 복통이 매우 심했다면 단순한 식사 문제를 넘어서 장염이나 자극적인 음식으로 인한 장 트러블일 수 있습니다.";
 
-    static DailyToiletReport map(
+    static DailyToiletReportDto map(
         depromeet.lessonfour.server.report.domain.vo.toilet.DailyToiletReport dailyToiletReport) {
       if (dailyToiletReport.getLevel() == ToiletEvaluationLevel.NONE) {
         return null;
       }
       HeroCharacter heroCharacter = characterMap.get(dailyToiletReport.getLevel());
-      return new DailyToiletReport(
+      return new DailyToiletReportDto(
           dailyToiletReport.getToiletScore(),
           new ToiletSummary(
               heroCharacter.image(),

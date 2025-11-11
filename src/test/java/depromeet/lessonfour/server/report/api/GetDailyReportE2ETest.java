@@ -196,7 +196,7 @@ class GetDailyReportE2ETest {
     LocalDateTime base = LocalDateTime.of(2024, 1, 18, 10, 0);
 
     createToilet(base.withHour(7), true, ToiletColor.DEFAULT, ToiletShape.BANANA, 10, 5, "ok");
-    createToilet(base.withHour(9), false, ToiletColor.DEFAULT, ToiletShape.ROCK, 30, 12, "fail");
+    createToilet(base.withHour(9), false, ToiletColor.DEFAULT, ToiletShape.CORN, 30, 12, "fail");
     createToilet(base.withHour(12), true, null, ToiletShape.CREAM, 5, 3, null); // color null
     createToilet(base.withHour(18), true, ToiletColor.DARK_BROWN, null, 0, 2, null); // shape null
     createToilet(base.withHour(20), true, null, null, 25, 8, "둘다 null"); // both null
