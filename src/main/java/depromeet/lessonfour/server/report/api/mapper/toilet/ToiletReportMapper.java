@@ -73,7 +73,6 @@ public class ToiletReportMapper {
   }
 
   /** 배변 색상 섹션 매핑 */
-  // TODO : 색상 우선 순위 적용
   public MonthlyColorSection mapColor(MonthlyReport report) {
     final Map<ToiletColor, String> COLOR_MESSAGE_MAP =
         Map.of(
@@ -81,8 +80,15 @@ public class ToiletReportMapper {
             ToiletColor.WHITE, "흰색은 건강의 적신호예요. 간이나 담도가 좋지 않은 상태일 수도 있어요. 빠른 병원 방문을 권장해요.",
             ToiletColor.BLACK, "흑변은 건강의 적신호예요. 위궤양, 위암 등 위 관련 문제일 수도 있어요. 즉시 병원을 방문하셔야 해요");
 
-    final List<ToiletColor> PRIORITY =
-        List.of(ToiletColor.RED, ToiletColor.WHITE, ToiletColor.BLACK);
+    // 색상 우선순위: 적색 > 흑색 > 흰색 > 녹색 > 황금색 > 갈색
+    final Map<ToiletColor, Integer> COLOR_PRIORITY =
+        Map.of(
+            ToiletColor.RED, 1,
+            ToiletColor.BLACK, 2,
+            ToiletColor.WHITE, 3,
+            ToiletColor.GREEN, 4,
+            ToiletColor.GOLD, 5,
+            ToiletColor.DARK_BROWN, 6);
 
     List<ToiletColorCount> colorCounts = report.getMostFrequentToiletColors();
 
@@ -92,15 +98,31 @@ public class ToiletReportMapper {
       throw new ServerException(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
-    // 가장 많이 등장한 색상, 여러 개인 경우 모두 노출
-    ToiletColorCount mostFrequentColor = colorCounts.getFirst();
+    // 색상 우선순위에 따라 정렬 (빈도수가 같으면 우선순위 높은 색상이 먼저)
+    List<ToiletColorCount> sortedColorCounts =
+        colorCounts.stream()
+            .sorted(
+                (a, b) -> {
+                  // 빈도수가 다르면 빈도수로 내림차순 정렬
+                  if (a.count() != b.count()) {
+                    return Integer.compare(b.count(), a.count());
+                  }
+                  // 빈도수가 같으면 우선순위로 오름차순 정렬
+                  return Integer.compare(
+                      COLOR_PRIORITY.getOrDefault(a.color(), 999),
+                      COLOR_PRIORITY.getOrDefault(b.color(), 999));
+                })
+            .toList();
+
+    // 가장 많이 등장한 색상 (우선순위가 적용된 첫 번째 색상)
+    ToiletColorCount mostFrequentColor = sortedColorCounts.getFirst();
     String titleMessage = "가장 많이 확인한 색상은\n" + mostFrequentColor.color().getValue() + "이에요";
 
     // 색상에 따른 경고 메시지
     String colorWarningMessage = COLOR_MESSAGE_MAP.getOrDefault(mostFrequentColor.color(), "");
 
     // item 매핑
-    List<ColorCount> monthlyColorCount = colorCounts.stream().map(ColorCount::from).toList();
+    List<ColorCount> monthlyColorCount = sortedColorCounts.stream().map(ColorCount::from).toList();
 
     return new MonthlyColorSection(titleMessage, colorWarningMessage, monthlyColorCount);
   }
@@ -141,11 +163,11 @@ public class ToiletReportMapper {
 
     // title message
     StringBuilder builder = new StringBuilder(mostFrequent.period().getValue());
-    if (periodCounts.get(1).count() == mostFrequent.count()) {
+    if (periodCounts.size() >= 2 && periodCounts.get(1).count() == mostFrequent.count()) {
       builder.append(",").append(periodCounts.get(1).period().getValue());
     }
 
-    if (periodCounts.getLast().count() == mostFrequent.count()) {
+    if (periodCounts.size() >= 3 && periodCounts.getLast().count() == mostFrequent.count()) {
       builder.append(",").append(periodCounts.getLast().period().getValue());
     }
 
