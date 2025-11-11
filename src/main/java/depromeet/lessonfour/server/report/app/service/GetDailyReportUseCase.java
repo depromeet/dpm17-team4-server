@@ -20,7 +20,7 @@ public class GetDailyReportUseCase {
   private final ToiletReportService toiletReportService;
 
   public DailyReport getDailyReport(Long userId, LocalDateTime dateTime) {
-    ActivityAt activityAt = ActivityAt.from(dateTime);
+    ActivityAt activityAt = ActivityAt.of(dateTime.toLocalDate());
 
     // 생활 기록 리포트 생성
     DailyActivityReport dailyActivityReport =
