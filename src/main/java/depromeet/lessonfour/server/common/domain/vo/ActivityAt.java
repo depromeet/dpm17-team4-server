@@ -111,7 +111,7 @@ public class ActivityAt {
   }
 
   public boolean isDayBefore(@Nullable ActivityAt other) {
-    if (other == null) {
+    if (other == null || other.equals(EMPTY)) {
       return false;
     }
     return this.isSameDate(other.getDayBefore());

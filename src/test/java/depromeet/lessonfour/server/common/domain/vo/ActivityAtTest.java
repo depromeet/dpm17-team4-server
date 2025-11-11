@@ -499,6 +499,20 @@ class ActivityAtTest {
     }
 
     @Test
+    @DisplayName("EMPTY와 비교하면 false를 반환한다")
+    void givenEmpty_whenIsDayBefore_thenReturnsFalse() {
+      // given
+      ActivityAt yesterday = ActivityAt.of(LocalDate.of(2024, 1, 14));
+      ActivityAt empty = ActivityAt.of(null);
+
+      // when
+      boolean result = yesterday.isDayBefore(empty);
+
+      // then
+      assertThat(result).isFalse();
+    }
+
+    @Test
     @DisplayName("월 경계를 넘는 전날 관계도 정확하게 판단한다")
     void givenCrossMonthBoundary_whenIsDayBefore_thenReturnsTrue() {
       // given
