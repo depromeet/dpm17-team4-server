@@ -52,7 +52,6 @@ public class ToiletReportMapper {
     final Map<ToiletShape, String> MESSAGE_BY_SHAPE =
         Map.of(
             ToiletShape.RABBIT, "변비 주의",
-            ToiletShape.ROCK, "",
             ToiletShape.BANANA, "",
             ToiletShape.CORN, "수분 충전 필요",
             ToiletShape.CREAM, "설사 주의",

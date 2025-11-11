@@ -7,7 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ToiletShape {
   RABBIT("토끼"),
-  ROCK("돌"),
   CORN("옥수수"),
   BANANA("바나나"),
   CREAM("크림"),
@@ -18,7 +17,7 @@ public enum ToiletShape {
 
   public int getScore() {
     return switch (this) {
-      case RABBIT, ROCK -> -15;
+      case RABBIT -> -15;
       case PORRIDGE -> -10; // 묽음
       case CORN -> -5;
       case CREAM, WATER -> 10;

@@ -496,7 +496,7 @@ class CreateToiletRecordE2ETest {
   @DisplayName("모든 형태 타입으로 요청시 성공한다")
   void givenAllShapeTypes_whenCreateToiletRecord_thenSuccess() {
     LocalDateTime now = LocalDateTime.now();
-    String[] shapes = {"RABBIT", "ROCK", "CORN", "BANANA", "CREAM", "PORRIDGE"};
+    String[] shapes = {"RABBIT", "CORN", "BANANA", "CREAM", "PORRIDGE", "WATER"};
 
     for (String shape : shapes) {
       String createRequest =

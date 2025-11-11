@@ -155,27 +155,6 @@ class ToiletReportMapperShapeTest {
   }
 
   @Test
-  @DisplayName("바위 모양이 가장 많을 때 빈 메시지를 포함한다")
-  void givenRockShapeMostFrequent_whenMapShape_thenReturnWithEmptyMessage() {
-    // given
-    List<ToiletShapeCount> shapes =
-        List.of(
-            new ToiletShapeCount(ToiletShape.ROCK, 8),
-            new ToiletShapeCount(ToiletShape.BANANA, 6),
-            new ToiletShapeCount(ToiletShape.CORN, 4));
-    when(mockReport.getMostFrequentToiletShapes()).thenReturn(shapes);
-
-    // when
-    MonthlyShapeSection result = mapper.mapShape(mockReport);
-
-    // then
-    assertThat(result).isNotNull();
-    assertThat(result.items().get(0).shape()).isEqualTo("ROCK");
-    assertThat(result.items().get(0).count()).isEqualTo(8);
-    assertThat(result.items().get(0).message()).isEmpty();
-  }
-
-  @Test
   @DisplayName("여러 모양이 있을 때 모든 모양을 올바르게 매핑한다")
   void givenMultipleShapes_whenMapShape_thenReturnAllShapesCorrectly() {
     // given

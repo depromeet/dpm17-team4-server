@@ -96,7 +96,7 @@ class ToiletReportMapperDailyTest {
         createMockToiletEvaluation(
             ActivityAt.of(LocalDate.of(2024, 1, 1)),
             ToiletColor.DARK_BROWN,
-            ToiletShape.ROCK,
+            ToiletShape.CORN,
             5,
             3,
             "average");
