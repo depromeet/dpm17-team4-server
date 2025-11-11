@@ -21,6 +21,11 @@ public record MonthlyScoreStats(List<ToiletScore> scores) {
       log.warn("배변 점수 리스트 null 발생");
       throw new ServerException(ErrorCode.INTERNAL_SERVER_ERROR);
     }
+
+    if (scores.size() < 2) {
+      throw new ServerException(ErrorCode.INSUFFICIENT_DATA_FOR_REPORT);
+    }
+
     scores = List.copyOf(scores);
   }
 
@@ -32,11 +37,6 @@ public record MonthlyScoreStats(List<ToiletScore> scores) {
   }
 
   public List<Integer> getWeeklyAverageScore() {
-    if (scores.isEmpty()) {
-      // 2주차 이상의 데이터 필요
-      throw new ServerException(ErrorCode.INSUFFICIENT_DATA_FOR_REPORT);
-    }
-
     // 날짜 → 주차 인덱스(1~5)
     Map<Integer, List<ToiletScore>> scoresByWeek =
         scores.stream()
