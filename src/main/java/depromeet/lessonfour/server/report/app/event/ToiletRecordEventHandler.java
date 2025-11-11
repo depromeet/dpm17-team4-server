@@ -27,7 +27,7 @@ public class ToiletRecordEventHandler {
     ActivityAt date = payload.date();
 
     log.info("Handling ToiletRecord event - traceId: {}", event.traceId());
-    toiletReportService.generateDailyReport(userId, date.toDateTime());
+    toiletReportService.generateDailyReport(userId, date);
     log.info("ToiletScore saved - traceId: {}", event.traceId());
   }
 }

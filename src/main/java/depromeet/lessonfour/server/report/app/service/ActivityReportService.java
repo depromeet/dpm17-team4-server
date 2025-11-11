@@ -1,9 +1,7 @@
 package depromeet.lessonfour.server.report.app.service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -21,17 +19,24 @@ public class ActivityReportService {
 
   private final ActivityRecordClient activityRecordClient;
 
-  /** 일간 생활 기록 리포트 생성 */
-  public DailyActivityReport generateDailyReport(Long userId, LocalDateTime baseDatetime) {
-    LocalDate baseDate = baseDatetime.toLocalDate();
-    Map<LocalDate, ActivityRecord> recordsByDate =
+  public DailyActivityReport generateDailyReport(Long userId, ActivityAt activityAt) {
+    List<ActivityRecord> records =
         activityRecordClient.getActivityRecordsBetween(
-            userId, baseDate.minusDays(1).atStartOfDay(), baseDate.plusDays(1).atStartOfDay());
+            userId, activityAt.getDayBefore(), activityAt.getDayAfter());
 
-    ActivityRecord currentRecord = recordsByDate.get(baseDate);
-    ActivityRecord previousRecord = recordsByDate.get(baseDate.minusDays(1));
+    ActivityRecord yesterday =
+        records.stream()
+            .filter(record -> record.getActivityAt().isDayBefore(activityAt))
+            .findFirst()
+            .orElse(null);
 
-    return DailyActivityReport.evaluate(previousRecord, currentRecord);
+    ActivityRecord today =
+        records.stream()
+            .filter(record -> record.getActivityAt().isSameDate(activityAt))
+            .findFirst()
+            .orElse(null);
+
+    return DailyActivityReport.evaluate(yesterday, today);
   }
 
   /** 주간 생활 기록 리포트 생성 */

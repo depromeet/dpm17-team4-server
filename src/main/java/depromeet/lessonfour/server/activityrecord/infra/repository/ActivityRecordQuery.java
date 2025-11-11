@@ -69,6 +69,7 @@ public class ActivityRecordQuery {
             activityRecord.activityAt.date.goe(start.toDate()),
             activityRecord.activityAt.date.lt(end.toDate()),
             activityRecord.isDeleted.eq(false))
+        .orderBy(activityRecord.activityAt.date.asc())
         .fetch();
   }
 

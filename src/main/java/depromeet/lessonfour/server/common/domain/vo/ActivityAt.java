@@ -70,6 +70,22 @@ public class ActivityAt {
     return ActivityAt.from(lastMonthDate.atStartOfDay());
   }
 
+  public ActivityAt getDayBefore() {
+    if (this.equals(EMPTY)) {
+      throw new ServerException(ErrorCode.INVALID_FIELD_ERROR);
+    }
+    LocalDate dayBeforeDate = date.minusDays(1);
+    return ActivityAt.from(dayBeforeDate.atStartOfDay());
+  }
+
+  public ActivityAt getDayAfter() {
+    if (this.equals(EMPTY)) {
+      throw new ServerException(ErrorCode.INVALID_FIELD_ERROR);
+    }
+    LocalDate dayAfterDate = date.plusDays(1);
+    return ActivityAt.from(dayAfterDate.atStartOfDay());
+  }
+
   public List<LocalDate> datesUntil(@Nullable ActivityAt end) {
     if (this.equals(EMPTY)) {
       throw new ServerException(ErrorCode.INVALID_FIELD_ERROR);
@@ -85,5 +101,19 @@ public class ActivityAt {
       throw new ServerException(ErrorCode.INVALID_FIELD_ERROR);
     }
     return Stream.iterate(date, d -> d.plusDays(1)).limit(days).toList();
+  }
+
+  public boolean isSameDate(@Nullable ActivityAt other) {
+    if (other == null) {
+      return false;
+    }
+    return this.date.equals(other.date);
+  }
+
+  public boolean isDayBefore(@Nullable ActivityAt other) {
+    if (other == null || other.equals(EMPTY)) {
+      return false;
+    }
+    return this.isSameDate(other.getDayBefore());
   }
 }

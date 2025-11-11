@@ -30,18 +30,13 @@ public class ToiletRecordRepositoryImpl implements ToiletRecordRepository {
   }
 
   @Override
-  public List<ToiletRecord> findByDate(Long userId, ActivityAt at) {
-    return query.findByDate(userId, at);
-  }
-
-  @Override
   public List<RecordTime> findTimesByDate(Long userId, ActivityAt activityAt) {
     return query.findTimesByDate(userId, activityAt);
   }
 
   @Override
   public List<ToiletRecord> findAllByActivityAt(Long userId, ActivityAt at) {
-    return query.findByDate(userId, at);
+    return query.findAllByActivityAt(userId, at);
   }
 
   @Override

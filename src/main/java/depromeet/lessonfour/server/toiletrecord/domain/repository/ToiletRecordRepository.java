@@ -14,8 +14,6 @@ public interface ToiletRecordRepository {
 
   Optional<ToiletRecord> findById(Long userId, Long recordId);
 
-  List<ToiletRecord> findByDate(Long userId, ActivityAt at);
-
   List<RecordTime> findTimesByDate(Long userId, ActivityAt activityAt);
 
   List<ToiletRecord> findAllByActivityAt(Long userId, ActivityAt at);

@@ -1,6 +1,5 @@
 package depromeet.lessonfour.server.report.app.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -22,13 +21,13 @@ public class ToiletReportService {
   private final ToiletScoreService toiletScoreService;
 
   /** 일간 배변 리포트 생성 */
-  public DailyToiletReport generateDailyReport(Long userId, LocalDateTime baseDateTime) {
+  public DailyToiletReport generateDailyReport(Long userId, ActivityAt activityAt) {
     List<ToiletRecord> dailyRecords =
-        toiletRecordClient.getToiletRecordsByDate(userId, baseDateTime.toLocalDate());
+        toiletRecordClient.getToiletRecordsByActivityAt(userId, activityAt);
 
     DailyToiletReport report = ToiletEvaluation.summarize(dailyRecords);
-    toiletScoreService.updateScore(
-        userId, (int) report.getToiletScore(), ActivityAt.from(baseDateTime));
+
+    toiletScoreService.updateScore(userId, (int) report.getToiletScore(), activityAt);
 
     return report;
   }
