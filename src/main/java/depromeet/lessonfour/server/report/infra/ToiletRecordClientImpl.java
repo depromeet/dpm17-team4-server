@@ -1,6 +1,5 @@
 package depromeet.lessonfour.server.report.infra;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -18,8 +17,8 @@ public class ToiletRecordClientImpl implements ToiletRecordClient {
   private final ToiletRecordQueryService toiletRecordQueryService;
 
   @Override
-  public List<ToiletRecord> getToiletRecordsByDate(Long userId, LocalDate date) {
-    return toiletRecordQueryService.findByDate(userId, date);
+  public List<ToiletRecord> getToiletRecordsByActivityAt(Long userId, ActivityAt activityAt) {
+    return toiletRecordQueryService.findAllByActivityAt(userId, activityAt);
   }
 
   @Override

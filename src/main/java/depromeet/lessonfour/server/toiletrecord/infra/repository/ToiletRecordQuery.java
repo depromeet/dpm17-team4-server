@@ -25,7 +25,7 @@ public class ToiletRecordQuery {
 
   private final JPAQueryFactory queryFactory;
 
-  public List<ToiletRecord> findByDate(Long userId, ActivityAt activityAt) {
+  public List<ToiletRecord> findAllByActivityAt(Long userId, ActivityAt activityAt) {
     List<ToiletRecord> records =
         queryFactory
             .selectFrom(toiletRecord)
