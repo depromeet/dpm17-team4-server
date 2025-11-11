@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.exception.ServerException;
-import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.DailyToiletReport;
+import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.DailyToiletReportDto;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.ToiletReportItem;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.ToiletSummary;
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.ColorCount;
@@ -20,6 +20,7 @@ import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportRespo
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.MonthlyTimeDistributionSection;
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.MonthlyToiletShape;
 import depromeet.lessonfour.server.report.domain.vo.MonthlyReport;
+import depromeet.lessonfour.server.report.domain.vo.toilet.DailyToiletReport;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletColorCount;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletEvaluationLevel;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletPainDistribution;
@@ -34,8 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ToiletReportMapper {
 
   // 일간 리포트
-  public DailyToiletReport mapDaily(
-      depromeet.lessonfour.server.report.domain.vo.toilet.DailyToiletReport dailyToiletReport) {
+  public DailyToiletReportDto mapDaily(DailyToiletReport dailyToiletReport) {
     return DailyMapper.map(dailyToiletReport);
   }
 
@@ -259,13 +259,13 @@ public class ToiletReportMapper {
     private static final String message =
         "전문가의 상담이 필요해요. 복통이 매우 심했다면 단순한 식사 문제를 넘어서 장염이나 자극적인 음식으로 인한 장 트러블일 수 있습니다.";
 
-    static DailyToiletReport map(
+    static DailyToiletReportDto map(
         depromeet.lessonfour.server.report.domain.vo.toilet.DailyToiletReport dailyToiletReport) {
       if (dailyToiletReport.getLevel() == ToiletEvaluationLevel.NONE) {
         return null;
       }
       HeroCharacter heroCharacter = characterMap.get(dailyToiletReport.getLevel());
-      return new DailyToiletReport(
+      return new DailyToiletReportDto(
           dailyToiletReport.getToiletScore(),
           new ToiletSummary(
               heroCharacter.image(),
