@@ -462,7 +462,7 @@ class CreateToiletRecordE2ETest {
   @DisplayName("모든 색깔 타입으로 요청시 성공한다")
   void givenAllColorTypes_whenCreateToiletRecord_thenSuccess() {
     LocalDateTime now = LocalDateTime.now();
-    String[] colors = {"DEFAULT", "GOLD", "DARK_BROWN", "RED", "GREEN", "GRAY"};
+    String[] colors = {"DEFAULT", "GOLD", "DARK_BROWN", "RED", "GREEN", "WHITE"};
 
     for (String color : colors) {
       String createRequest =

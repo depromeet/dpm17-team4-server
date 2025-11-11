@@ -6,11 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
-import depromeet.lessonfour.server.report.app.dto.response.DailyReport;
-import depromeet.lessonfour.server.report.domain.service.SuggestionService;
-import depromeet.lessonfour.server.report.domain.vo.DailyActivityReport;
-import depromeet.lessonfour.server.report.domain.vo.DailyToiletReport;
-import depromeet.lessonfour.server.report.domain.vo.Suggestion;
+import depromeet.lessonfour.server.report.domain.vo.DailyReport;
+import depromeet.lessonfour.server.report.domain.vo.activity.DailyActivityReport;
+import depromeet.lessonfour.server.report.domain.vo.toilet.DailyToiletReport;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
@@ -20,7 +18,6 @@ public class GetDailyReportUseCase {
 
   private final ActivityReportService activityReportService;
   private final ToiletReportService toiletReportService;
-  private final SuggestionService suggestionService;
 
   public DailyReport getDailyReport(Long userId, LocalDateTime dateTime) {
     ActivityAt activityAt = ActivityAt.from(dateTime);
@@ -33,9 +30,6 @@ public class GetDailyReportUseCase {
     DailyToiletReport dailyToiletReport =
         toiletReportService.generateDailyReport(userId, activityAt);
 
-    // 맞춤형 제안 생성
-    Suggestion suggestion = suggestionService.suggest(dailyActivityReport, dailyToiletReport);
-
-    return new DailyReport(dailyActivityReport, dailyToiletReport, suggestion);
+    return new DailyReport(dailyActivityReport, dailyToiletReport);
   }
 }

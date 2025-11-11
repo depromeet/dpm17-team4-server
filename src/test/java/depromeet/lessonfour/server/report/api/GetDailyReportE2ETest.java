@@ -137,8 +137,7 @@ class GetDailyReportE2ETest {
         .body("data.poo", notNullValue())
         .body("data.food", notNullValue())
         .body("data.water", notNullValue())
-        .body("data.stress", notNullValue())
-        .body("data.suggestion", notNullValue());
+        .body("data.stress", notNullValue());
   }
 
   // 2) toiletrecord만 존재
@@ -163,8 +162,7 @@ class GetDailyReportE2ETest {
         // 구현에 따라 food/water/stress 가 null 또는 객체(빈 items)일 수 있어 허용 범위로 체크
         .body("data.food", anyOf(nullValue(), notNullValue()))
         .body("data.water", anyOf(nullValue(), notNullValue()))
-        .body("data.stress", anyOf(nullValue(), notNullValue()))
-        .body("data.suggestion", notNullValue());
+        .body("data.stress", anyOf(nullValue(), notNullValue()));
   }
 
   // 3) activityrecord만 존재
@@ -188,8 +186,7 @@ class GetDailyReportE2ETest {
         .body("data.poo", nullValue()) // StoolEvaluationLevel.NONE → mapper가 null 반환
         .body("data.food", notNullValue())
         .body("data.water", notNullValue())
-        .body("data.stress", notNullValue())
-        .body("data.suggestion", notNullValue());
+        .body("data.stress", notNullValue());
   }
 
   // 4) toiletrecord 여러개: isSuccessful=false, color=null, shape=null 섞임
@@ -215,8 +212,7 @@ class GetDailyReportE2ETest {
         .body("status", equalTo(200))
         .body("data.updatedAt", notNullValue())
         .body("data.poo", notNullValue())
-        .body("data.poo.items.size()", equalTo(5))
-        .body("data.suggestion", notNullValue());
+        .body("data.poo.items.size()", equalTo(5));
   }
 
   // 5) toiletrecord 단건: isSuccessful=false, color=null, shape=null
@@ -248,7 +244,6 @@ class GetDailyReportE2ETest {
         // 활동 섹션은 구현에 따라 null/객체 모두 허용
         .body("data.food", anyOf(nullValue(), notNullValue()))
         .body("data.water", anyOf(nullValue(), notNullValue()))
-        .body("data.stress", anyOf(nullValue(), notNullValue()))
-        .body("data.suggestion", notNullValue());
+        .body("data.stress", anyOf(nullValue(), notNullValue()));
   }
 }

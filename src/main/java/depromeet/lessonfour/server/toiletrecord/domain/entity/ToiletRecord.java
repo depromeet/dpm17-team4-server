@@ -118,4 +118,8 @@ public class ToiletRecord extends BaseTimeEntity {
   public void delete() {
     this.isDeleted = true;
   }
+
+  public boolean isPainful() {
+    return this.pain >= 50;
+  }
 }

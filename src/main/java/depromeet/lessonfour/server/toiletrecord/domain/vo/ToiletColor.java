@@ -11,7 +11,7 @@ public enum ToiletColor {
   DARK_BROWN("갈색"),
   RED("적색"),
   GREEN("녹색"),
-  GRAY("흰색"),
+  WHITE("흰색"),
   BLACK("흑색");
 
   private final String value;
@@ -20,7 +20,7 @@ public enum ToiletColor {
     return switch (this) {
       case DEFAULT, GOLD -> 0;
       case DARK_BROWN -> -5;
-      case RED, GREEN, GRAY, BLACK -> -20; // 비정상
+      case RED, GREEN, WHITE, BLACK -> -20; // 비정상
     };
   }
 }

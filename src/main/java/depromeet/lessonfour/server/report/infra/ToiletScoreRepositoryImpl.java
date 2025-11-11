@@ -1,6 +1,7 @@
 package depromeet.lessonfour.server.report.infra;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -40,5 +41,10 @@ public class ToiletScoreRepositoryImpl implements ToiletScoreRepository {
   @Override
   public Optional<ToiletScore> findMinScoreBetween(Long userId, ActivityAt start, ActivityAt end) {
     return query.findMinScoreBetween(userId, start, end);
+  }
+
+  @Override
+  public List<ToiletScore> findAllBetween(Long userId, ActivityAt start, ActivityAt end) {
+    return query.findAllBetween(userId, start, end);
   }
 }

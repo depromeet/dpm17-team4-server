@@ -5,7 +5,11 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto;
-import depromeet.lessonfour.server.report.app.dto.response.DailyReport;
+import depromeet.lessonfour.server.report.api.mapper.activity.FoodMapper;
+import depromeet.lessonfour.server.report.api.mapper.activity.StressMapper;
+import depromeet.lessonfour.server.report.api.mapper.activity.WaterMapper;
+import depromeet.lessonfour.server.report.api.mapper.toilet.ToiletReportMapper;
+import depromeet.lessonfour.server.report.domain.vo.DailyReport;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -16,15 +20,13 @@ public class DailyReportMapper {
   private final FoodMapper foodMapper;
   private final WaterMapper waterMapper;
   private final StressMapper stressMapper;
-  private final SuggestionMapper suggestionMapper;
 
   public GetDailyReportResponseDto map(DailyReport dailyReport, LocalDateTime updatedAt) {
     return new GetDailyReportResponseDto(
         updatedAt,
-        toiletReportMapper.map(dailyReport.dailyToiletReport()),
-        foodMapper.map(dailyReport.dailyActivityReport().getFoodEvaluations()),
-        waterMapper.map(dailyReport.dailyActivityReport().getWaterEvaluations()),
-        stressMapper.map(dailyReport.dailyActivityReport().getStressEvaluation()),
-        suggestionMapper.map(dailyReport.suggestion()));
+        toiletReportMapper.mapDaily(dailyReport.dailyToiletReport()),
+        foodMapper.mapDaily(dailyReport.dailyActivityReport().getFoodEvaluations()),
+        waterMapper.mapDaily(dailyReport.dailyActivityReport().getWaterEvaluations()),
+        stressMapper.mapDaily(dailyReport.dailyActivityReport().getStressEvaluation()));
   }
 }

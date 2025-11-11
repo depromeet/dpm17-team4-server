@@ -3,6 +3,7 @@ package depromeet.lessonfour.server.report.infra;
 import static depromeet.lessonfour.server.report.domain.entity.QToiletScore.toiletScore;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -56,5 +57,16 @@ public class ToiletScoreQuery {
             .fetchFirst();
 
     return Optional.ofNullable(score);
+  }
+
+  public List<ToiletScore> findAllBetween(Long userId, ActivityAt start, ActivityAt end) {
+    return queryFactory
+        .selectFrom(toiletScore)
+        .where(
+            toiletScore.userId.eq(userId),
+            toiletScore.date.goe(start.toDate()),
+            toiletScore.date.lt(end.toDate()))
+        .orderBy(toiletScore.date.asc())
+        .fetch();
   }
 }
