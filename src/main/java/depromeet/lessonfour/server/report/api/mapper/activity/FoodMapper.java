@@ -37,11 +37,16 @@ public class FoodMapper {
   private final Clock clock;
 
   /** 일간 음식 보고서 매핑 */
-  public DailyFoodReport mapDaily(List<FoodEvaluation> foodEvaluations) {
+  public DailyFoodReport mapDaily(
+      List<FoodEvaluation> foodEvaluations, LocalDateTime baseDateTime) {
     String message = getMessage(foodEvaluations);
+    LocalDate baseDate = baseDateTime.toLocalDate();
+    LocalDate dayBefore = baseDate.minusDays(1);
 
     List<FoodReportItem> items =
-        foodEvaluations.stream().map(this::createFoodReportItem).collect(toList());
+        foodEvaluations.stream()
+            .map(evaluation -> createFoodReportItem(evaluation, baseDate))
+            .toList();
 
     if (foodEvaluations.size() == 1) {
       FoodEvaluation evaluation = foodEvaluations.getFirst();
@@ -49,11 +54,16 @@ public class FoodMapper {
 
       if (dayType == DayType.YESTERDAY) {
         // 어제 데이터만 있는 경우: 어제 데이터 + 오늘 빈 데이터
-        items = List.of(createFoodReportItem(evaluation), createEmptyFoodReportItem(DayType.TODAY));
+        items =
+            List.of(
+                createFoodReportItem(evaluation, dayBefore),
+                createEmptyFoodReportItem(DayType.TODAY, baseDate));
       } else {
         // 오늘 데이터만 있는 경우: 어제 빈 데이터 + 오늘 데이터
         items =
-            List.of(createEmptyFoodReportItem(DayType.YESTERDAY), createFoodReportItem(evaluation));
+            List.of(
+                createEmptyFoodReportItem(DayType.YESTERDAY, dayBefore),
+                createFoodReportItem(evaluation, baseDate));
       }
     }
     // 두 날짜 모두 있는 경우는  DayType 순서로 정렬
@@ -61,8 +71,8 @@ public class FoodMapper {
       items =
           foodEvaluations.stream()
               .sorted(comparing(FoodEvaluation::getDayType))
-              .map(this::createFoodReportItem)
-              .collect(toList());
+              .map(evaluation -> createFoodReportItem(evaluation, baseDate))
+              .toList();
     }
 
     // 데이터가 없는 경우: 어제와 오늘 모두 빈 데이터
@@ -73,7 +83,7 @@ public class FoodMapper {
     return new DailyFoodReport(message, items);
   }
 
-  private FoodReportItem createFoodReportItem(FoodEvaluation foodEvaluation) {
+  private FoodReportItem createFoodReportItem(FoodEvaluation foodEvaluation, LocalDate baseDate) {
     List<DailyFoodReportMeal> meals =
         foodEvaluation.getFoodsByMealTime().entrySet().stream()
             .map(
@@ -84,17 +94,18 @@ public class FoodMapper {
                         entry.getValue()))
             .collect(toList());
 
-    return new FoodReportItem(getDate(foodEvaluation.getDayType()), meals);
+    return new FoodReportItem(getDate(foodEvaluation.getDayType(), baseDate), meals);
   }
 
-  private FoodReportItem createEmptyFoodReportItem(DayType dayType) {
-    return new FoodReportItem(getDate(dayType), List.of());
+  private FoodReportItem createEmptyFoodReportItem(DayType dayType, LocalDate baseDate) {
+    return new FoodReportItem(getDate(dayType, baseDate), List.of());
   }
 
-  private LocalDateTime getDate(DayType dateType) {
-    return dateType == DayType.YESTERDAY
-        ? LocalDateTime.now(clock).minusDays(1)
-        : LocalDateTime.now(clock);
+  private LocalDate getDate(DayType dateType, LocalDate baseDate) {
+    if (dateType == DayType.YESTERDAY) {
+      return baseDate.minusDays(1);
+    }
+    return baseDate;
   }
 
   private static String getMessage(List<FoodEvaluation> foodEvaluations) {

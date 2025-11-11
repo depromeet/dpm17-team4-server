@@ -1,5 +1,6 @@
 package depromeet.lessonfour.server.report.api.dto.response;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public record GetDailyReportResponseDto(
   // FOOD
   public record DailyFoodReport(String message, List<FoodReportItem> items) {}
 
-  public record FoodReportItem(LocalDateTime occurredAt, List<DailyFoodReportMeal> meals) {}
+  public record FoodReportItem(LocalDate occurredAt, List<DailyFoodReportMeal> meals) {}
 
   public record DailyFoodReportMeal(MealTime mealTime, boolean dangerous, List<String> foods) {}
 
