@@ -3,6 +3,7 @@ package depromeet.lessonfour.server.report.app.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,22 +18,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
 import depromeet.lessonfour.server.activityrecord.domain.vo.StressLevel;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.report.app.client.ActivityRecordClient;
-import depromeet.lessonfour.server.report.domain.service.ActivityEvaluationService;
-import depromeet.lessonfour.server.report.domain.vo.DailyActivityReport;
-import depromeet.lessonfour.server.report.domain.vo.StressEvaluation;
+import depromeet.lessonfour.server.report.domain.vo.activity.DailyActivityReport;
+import depromeet.lessonfour.server.report.domain.vo.activity.StressEvaluation;
 
 @ExtendWith(MockitoExtension.class)
 class ActivityReportServiceTest {
 
   @Mock private ActivityRecordClient activityRecordClient;
-
-  @Mock private ActivityEvaluationService activityEvaluationService;
 
   @InjectMocks private ActivityReportService activityReportService;
 
@@ -76,34 +75,44 @@ class ActivityReportServiceTest {
 
     DailyActivityReport mockReport =
         new DailyActivityReport(new ArrayList<>(), new ArrayList<>(), StressEvaluation.LOW);
-    when(activityEvaluationService.evaluate(any(ActivityRecord.class), any(ActivityRecord.class)))
-        .thenReturn(mockReport);
 
-    // When
-    DailyActivityReport result =
-        activityReportService.generateDailyReport(testUserId, testActivityAt);
+    try (MockedStatic<DailyActivityReport> mockedStatic = mockStatic(DailyActivityReport.class)) {
+      mockedStatic
+          .when(
+              () ->
+                  DailyActivityReport.evaluate(
+                      any(ActivityRecord.class), any(ActivityRecord.class)))
+          .thenReturn(mockReport);
 
-    // Then
-    ArgumentCaptor<ActivityAt> startAtCaptor = ArgumentCaptor.forClass(ActivityAt.class);
-    ArgumentCaptor<ActivityAt> endAtCaptor = ArgumentCaptor.forClass(ActivityAt.class);
+      // When
+      DailyActivityReport result =
+          activityReportService.generateDailyReport(testUserId, testActivityAt);
 
-    // Verify client was called with correct date range
-    verify(activityRecordClient)
-        .getActivityRecordsBetween(eq(testUserId), startAtCaptor.capture(), endAtCaptor.capture());
+      // Then
+      ArgumentCaptor<ActivityAt> startAtCaptor = ArgumentCaptor.forClass(ActivityAt.class);
+      ArgumentCaptor<ActivityAt> endAtCaptor = ArgumentCaptor.forClass(ActivityAt.class);
 
-    assertThat(startAtCaptor.getValue().toDate()).isEqualTo(LocalDate.of(2025, 1, 8)); // dayBefore
-    assertThat(endAtCaptor.getValue().toDate()).isEqualTo(LocalDate.of(2025, 1, 10)); // dayAfter
+      // Verify client was called with correct date range
+      verify(activityRecordClient)
+          .getActivityRecordsBetween(
+              eq(testUserId), startAtCaptor.capture(), endAtCaptor.capture());
 
-    // Verify evaluation service was called with correct records by date
-    ArgumentCaptor<ActivityRecord> previousCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
-    ArgumentCaptor<ActivityRecord> currentCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
+      assertThat(startAtCaptor.getValue().toDate())
+          .isEqualTo(LocalDate.of(2025, 1, 8)); // dayBefore
+      assertThat(endAtCaptor.getValue().toDate()).isEqualTo(LocalDate.of(2025, 1, 10)); // dayAfter
 
-    verify(activityEvaluationService).evaluate(previousCaptor.capture(), currentCaptor.capture());
+      // Verify evaluation service was called with correct records by date
+      ArgumentCaptor<ActivityRecord> previousCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
+      ArgumentCaptor<ActivityRecord> currentCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
 
-    assertThat(previousCaptor.getValue()).isEqualTo(yesterdayRecord);
-    assertThat(currentCaptor.getValue()).isEqualTo(todayRecord);
+      mockedStatic.verify(
+          () -> DailyActivityReport.evaluate(previousCaptor.capture(), currentCaptor.capture()));
 
-    assertThat(result).isEqualTo(mockReport);
+      assertThat(previousCaptor.getValue()).isEqualTo(yesterdayRecord);
+      assertThat(currentCaptor.getValue()).isEqualTo(todayRecord);
+
+      assertThat(result).isEqualTo(mockReport);
+    }
   }
 
   @Test
@@ -118,24 +127,32 @@ class ActivityReportServiceTest {
 
     DailyActivityReport mockReport =
         new DailyActivityReport(new ArrayList<>(), new ArrayList<>(), StressEvaluation.LOW);
-    when(activityEvaluationService.evaluate(any(ActivityRecord.class), any(ActivityRecord.class)))
-        .thenReturn(mockReport);
 
-    // When
-    DailyActivityReport result =
-        activityReportService.generateDailyReport(testUserId, testActivityAt);
+    try (MockedStatic<DailyActivityReport> mockedStatic = mockStatic(DailyActivityReport.class)) {
+      mockedStatic
+          .when(
+              () ->
+                  DailyActivityReport.evaluate(
+                      any(ActivityRecord.class), any(ActivityRecord.class)))
+          .thenReturn(mockReport);
 
-    // Then
-    ArgumentCaptor<ActivityRecord> previousCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
-    ArgumentCaptor<ActivityRecord> currentCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
+      // When
+      DailyActivityReport result =
+          activityReportService.generateDailyReport(testUserId, testActivityAt);
 
-    verify(activityEvaluationService).evaluate(previousCaptor.capture(), currentCaptor.capture());
+      // Then
+      ArgumentCaptor<ActivityRecord> previousCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
+      ArgumentCaptor<ActivityRecord> currentCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
 
-    // Should still correctly identify by date, not by list position
-    assertThat(previousCaptor.getValue()).isEqualTo(yesterdayRecord);
-    assertThat(currentCaptor.getValue()).isEqualTo(todayRecord);
+      mockedStatic.verify(
+          () -> DailyActivityReport.evaluate(previousCaptor.capture(), currentCaptor.capture()));
 
-    assertThat(result).isEqualTo(mockReport);
+      // Should still correctly identify by date, not by list position
+      assertThat(previousCaptor.getValue()).isEqualTo(yesterdayRecord);
+      assertThat(currentCaptor.getValue()).isEqualTo(todayRecord);
+
+      assertThat(result).isEqualTo(mockReport);
+    }
   }
 
   @Test
@@ -160,21 +177,25 @@ class ActivityReportServiceTest {
 
     DailyActivityReport mockReport =
         new DailyActivityReport(new ArrayList<>(), new ArrayList<>(), StressEvaluation.LOW);
-    when(activityEvaluationService.evaluate(any(), any())).thenReturn(mockReport);
 
-    // When
-    activityReportService.generateDailyReport(testUserId, baseDate);
+    try (MockedStatic<DailyActivityReport> mockedStatic = mockStatic(DailyActivityReport.class)) {
+      mockedStatic.when(() -> DailyActivityReport.evaluate(any(), any())).thenReturn(mockReport);
 
-    // Then
-    ArgumentCaptor<ActivityAt> startAtCaptor = ArgumentCaptor.forClass(ActivityAt.class);
-    ArgumentCaptor<ActivityAt> endAtCaptor = ArgumentCaptor.forClass(ActivityAt.class);
+      // When
+      activityReportService.generateDailyReport(testUserId, baseDate);
 
-    verify(activityRecordClient)
-        .getActivityRecordsBetween(eq(testUserId), startAtCaptor.capture(), endAtCaptor.capture());
+      // Then
+      ArgumentCaptor<ActivityAt> startAtCaptor = ArgumentCaptor.forClass(ActivityAt.class);
+      ArgumentCaptor<ActivityAt> endAtCaptor = ArgumentCaptor.forClass(ActivityAt.class);
 
-    // Verify date range is from dayBefore (Jan 14) to dayAfter (Jan 16)
-    assertThat(startAtCaptor.getValue().toDate()).isEqualTo(LocalDate.of(2025, 1, 14));
-    assertThat(endAtCaptor.getValue().toDate()).isEqualTo(LocalDate.of(2025, 1, 16));
+      verify(activityRecordClient)
+          .getActivityRecordsBetween(
+              eq(testUserId), startAtCaptor.capture(), endAtCaptor.capture());
+
+      // Verify date range is from dayBefore (Jan 14) to dayAfter (Jan 16)
+      assertThat(startAtCaptor.getValue().toDate()).isEqualTo(LocalDate.of(2025, 1, 14));
+      assertThat(endAtCaptor.getValue().toDate()).isEqualTo(LocalDate.of(2025, 1, 16));
+    }
   }
 
   @Test
@@ -189,19 +210,23 @@ class ActivityReportServiceTest {
 
     DailyActivityReport mockReport =
         new DailyActivityReport(new ArrayList<>(), new ArrayList<>(), StressEvaluation.LOW);
-    when(activityEvaluationService.evaluate(any(), any())).thenReturn(mockReport);
 
-    // When
-    activityReportService.generateDailyReport(testUserId, testActivityAt);
+    try (MockedStatic<DailyActivityReport> mockedStatic = mockStatic(DailyActivityReport.class)) {
+      mockedStatic.when(() -> DailyActivityReport.evaluate(any(), any())).thenReturn(mockReport);
 
-    // Then
-    ArgumentCaptor<ActivityRecord> previousCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
-    ArgumentCaptor<ActivityRecord> currentCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
+      // When
+      activityReportService.generateDailyReport(testUserId, testActivityAt);
 
-    verify(activityEvaluationService).evaluate(previousCaptor.capture(), currentCaptor.capture());
+      // Then
+      ArgumentCaptor<ActivityRecord> previousCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
+      ArgumentCaptor<ActivityRecord> currentCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
 
-    assertThat(previousCaptor.getValue()).isEqualTo(yesterdayRecord);
-    assertThat(currentCaptor.getValue()).isNull();
+      mockedStatic.verify(
+          () -> DailyActivityReport.evaluate(previousCaptor.capture(), currentCaptor.capture()));
+
+      assertThat(previousCaptor.getValue()).isEqualTo(yesterdayRecord);
+      assertThat(currentCaptor.getValue()).isNull();
+    }
   }
 
   @Test
@@ -216,19 +241,23 @@ class ActivityReportServiceTest {
 
     DailyActivityReport mockReport =
         new DailyActivityReport(new ArrayList<>(), new ArrayList<>(), StressEvaluation.LOW);
-    when(activityEvaluationService.evaluate(any(), any())).thenReturn(mockReport);
 
-    // When
-    activityReportService.generateDailyReport(testUserId, testActivityAt);
+    try (MockedStatic<DailyActivityReport> mockedStatic = mockStatic(DailyActivityReport.class)) {
+      mockedStatic.when(() -> DailyActivityReport.evaluate(any(), any())).thenReturn(mockReport);
 
-    // Then
-    ArgumentCaptor<ActivityRecord> previousCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
-    ArgumentCaptor<ActivityRecord> currentCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
+      // When
+      activityReportService.generateDailyReport(testUserId, testActivityAt);
 
-    verify(activityEvaluationService).evaluate(previousCaptor.capture(), currentCaptor.capture());
+      // Then
+      ArgumentCaptor<ActivityRecord> previousCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
+      ArgumentCaptor<ActivityRecord> currentCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
 
-    assertThat(previousCaptor.getValue()).isNull();
-    assertThat(currentCaptor.getValue()).isEqualTo(todayRecord);
+      mockedStatic.verify(
+          () -> DailyActivityReport.evaluate(previousCaptor.capture(), currentCaptor.capture()));
+
+      assertThat(previousCaptor.getValue()).isNull();
+      assertThat(currentCaptor.getValue()).isEqualTo(todayRecord);
+    }
   }
 
   @Test
@@ -243,19 +272,23 @@ class ActivityReportServiceTest {
 
     DailyActivityReport mockReport =
         new DailyActivityReport(new ArrayList<>(), new ArrayList<>(), StressEvaluation.LOW);
-    when(activityEvaluationService.evaluate(any(), any())).thenReturn(mockReport);
 
-    // When
-    activityReportService.generateDailyReport(testUserId, testActivityAt);
+    try (MockedStatic<DailyActivityReport> mockedStatic = mockStatic(DailyActivityReport.class)) {
+      mockedStatic.when(() -> DailyActivityReport.evaluate(any(), any())).thenReturn(mockReport);
 
-    // Then
-    ArgumentCaptor<ActivityRecord> previousCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
-    ArgumentCaptor<ActivityRecord> currentCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
+      // When
+      activityReportService.generateDailyReport(testUserId, testActivityAt);
 
-    verify(activityEvaluationService).evaluate(previousCaptor.capture(), currentCaptor.capture());
+      // Then
+      ArgumentCaptor<ActivityRecord> previousCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
+      ArgumentCaptor<ActivityRecord> currentCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
 
-    assertThat(previousCaptor.getValue()).isNull();
-    assertThat(currentCaptor.getValue()).isNull();
+      mockedStatic.verify(
+          () -> DailyActivityReport.evaluate(previousCaptor.capture(), currentCaptor.capture()));
+
+      assertThat(previousCaptor.getValue()).isNull();
+      assertThat(currentCaptor.getValue()).isNull();
+    }
   }
 
   @Test
@@ -278,18 +311,22 @@ class ActivityReportServiceTest {
 
     DailyActivityReport mockReport =
         new DailyActivityReport(new ArrayList<>(), new ArrayList<>(), StressEvaluation.LOW);
-    when(activityEvaluationService.evaluate(any(), any())).thenReturn(mockReport);
 
-    // When
-    activityReportService.generateDailyReport(testUserId, testActivityAt);
+    try (MockedStatic<DailyActivityReport> mockedStatic = mockStatic(DailyActivityReport.class)) {
+      mockedStatic.when(() -> DailyActivityReport.evaluate(any(), any())).thenReturn(mockReport);
 
-    // Then
-    ArgumentCaptor<ActivityRecord> previousCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
-    ArgumentCaptor<ActivityRecord> currentCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
+      // When
+      activityReportService.generateDailyReport(testUserId, testActivityAt);
 
-    verify(activityEvaluationService).evaluate(previousCaptor.capture(), currentCaptor.capture());
+      // Then
+      ArgumentCaptor<ActivityRecord> previousCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
+      ArgumentCaptor<ActivityRecord> currentCaptor = ArgumentCaptor.forClass(ActivityRecord.class);
 
-    assertThat(previousCaptor.getValue()).isNull();
-    assertThat(currentCaptor.getValue()).isNull();
+      mockedStatic.verify(
+          () -> DailyActivityReport.evaluate(previousCaptor.capture(), currentCaptor.capture()));
+
+      assertThat(previousCaptor.getValue()).isNull();
+      assertThat(currentCaptor.getValue()).isNull();
+    }
   }
 }
