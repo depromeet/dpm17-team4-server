@@ -524,7 +524,7 @@ class UpdateToiletRecordE2ETest {
   @Test
   @DisplayName("모든 색깔 타입으로 수정 가능하다")
   void givenAllColorTypes_whenUpdateToiletRecord_thenSuccess() {
-    String[] colors = {"DEFAULT", "GOLD", "DARK_BROWN", "RED", "GREEN", "GRAY"};
+    String[] colors = {"DEFAULT", "GOLD", "DARK_BROWN", "RED", "GREEN", "WHITE"};
 
     for (String color : colors) {
       // 배변기록 생성

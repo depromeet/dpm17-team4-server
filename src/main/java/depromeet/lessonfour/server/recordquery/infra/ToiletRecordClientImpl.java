@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.common.domain.vo.DailyExistence;
 import depromeet.lessonfour.server.recordquery.app.client.ToiletRecordClient;
-import depromeet.lessonfour.server.report.api.mapper.ToiletReportMapper;
-import depromeet.lessonfour.server.report.domain.vo.ToiletEvaluationLevel;
+import depromeet.lessonfour.server.report.api.mapper.toilet.ToiletReportMapper;
+import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletEvaluationLevel;
 import depromeet.lessonfour.server.toiletrecord.app.service.ToiletRecordQueryService;
 import lombok.RequiredArgsConstructor;
 

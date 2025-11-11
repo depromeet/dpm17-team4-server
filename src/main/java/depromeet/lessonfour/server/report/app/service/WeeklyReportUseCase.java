@@ -10,11 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import depromeet.lessonfour.server.common.annotation.UseCase;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
-import depromeet.lessonfour.server.report.app.dto.response.WeeklyReport;
 import depromeet.lessonfour.server.report.domain.service.SuggestionService;
-import depromeet.lessonfour.server.report.domain.vo.Suggestion;
-import depromeet.lessonfour.server.report.domain.vo.weekly.WeeklyActivityReport;
-import depromeet.lessonfour.server.report.domain.vo.weekly.WeeklyToiletReport;
+import depromeet.lessonfour.server.report.domain.vo.WeeklyReport;
+import depromeet.lessonfour.server.report.domain.vo.activity.WeeklyActivityReport;
+import depromeet.lessonfour.server.report.domain.vo.suggestion.SuggestionType;
+import depromeet.lessonfour.server.report.domain.vo.toilet.WeeklyToiletReport;
 import lombok.RequiredArgsConstructor;
 
 @UseCase
@@ -36,13 +36,12 @@ public class WeeklyReportUseCase {
 
     // 지난 주: 이번 주 시작 -7일 ~ 이번 주 시작 [start, end)
     LocalDate lastWeekStartDate = thisWeekStartDate.minusWeeks(1);
-    LocalDate lastWeekEndExclusiveDate = thisWeekStartDate;
 
     ActivityAt thisWeekStart = ActivityAt.of(thisWeekStartDate);
     ActivityAt thisWeekEndExclusive = ActivityAt.of(thisWeekEndExclusiveDate);
 
     ActivityAt lastWeekStart = ActivityAt.of(lastWeekStartDate);
-    ActivityAt lastWeekEndExclusive = ActivityAt.of(lastWeekEndExclusiveDate);
+    ActivityAt lastWeekEndExclusive = ActivityAt.of(thisWeekStartDate);
 
     // 주간 활동 리포트
     WeeklyActivityReport thisWeekActivity =
@@ -80,7 +79,7 @@ public class WeeklyReportUseCase {
         lastWeekDailyScores.stream().mapToInt(Integer::intValue).average().orElse(0.0);
 
     // 주간 기준 습관 추천 (대표 하루 X, 주간 평균/횟수 기반)
-    Suggestion suggestion = suggestionService.suggest(thisWeekActivity, thisWeekToilet);
+    List<SuggestionType> suggestions = suggestionService.suggest(thisWeekActivity, thisWeekToilet);
 
     return new WeeklyReport(
         lastWeekAverageScore,
@@ -88,6 +87,6 @@ public class WeeklyReportUseCase {
         thisWeekDailyScores,
         lastWeekActivity,
         thisWeekActivity,
-        suggestion);
+        suggestions);
   }
 }

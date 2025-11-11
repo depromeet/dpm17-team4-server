@@ -283,8 +283,8 @@ class GetWeeklyReportE2ETest {
 
   // 5) 해당 주간에 activity, toilet 모두 없음
   @Test
-  @DisplayName("[E2E][weekly] 해당 주간에 어떤 기록도 없음 → 빈 주간 리포트(기본값)로 정상 반환")
-  void givenNoRecords_whenGetWeeklyReport_thenOk() {
+  @DisplayName("[E2E][weekly] 해당 주간에 어떤 기록도 없음 → 리포트 생성 불가")
+  void givenNoRecords_whenGetWeeklyReport_thenFail() {
     LocalDateTime monday = LocalDateTime.of(2024, 2, 12, 10, 0);
 
     // 아무 기록도 생성하지 않음
@@ -295,16 +295,146 @@ class GetWeeklyReportE2ETest {
         .when()
         .get(weeklyUrl(monday.plusDays(2)))
         .then()
+        .statusCode(HttpStatus.BAD_REQUEST.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("status", equalTo(400));
+  }
+
+  @Test
+  @DisplayName("[E2E][weekly] 생활 기록 7일 + 배변 기록 0일 → 데이터 부족으로 리포트 생성 불가")
+  void givenFullWeekActivityButNoToilet_whenGetWeeklyReport_thenFail() {
+    LocalDateTime monday = LocalDateTime.of(2024, 2, 12, 10, 0);
+
+    // 월~일 모두 생활 기록만 생성
+    for (int i = 0; i < 7; i++) {
+      createActivity(monday.plusDays(i));
+    }
+
+    // 배변 기록은 없음
+
+    given()
+        .header("Authorization", validJwtToken)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .when()
+        .get(weeklyUrl(monday.plusDays(2)))
+        .then()
+        .statusCode(HttpStatus.BAD_REQUEST.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("status", equalTo(400));
+  }
+
+  // 6) 배변 기록이 하루만 있는 경우 → 실패
+  @Test
+  @DisplayName("[E2E][weekly] 배변 기록 1일만 존재 → 데이터 부족으로 리포트 생성 불가")
+  void givenOnlyOneDayToiletRecord_whenGetWeeklyReport_thenFail() {
+    LocalDateTime monday = LocalDateTime.of(2024, 2, 19, 10, 0);
+
+    // 월요일에만 배변 기록 생성
+    createToilet(
+        monday.withHour(8), true, ToiletColor.DEFAULT, ToiletShape.BANANA, 10, 5, "1일만 기록");
+
+    given()
+        .header("Authorization", validJwtToken)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .when()
+        .get(weeklyUrl(monday.plusDays(3)))
+        .then()
+        .statusCode(HttpStatus.BAD_REQUEST.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("status", equalTo(400));
+  }
+
+  // 7) 배변 기록이 2일 있는 경우 → 성공
+  @Test
+  @DisplayName("[E2E][weekly] 배변 기록 2일 존재 → 정상 리포트 반환")
+  void givenTwoDaysToiletRecords_whenGetWeeklyReport_thenOk() {
+    LocalDateTime monday = LocalDateTime.of(2024, 2, 26, 10, 0);
+
+    // 월요일, 화요일에 배변 기록 생성
+    createToilet(monday.withHour(8), true, ToiletColor.DEFAULT, ToiletShape.BANANA, 10, 5, "월요일");
+    createToilet(
+        monday.plusDays(1).withHour(9),
+        true,
+        ToiletColor.DARK_BROWN,
+        ToiletShape.ROCK,
+        15,
+        6,
+        "화요일");
+
+    given()
+        .header("Authorization", validJwtToken)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .when()
+        .get(weeklyUrl(monday.plusDays(4)))
+        .then()
         .statusCode(HttpStatus.OK.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .body("status", equalTo(200))
-        .body("data.updatedAt", notNullValue())
         .body("data.defecationScore", notNullValue())
-        .body("data.defecationScore.dailyScore.size()", equalTo(7))
-        .body("data.userAverage", notNullValue())
-        .body("data.food", notNullValue())
-        .body("data.water", notNullValue())
-        .body("data.stress", notNullValue())
-        .body("data.suggestion", notNullValue());
+        .body("data.userAverage", notNullValue());
+  }
+
+  // 8) 생활 기록은 많지만 배변 기록은 1일만 → 실패
+  @Test
+  @DisplayName("[E2E][weekly] 생활 기록 7일 + 배변 기록 1일 → 데이터 부족으로 리포트 생성 불가")
+  void givenManyActivityButOnlyOneToilet_whenGetWeeklyReport_thenFail() {
+    LocalDateTime monday = LocalDateTime.of(2024, 3, 4, 10, 0);
+
+    // 월~일 모두 생활 기록 생성 (7일)
+    for (int i = 0; i < 7; i++) {
+      createActivity(monday.plusDays(i));
+    }
+
+    // 배변 기록은 수요일에만 생성 (1일)
+    createToilet(
+        monday.plusDays(2).withHour(8),
+        true,
+        ToiletColor.DEFAULT,
+        ToiletShape.BANANA,
+        10,
+        5,
+        "수요일만");
+
+    given()
+        .header("Authorization", validJwtToken)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .when()
+        .get(weeklyUrl(monday.plusDays(3)))
+        .then()
+        .statusCode(HttpStatus.BAD_REQUEST.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("status", equalTo(400));
+  }
+
+  // 9) 생활 기록은 없지만 배변 기록은 2일 → 성공
+  @Test
+  @DisplayName("[E2E][weekly] 생활 기록 없음 + 배변 기록 2일 → 정상 리포트 반환")
+  void givenNoActivityButTwoToilets_whenGetWeeklyReport_thenOk() {
+    LocalDateTime monday = LocalDateTime.of(2024, 3, 11, 10, 0);
+
+    // 생활 기록은 없음
+    // 배변 기록만 목요일, 금요일에 생성 (2일)
+    createToilet(
+        monday.plusDays(3).withHour(8),
+        true,
+        ToiletColor.DEFAULT,
+        ToiletShape.BANANA,
+        12,
+        5,
+        "목요일");
+    createToilet(
+        monday.plusDays(4).withHour(9), true, ToiletColor.GOLD, ToiletShape.CREAM, 8, 4, "금요일");
+
+    given()
+        .header("Authorization", validJwtToken)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .when()
+        .get(weeklyUrl(monday.plusDays(5)))
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("status", equalTo(200))
+        .body("data.defecationScore", notNullValue())
+        .body("data.userAverage", notNullValue());
   }
 }
