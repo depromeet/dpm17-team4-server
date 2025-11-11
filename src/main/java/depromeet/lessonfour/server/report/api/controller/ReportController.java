@@ -48,8 +48,11 @@ public class ReportController {
   public SuccessResponse<GetDailyReportResponseDto> getDailyReport(
       @AuthenticationPrincipal(expression = "id") Long userId,
       @RequestParam(required = false) LocalDateTime dateTime) {
+
     LocalDateTime baseDateTime = (dateTime != null) ? dateTime : LocalDateTime.now(clock);
+
     DailyReport dailyReport = getDailyReportUseCase.getDailyReport(userId, baseDateTime);
+
     return SuccessResponse.of(
         SuccessCode.SUCCESS_FETCH, dailyReportMapper.map(dailyReport, baseDateTime));
   }
@@ -59,7 +62,9 @@ public class ReportController {
   public SuccessResponse<GetWeeklyReportResponseDto> getWeeklyReport(
       @AuthenticationPrincipal(expression = "id") Long userId,
       @RequestParam(required = false) LocalDateTime dateTime) {
+
     LocalDateTime baseDateTime = (dateTime != null) ? dateTime : LocalDateTime.now(clock);
+
     WeeklyReport weeklyReport = weeklyReportUseCase.generateWeeklyReport(userId, baseDateTime);
     return SuccessResponse.of(
         SuccessCode.SUCCESS_FETCH, weeklyReportMapper.map(weeklyReport, baseDateTime));
@@ -70,6 +75,7 @@ public class ReportController {
   public SuccessResponse<GetMonthlyReportResponseDto> generateMonthlyReport(
       @AuthenticationPrincipal(expression = "id") Long userId,
       @RequestParam(required = false) YearMonth yearMonth) {
+
     YearMonth baseMonth = (yearMonth != null) ? yearMonth : YearMonth.now(clock);
 
     MonthlyReport monthlyReport = monthlyReportUseCase.generateMonthlyReport(userId, baseMonth);
