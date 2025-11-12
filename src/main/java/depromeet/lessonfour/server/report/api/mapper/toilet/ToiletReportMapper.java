@@ -268,6 +268,19 @@ public class ToiletReportMapper {
                 "장 컨디션 아주 굿!",
                 List.of("#0C7C30", "#7DD357")));
 
+    private static final Map<ToiletEvaluationLevel, String> DETAIL_MESSAGE_MAP =
+        Map.of(
+            ToiletEvaluationLevel.VERY_BAD,
+            "전문가의 상담이 필요해요. 복통이 매우 심했다면 단순한 식사 문제를 넘어서 장염이나 자극적인 음식 섭취 가능성도 생각해볼 수 있어요.",
+            ToiletEvaluationLevel.BAD,
+            "장 컨디션이 다소 불안정해요. 자극적인 음식을 줄이고, 따뜻한 물과 가벼운 식단으로 조절해보세요. 스트레스나 수면 부족도 영향을 줄 수 있어요.",
+            ToiletEvaluationLevel.AVERAGE,
+            "평균적인 장 상태예요. 특별한 이상은 없지만, 식사 시간이나 수분 섭취가 불규칙했다면 조정이 필요할 수도 있어요. 내일은 조금 더 신경 써볼까요?",
+            ToiletEvaluationLevel.GOOD,
+            "대체로 좋은 상태예요. 식이섬유나 수분 섭취가 잘 이루어졌을 가능성이 높아요. 가벼운 운동이나 스트레칭으로 리듬을 이어가면 좋을 것 같아요.",
+            ToiletEvaluationLevel.VERY_GOOD,
+            "오늘은 장이 최상의 컨디션이에요. 규칙적이고 건강한 식습관과 충분한 수분 섭취가 잘 이루어지고 있네요. 지금처럼 꾸준히 유지해보세요.");
+
     // 내부 맵을 안전하게 노출하는 조회 함수 (NONE/NULL 폴백 포함)
     static HeroCharacter lookupHero(ToiletEvaluationLevel level) {
       ToiletEvaluationLevel safeLevel =
@@ -277,15 +290,12 @@ public class ToiletReportMapper {
       return characterMap.getOrDefault(safeLevel, characterMap.get(ToiletEvaluationLevel.AVERAGE));
     }
 
-    private static final String message =
-        "전문가의 상담이 필요해요. 복통이 매우 심했다면 단순한 식사 문제를 넘어서 장염이나 자극적인 음식으로 인한 장 트러블일 수 있습니다.";
-
-    static DailyToiletReportDto map(
-        depromeet.lessonfour.server.report.domain.vo.toilet.DailyToiletReport dailyToiletReport) {
+    static DailyToiletReportDto map(DailyToiletReport dailyToiletReport) {
       if (dailyToiletReport.getLevel() == ToiletEvaluationLevel.NONE) {
         return null;
       }
       HeroCharacter heroCharacter = characterMap.get(dailyToiletReport.getLevel());
+
       return new DailyToiletReportDto(
           dailyToiletReport.getToiletScore(),
           new ToiletSummary(
@@ -298,7 +308,7 @@ public class ToiletReportMapper {
                   item ->
                       new ToiletReportItem(
                           item.getOccurredAt().toDateTime(),
-                          message,
+                          DETAIL_MESSAGE_MAP.get(dailyToiletReport.getLevel()),
                           item.getColor(),
                           item.getShape(),
                           item.getDuration(),
