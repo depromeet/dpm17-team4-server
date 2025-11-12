@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @UseCase
 @Transactional
 @RequiredArgsConstructor
-public class GetDailyReportUseCase {
+public class DailyReportUseCase {
 
   private final ActivityReportService activityReportService;
   private final ToiletReportService toiletReportService;

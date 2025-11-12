@@ -246,4 +246,120 @@ class GetDailyReportE2ETest {
         .body("data.water", anyOf(nullValue(), notNullValue()))
         .body("data.stress", anyOf(nullValue(), notNullValue()));
   }
+
+  // 6) food 필드가 조회 날짜 기준으로 오늘/어제 데이터만 반환
+  @Test
+  @DisplayName("[E2E] food 필드는 조회 날짜(dateTime) 기준으로 오늘과 어제 데이터만 반환해야 함")
+  void
+      givenMultipleDaysActivities_whenGetDailyReportWithSpecificDate_thenFoodContainsOnlyTodayAndYesterdayData() {
+    // Given: 여러 날짜에 activity 생성
+    LocalDateTime targetDate = LocalDateTime.of(2024, 1, 20, 10, 0);
+    LocalDateTime yesterday = targetDate.minusDays(1); // 2024.1.19
+    LocalDateTime twoDaysAgo = targetDate.minusDays(2); // 2024.1.18
+    LocalDateTime tomorrow = targetDate.plusDays(1); // 2024.1.21
+
+    // 조회 날짜(2024.1.20)와 어제(2024.1.19)의 activity 생성
+    createActivity(targetDate.withHour(14));
+    createActivity(yesterday.withHour(15));
+
+    // 다른 날짜의 activity도 생성
+    createActivity(twoDaysAgo.withHour(16));
+    createActivity(tomorrow.withHour(17));
+
+    // When & Then: 2024.1.20으로 조회 시, food 필드에 2024.1.20과 2024.1.19 데이터만 포함되어야 함
+    given()
+        .header("Authorization", validJwtToken)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .when()
+        .get(url(targetDate))
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("status", equalTo(200))
+        .body("data.food", notNullValue())
+        .body("data.food.items.size()", equalTo(2)) // 오늘(1.20) + 어제(1.19) = 2개
+        .body("data.food.items[0].occurredAt", notNullValue())
+        .body("data.food.items[1].occurredAt", notNullValue());
+  }
+
+  // 7) 다른 날짜로 조회 시에도 해당 날짜 기준으로 오늘/어제 데이터 반환
+  @Test
+  @DisplayName("[E2E] 다른 날짜로 조회 시에도 해당 날짜 기준 오늘/어제 데이터만 반환")
+  void
+      givenMultipleDaysActivities_whenGetDailyReportWithDifferentDate_thenFoodContainsCorrectDateRangeData() {
+    // Given: 여러 날짜에 activity 생성
+    LocalDateTime date1 = LocalDateTime.of(2024, 1, 25, 10, 0);
+    LocalDateTime date2 = LocalDateTime.of(2024, 1, 26, 10, 0);
+    LocalDateTime date3 = LocalDateTime.of(2024, 1, 27, 10, 0);
+    LocalDateTime date4 = LocalDateTime.of(2024, 1, 28, 10, 0);
+
+    createActivity(date1);
+    createActivity(date2);
+    createActivity(date3);
+    createActivity(date4);
+
+    // When & Then: 2024.1.27로 조회 시, food 필드에 1.27과 1.26 데이터만 포함
+    given()
+        .header("Authorization", validJwtToken)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .when()
+        .get(url(date3))
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("status", equalTo(200))
+        .body("data.food", notNullValue())
+        .body("data.food.items.size()", equalTo(2)); // 1.27 + 1.26 = 2개
+  }
+
+  // 8) 어제 데이터만 있는 경우 날짜가 정확히 반환되는지 검증
+  @Test
+  @DisplayName("[E2E] 어제 데이터만 있는 경우 날짜가 올바르게 반환되어야 함")
+  void givenOnlyYesterdayActivity_whenGetDailyReport_thenFoodItemsHaveCorrectDates() {
+    // Given: 2024.1.20 기준으로 어제(1.19)만 activity 생성
+    LocalDateTime targetDate = LocalDateTime.of(2024, 1, 20, 10, 0);
+    LocalDateTime yesterday = targetDate.minusDays(1); // 2024.1.19
+
+    createActivity(yesterday.withHour(14));
+
+    // When & Then: 2024.1.20으로 조회 시
+    given()
+        .header("Authorization", validJwtToken)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .when()
+        .get(url(targetDate))
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("status", equalTo(200))
+        .body("data.food", notNullValue())
+        .body("data.food.items.size()", equalTo(2)) // 어제 + 오늘(빈) = 2개
+        .body("data.food.items[0].occurredAt", equalTo("2024-01-19")) // 어제 날짜가 정확해야 함
+        .body("data.food.items[1].occurredAt", equalTo("2024-01-20")); // 오늘 날짜(빈 데이터)
+  }
+
+  // 9) 오늘 데이터만 있는 경우 날짜가 정확히 반환되는지 검증
+  @Test
+  @DisplayName("[E2E] 오늘 데이터만 있는 경우 날짜가 올바르게 반환되어야 함")
+  void givenOnlyTodayActivity_whenGetDailyReport_thenFoodItemsHaveCorrectDates() {
+    // Given: 2024.1.20 기준으로 오늘만 activity 생성
+    LocalDateTime targetDate = LocalDateTime.of(2024, 1, 20, 10, 0);
+
+    createActivity(targetDate.withHour(14));
+
+    // When & Then: 2024.1.20으로 조회 시
+    given()
+        .header("Authorization", validJwtToken)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .when()
+        .get(url(targetDate))
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("status", equalTo(200))
+        .body("data.food", notNullValue())
+        .body("data.food.items.size()", equalTo(2)) // 어제(빈) + 오늘 = 2개
+        .body("data.food.items[0].occurredAt", equalTo("2024-01-19")) // 어제 날짜(빈 데이터)
+        .body("data.food.items[1].occurredAt", equalTo("2024-01-20")); // 오늘 날짜가 정확해야 함
+  }
 }

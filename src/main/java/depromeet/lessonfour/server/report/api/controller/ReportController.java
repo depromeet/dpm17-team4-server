@@ -19,7 +19,7 @@ import depromeet.lessonfour.server.report.api.dto.response.GetWeeklyReportRespon
 import depromeet.lessonfour.server.report.api.mapper.DailyReportMapper;
 import depromeet.lessonfour.server.report.api.mapper.MonthlyReportMapper;
 import depromeet.lessonfour.server.report.api.mapper.WeeklyReportMapper;
-import depromeet.lessonfour.server.report.app.service.GetDailyReportUseCase;
+import depromeet.lessonfour.server.report.app.service.DailyReportUseCase;
 import depromeet.lessonfour.server.report.app.service.MonthlyReportUseCase;
 import depromeet.lessonfour.server.report.app.service.WeeklyReportUseCase;
 import depromeet.lessonfour.server.report.domain.vo.DailyReport;
@@ -35,9 +35,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReportController {
 
-  private final GetDailyReportUseCase getDailyReportUseCase;
+  private final DailyReportUseCase dailyReportUseCase;
   private final WeeklyReportUseCase weeklyReportUseCase;
   private final MonthlyReportUseCase monthlyReportUseCase;
+
   private final DailyReportMapper dailyReportMapper;
   private final WeeklyReportMapper weeklyReportMapper;
   private final MonthlyReportMapper monthlyReportMapper;
@@ -48,8 +49,11 @@ public class ReportController {
   public SuccessResponse<GetDailyReportResponseDto> getDailyReport(
       @AuthenticationPrincipal(expression = "id") Long userId,
       @RequestParam(required = false) LocalDateTime dateTime) {
+
     LocalDateTime baseDateTime = (dateTime != null) ? dateTime : LocalDateTime.now(clock);
-    DailyReport dailyReport = getDailyReportUseCase.getDailyReport(userId, baseDateTime);
+
+    DailyReport dailyReport = dailyReportUseCase.getDailyReport(userId, baseDateTime);
+
     return SuccessResponse.of(
         SuccessCode.SUCCESS_FETCH, dailyReportMapper.map(dailyReport, baseDateTime));
   }
@@ -59,7 +63,9 @@ public class ReportController {
   public SuccessResponse<GetWeeklyReportResponseDto> getWeeklyReport(
       @AuthenticationPrincipal(expression = "id") Long userId,
       @RequestParam(required = false) LocalDateTime dateTime) {
+
     LocalDateTime baseDateTime = (dateTime != null) ? dateTime : LocalDateTime.now(clock);
+
     WeeklyReport weeklyReport = weeklyReportUseCase.generateWeeklyReport(userId, baseDateTime);
     return SuccessResponse.of(
         SuccessCode.SUCCESS_FETCH, weeklyReportMapper.map(weeklyReport, baseDateTime));
@@ -70,6 +76,7 @@ public class ReportController {
   public SuccessResponse<GetMonthlyReportResponseDto> generateMonthlyReport(
       @AuthenticationPrincipal(expression = "id") Long userId,
       @RequestParam(required = false) YearMonth yearMonth) {
+
     YearMonth baseMonth = (yearMonth != null) ? yearMonth : YearMonth.now(clock);
 
     MonthlyReport monthlyReport = monthlyReportUseCase.generateMonthlyReport(userId, baseMonth);
