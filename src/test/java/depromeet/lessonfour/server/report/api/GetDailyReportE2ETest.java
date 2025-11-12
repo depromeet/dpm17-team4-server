@@ -311,4 +311,55 @@ class GetDailyReportE2ETest {
         .body("data.food", notNullValue())
         .body("data.food.items.size()", equalTo(2)); // 1.27 + 1.26 = 2개
   }
+
+  // 8) 어제 데이터만 있는 경우 날짜가 정확히 반환되는지 검증
+  @Test
+  @DisplayName("[E2E] 어제 데이터만 있는 경우 날짜가 올바르게 반환되어야 함")
+  void givenOnlyYesterdayActivity_whenGetDailyReport_thenFoodItemsHaveCorrectDates() {
+    // Given: 2024.1.20 기준으로 어제(1.19)만 activity 생성
+    LocalDateTime targetDate = LocalDateTime.of(2024, 1, 20, 10, 0);
+    LocalDateTime yesterday = targetDate.minusDays(1); // 2024.1.19
+
+    createActivity(yesterday.withHour(14));
+
+    // When & Then: 2024.1.20으로 조회 시
+    given()
+        .header("Authorization", validJwtToken)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .when()
+        .get(url(targetDate))
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("status", equalTo(200))
+        .body("data.food", notNullValue())
+        .body("data.food.items.size()", equalTo(2)) // 어제 + 오늘(빈) = 2개
+        .body("data.food.items[0].occurredAt", equalTo("2024-01-19")) // 어제 날짜가 정확해야 함
+        .body("data.food.items[1].occurredAt", equalTo("2024-01-20")); // 오늘 날짜(빈 데이터)
+  }
+
+  // 9) 오늘 데이터만 있는 경우 날짜가 정확히 반환되는지 검증
+  @Test
+  @DisplayName("[E2E] 오늘 데이터만 있는 경우 날짜가 올바르게 반환되어야 함")
+  void givenOnlyTodayActivity_whenGetDailyReport_thenFoodItemsHaveCorrectDates() {
+    // Given: 2024.1.20 기준으로 오늘만 activity 생성
+    LocalDateTime targetDate = LocalDateTime.of(2024, 1, 20, 10, 0);
+
+    createActivity(targetDate.withHour(14));
+
+    // When & Then: 2024.1.20으로 조회 시
+    given()
+        .header("Authorization", validJwtToken)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .when()
+        .get(url(targetDate))
+        .then()
+        .statusCode(HttpStatus.OK.value())
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .body("status", equalTo(200))
+        .body("data.food", notNullValue())
+        .body("data.food.items.size()", equalTo(2)) // 어제(빈) + 오늘 = 2개
+        .body("data.food.items[0].occurredAt", equalTo("2024-01-19")) // 어제 날짜(빈 데이터)
+        .body("data.food.items[1].occurredAt", equalTo("2024-01-20")); // 오늘 날짜가 정확해야 함
+  }
 }

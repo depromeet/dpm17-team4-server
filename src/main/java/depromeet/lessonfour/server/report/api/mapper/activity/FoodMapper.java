@@ -56,13 +56,13 @@ public class FoodMapper {
         // 어제 데이터만 있는 경우: 어제 데이터 + 오늘 빈 데이터
         items =
             List.of(
-                createFoodReportItem(evaluation, dayBefore),
+                createFoodReportItem(evaluation, baseDate),
                 createEmptyFoodReportItem(DayType.TODAY, baseDate));
       } else {
         // 오늘 데이터만 있는 경우: 어제 빈 데이터 + 오늘 데이터
         items =
             List.of(
-                createEmptyFoodReportItem(DayType.YESTERDAY, dayBefore),
+                createEmptyFoodReportItem(DayType.YESTERDAY, baseDate),
                 createFoodReportItem(evaluation, baseDate));
       }
     }
