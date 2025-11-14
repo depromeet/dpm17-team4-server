@@ -23,11 +23,11 @@ public class StressMapper {
 
   private static final Map<StressEvaluation, StressMapping> STRESS_MAPPINGS =
       Map.of(
-          StressEvaluation.VERY_LOW,
+          StressEvaluation.VERY_HIGH,
               new StressMapping(
                   "삐용삐용! 스트레스 만땅! 산책이나 명상을 해볼까요?",
                   "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/stress/very_bad.png"),
-          StressEvaluation.LOW,
+          StressEvaluation.HIGH,
               new StressMapping(
                   "스트레스에 잡아먹히지 않도록 조심해봐요!",
                   "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/stress/bad.png"),
@@ -35,11 +35,11 @@ public class StressMapper {
               new StressMapping(
                   "스트레스 발생! 마음을 다스릴 수 있도록 노력해요",
                   "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/stress/normal.png"),
-          StressEvaluation.HIGH,
+          StressEvaluation.LOW,
               new StressMapping(
                   "긍정적인 당신! 그 마인드 오래도록 유지해봐요",
                   "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/stress/good.png"),
-          StressEvaluation.VERY_HIGH,
+          StressEvaluation.VERY_LOW,
               new StressMapping(
                   "스트레스 Zero! 행복한 하루가 되셨군요?",
                   "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/stress/very_good.png"));
