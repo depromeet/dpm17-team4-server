@@ -54,7 +54,7 @@ class ToiletReportMapperDailyTest {
         .isEqualTo(
             "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/very_good.png");
     assertThat(result.summary().backgroundColors()).containsExactly("#0C7C30", "#7DD357");
-    assertThat(result.summary().caption()).isEqualTo("신이 난 대장");
+    assertThat(result.summary().caption()).isEqualTo("기분 좋은 대장");
     assertThat(result.summary().message()).isEqualTo("장 컨디션 아주 굿!");
     assertThat(result.items()).hasSize(1);
   }
@@ -84,7 +84,7 @@ class ToiletReportMapperDailyTest {
         .isEqualTo(
             "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/good.png");
     assertThat(result.summary().backgroundColors()).containsExactly("#134DB1", "#588DFF");
-    assertThat(result.summary().caption()).isEqualTo("기분 좋은 대장");
+    assertThat(result.summary().caption()).isEqualTo("신이 난 대장");
     assertThat(result.summary().message()).isEqualTo("개운하실 것 같아요!");
   }
 
