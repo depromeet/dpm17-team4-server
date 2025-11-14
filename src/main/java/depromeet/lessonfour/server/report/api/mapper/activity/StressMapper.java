@@ -26,23 +26,23 @@ public class StressMapper {
           StressEvaluation.VERY_LOW,
               new StressMapping(
                   "삐용삐용! 스트레스 만땅! 산책이나 명상을 해볼까요?",
-                  "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/condition_very_bad.png"),
+                  "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/stress/very_bad.png"),
           StressEvaluation.LOW,
               new StressMapping(
                   "스트레스에 잡아먹히지 않도록 조심해봐요!",
-                  "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/condition_bad.png"),
+                  "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/stress/bad.png"),
           StressEvaluation.MEDIUM,
               new StressMapping(
                   "스트레스 발생! 마음을 다스릴 수 있도록 노력해요",
-                  "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/condition_medium.png"),
+                  "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/stress/normal.png"),
           StressEvaluation.HIGH,
               new StressMapping(
                   "긍정적인 당신! 그 마인드 오래도록 유지해봐요",
-                  "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/condition_good.png"),
+                  "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/stress/good.png"),
           StressEvaluation.VERY_HIGH,
               new StressMapping(
                   "스트레스 Zero! 행복한 하루가 되셨군요?",
-                  "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/condition_very_good.png"));
+                  "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/stress/very_good.png"));
 
   /** 일간 스트레스 리포트 매핑 */
   public DailyStressReport mapDaily(StressEvaluation stressEvaluation) {
