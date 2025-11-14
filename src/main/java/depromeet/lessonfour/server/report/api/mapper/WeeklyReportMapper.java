@@ -41,9 +41,7 @@ public class WeeklyReportMapper {
     UserAverage userAverage = mapUserAverage(weeklyReport.thisWeekAverageScore());
 
     // 생활 기록 매핑
-    WeeklyFoodSection foodSection =
-        foodMapper.mapWeekly(
-            weeklyReport.lastWeekActivity(), weeklyReport.thisWeekActivity(), thisWeekStartDate);
+    WeeklyFoodSection foodSection = foodMapper.mapWeekly(weeklyReport, thisWeekStartDate);
 
     WeeklyWaterSection waterSection = waterMapper.mapWeekly(weeklyReport.thisWeekActivity());
 
