@@ -31,7 +31,7 @@ public class ToiletScoreService {
   }
 
   @Transactional
-  public void updateScore(Long userId, int score, ActivityAt activityAt) {
+  public void upsertScore(Long userId, int score, ActivityAt activityAt) {
     LocalDate date = activityAt.toDate();
 
     toiletScoreRepository
