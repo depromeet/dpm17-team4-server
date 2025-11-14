@@ -18,18 +18,14 @@ import lombok.RequiredArgsConstructor;
 public class ToiletReportService {
 
   private final ToiletRecordClient toiletRecordClient;
-  private final ToiletScoreService toiletScoreService;
 
   /** 일간 배변 리포트 생성 */
   public DailyToiletReport generateDailyReport(Long userId, ActivityAt activityAt) {
+
     List<ToiletRecord> dailyRecords =
         toiletRecordClient.getToiletRecordsByActivityAt(userId, activityAt);
 
-    DailyToiletReport report = ToiletEvaluation.summarize(dailyRecords);
-
-    toiletScoreService.updateScore(userId, (int) report.getToiletScore(), activityAt);
-
-    return report;
+    return ToiletEvaluation.summarize(dailyRecords);
   }
 
   /** 주간 배변 리포트 생성 */
@@ -46,10 +42,10 @@ public class ToiletReportService {
   public MonthlyToiletReport generateMonthlyReport(
       Long userId, ActivityAt start, ActivityAt endExclusive) {
 
-    // 지난 달 통증 일수 계산
     List<ToiletRecord> lastMonthToiletRecords =
         toiletRecordClient.getToiletRecordsByActivityAtBetween(userId, start.getLastMonth(), start);
 
+    // 지난 달 통증 일수 계산
     long lastMonthPainfulDays =
         lastMonthToiletRecords.stream().filter(ToiletRecord::isPainful).count();
 

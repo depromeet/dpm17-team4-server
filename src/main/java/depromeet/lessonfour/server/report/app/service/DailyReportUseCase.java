@@ -18,6 +18,7 @@ public class DailyReportUseCase {
 
   private final ActivityReportService activityReportService;
   private final ToiletReportService toiletReportService;
+  private final ToiletScoreService toiletScoreService;
 
   public DailyReport getDailyReport(Long userId, LocalDateTime dateTime) {
     ActivityAt activityAt = ActivityAt.of(dateTime.toLocalDate());
@@ -29,6 +30,9 @@ public class DailyReportUseCase {
     // 배변 기록 리포트 생성
     DailyToiletReport dailyToiletReport =
         toiletReportService.generateDailyReport(userId, activityAt);
+
+    // 배변 점수 업데이트
+    toiletScoreService.updateScore(userId, (int) dailyToiletReport.getToiletScore(), activityAt);
 
     return new DailyReport(dailyActivityReport, dailyToiletReport);
   }
