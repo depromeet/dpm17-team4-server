@@ -145,8 +145,15 @@ public class FoodMapper {
   }
 
   private static String getWeeklyFoodSectionMessage(WeeklyReport weeklyReport) {
+
+    // 음식 기록이 존재하지 않는 경우
     if (!weeklyReport.hasFoodRecords()) {
       return "기록한 식단이 없어요!\n자세히 기록할수록 분석이 정확해져요!";
+    }
+
+    // 음식 기록은 존재하지만 자극적인 음식이 없는 경우
+    if (!weeklyReport.hasDangerousFood()) {
+      return "건강한 식단을\n열심히 유지하고 계시네요!";
     }
 
     int dangerousFoodDays = weeklyReport.getThisWeekDangerousFoodDays();
@@ -155,11 +162,7 @@ public class FoodMapper {
       return "자극적인 음식을 3회 이상 섭취했어요\n식단 관리가 필요해요!";
     }
 
-    if (dangerousFoodDays > 0) {
-      return "자극적인 음식을 3회 미만으로 섭취했어요.\n지속적으로 줄여나가요!";
-    }
-
-    return "건강한 식단을\n열심히 유지하고 계시네요!";
+    return "자극적인 음식을 3회 미만으로 섭취했어요.\n지속적으로 줄여나가요!";
   }
 
   /** 월간 음식 섹션 매핑 */
@@ -177,13 +180,13 @@ public class FoodMapper {
     int lastMonthDangerous = activityReport.lastMonthDangerousDays();
     int thisMonthDangerous = activityReport.dangerousFoodDays();
 
-    String message = getFoodSectionMessage(thisMonthDangerous);
+    String message = getMonthlyFoodSectionMessage(thisMonthDangerous);
 
     return new MonthlyFoodSection(
         message, new MonthlyComparison(lastMonthDangerous, thisMonthDangerous), dtoGroups);
   }
 
-  private static String getFoodSectionMessage(int dangerousFoodDays) {
+  private static String getMonthlyFoodSectionMessage(int dangerousFoodDays) {
     if (dangerousFoodDays >= 10) {
       return "자극적인 음식을 10회 이상 섭취했어요\n식단 관리가 필요해요!";
     }
