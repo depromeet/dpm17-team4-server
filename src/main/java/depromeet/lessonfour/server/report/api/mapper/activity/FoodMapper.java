@@ -3,7 +3,6 @@ package depromeet.lessonfour.server.report.api.mapper.activity;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
-import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,14 +33,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FoodMapper {
 
-  private final Clock clock;
-
   /** 일간 음식 보고서 매핑 */
   public DailyFoodReport mapDaily(
       List<FoodEvaluation> foodEvaluations, LocalDateTime baseDateTime) {
     String message = getMessage(foodEvaluations);
     LocalDate baseDate = baseDateTime.toLocalDate();
-    LocalDate dayBefore = baseDate.minusDays(1);
 
     List<FoodReportItem> items =
         foodEvaluations.stream()
@@ -168,9 +164,13 @@ public class FoodMapper {
         eval.getFoodsByMealTime()
             .forEach(
                 (mealTime, foods) -> {
-                  if (foods != null && !foods.isEmpty()) {
-                    items.add(new FoodItem(date.toString(), mealTime.name(), foods));
+                  if (!eval.isMealDangerous(mealTime)) {
+                    return;
                   }
+                  if (foods == null || foods.isEmpty()) {
+                    return;
+                  }
+                  items.add(new FoodItem(date.toString(), mealTime.name(), foods));
                 });
       }
 
