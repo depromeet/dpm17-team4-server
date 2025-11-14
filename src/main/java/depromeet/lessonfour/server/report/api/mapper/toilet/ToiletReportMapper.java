@@ -258,13 +258,13 @@ public class ToiletReportMapper {
             ToiletEvaluationLevel.GOOD,
             new HeroCharacter(
                 "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/good.png",
-                "신이 난 대장",
+                "기분 좋은 대장",
                 "개운하실 것 같아요!",
                 List.of("#134DB1", "#588DFF")),
             ToiletEvaluationLevel.VERY_GOOD,
             new HeroCharacter(
                 "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/very_good.png",
-                "기분 좋은 대장",
+                "신이 난 대장",
                 "장 컨디션 아주 굿!",
                 List.of("#0C7C30", "#7DD357")));
 
