@@ -33,7 +33,12 @@ public class WaterMapper {
     WaterEvaluation today = getEvaluationByDay(waterEvaluations, DayType.TODAY);
     WaterEvaluation yesterday = getEvaluationByDay(waterEvaluations, DayType.YESTERDAY);
 
-    String message = getMessage(today);
+    String message = getMessage(WaterEvaluation.empty());
+    if (today.getLevel() != WaterLevel.NONE) {
+      message = getMessage(today);
+    } else {
+      message = getMessage(yesterday);
+    }
 
     return new DailyWaterReport(
         message,
