@@ -239,31 +239,31 @@ public class ToiletReportMapper {
         Map.of(
             ToiletEvaluationLevel.VERY_BAD,
             new HeroCharacter(
-                "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_very_bad.png",
+                "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/very_bad.png",
                 "화가 잔뜩 난 대장",
                 "전문가 상담이 필요해요!",
                 List.of("#A4141E", "#FF535F")),
             ToiletEvaluationLevel.BAD,
             new HeroCharacter(
-                "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_bad.png",
+                "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/bad.png",
                 "속상한 대장",
                 "잠시 관리가 필요해요!",
                 List.of("#DD5612", "#F6A85F")),
             ToiletEvaluationLevel.AVERAGE,
             new HeroCharacter(
-                "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_medium.png",
+                "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/normal.png",
                 "얌전한 대장",
                 "무난한 하루가 되었군요!",
                 List.of("#2B42B4", "#8F58FF")),
             ToiletEvaluationLevel.GOOD,
             new HeroCharacter(
-                "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_good.png",
+                "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/good.png",
                 "신이 난 대장",
                 "개운하실 것 같아요!",
                 List.of("#134DB1", "#588DFF")),
             ToiletEvaluationLevel.VERY_GOOD,
             new HeroCharacter(
-                "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_very_good.png",
+                "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/very_good.png",
                 "기분 좋은 대장",
                 "장 컨디션 아주 굿!",
                 List.of("#0C7C30", "#7DD357")));
