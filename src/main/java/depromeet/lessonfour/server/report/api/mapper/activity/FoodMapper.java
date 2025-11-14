@@ -110,17 +110,27 @@ public class FoodMapper {
 
   private static String getMessage(List<FoodEvaluation> foodEvaluations) {
     final String DANGEROUS_MESSAGE = "맵고 자극적인 음식이 장을 자극했을 수 있어요";
-    final String SAFE_MESSAGE = "장에 좋은 음식 잘 선택하셨네요!";
+    final String SAFE_MESSAGE = "건강한 식단을 열심히 유지하고 계시네요!";
 
     FoodEvaluation todayEvaluation =
         foodEvaluations.stream()
             .filter(e -> e.getDayType() == DayType.TODAY)
             .findFirst()
             .orElse(null);
-    if (foodEvaluations.isEmpty()
-        || todayEvaluation == null
-        || todayEvaluation.getFoodsByMealTime().isEmpty()) {
-      return "음식 기록이 없어요. 장에 좋은 음식을 먹어볼까요?";
+    FoodEvaluation yesterdayEvaluation =
+        foodEvaluations.stream()
+            .filter(e -> e.getDayType() == DayType.YESTERDAY)
+            .findFirst()
+            .orElse(null);
+    boolean empty = true;
+    if (todayEvaluation != null && !todayEvaluation.getFoodsByMealTime().isEmpty()) {
+      empty = false;
+    }
+    if (yesterdayEvaluation != null && !yesterdayEvaluation.getFoodsByMealTime().isEmpty()) {
+      empty = false;
+    }
+    if (empty) {
+      return "기록한 식단이 없어요! 자세히 기록할수록 분석이 정확해져요!";
     }
     boolean eatDangerousFood = foodEvaluations.stream().anyMatch(FoodEvaluation::isDangerous);
 
