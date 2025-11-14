@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,6 +12,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class DailyActivityReport {
 
+  private final ActivityAt occurredAt;
   private final List<FoodEvaluation> foodEvaluations;
   private final List<WaterEvaluation> waterEvaluations;
   private final StressEvaluation stressEvaluation;
@@ -32,7 +34,15 @@ public class DailyActivityReport {
       stressEvaluation = StressEvaluation.calculate(current.getStressLevel());
     }
 
-    return new DailyActivityReport(foodEvaluations, waterEvaluations, stressEvaluation);
+    ActivityAt occurredAt;
+    if (current != null) {
+      occurredAt = current.getActivityAt();
+    } else {
+      assert previous != null;
+      occurredAt = previous.getActivityAt();
+    }
+
+    return new DailyActivityReport(occurredAt, foodEvaluations, waterEvaluations, stressEvaluation);
   }
 
   public boolean hasDangerousFood() {

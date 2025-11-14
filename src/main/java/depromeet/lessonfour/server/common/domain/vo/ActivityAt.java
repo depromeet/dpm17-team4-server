@@ -24,7 +24,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class ActivityAt {
+public class ActivityAt implements Comparable<ActivityAt> {
 
   private LocalDate date;
   private LocalTime time;
@@ -115,5 +115,17 @@ public class ActivityAt {
       return false;
     }
     return this.isSameDate(other.getDayBefore());
+  }
+
+  @Override
+  public int compareTo(ActivityAt o) {
+    if (o == null) {
+      return 1;
+    }
+    int dateComparison = this.date.compareTo(o.date);
+    if (dateComparison != 0) {
+      return dateComparison;
+    }
+    return this.time.compareTo(o.time);
   }
 }
