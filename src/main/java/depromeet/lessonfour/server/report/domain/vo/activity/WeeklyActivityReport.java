@@ -1,5 +1,6 @@
 package depromeet.lessonfour.server.report.domain.vo.activity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -37,5 +38,53 @@ public class WeeklyActivityReport {
   /** 이 주에 “위험한 음식”이 포함된 날의 수 (대략적인 위험도 척도용) */
   public long dangerousFoodDays() {
     return dailyReports.stream().filter(DailyActivityReport::hasDangerousFood).count();
+  }
+
+  /** 이번 주에 기록된 음식 평가가 하나라도 있는지 여부 */
+  public boolean hasFoodRecords() {
+    return dailyReports.stream()
+        .flatMap(report -> report.getFoodEvaluations().stream())
+        .findAny()
+        .isPresent();
+  }
+
+  public boolean hasDangerousFood() {
+    return dailyReports.stream().anyMatch(DailyActivityReport::hasDangerousFood);
+  }
+
+  public int getLastWeekDangerousFoodDays() {
+    return (int) dailyReports.stream().filter(DailyActivityReport::hasDangerousFood).count();
+  }
+
+  public int getThisWeekDangerousFoodDays() {
+    return (int) dailyReports.stream().filter(DailyActivityReport::hasDangerousFood).count();
+  }
+
+  public List<FoodsByMealTime> aggregateFoodsByMealTime(LocalDate weekStartDate) {
+    return dailyReports.stream()
+        // DailyActivityReport → FoodEvaluation → FoodsByMealTime
+        .flatMap(
+            report ->
+                report.getFoodEvaluations().stream()
+                    .flatMap(
+                        foodEval ->
+                            foodEval.getFoodsByMealTime().entrySet().stream()
+                                // 빈 리스트는 제외
+                                .filter(
+                                    entry ->
+                                        entry.getValue() != null && !entry.getValue().isEmpty())
+                                // FoodsByMealTime으로 매핑
+                                .map(
+                                    entry ->
+                                        new FoodsByMealTime(
+                                            report.getOccurredAt().toDate(), // 발생 날짜
+                                            entry.getKey(), // MealTime
+                                            entry.getValue() // 음식 리스트
+                                            ))))
+        // 날짜 → mealTime 순 정렬
+        .sorted(
+            Comparator.comparing(FoodsByMealTime::occurredAt)
+                .thenComparing(f -> f.mealTime().ordinal()))
+        .toList();
   }
 }
