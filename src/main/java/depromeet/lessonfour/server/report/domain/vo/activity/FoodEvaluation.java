@@ -2,14 +2,16 @@ package depromeet.lessonfour.server.report.domain.vo.activity;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.FoodRecord;
 import depromeet.lessonfour.server.activityrecord.domain.vo.MealTime;
+import depromeet.lessonfour.server.common.api.code.ErrorCode;
+import depromeet.lessonfour.server.common.exception.ServerException;
 import lombok.Getter;
 
 @Getter
@@ -19,30 +21,37 @@ public class FoodEvaluation {
 
   private final DayType dayType;
   private final boolean dangerous;
-  private final Map<MealTime, List<String>> foodsByMealTime;
-  private final Set<MealTime> dangerousMealTimes;
+  private final Map<MealTime, List<String>> foodsByMealTime = new HashMap<>();
+  private final Set<MealTime> dangerousMealTimes = new HashSet<>();
 
-  public FoodEvaluation(
+  private FoodEvaluation(
       boolean dangerous,
       Map<MealTime, List<String>> foodsByMealTime,
       DayType dayType,
       Set<MealTime> dangerousMealTimes) {
-    this.dangerous = dangerous;
-    this.dayType = Objects.requireNonNull(dayType, "dayType must not be null");
 
-    Map<MealTime, List<String>> source =
-        (foodsByMealTime == null) ? Collections.emptyMap() : foodsByMealTime;
-    Map<MealTime, List<String>> copy = new HashMap<>(source.size());
-
-    for (Map.Entry<MealTime, List<String>> e : source.entrySet()) {
-      List<String> list =
-          (e.getValue() == null) ? Collections.emptyList() : List.copyOf(e.getValue());
-      copy.put(e.getKey(), list);
+    if (dayType == null) {
+      throw new ServerException(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
-    this.foodsByMealTime = Collections.unmodifiableMap(copy);
-    this.dangerousMealTimes =
-        dangerousMealTimes == null ? Collections.emptySet() : Set.copyOf(dangerousMealTimes);
+    this.dangerous = dangerous;
+    this.dayType = dayType;
+
+    if (foodsByMealTime != null) {
+      for (Map.Entry<MealTime, List<String>> entry : foodsByMealTime.entrySet()) {
+        MealTime key = entry.getKey();
+        List<String> value = entry.getValue();
+
+        // null 리스트 → empty list
+        List<String> safeList = (value == null) ? Collections.emptyList() : List.copyOf(value);
+
+        this.foodsByMealTime.put(key, safeList);
+      }
+    }
+
+    if (dangerousMealTimes != null) {
+      this.dangerousMealTimes.addAll(dangerousMealTimes);
+    }
   }
 
   public static FoodEvaluation calculate(List<FoodRecord> records, DayType dayType) {
