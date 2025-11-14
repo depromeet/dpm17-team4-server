@@ -136,7 +136,7 @@ class HomeE2ETest {
         .body("data.toiletRecordCount", equalTo(2))
         .body("data.hasActivityRecord", equalTo(true))
         // GOOD 매핑 확인
-        .body("data.heroImage", containsString("colon_good.png"))
+        .body("data.heroImage", containsString("toilet/good.png"))
         .body("data.heroBackgroundColors", hasItems("#134DB1", "#588DFF"));
   }
 
@@ -157,7 +157,7 @@ class HomeE2ETest {
         .body("status", equalTo(200))
         .body("data.toiletRecordCount", equalTo(0))
         .body("data.hasActivityRecord", equalTo(false))
-        .body("data.heroImage", containsString("colon_very_good.png"))
+        .body("data.heroImage", containsString("toilet/very_good.png"))
         .body("data.heroBackgroundColors", hasItems("#0C7C30", "#7DD357"));
   }
 
@@ -176,7 +176,7 @@ class HomeE2ETest {
         .statusCode(HttpStatus.OK.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .body("status", equalTo(200))
-        .body("data.heroImage", containsString("colon_very_bad.png"))
+        .body("data.heroImage", containsString("toilet/very_bad.png"))
         .body("data.heroBackgroundColors", hasItems("#A4141E", "#FF535F"));
   }
 
@@ -193,7 +193,7 @@ class HomeE2ETest {
         .get("/api/v1/home/" + d1.format(dateFormatter))
         .then()
         .statusCode(200)
-        .body("data.heroImage", containsString("colon_good.png"))
+        .body("data.heroImage", containsString("toilet/good.png"))
         .body("data.heroBackgroundColors", hasItems("#134DB1", "#588DFF"));
 
     // 40 → AVERAGE
@@ -206,7 +206,7 @@ class HomeE2ETest {
         .get("/api/v1/home/" + d2.format(dateFormatter))
         .then()
         .statusCode(200)
-        .body("data.heroImage", containsString("colon_medium.png"))
+        .body("data.heroImage", containsString("toilet/normal.png"))
         .body("data.heroBackgroundColors", hasItems("#2B42B4", "#8F58FF"));
 
     // 20 → BAD
@@ -219,7 +219,7 @@ class HomeE2ETest {
         .get("/api/v1/home/" + d3.format(dateFormatter))
         .then()
         .statusCode(200)
-        .body("data.heroImage", containsString("colon_bad.png"))
+        .body("data.heroImage", containsString("toilet/bad.png"))
         .body("data.heroBackgroundColors", hasItems("#DD5612", "#F6A85F"));
   }
 
@@ -242,7 +242,7 @@ class HomeE2ETest {
         .body("data.toiletRecordCount", equalTo(0))
         .body("data.hasActivityRecord", equalTo(false))
         // 점수 미기록 → ReportClient가 0으로 보고 → AVERAGE 매핑
-        .body("data.heroImage", containsString("colon_medium.png"))
+        .body("data.heroImage", containsString("toilet/normal.png"))
         .body("data.heroBackgroundColors", hasItems("#2B42B4", "#8F58FF"));
   }
 
@@ -314,7 +314,7 @@ class HomeE2ETest {
         .body("data.toiletRecordCount", equalTo(0))
         .body("data.hasActivityRecord", equalTo(false))
         // 점수 미기록이면 0 → AVERAGE 매핑(영웅 이미지는 AVERAGE)
-        .body("data.heroImage", containsString("colon_medium.png"))
+        .body("data.heroImage", containsString("toilet/normal.png"))
         .body("data.heroBackgroundColors", hasItems("#2B42B4", "#8F58FF"));
   }
 }

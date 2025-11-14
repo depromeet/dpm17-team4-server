@@ -52,7 +52,7 @@ class ToiletReportMapperDailyTest {
     assertThat(result.score()).isEqualTo(95);
     assertThat(result.summary().image())
         .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_very_good.png");
+            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/very_good.png");
     assertThat(result.summary().backgroundColors()).containsExactly("#0C7C30", "#7DD357");
     assertThat(result.summary().caption()).isEqualTo("기분 좋은 대장");
     assertThat(result.summary().message()).isEqualTo("장 컨디션 아주 굿!");
@@ -82,7 +82,7 @@ class ToiletReportMapperDailyTest {
     assertThat(result.score()).isEqualTo(80);
     assertThat(result.summary().image())
         .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_good.png");
+            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/good.png");
     assertThat(result.summary().backgroundColors()).containsExactly("#134DB1", "#588DFF");
     assertThat(result.summary().caption()).isEqualTo("신이 난 대장");
     assertThat(result.summary().message()).isEqualTo("개운하실 것 같아요!");
@@ -111,7 +111,7 @@ class ToiletReportMapperDailyTest {
     assertThat(result.score()).isEqualTo(60);
     assertThat(result.summary().image())
         .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_medium.png");
+            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/normal.png");
     assertThat(result.summary().backgroundColors()).containsExactly("#2B42B4", "#8F58FF");
     assertThat(result.summary().caption()).isEqualTo("얌전한 대장");
     assertThat(result.summary().message()).isEqualTo("무난한 하루가 되었군요!");
@@ -140,7 +140,7 @@ class ToiletReportMapperDailyTest {
     assertThat(result.score()).isEqualTo(40);
     assertThat(result.summary().image())
         .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_bad.png");
+            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/bad.png");
     assertThat(result.summary().backgroundColors()).containsExactly("#DD5612", "#F6A85F");
     assertThat(result.summary().caption()).isEqualTo("속상한 대장");
     assertThat(result.summary().message()).isEqualTo("잠시 관리가 필요해요!");
@@ -169,7 +169,7 @@ class ToiletReportMapperDailyTest {
     assertThat(result.score()).isEqualTo(20);
     assertThat(result.summary().image())
         .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_very_bad.png");
+            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/very_bad.png");
     assertThat(result.summary().backgroundColors()).containsExactly("#A4141E", "#FF535F");
     assertThat(result.summary().caption()).isEqualTo("화가 잔뜩 난 대장");
     assertThat(result.summary().message()).isEqualTo("전문가 상담이 필요해요!");
@@ -231,7 +231,7 @@ class ToiletReportMapperDailyTest {
     assertThat(result).isNotNull();
     assertThat(result.image())
         .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_very_good.png");
+            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/very_good.png");
     assertThat(result.backgroundColors()).containsExactly("#0C7C30", "#7DD357");
   }
 
@@ -245,7 +245,7 @@ class ToiletReportMapperDailyTest {
     assertThat(result).isNotNull();
     assertThat(result.image())
         .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_good.png");
+            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/good.png");
     assertThat(result.backgroundColors()).containsExactly("#134DB1", "#588DFF");
   }
 
@@ -259,7 +259,7 @@ class ToiletReportMapperDailyTest {
     assertThat(result).isNotNull();
     assertThat(result.image())
         .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_medium.png");
+            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/normal.png");
     assertThat(result.backgroundColors()).containsExactly("#2B42B4", "#8F58FF");
   }
 
@@ -273,7 +273,7 @@ class ToiletReportMapperDailyTest {
     assertThat(result).isNotNull();
     assertThat(result.image())
         .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_bad.png");
+            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/bad.png");
     assertThat(result.backgroundColors()).containsExactly("#DD5612", "#F6A85F");
   }
 
@@ -287,7 +287,7 @@ class ToiletReportMapperDailyTest {
     assertThat(result).isNotNull();
     assertThat(result.image())
         .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_very_bad.png");
+            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/very_bad.png");
     assertThat(result.backgroundColors()).containsExactly("#A4141E", "#FF535F");
   }
 
@@ -301,7 +301,7 @@ class ToiletReportMapperDailyTest {
     assertThat(result).isNotNull();
     assertThat(result.image())
         .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_medium.png");
+            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/normal.png");
     assertThat(result.backgroundColors()).containsExactly("#2B42B4", "#8F58FF");
   }
 
@@ -315,7 +315,7 @@ class ToiletReportMapperDailyTest {
     assertThat(result).isNotNull();
     assertThat(result.image())
         .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/colon_medium.png");
+            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/normal.png");
     assertThat(result.backgroundColors()).containsExactly("#2B42B4", "#8F58FF");
   }
 
