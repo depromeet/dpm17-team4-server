@@ -15,6 +15,10 @@ public class DailyActivityReport {
   private final List<WaterEvaluation> waterEvaluations;
   private final StressEvaluation stressEvaluation;
 
+  public static DailyActivityReport empty() {
+    return new DailyActivityReport(List.of(), List.of(), StressEvaluation.NONE);
+  }
+
   public static DailyActivityReport evaluate(ActivityRecord previous, ActivityRecord current) {
     List<FoodEvaluation> foodEvaluations = new ArrayList<>();
     List<WaterEvaluation> waterEvaluations = new ArrayList<>();

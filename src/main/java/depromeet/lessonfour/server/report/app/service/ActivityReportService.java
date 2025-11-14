@@ -46,7 +46,7 @@ public class ActivityReportService {
     List<ActivityRecord> records =
         activityRecordClient.getActivityRecordsBetween(userId, startAt, endAt);
 
-    return WeeklyActivityReport.evaluateWeekly(records);
+    return WeeklyActivityReport.evaluateWeekly(records, startAt);
   }
 
   /** 월간 생활 기록 리포트 생성 */

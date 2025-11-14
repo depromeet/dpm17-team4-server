@@ -1,31 +1,42 @@
 package depromeet.lessonfour.server.report.domain.vo.activity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
+import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import lombok.Getter;
 
 @Getter
 public class WeeklyActivityReport {
 
-  /** 해당 주(월~일)의 DailyActivityReport 리스트 (최대 7개, 기록 없으면 빈 DailyActivityReport 일 수도 있음) */
+  /** 해당 주(월~일)의 DailyActivityReport 리스트 (항상 7개, 기록 없으면 빈 DailyActivityReport) */
   private final List<DailyActivityReport> dailyReports = new ArrayList<>();
 
-  public static WeeklyActivityReport evaluateWeekly(List<ActivityRecord> records) {
-    // 날짜 오름차순 정렬 (뷰에서 월~일 순서대로 사용하기 좋게)
-    List<DailyActivityReport> sortedDailyReports =
+  public static WeeklyActivityReport evaluateWeekly(
+      List<ActivityRecord> records, ActivityAt startAt) {
+    LocalDate startDate = startAt.toDate();
+    Map<LocalDate, ActivityRecord> recordByDate =
         records.stream()
-            .sorted(
-                Comparator.comparing(
-                    r -> r.getActivityAt().toDate() // ActivityAt -> LocalDate
-                    ))
-            .map(activityRecord -> DailyActivityReport.evaluate(null, activityRecord))
-            .toList();
-
+            .collect(
+                Collectors.toMap(
+                    r -> r.getActivityAt().toDate(),
+                    Function.identity(),
+                    (existing, replacement) -> replacement));
     WeeklyActivityReport weeklyActivityReport = new WeeklyActivityReport();
-    weeklyActivityReport.dailyReports.addAll(sortedDailyReports);
+    for (int i = 0; i < 7; i++) {
+      LocalDate currentDate = startDate.plusDays(i);
+      ActivityRecord record = recordByDate.get(currentDate);
+      DailyActivityReport dailyReport =
+          (record == null)
+              ? DailyActivityReport.empty()
+              : DailyActivityReport.evaluate(null, record);
+      weeklyActivityReport.dailyReports.add(dailyReport);
+    }
 
     return weeklyActivityReport;
   }
