@@ -32,7 +32,7 @@ public class DailyReportUseCase {
         toiletReportService.generateDailyReport(userId, activityAt);
 
     // 배변 점수 업데이트
-    toiletScoreService.updateScore(userId, (int) dailyToiletReport.getToiletScore(), activityAt);
+    toiletScoreService.upsertScore(userId, (int) dailyToiletReport.getToiletScore(), activityAt);
 
     return new DailyReport(dailyActivityReport, dailyToiletReport);
   }
