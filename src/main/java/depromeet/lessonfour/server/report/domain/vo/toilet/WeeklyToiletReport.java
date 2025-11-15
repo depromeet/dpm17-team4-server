@@ -53,4 +53,11 @@ public class WeeklyToiletReport {
   public ToiletEvaluationLevel getLevel() {
     return ToiletEvaluationLevel.from(getAverageScore());
   }
+
+  /** 일별 배변 점수 리스트 */
+  public List<Double> getScores() {
+    return dailyReports.stream()
+        .map(DailyToiletReport::getToiletScore)
+        .collect(Collectors.toList());
+  }
 }
