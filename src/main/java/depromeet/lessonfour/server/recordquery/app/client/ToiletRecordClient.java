@@ -11,8 +11,4 @@ public interface ToiletRecordClient {
       Long userId, ActivityAt startInclude, ActivityAt endInclude);
 
   int getToiletRecordCountByActivityAt(Long userId, ActivityAt activityAt);
-
-  HeroAssets getToiletHeroAssets(int score);
-
-  record HeroAssets(String image, List<String> backgroundColors) {}
 }

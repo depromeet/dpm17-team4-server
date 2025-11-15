@@ -39,13 +39,6 @@ public class ToiletReportMapper {
     return DailyMapper.map(dailyToiletReport);
   }
 
-  public record ToiletHeroAssets(String image, List<String> backgroundColors) {}
-
-  public ToiletHeroAssets heroAssetsByLevel(ToiletEvaluationLevel level) {
-    var hero = DailyMapper.lookupHero(level); // 내부 맵 재사용
-    return new ToiletHeroAssets(hero.image(), hero.backgroundColors());
-  }
-
   /** 배변 모양 섹션 매핑 */
   public MonthlyShapeSection mapShape(MonthlyReport report) {
     final String titleMessage = "이번 달 자주 본 배변 모양이에요";
@@ -280,15 +273,6 @@ public class ToiletReportMapper {
             "대체로 좋은 상태예요. 식이섬유나 수분 섭취가 잘 이루어졌을 가능성이 높아요. 가벼운 운동이나 스트레칭으로 리듬을 이어가면 좋을 것 같아요.",
             ToiletEvaluationLevel.VERY_GOOD,
             "오늘은 장이 최상의 컨디션이에요. 규칙적이고 건강한 식습관과 충분한 수분 섭취가 잘 이루어지고 있네요. 지금처럼 꾸준히 유지해보세요.");
-
-    // 내부 맵을 안전하게 노출하는 조회 함수 (NONE/NULL 폴백 포함)
-    static HeroCharacter lookupHero(ToiletEvaluationLevel level) {
-      ToiletEvaluationLevel safeLevel =
-          (level == null || level == ToiletEvaluationLevel.NONE)
-              ? ToiletEvaluationLevel.AVERAGE
-              : level;
-      return characterMap.getOrDefault(safeLevel, characterMap.get(ToiletEvaluationLevel.AVERAGE));
-    }
 
     static DailyToiletReportDto map(DailyToiletReport dailyToiletReport) {
       if (dailyToiletReport.getLevel() == ToiletEvaluationLevel.NONE) {
