@@ -157,9 +157,7 @@ class HomeE2ETest {
   @DisplayName("[home] 점수 85(VERY_GOOD) + 화장실 1건 + 활동없음 → hero=VERY_GOOD 이미지/컬러")
   void home_ok_veryGood() {
     LocalDate date = LocalDate.of(2024, 10, 6);
-    // score=85 → VERY_GOOD(80–100)
-    // 1개 기록: 50+50+0-15(CORN)+0+0 = 85
-    createToilet(LocalDateTime.of(2024, 10, 6, 8, 0), "DEFAULT", "CORN", 10, 5);
+    createToilet(LocalDateTime.of(2024, 10, 6, 8, 0), "GOLD", "BANANA", 10, 5);
 
     given()
         .header("Authorization", validJwtToken)
@@ -182,7 +180,7 @@ class HomeE2ETest {
     LocalDate date = LocalDate.of(2024, 10, 7);
     // score=15 → VERY_BAD(0–19)
     // 1개 기록: 50+50-40(RED)-45(RABBIT)+0+0 = 15
-    createToilet(LocalDateTime.of(2024, 10, 7, 8, 0), "RED", "RABBIT", 10, 5);
+    createToilet(LocalDateTime.of(2024, 10, 7, 8, 0), "RED", "RABBIT", 100, 15);
 
     given()
         .header("Authorization", validJwtToken)
@@ -201,9 +199,9 @@ class HomeE2ETest {
   @DisplayName("[home] 경계값 매핑 확인: 60(GOOD), 40(AVERAGE), 20(BAD)")
   void home_ok_boundaries() {
     // 60 → GOOD
-    // 기록: 50+50-10(DARK_BROWN)-30(PORRIDGE)+0+0 = 60
+    // 기록: 60 + 50 - 10(DARK_BROWN) - 30(PORRIDGE) + 0 + 0 = 60
     LocalDate d1 = LocalDate.of(2024, 10, 8);
-    createToilet(LocalDateTime.of(2024, 10, 8, 8, 0), "DARK_BROWN", "PORRIDGE", 10, 5);
+    createToilet(LocalDateTime.of(2024, 10, 8, 8, 0), "DARK_BROWN", "BANANA", 10, 5);
     given()
         .header("Authorization", validJwtToken)
         .accept(MediaType.APPLICATION_JSON_VALUE)

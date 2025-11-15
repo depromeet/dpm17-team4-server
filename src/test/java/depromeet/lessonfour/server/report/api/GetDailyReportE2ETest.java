@@ -189,17 +189,25 @@ class GetDailyReportE2ETest {
         .body("data.stress", notNullValue());
   }
 
-  // 4) toiletrecord 여러개: isSuccessful=false, color=null, shape=null 섞임
+  // 4) toiletrecord 여러개: isSuccessful=false
   @Test
   @DisplayName("[E2E] toiletrecord 다건(실패/색상null/모양null 포함) → NPE 없이 정상 반환")
   void givenMultipleToiletWithNullsAndFailure_whenGetDailyReport_thenOk() {
     LocalDateTime base = LocalDateTime.of(2024, 1, 18, 10, 0);
 
     createToilet(base.withHour(7), true, ToiletColor.DEFAULT, ToiletShape.BANANA, 10, 5, "ok");
-    createToilet(base.withHour(9), false, ToiletColor.DEFAULT, ToiletShape.CORN, 30, 12, "fail");
-    createToilet(base.withHour(12), true, null, ToiletShape.CREAM, 5, 3, null); // color null
-    createToilet(base.withHour(18), true, ToiletColor.DARK_BROWN, null, 0, 2, null); // shape null
-    createToilet(base.withHour(20), true, null, null, 25, 8, "둘다 null"); // both null
+    createToilet(base.withHour(9), false, ToiletColor.NONE, ToiletShape.NONE, 30, 12, "fail");
+    createToilet(
+        base.withHour(12), true, ToiletColor.DEFAULT, ToiletShape.CREAM, 5, 3, null); // color null
+    createToilet(
+        base.withHour(18),
+        true,
+        ToiletColor.DARK_BROWN,
+        ToiletShape.BANANA,
+        0,
+        2,
+        null); // shape null
+    createToilet(base.withHour(20), false, null, null, 25, 8, "둘다 null"); // both null
 
     given()
         .header("Authorization", validJwtToken)

@@ -23,6 +23,7 @@ import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletColorCount;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletEvaluationLevel;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletPainDistribution;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletPeriodCount;
+import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletShapeCount;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletTimeDistribution;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
@@ -50,7 +51,13 @@ public class ToiletReportMapper {
             ToiletShape.PORRIDGE, "설사 주의",
             ToiletShape.WATER, "설사 주의");
 
-    // NONE인 경우를 제외하고 매핑
+    List<ToiletShapeCount> mostFrequentToiletShapes = report.getMostFrequentToiletShapes();
+
+    // 필터링 후 아무 유효한 모양이 없다면 “모양 평가 불가”
+    if (mostFrequentToiletShapes.isEmpty()) {
+      return new MonthlyShapeSection("이번 달에는 모양을 확인할 수 있는 배변 기록이 없어요", List.of());
+    }
+
     List<MonthlyToiletShape> items =
         report.getMostFrequentToiletShapes().stream()
             .map(
@@ -292,8 +299,8 @@ public class ToiletReportMapper {
                       new ToiletReportItem(
                           item.getOccurredAt().toDateTime(),
                           DETAIL_MESSAGE_MAP.get(dailyToiletReport.getLevel()),
-                          item.getColor(),
-                          item.getShape(),
+                          item.getColor() == ToiletColor.NONE ? null : item.getColor(),
+                          item.getShape() == ToiletShape.NONE ? null : item.getShape(),
                           item.getDuration(),
                           item.getPain(),
                           item.getNote()))

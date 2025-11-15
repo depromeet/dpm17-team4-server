@@ -110,8 +110,6 @@ class UpdateToiletRecordE2ETest {
         """
         {
           "isSuccessful": false,
-          "color": "RED",
-          "shape": "CORN",
           "pain": 50,
           "duration": 12,
           "note": "수정된 배변 기록"
@@ -131,8 +129,8 @@ class UpdateToiletRecordE2ETest {
         .body("message", equalTo("업데이트가 완료되었습니다."))
         .body("data.id", equalTo(toiletRecordId.intValue()))
         .body("data.isSuccessful", equalTo(false))
-        .body("data.color", equalTo("RED"))
-        .body("data.shape", equalTo("CORN"))
+        .body("data.color", equalTo("NONE"))
+        .body("data.shape", equalTo("NONE"))
         .body("data.pain", equalTo(50))
         .body("data.duration", equalTo(12))
         .body("data.note", equalTo("수정된 배변 기록"));

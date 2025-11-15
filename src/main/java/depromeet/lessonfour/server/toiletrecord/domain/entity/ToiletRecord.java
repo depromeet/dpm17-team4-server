@@ -88,6 +88,10 @@ public class ToiletRecord extends BaseTimeEntity {
       String note,
       ActivityAt activityAt) {
 
+    if (isSuccessful && (color == null || shape == null)) {
+      throw new ServerException(ErrorCode.INVALID_FIELD_ERROR);
+    }
+
     ToiletColor finalColor = isSuccessful ? color : ToiletColor.NONE;
     ToiletShape finalShape = isSuccessful ? shape : ToiletShape.NONE;
 
