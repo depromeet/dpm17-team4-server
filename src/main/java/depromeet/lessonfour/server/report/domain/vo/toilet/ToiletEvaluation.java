@@ -56,14 +56,24 @@ public class ToiletEvaluation {
     double score = BASE_SCORE;
 
     score += successScore(record.isSuccessful()) * SUCCESS_WEIGHT;
-    score += (record.getColor() != null ? record.getColor().getScore() : 0) * COLOR_WEIGHT;
-    score += (record.getShape() != null ? record.getShape().getScore() : 0) * SHAPE_WEIGHT;
     score += durationPenalty(record.getDuration()) * DURATION_WEIGHT;
     score += painPenalty(record.getPain()) * PAIN_WEIGHT;
+    score += record.getColor().getScore() * COLOR_WEIGHT;
+    score += record.getShape().getScore() * SHAPE_WEIGHT;
 
     double finalScore = normalizeScore(score);
 
-    return ToiletEvaluation.from(finalScore, ToiletEvaluationLevel.from(finalScore), record);
+    return ToiletEvaluation.builder()
+        .score(score)
+        .level(ToiletEvaluationLevel.from(finalScore))
+        .duration(record.getDuration())
+        .color(record.getColor())
+        .shape(record.getShape())
+        .pain(record.getPain())
+        .note(record.getNote())
+        .occurredAt(record.getActivityAt())
+        .isSuccess(record.isSuccessful())
+        .build();
   }
 
   private static double normalizeScore(double score) {
@@ -96,21 +106,6 @@ public class ToiletEvaluation {
       return -10;
     }
     return 0;
-  }
-
-  public static ToiletEvaluation from(
-      double score, ToiletEvaluationLevel level, ToiletRecord record) {
-    return ToiletEvaluation.builder()
-        .score(score)
-        .level(level)
-        .color(record.getColor())
-        .shape(record.getShape())
-        .duration(record.getDuration())
-        .pain(record.getPain())
-        .note(record.getNote())
-        .occurredAt(record.getActivityAt())
-        .isSuccess(record.isSuccessful())
-        .build();
   }
 
   public boolean failed() {
