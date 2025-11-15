@@ -38,7 +38,7 @@ public class WeeklyReportMapper {
     // 배변 점수 매핑
     DefecationScore defecationScore = mapDefecationScore(weeklyReport);
 
-    UserAverage userAverage = mapUserAverage(weeklyReport.thisWeekAverageScore());
+    UserAverage userAverage = mapUserAverage(weeklyReport.getThisWeekAverageScore());
 
     // 생활 기록 매핑
     WeeklyFoodSection foodSection =
@@ -64,9 +64,9 @@ public class WeeklyReportMapper {
 
   private static DefecationScore mapDefecationScore(WeeklyReport weeklyReport) {
     return new DefecationScore(
-        weeklyReport.lastWeekAverageScore(),
-        weeklyReport.thisWeekAverageScore(),
-        weeklyReport.dailyScores().stream().map(Double::valueOf).toList());
+        weeklyReport.getLastWeekAverageScore(),
+        weeklyReport.getThisWeekAverageScore(),
+        weeklyReport.getScoresThisWeek().stream().toList());
   }
 
   private static UserAverage mapUserAverage(double thisWeekAverageScore) {

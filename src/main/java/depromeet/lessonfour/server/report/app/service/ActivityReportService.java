@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
+import depromeet.lessonfour.server.common.domain.vo.WeekRange;
 import depromeet.lessonfour.server.report.app.client.ActivityRecordClient;
 import depromeet.lessonfour.server.report.domain.vo.activity.DailyActivityReport;
 import depromeet.lessonfour.server.report.domain.vo.activity.MonthlyActivityReport;
@@ -40,13 +41,13 @@ public class ActivityReportService {
   }
 
   /** 주간 생활 기록 리포트 생성 */
-  public WeeklyActivityReport generateWeeklyReport(
-      Long userId, ActivityAt startAt, ActivityAt endAt) {
+  public WeeklyActivityReport generateWeeklyReport(Long userId, WeekRange week) {
 
     List<ActivityRecord> records =
-        activityRecordClient.getActivityRecordsBetween(userId, startAt, endAt);
+        activityRecordClient.getActivityRecordsBetween(
+            userId, week.startAsActivityAt(), week.endAsActivityAt());
 
-    return WeeklyActivityReport.evaluateWeekly(records, startAt);
+    return WeeklyActivityReport.evaluateWeekly(records, week.startAsActivityAt());
   }
 
   /** 월간 생활 기록 리포트 생성 */
