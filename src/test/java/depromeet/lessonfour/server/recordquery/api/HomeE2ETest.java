@@ -16,29 +16,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
-import depromeet.lessonfour.server.activityrecord.domain.entity.ActivityRecord;
-import depromeet.lessonfour.server.activityrecord.domain.vo.MealFood;
-import depromeet.lessonfour.server.activityrecord.domain.vo.MealTime;
-import depromeet.lessonfour.server.activityrecord.domain.vo.StressLevel;
-import depromeet.lessonfour.server.activityrecord.infra.repository.JpaActivityRecordRepository;
 import depromeet.lessonfour.server.auth.domain.vo.AccountContext;
 import depromeet.lessonfour.server.auth.infra.security.jwt.JwtTokenGenerator;
-import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.food.domain.entity.Food;
 import depromeet.lessonfour.server.food.infra.repository.FoodRepository;
-import depromeet.lessonfour.server.toiletrecord.domain.entity.ToiletRecord;
-import depromeet.lessonfour.server.toiletrecord.domain.repository.ToiletRecordRepository;
-import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
-import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
 import depromeet.lessonfour.server.user.domain.entity.User;
 import depromeet.lessonfour.server.user.domain.repository.UserRepository;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -54,14 +44,12 @@ class HomeE2ETest {
   @Autowired UserRepository userRepository;
   @Autowired PasswordEncoder passwordEncoder;
   @Autowired FoodRepository foodRepository;
-  @Autowired JpaActivityRecordRepository activityRecordRepository;
-  @Autowired ToiletRecordRepository toiletRecordRepository;
-  @Autowired JdbcTemplate jdbcTemplate;
 
   private String validJwtToken;
-  private Long testUserId;
   private User testUser;
   private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+  private final DateTimeFormatter dateTimeFormatter =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
   @BeforeEach
   void setUp() {
@@ -69,7 +57,6 @@ class HomeE2ETest {
     RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 
     testUser = createTestUser("home@test.com", "pw1234", "home-user");
-    testUserId = testUser.getId();
     validJwtToken = "Bearer " + jwtTokenGenerator.generateAccessToken(AccountContext.of(testUser));
 
     // 테스트용 Food 한 개
@@ -84,32 +71,56 @@ class HomeE2ETest {
     return userRepository.save(u);
   }
 
-  private ActivityRecord createActivity(LocalDateTime dt) {
+  private void createActivity(LocalDateTime dt) {
     List<Food> foods = foodRepository.findAll();
-    var items = List.of(new MealFood(MealTime.BREAKFAST, foods.get(0)));
-    return activityRecordRepository.save(
-        ActivityRecord.createWithMeals(
-            testUserId, 5, StressLevel.MEDIUM, ActivityAt.from(dt), items));
+    Long foodId = foods.getFirst().getId();
+
+    String createRequest =
+        String.format(
+            """
+        {
+          "foods": [{"id": %d, "mealTime": "BREAKFAST"}],
+          "water": 5,
+          "stress": "MEDIUM",
+          "occurredAt": "%s"
+        }
+        """,
+            foodId, dt.format(dateTimeFormatter));
+
+    given()
+        .contentType(ContentType.JSON)
+        .header("Authorization", validJwtToken)
+        .body(createRequest)
+        .when()
+        .post("/api/v1/activity-records")
+        .then()
+        .statusCode(HttpStatus.CREATED.value());
   }
 
-  private ToiletRecord createToilet(LocalDateTime dt) {
-    var r =
-        ToiletRecord.register(
-            testUser,
-            true,
-            ToiletColor.DEFAULT,
-            ToiletShape.BANANA,
-            20,
-            5,
-            "note",
-            ActivityAt.from(dt));
-    toiletRecordRepository.save(r);
-    return r;
-  }
+  private void createToilet(LocalDateTime dt, String color, String shape, int pain, int duration) {
+    String createRequest =
+        String.format(
+            """
+        {
+          "occurredAt": "%s",
+          "isSuccessful": true,
+          "color": "%s",
+          "shape": "%s",
+          "pain": %d,
+          "duration": %d,
+          "note": "note"
+        }
+        """,
+            dt.format(dateTimeFormatter), color, shape, pain, duration);
 
-  private void insertToiletScore(Long userId, LocalDate date, int score) {
-    jdbcTemplate.update(
-        "INSERT INTO toilet_score (user_id, date, score) VALUES (?, ?, ?)", userId, date, score);
+    given()
+        .contentType(ContentType.JSON)
+        .header("Authorization", validJwtToken)
+        .body(createRequest)
+        .when()
+        .post("/api/v1/poo-records")
+        .then()
+        .statusCode(HttpStatus.OK.value());
   }
 
   @Test
@@ -117,10 +128,12 @@ class HomeE2ETest {
   void home_ok_good() {
     LocalDate date = LocalDate.of(2024, 10, 5);
     // score=75 → GOOD(60–79)
-    insertToiletScore(testUserId, date, 75);
-    // records
-    createToilet(LocalDateTime.of(2024, 10, 5, 8, 0));
-    createToilet(LocalDateTime.of(2024, 10, 5, 14, 0));
+    // 2개 기록의 평균: (85+65)/2 = 75
+    // 기록1: 50+50+0-15(CORN)+0+0 = 85
+    // 기록2: 50+50+0-15(CORN)+0-20(통증25) = 65
+    createToilet(LocalDateTime.of(2024, 10, 5, 8, 0), "DEFAULT", "CORN", 10, 5);
+    createToilet(LocalDateTime.of(2024, 10, 5, 14, 0), "DEFAULT", "CORN", 25, 5);
+
     // activity exists
     createActivity(LocalDateTime.of(2024, 10, 5, 10, 0));
 
@@ -141,10 +154,12 @@ class HomeE2ETest {
   }
 
   @Test
-  @DisplayName("[home] 점수 82(VERY_GOOD) + 기록없음 → hero=VERY_GOOD 이미지/컬러, 카운트0/활동false")
-  void home_ok_veryGood_noRecords() {
+  @DisplayName("[home] 점수 85(VERY_GOOD) + 화장실 1건 + 활동없음 → hero=VERY_GOOD 이미지/컬러")
+  void home_ok_veryGood() {
     LocalDate date = LocalDate.of(2024, 10, 6);
-    insertToiletScore(testUserId, date, 82);
+    // score=85 → VERY_GOOD(80–100)
+    // 1개 기록: 50+50+0-15(CORN)+0+0 = 85
+    createToilet(LocalDateTime.of(2024, 10, 6, 8, 0), "DEFAULT", "CORN", 10, 5);
 
     given()
         .header("Authorization", validJwtToken)
@@ -155,7 +170,7 @@ class HomeE2ETest {
         .statusCode(HttpStatus.OK.value())
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .body("status", equalTo(200))
-        .body("data.toiletRecordCount", equalTo(0))
+        .body("data.toiletRecordCount", equalTo(1))
         .body("data.hasActivityRecord", equalTo(false))
         .body("data.heroImage", containsString("toilet/very_good.png"))
         .body("data.heroBackgroundColors", hasItems("#0C7C30", "#7DD357"));
@@ -165,7 +180,9 @@ class HomeE2ETest {
   @DisplayName("[home] 점수 15(VERY_BAD) → hero=VERY_BAD 이미지/컬러")
   void home_ok_veryBad() {
     LocalDate date = LocalDate.of(2024, 10, 7);
-    insertToiletScore(testUserId, date, 15);
+    // score=15 → VERY_BAD(0–19)
+    // 1개 기록: 50+50-40(RED)-45(RABBIT)+0+0 = 15
+    createToilet(LocalDateTime.of(2024, 10, 7, 8, 0), "RED", "RABBIT", 10, 5);
 
     given()
         .header("Authorization", validJwtToken)
@@ -184,8 +201,9 @@ class HomeE2ETest {
   @DisplayName("[home] 경계값 매핑 확인: 60(GOOD), 40(AVERAGE), 20(BAD)")
   void home_ok_boundaries() {
     // 60 → GOOD
+    // 기록: 50+50-10(DARK_BROWN)-30(PORRIDGE)+0+0 = 60
     LocalDate d1 = LocalDate.of(2024, 10, 8);
-    insertToiletScore(testUserId, d1, 60);
+    createToilet(LocalDateTime.of(2024, 10, 8, 8, 0), "DARK_BROWN", "PORRIDGE", 10, 5);
     given()
         .header("Authorization", validJwtToken)
         .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -197,8 +215,9 @@ class HomeE2ETest {
         .body("data.heroBackgroundColors", hasItems("#134DB1", "#588DFF"));
 
     // 40 → AVERAGE
+    // 기록: 50+50-10(DARK_BROWN)-30(PORRIDGE)-20(통증25)+0 = 40
     LocalDate d2 = LocalDate.of(2024, 10, 9);
-    insertToiletScore(testUserId, d2, 40);
+    createToilet(LocalDateTime.of(2024, 10, 9, 8, 0), "DARK_BROWN", "PORRIDGE", 25, 5);
     given()
         .header("Authorization", validJwtToken)
         .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -210,8 +229,9 @@ class HomeE2ETest {
         .body("data.heroBackgroundColors", hasItems("#2B42B4", "#8F58FF"));
 
     // 20 → BAD
+    // 기록: 50+50-40(RED)-30(PORRIDGE)+0-10(시간15분) = 20
     LocalDate d3 = LocalDate.of(2024, 10, 10);
-    insertToiletScore(testUserId, d3, 20);
+    createToilet(LocalDateTime.of(2024, 10, 10, 8, 0), "RED", "PORRIDGE", 10, 15);
     given()
         .header("Authorization", validJwtToken)
         .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -274,33 +294,61 @@ class HomeE2ETest {
   @DisplayName("[home] 다른 사용자 데이터는 카운트/활동/점수에 반영되지 않는다")
   void home_otherUser_notCounted() {
     User other = createTestUser("other@ex.com", "pw", "other");
+    String otherJwtToken =
+        "Bearer " + jwtTokenGenerator.generateAccessToken(AccountContext.of(other));
     LocalDate date = LocalDate.of(2024, 10, 11);
 
-    // 다른 사용자 기록/점수
-    var foods = foodRepository.findAll();
-    var items = List.of(new MealFood(MealTime.BREAKFAST, foods.get(0)));
-    activityRecordRepository.save(
-        ActivityRecord.createWithMeals(
-            other.getId(),
-            5,
-            StressLevel.MEDIUM,
-            ActivityAt.from(LocalDateTime.of(2024, 10, 11, 9, 0)),
-            items));
-    toiletRecordRepository.save(
-        ToiletRecord.register(
-            other,
-            true,
-            ToiletColor.DEFAULT,
-            ToiletShape.BANANA,
-            20,
-            5,
-            "other",
-            ActivityAt.from(LocalDateTime.of(2024, 10, 11, 8, 0))));
-    jdbcTemplate.update(
-        "INSERT INTO toilet_score (user_id, date, score) VALUES (?, ?, ?)",
-        other.getId(),
-        date,
-        95);
+    // 다른 사용자 생활 기록 생성
+    List<Food> foods = foodRepository.findAll();
+    Long foodId = foods.getFirst().getId();
+    String activityRequest =
+        String.format(
+            """
+        {
+          "foods": [{"id": %d, "mealTime": "BREAKFAST"}],
+          "water": 5,
+          "stress": "MEDIUM",
+          "occurredAt": "%s"
+        }
+        """,
+            foodId, LocalDateTime.of(2024, 10, 11, 9, 0).format(dateTimeFormatter));
+
+    given()
+        .contentType(ContentType.JSON)
+        .header("Authorization", otherJwtToken)
+        .body(activityRequest)
+        .when()
+        .post("/api/v1/activity-records")
+        .then()
+        .statusCode(HttpStatus.CREATED.value());
+
+    // 다른 사용자 배변 기록 생성
+    String toiletRequest =
+        String.format(
+            """
+        {
+          "occurredAt": "%s",
+          "isSuccessful": true,
+          "color": "DEFAULT",
+          "shape": "BANANA",
+          "pain": 20,
+          "duration": 5,
+          "note": "other"
+        }
+        """,
+            LocalDateTime.of(2024, 10, 11, 8, 0).format(dateTimeFormatter));
+
+    given()
+        .contentType(ContentType.JSON)
+        .header("Authorization", otherJwtToken)
+        .body(toiletRequest)
+        .when()
+        .post("/api/v1/poo-records")
+        .then()
+        .statusCode(HttpStatus.OK.value());
+
+    // 다른 사용자의 배변 기록은 자동으로 점수 계산됨
+    // 기록: 50+50+0+45(BANANA)+0+0 = 145 (capped at 100, VERY_GOOD)
 
     // 현재 사용자로 조회 → 0/false + hero는 기본(점수 없으면 AVERAGE로 매핑됨)
     given()

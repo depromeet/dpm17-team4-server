@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.DailyToiletReportDto;
-import depromeet.lessonfour.server.report.api.mapper.toilet.ToiletReportMapper.ToiletHeroAssets;
 import depromeet.lessonfour.server.report.domain.vo.toilet.DailyToiletReport;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletEvaluation;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletEvaluationLevel;
@@ -219,104 +218,6 @@ class ToiletReportMapperDailyTest {
     assertThat(result.items()).hasSize(2);
     assertThat(result.items().get(0).note()).isEqualTo("morning");
     assertThat(result.items().get(1).note()).isEqualTo("afternoon");
-  }
-
-  @Test
-  @DisplayName("VERY_GOOD 레벨의 히어로 에셋을 올바르게 반환한다")
-  void givenVeryGoodLevel_whenHeroAssetsByLevel_thenReturnCorrectAssets() {
-    // when
-    ToiletHeroAssets result = mapper.heroAssetsByLevel(ToiletEvaluationLevel.VERY_GOOD);
-
-    // then
-    assertThat(result).isNotNull();
-    assertThat(result.image())
-        .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/very_good.png");
-    assertThat(result.backgroundColors()).containsExactly("#0C7C30", "#7DD357");
-  }
-
-  @Test
-  @DisplayName("GOOD 레벨의 히어로 에셋을 올바르게 반환한다")
-  void givenGoodLevel_whenHeroAssetsByLevel_thenReturnCorrectAssets() {
-    // when
-    ToiletHeroAssets result = mapper.heroAssetsByLevel(ToiletEvaluationLevel.GOOD);
-
-    // then
-    assertThat(result).isNotNull();
-    assertThat(result.image())
-        .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/good.png");
-    assertThat(result.backgroundColors()).containsExactly("#134DB1", "#588DFF");
-  }
-
-  @Test
-  @DisplayName("AVERAGE 레벨의 히어로 에셋을 올바르게 반환한다")
-  void givenAverageLevel_whenHeroAssetsByLevel_thenReturnCorrectAssets() {
-    // when
-    ToiletHeroAssets result = mapper.heroAssetsByLevel(ToiletEvaluationLevel.AVERAGE);
-
-    // then
-    assertThat(result).isNotNull();
-    assertThat(result.image())
-        .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/normal.png");
-    assertThat(result.backgroundColors()).containsExactly("#2B42B4", "#8F58FF");
-  }
-
-  @Test
-  @DisplayName("BAD 레벨의 히어로 에셋을 올바르게 반환한다")
-  void givenBadLevel_whenHeroAssetsByLevel_thenReturnCorrectAssets() {
-    // when
-    ToiletHeroAssets result = mapper.heroAssetsByLevel(ToiletEvaluationLevel.BAD);
-
-    // then
-    assertThat(result).isNotNull();
-    assertThat(result.image())
-        .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/bad.png");
-    assertThat(result.backgroundColors()).containsExactly("#DD5612", "#F6A85F");
-  }
-
-  @Test
-  @DisplayName("VERY_BAD 레벨의 히어로 에셋을 올바르게 반환한다")
-  void givenVeryBadLevel_whenHeroAssetsByLevel_thenReturnCorrectAssets() {
-    // when
-    ToiletHeroAssets result = mapper.heroAssetsByLevel(ToiletEvaluationLevel.VERY_BAD);
-
-    // then
-    assertThat(result).isNotNull();
-    assertThat(result.image())
-        .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/very_bad.png");
-    assertThat(result.backgroundColors()).containsExactly("#A4141E", "#FF535F");
-  }
-
-  @Test
-  @DisplayName("NONE 레벨은 AVERAGE 레벨의 히어로 에셋으로 폴백한다")
-  void givenNoneLevel_whenHeroAssetsByLevel_thenReturnAverageLevelAssets() {
-    // when
-    ToiletHeroAssets result = mapper.heroAssetsByLevel(ToiletEvaluationLevel.NONE);
-
-    // then
-    assertThat(result).isNotNull();
-    assertThat(result.image())
-        .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/normal.png");
-    assertThat(result.backgroundColors()).containsExactly("#2B42B4", "#8F58FF");
-  }
-
-  @Test
-  @DisplayName("null 레벨은 AVERAGE 레벨의 히어로 에셋으로 폴백한다")
-  void givenNullLevel_whenHeroAssetsByLevel_thenReturnAverageLevelAssets() {
-    // when
-    ToiletHeroAssets result = mapper.heroAssetsByLevel(null);
-
-    // then
-    assertThat(result).isNotNull();
-    assertThat(result.image())
-        .isEqualTo(
-            "https://kr.object.ncloudstorage.com/depromeet-dev-static-resources/toilet/normal.png");
-    assertThat(result.backgroundColors()).containsExactly("#2B42B4", "#8F58FF");
   }
 
   // Helper methods
