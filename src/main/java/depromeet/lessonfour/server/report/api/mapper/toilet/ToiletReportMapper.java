@@ -5,8 +5,6 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import depromeet.lessonfour.server.common.api.code.ErrorCode;
-import depromeet.lessonfour.server.common.exception.ServerException;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.DailyToiletReportDto;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.ToiletReportItem;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.ToiletSummary;
@@ -42,6 +40,7 @@ public class ToiletReportMapper {
   /** 배변 모양 섹션 매핑 */
   public MonthlyShapeSection mapShape(MonthlyReport report) {
     final String titleMessage = "이번 달 자주 본 배변 모양이에요";
+
     final Map<ToiletShape, String> MESSAGE_BY_SHAPE =
         Map.of(
             ToiletShape.RABBIT, "변비 주의",
@@ -51,6 +50,7 @@ public class ToiletReportMapper {
             ToiletShape.PORRIDGE, "설사 주의",
             ToiletShape.WATER, "설사 주의");
 
+    // NONE인 경우를 제외하고 매핑
     List<MonthlyToiletShape> items =
         report.getMostFrequentToiletShapes().stream()
             .map(
@@ -84,10 +84,9 @@ public class ToiletReportMapper {
 
     List<ToiletColorCount> colorCounts = report.getMostFrequentToiletColors();
 
-    // 색상 기록이 없는 경우 - 월별 2건 이상의 주간 리포트, 주별 2건 이상의 일간 리포트가 필요하므로 발생하지 않아야 함
+    // 필터링 후 아무 유효한 색상이 없다면 “색상 평가 불가”
     if (colorCounts.isEmpty()) {
-      log.error("Monthly toilet color report mapping failed - no color records found");
-      throw new ServerException(ErrorCode.INTERNAL_SERVER_ERROR);
+      return new MonthlyColorSection("이번 달에는 색상을 확인할 수 있는 배변 기록이 없어요", "", List.of());
     }
 
     // 색상 우선순위에 따라 정렬 (빈도수가 같으면 우선순위 높은 색상이 먼저)
