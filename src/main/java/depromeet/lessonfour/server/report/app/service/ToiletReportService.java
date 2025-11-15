@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
+import depromeet.lessonfour.server.common.domain.vo.WeekRange;
 import depromeet.lessonfour.server.report.app.client.ToiletRecordClient;
 import depromeet.lessonfour.server.report.domain.vo.toilet.DailyToiletReport;
 import depromeet.lessonfour.server.report.domain.vo.toilet.MonthlyToiletReport;
@@ -29,11 +30,11 @@ public class ToiletReportService {
   }
 
   /** 주간 배변 리포트 생성 */
-  public WeeklyToiletReport generateWeeklyReport(
-      Long userId, ActivityAt start, ActivityAt endExclusive) {
+  public WeeklyToiletReport generateWeeklyReport(Long userId, WeekRange week) {
 
     List<ToiletRecord> records =
-        toiletRecordClient.getToiletRecordsByActivityAtBetween(userId, start, endExclusive);
+        toiletRecordClient.getToiletRecordsByActivityAtBetween(
+            userId, week.startAsActivityAt(), week.endAsActivityAt());
 
     return WeeklyToiletReport.summarize(records);
   }
