@@ -127,7 +127,10 @@ public class ToiletRecord extends BaseTimeEntity {
       if (color != null) this.color = color;
       if (shape != null) this.shape = shape;
 
-      if (this.color == null || this.shape == null) {
+      if (this.color == null
+          || this.shape == null
+          || this.color == ToiletColor.NONE
+          || this.shape == ToiletShape.NONE) {
         throw new ServerException(ErrorCode.INVALID_FIELD_ERROR);
       }
 
