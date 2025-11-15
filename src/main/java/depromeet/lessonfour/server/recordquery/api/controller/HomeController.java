@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import depromeet.lessonfour.server.common.api.code.SuccessCode;
 import depromeet.lessonfour.server.common.api.dto.SuccessResponse;
-import depromeet.lessonfour.server.recordquery.app.dto.HomeResponseDto;
-import depromeet.lessonfour.server.recordquery.app.service.GetDailyRecordUseCase;
+import depromeet.lessonfour.server.recordquery.api.dto.HomeOverviewResponse;
+import depromeet.lessonfour.server.recordquery.api.mapper.HomeMapper;
+import depromeet.lessonfour.server.recordquery.app.dto.DailyOverviewDto;
+import depromeet.lessonfour.server.recordquery.app.service.GetDailyOverviewUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,14 +27,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class HomeController {
 
-  private final GetDailyRecordUseCase getDailyRecordUseCase;
+  private final GetDailyOverviewUseCase getDailyOverviewUseCase;
+  private final HomeMapper homeMapper;
 
   @Operation(summary = "홈 데이터 조회", description = "특정 날짜의 홈 화면 정보를 조회합니다.")
   @GetMapping("/{date}")
-  public SuccessResponse<HomeResponseDto> getHome(
+  public SuccessResponse<HomeOverviewResponse> getHome(
       @AuthenticationPrincipal(expression = "id") Long userId,
       @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-    return SuccessResponse.of(
-        SuccessCode.SUCCESS_FETCH, getDailyRecordUseCase.getHomeRecord(userId, date));
+    DailyOverviewDto dailyOverview = getDailyOverviewUseCase.getDailyOverview(userId, date);
+
+    return SuccessResponse.of(SuccessCode.SUCCESS_FETCH, homeMapper.map(dailyOverview));
   }
 }
