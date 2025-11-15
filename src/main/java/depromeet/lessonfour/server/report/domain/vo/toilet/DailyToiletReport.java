@@ -34,4 +34,8 @@ public class DailyToiletReport {
 
     return new DailyToiletReport(averageScore, level, evaluations);
   }
+
+  public int size() {
+    return items.size();
+  }
 }

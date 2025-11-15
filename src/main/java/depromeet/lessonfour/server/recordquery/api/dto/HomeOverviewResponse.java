@@ -1,8 +1,8 @@
-package depromeet.lessonfour.server.recordquery.app.dto;
+package depromeet.lessonfour.server.recordquery.api.dto;
 
 import java.util.List;
 
-public record HomeResponseDto(
+public record HomeOverviewResponse(
     int toiletRecordCount,
     boolean hasActivityRecord,
     String heroImage,
