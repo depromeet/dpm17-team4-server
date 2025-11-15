@@ -127,10 +127,6 @@ class HomeE2ETest {
   @DisplayName("[home] 점수 75(GOOD) + 화장실 2건 + 활동존재 → hero=GOOD 이미지/컬러")
   void home_ok_good() {
     LocalDate date = LocalDate.of(2024, 10, 5);
-    // score=75 → GOOD(60–79)
-    // 2개 기록의 평균: (85+65)/2 = 75
-    // 기록1: 50+50+0-15(CORN)+0+0 = 85
-    // 기록2: 50+50+0-15(CORN)+0-20(통증25) = 65
     createToilet(LocalDateTime.of(2024, 10, 5, 8, 0), "DEFAULT", "CORN", 10, 5);
     createToilet(LocalDateTime.of(2024, 10, 5, 14, 0), "DEFAULT", "CORN", 25, 5);
 
@@ -178,8 +174,6 @@ class HomeE2ETest {
   @DisplayName("[home] 점수 15(VERY_BAD) → hero=VERY_BAD 이미지/컬러")
   void home_ok_veryBad() {
     LocalDate date = LocalDate.of(2024, 10, 7);
-    // score=15 → VERY_BAD(0–19)
-    // 1개 기록: 50+50-40(RED)-45(RABBIT)+0+0 = 15
     createToilet(LocalDateTime.of(2024, 10, 7, 8, 0), "RED", "RABBIT", 100, 15);
 
     given()
@@ -198,8 +192,7 @@ class HomeE2ETest {
   @Test
   @DisplayName("[home] 경계값 매핑 확인: 60(GOOD), 40(AVERAGE), 20(BAD)")
   void home_ok_boundaries() {
-    // 60 → GOOD
-    // 기록: 60 + 50 - 10(DARK_BROWN) - 30(PORRIDGE) + 0 + 0 = 60
+    // GOOD
     LocalDate d1 = LocalDate.of(2024, 10, 8);
     createToilet(LocalDateTime.of(2024, 10, 8, 8, 0), "DARK_BROWN", "BANANA", 10, 5);
     given()
@@ -212,8 +205,7 @@ class HomeE2ETest {
         .body("data.heroImage", containsString("toilet/good.png"))
         .body("data.heroBackgroundColors", hasItems("#134DB1", "#588DFF"));
 
-    // 40 → AVERAGE
-    // 기록: 50+50-10(DARK_BROWN)-30(PORRIDGE)-20(통증25)+0 = 40
+    // AVERAGE
     LocalDate d2 = LocalDate.of(2024, 10, 9);
     createToilet(LocalDateTime.of(2024, 10, 9, 8, 0), "DARK_BROWN", "PORRIDGE", 25, 5);
     given()
@@ -226,8 +218,7 @@ class HomeE2ETest {
         .body("data.heroImage", containsString("toilet/normal.png"))
         .body("data.heroBackgroundColors", hasItems("#2B42B4", "#8F58FF"));
 
-    // 20 → BAD
-    // 기록: 50+50-40(RED)-30(PORRIDGE)+0-10(시간15분) = 20
+    // BAD
     LocalDate d3 = LocalDate.of(2024, 10, 10);
     createToilet(LocalDateTime.of(2024, 10, 10, 8, 0), "RED", "PORRIDGE", 10, 15);
     given()
@@ -346,7 +337,6 @@ class HomeE2ETest {
         .statusCode(HttpStatus.OK.value());
 
     // 다른 사용자의 배변 기록은 자동으로 점수 계산됨
-    // 기록: 50+50+0+45(BANANA)+0+0 = 145 (capped at 100, VERY_GOOD)
 
     // 현재 사용자로 조회 → 0/false + hero는 기본(점수 없으면 AVERAGE로 매핑됨)
     given()
