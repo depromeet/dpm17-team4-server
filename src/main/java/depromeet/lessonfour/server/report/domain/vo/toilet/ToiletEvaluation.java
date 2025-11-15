@@ -10,23 +10,34 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * 성공한 배변은 높은 점수로 이어져야 한다.
+ *
+ * <p>실패한 배변도 통증/시간으로 인한 “나쁜 경험”을 반영해야 한다.
+ *
+ * <p>색/모양은 건강 척도이므로 성공한 배변에서만 평가해야 한다.
+ *
+ * <p>극단적인 입력에서도 점수가 0~100 범위에 자연스럽게 매핑되어야 한다.
+ *
+ * <p>“점수 하나로 사용자 상태를 간단히 설명”해야 하므로 직관적이어야 한다.
+ */
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 public class ToiletEvaluation {
 
   // 가중치
-  private static final int SUCCESS_WEIGHT = 5;
-  private static final int SHAPE_WEIGHT = 3;
-  private static final int COLOR_WEIGHT = 2;
-  private static final int DURATION_WEIGHT = 1;
-  private static final int PAIN_WEIGHT = 4;
+  private static final int SUCCESS_WEIGHT = 3;
+  private static final int SHAPE_WEIGHT = 2;
+  private static final int COLOR_WEIGHT = 3;
+  private static final int DURATION_WEIGHT = 2;
+  private static final int PAIN_WEIGHT = 5;
 
   // 기본 점수
-  private static final double BASE_SCORE = 50;
+  private static final double BASE_SCORE = 60;
 
   // 성공/실패 점수
-  private static final int SUCCESS_BONUS = 10;
-  private static final int FAIL_PENALTY = -20;
+  private static final int SUCCESS_BONUS = 5;
+  private static final int FAIL_PENALTY = -4;
 
   // 통증 threshold
   private static final int PAIN_SEVERE_THRESHOLD = 80;
@@ -56,14 +67,27 @@ public class ToiletEvaluation {
     double score = BASE_SCORE;
 
     score += successScore(record.isSuccessful()) * SUCCESS_WEIGHT;
-    score += (record.getColor() != null ? record.getColor().getScore() : 0) * COLOR_WEIGHT;
-    score += (record.getShape() != null ? record.getShape().getScore() : 0) * SHAPE_WEIGHT;
     score += durationPenalty(record.getDuration()) * DURATION_WEIGHT;
     score += painPenalty(record.getPain()) * PAIN_WEIGHT;
 
+    if (record.isSuccessful()) {
+      score += record.getColor().getScore() * COLOR_WEIGHT;
+      score += record.getShape().getScore() * SHAPE_WEIGHT;
+    }
+
     double finalScore = normalizeScore(score);
 
-    return ToiletEvaluation.from(finalScore, ToiletEvaluationLevel.from(finalScore), record);
+    return ToiletEvaluation.builder()
+        .score(finalScore)
+        .level(ToiletEvaluationLevel.from(finalScore))
+        .duration(record.getDuration())
+        .color(record.getColor())
+        .shape(record.getShape())
+        .pain(record.getPain())
+        .note(record.getNote())
+        .occurredAt(record.getActivityAt())
+        .isSuccess(record.isSuccessful())
+        .build();
   }
 
   private static double normalizeScore(double score) {
@@ -79,13 +103,13 @@ public class ToiletEvaluation {
   // 통증별 점수
   private static int painPenalty(int pain) {
     if (pain > PAIN_SEVERE_THRESHOLD) {
-      return -30;
+      return -5;
     }
     if (pain > PAIN_MODERATE_THRESHOLD) {
-      return -15;
+      return -3;
     }
     if (pain > PAIN_MILD_THRESHOLD) {
-      return -5;
+      return -1;
     }
     return 0;
   }
@@ -93,24 +117,9 @@ public class ToiletEvaluation {
   // 소요시간별 점수
   private static int durationPenalty(int minute) {
     if (minute > DURATION_LONG_THRESHOLD) {
-      return -10;
+      return -4;
     }
     return 0;
-  }
-
-  public static ToiletEvaluation from(
-      double score, ToiletEvaluationLevel level, ToiletRecord record) {
-    return ToiletEvaluation.builder()
-        .score(score)
-        .level(level)
-        .color(record.getColor())
-        .shape(record.getShape())
-        .duration(record.getDuration())
-        .pain(record.getPain())
-        .note(record.getNote())
-        .occurredAt(record.getActivityAt())
-        .isSuccess(record.isSuccessful())
-        .build();
   }
 
   public boolean failed() {

@@ -76,6 +76,7 @@ public class MonthlyToiletReport {
             .flatMap(weeklyReport -> weeklyReport.getDailyReports().stream())
             .flatMap(dailyReport -> dailyReport.getItems().stream())
             .filter(evaluation -> evaluation.getShape() != null)
+            .filter(evaluation -> evaluation.getShape() != ToiletShape.NONE)
             .collect(Collectors.groupingBy(ToiletEvaluation::getShape, Collectors.counting()));
 
     return shapeCountMap.entrySet().stream()
@@ -92,6 +93,7 @@ public class MonthlyToiletReport {
             .flatMap(weeklyReport -> weeklyReport.getDailyReports().stream())
             .flatMap(dailyReport -> dailyReport.getItems().stream())
             .filter(evaluation -> evaluation.getColor() != null)
+            .filter(evaluation -> evaluation.getColor() != ToiletColor.NONE)
             .collect(Collectors.groupingBy(ToiletEvaluation::getColor, Collectors.counting()));
 
     return colorMap.entrySet().stream()

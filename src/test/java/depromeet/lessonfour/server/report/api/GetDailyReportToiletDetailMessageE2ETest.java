@@ -128,8 +128,11 @@ class GetDailyReportToiletDetailMessageE2ETest {
   /**
    * VERY_BAD (0~19점) 테스트
    *
-   * <p>점수 계산: BASE: 50 실패: -100 (FAIL_PENALTY * SUCCESS_WEIGHT = -20 * 5) 총점: 50 - 100 = -50 → 정규화
-   * 후 0점
+   * <p>점수 계산: BASE: 60 실패: -20 (FAIL_PENALTY * SUCCESS_WEIGHT = -4 * 5) 총점: 50 - 100 = -50 → 정규화
+   * <li>기본 점수 : 60
+   * <li>실패 패널티 : -20
+   * <li>통증 패널티 : -30
+   * <li>소요 시간 패널티 : -10 총점: 60 - 20 - 30 - 10 = 0점 (VERY_BAD)
    */
   @Test
   @DisplayName(
@@ -140,11 +143,11 @@ class GetDailyReportToiletDetailMessageE2ETest {
     // VERY_BAD를 만들기 위한 조건: 실패 케이스
     createToilet(
         base.withHour(8),
-        false, // 실패 → -100점
-        ToiletColor.DEFAULT,
-        ToiletShape.BANANA,
-        10, // 낮은 통증
-        5, // 짧은 시간
+        false,
+        ToiletColor.NONE,
+        ToiletShape.NONE,
+        100, // 낮은 통증
+        15, // 짧은 시간
         "실패");
 
     given()
@@ -163,9 +166,11 @@ class GetDailyReportToiletDetailMessageE2ETest {
 
   /**
    * BAD (20~39점) 테스트
-   *
-   * <p>점수 계산: BASE: 50 성공: +50 색상(BLACK): -20 * 2 = -40 모양(CORN): -5 * 3 = -15 통증(30): -5 * 4 = -20
-   * 총점: 50 + 50 - 40 - 15 - 20 = 25점 (BAD)
+   * <li>기본 점수 : 60
+   * <li>실패 점수 : -4 * 5 = -20
+   * <li>소요 시간 패널티 : -5 * 2 = -10
+   * <li>통증 패널티 : -1 * 5 = -5
+   * <li>총점: 60 - 20 - 10 - 5 = 25점 (BAD)
    */
   @Test
   @DisplayName(
@@ -176,11 +181,11 @@ class GetDailyReportToiletDetailMessageE2ETest {
     // BAD를 만들기 위한 조건: 성공 + 나쁜 색상 + 나쁜 모양 + 중간 통증
     createToilet(
         base.withHour(8),
-        true, // 성공 → +50점
-        ToiletColor.BLACK, // 나쁜 색상 → -40점
-        ToiletShape.CORN, // 나쁜 모양 → -15점
-        30, // 중간 통증 → -20점
-        5, // 짧은 시간
+        false, // 성공 → +60점
+        ToiletColor.NONE,
+        ToiletShape.NONE,
+        21,
+        15,
         "BAD");
 
     given()
@@ -201,7 +206,8 @@ class GetDailyReportToiletDetailMessageE2ETest {
    * AVERAGE (40~59점) 테스트
    *
    * <p>점수 계산: BASE: 50 성공: +50 색상(DARK_BROWN): -5 * 2 = -10 모양(RABBIT): -15 * 3 = -45 총점: 50 + 50 -
-   * 10 - 45 = 45점 (AVERAGE)
+   * 10 - 45 = 45점 (AVERAGE) 기본 점수 : 60 성공 점수 : +25 색상 점수 : -3 * 3 = -9 모양 점수 : 5 * 3 = -15 통증 점수 :
+   * -1 * 5 = -5 소요 시간 점수 : 0
    */
   @Test
   @DisplayName(
@@ -212,9 +218,9 @@ class GetDailyReportToiletDetailMessageE2ETest {
     // AVERAGE를 만들기 위한 조건: 성공 + 나쁜 색상 + 나쁜 모양
     createToilet(
         base.withHour(8),
-        true, // 성공 → +50점
-        ToiletColor.DARK_BROWN, // 나쁜 색상 → -10점
-        ToiletShape.RABBIT, // 나쁜 모양 → -45점
+        true,
+        ToiletColor.DARK_BROWN,
+        ToiletShape.RABBIT,
         10, // 낮은 통증
         5, // 짧은 시간
         "AVERAGE");
@@ -249,7 +255,7 @@ class GetDailyReportToiletDetailMessageE2ETest {
     createToilet(
         base.withHour(8),
         true, // 성공 → +50점
-        ToiletColor.DARK_BROWN, // 약간 나쁜 색상 → -10점
+        ToiletColor.GOLD, // 약간 나쁜 색상 → -10점
         ToiletShape.CORN, // 약간 나쁜 모양 → -15점
         10, // 낮은 통증
         5, // 짧은 시간

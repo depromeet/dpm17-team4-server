@@ -1,7 +1,6 @@
 package depromeet.lessonfour.server.report.api.mapper.toilet;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -12,8 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import depromeet.lessonfour.server.common.api.code.ErrorCode;
-import depromeet.lessonfour.server.common.exception.ServerException;
 import depromeet.lessonfour.server.report.api.dto.response.GetMonthlyReportResponseDto.MonthlyColorSection;
 import depromeet.lessonfour.server.report.domain.vo.MonthlyReport;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletColorCount;
@@ -167,10 +164,13 @@ class ToiletReportMapperColorTest {
     // given
     when(mockReport.getMostFrequentToiletColors()).thenReturn(Collections.emptyList());
 
-    // when & then
-    assertThatThrownBy(() -> mapper.mapColor(mockReport))
-        .isInstanceOf(ServerException.class)
-        .hasFieldOrPropertyWithValue("baseErrorCode", ErrorCode.INTERNAL_SERVER_ERROR);
+    // when
+    MonthlyColorSection result = mapper.mapColor(mockReport);
+
+    // then
+    assertThat(result).isNotNull();
+    assertThat(result.titleMessage()).isEqualTo("이번 달에는 색상을 확인할 수 있는 배변 기록이 없어요");
+    assertThat(result.colorMessage()).isEmpty();
   }
 
   @Test

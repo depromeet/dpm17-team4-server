@@ -5,8 +5,6 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import depromeet.lessonfour.server.common.api.code.ErrorCode;
-import depromeet.lessonfour.server.common.exception.ServerException;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.DailyToiletReportDto;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.ToiletReportItem;
 import depromeet.lessonfour.server.report.api.dto.response.GetDailyReportResponseDto.ToiletSummary;
@@ -25,6 +23,7 @@ import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletColorCount;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletEvaluationLevel;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletPainDistribution;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletPeriodCount;
+import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletShapeCount;
 import depromeet.lessonfour.server.report.domain.vo.toilet.ToiletTimeDistribution;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
@@ -42,6 +41,7 @@ public class ToiletReportMapper {
   /** 배변 모양 섹션 매핑 */
   public MonthlyShapeSection mapShape(MonthlyReport report) {
     final String titleMessage = "이번 달 자주 본 배변 모양이에요";
+
     final Map<ToiletShape, String> MESSAGE_BY_SHAPE =
         Map.of(
             ToiletShape.RABBIT, "변비 주의",
@@ -50,6 +50,13 @@ public class ToiletReportMapper {
             ToiletShape.CREAM, "설사 주의",
             ToiletShape.PORRIDGE, "설사 주의",
             ToiletShape.WATER, "설사 주의");
+
+    List<ToiletShapeCount> mostFrequentToiletShapes = report.getMostFrequentToiletShapes();
+
+    // 필터링 후 아무 유효한 모양이 없다면 “모양 평가 불가”
+    if (mostFrequentToiletShapes.isEmpty()) {
+      return new MonthlyShapeSection("이번 달에는 모양을 확인할 수 있는 배변 기록이 없어요", List.of());
+    }
 
     List<MonthlyToiletShape> items =
         report.getMostFrequentToiletShapes().stream()
@@ -84,10 +91,9 @@ public class ToiletReportMapper {
 
     List<ToiletColorCount> colorCounts = report.getMostFrequentToiletColors();
 
-    // 색상 기록이 없는 경우 - 월별 2건 이상의 주간 리포트, 주별 2건 이상의 일간 리포트가 필요하므로 발생하지 않아야 함
+    // 필터링 후 아무 유효한 색상이 없다면 “색상 평가 불가”
     if (colorCounts.isEmpty()) {
-      log.error("Monthly toilet color report mapping failed - no color records found");
-      throw new ServerException(ErrorCode.INTERNAL_SERVER_ERROR);
+      return new MonthlyColorSection("이번 달에는 색상을 확인할 수 있는 배변 기록이 없어요", "", List.of());
     }
 
     // 색상 우선순위에 따라 정렬 (빈도수가 같으면 우선순위 높은 색상이 먼저)
@@ -293,8 +299,8 @@ public class ToiletReportMapper {
                       new ToiletReportItem(
                           item.getOccurredAt().toDateTime(),
                           DETAIL_MESSAGE_MAP.get(dailyToiletReport.getLevel()),
-                          item.getColor(),
-                          item.getShape(),
+                          item.getColor() == ToiletColor.NONE ? null : item.getColor(),
+                          item.getShape() == ToiletShape.NONE ? null : item.getShape(),
                           item.getDuration(),
                           item.getPain(),
                           item.getNote()))

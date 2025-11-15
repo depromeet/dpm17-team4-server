@@ -1,7 +1,9 @@
 package depromeet.lessonfour.server.toiletrecord.domain.entity;
 
+import depromeet.lessonfour.server.common.api.code.ErrorCode;
 import depromeet.lessonfour.server.common.domain.entity.BaseTimeEntity;
 import depromeet.lessonfour.server.common.domain.vo.ActivityAt;
+import depromeet.lessonfour.server.common.exception.ServerException;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletColor;
 import depromeet.lessonfour.server.toiletrecord.domain.vo.ToiletShape;
 import depromeet.lessonfour.server.user.domain.entity.User;
@@ -85,11 +87,19 @@ public class ToiletRecord extends BaseTimeEntity {
       int duration,
       String note,
       ActivityAt activityAt) {
+
+    if (isSuccessful && (color == null || shape == null)) {
+      throw new ServerException(ErrorCode.INVALID_FIELD_ERROR);
+    }
+
+    ToiletColor finalColor = isSuccessful ? color : ToiletColor.NONE;
+    ToiletShape finalShape = isSuccessful ? shape : ToiletShape.NONE;
+
     return ToiletRecord.builder()
         .user(user)
         .isSuccessful(isSuccessful)
-        .color(color)
-        .shape(shape)
+        .color(finalColor)
+        .shape(finalShape)
         .pain(pain)
         .duration(duration)
         .note(note)
@@ -107,12 +117,28 @@ public class ToiletRecord extends BaseTimeEntity {
       String note,
       ActivityAt activityAt) {
     if (isSuccessful != null) this.isSuccessful = isSuccessful;
-    if (color != null) this.color = color;
-    if (shape != null) this.shape = shape;
     if (pain != null) this.pain = pain;
     if (duration != null) this.duration = duration;
     if (note != null) this.note = note;
     if (activityAt != null) this.activityAt = activityAt;
+
+    if (this.isSuccessful) {
+      // 성공이라면 color/shape 반드시 필요
+      if (color != null) this.color = color;
+      if (shape != null) this.shape = shape;
+
+      if (this.color == null
+          || this.shape == null
+          || this.color == ToiletColor.NONE
+          || this.shape == ToiletShape.NONE) {
+        throw new ServerException(ErrorCode.INVALID_FIELD_ERROR);
+      }
+
+    } else {
+      // 실패라면 color/shape는 의미 없으므로 NONE으로 강제
+      this.color = ToiletColor.NONE;
+      this.shape = ToiletShape.NONE;
+    }
   }
 
   public void delete() {
