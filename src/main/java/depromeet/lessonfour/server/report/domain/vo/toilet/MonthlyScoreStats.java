@@ -22,18 +22,15 @@ public record MonthlyScoreStats(List<ToiletScore> scores) {
       throw new ServerException(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
-    if (scores.size() < 2) {
-      throw new ServerException(ErrorCode.INSUFFICIENT_DATA_FOR_REPORT);
-    }
+    //    if (scores.size() < 2) {
+    //      throw new ServerException(ErrorCode.INSUFFICIENT_DATA_FOR_REPORT);
+    //    }
 
     scores = List.copyOf(scores);
   }
 
   public double getAverageScore() {
-    return scores.stream()
-        .mapToInt(ToiletScore::getScore)
-        .average()
-        .orElseThrow(() -> new ServerException(ErrorCode.INSUFFICIENT_DATA_FOR_REPORT));
+    return scores.stream().mapToInt(ToiletScore::getScore).average().orElse(0);
   }
 
   public List<Integer> getWeeklyAverageScore() {
@@ -64,14 +61,10 @@ public record MonthlyScoreStats(List<ToiletScore> scores) {
   }
 
   public ToiletScore getMaxScore() {
-    return scores.stream()
-        .max(Comparator.comparingInt(ToiletScore::getScore))
-        .orElseThrow(() -> new ServerException(ErrorCode.INSUFFICIENT_DATA_FOR_REPORT));
+    return scores.stream().max(Comparator.comparingInt(ToiletScore::getScore)).orElse(null);
   }
 
   public ToiletScore getMinScore() {
-    return scores.stream()
-        .min(Comparator.comparingInt(ToiletScore::getScore))
-        .orElseThrow(() -> new ServerException(ErrorCode.INSUFFICIENT_DATA_FOR_REPORT));
+    return scores.stream().min(Comparator.comparingInt(ToiletScore::getScore)).orElse(null);
   }
 }
