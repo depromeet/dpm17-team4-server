@@ -68,9 +68,54 @@ out/
 ### Python ###
 poetry.lock
 __pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Python distributions
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.whl
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Scripts output
+scripts/failed_foods.json
+scripts/last_failed_response.json
 
 ### Postgres ###
 postgres_data/
 
 ### Jupiter Notebook ###
 .ipynb_checkpoints/
+
+### macOS ###
+.DS_Store
+.AppleDouble
+.LSOverride
+
+### Environment ###
+.env
+.env.local
+.env.*.local
