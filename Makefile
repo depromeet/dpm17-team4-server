@@ -14,7 +14,7 @@ LOG_FILE := $(LOG_DIR)/server.log
 
 DOCKER_COMPOSE ?= docker compose
 
-.PHONY: help build build-no-test jar compose-up compose-down run start stop restart status logs test clean curl format format-check clear-h2 ssh poetry auth-test
+.PHONY: help build build-no-test jar compose-up compose-down run start stop restart status logs test clean curl format format-check clear-h2 ssh poetry auth-test tags-setup tags-dry-run tags-generate tags-retry tags-retry-safe tags-clean
 
 help:
 	@echo "Available targets:"
@@ -34,6 +34,15 @@ help:
 	@echo "  make format-check    - Check formatting only (fails if changes needed)"
 	@echo "  make clear-h2        - Remove local H2 files (.h2/)"
 	@echo "  make ssh             - SSH to remote server"
+	@echo ""
+	@echo "Tag Generation:"
+	@echo "  make tags-setup      - Install Python dependencies for tag generation"
+	@echo "  make tags-dry-run    - Test tag generation without DB changes (limit 10)"
+	@echo "  make tags-generate   - Generate tags in bulk mode (fast, recommended)"
+	@echo "  make tags-retry      - Smart retry (skip already processed foods)"
+	@echo "  make tags-retry-safe - Retry with failure logging to JSON file"
+	@echo "  LIMIT=N              - Limit number of foods to process (e.g., LIMIT=10)"
+	@echo "  BATCH_SIZE=N         - Foods per API call (default: 10)"
 	@echo ""
 	@echo "Variables:"
 	@echo "  PORT=<int>                 (default: 8080)"
@@ -164,3 +173,63 @@ poetry:
 
 auth-test: poetry
 	@(cd src/test/python/auth-test && poetry install && SERVER_URL=${APP__SERVER__URL} poetry run python -m auth_test.main)
+
+# ============================================
+# Food Tag Generation Targets
+# ============================================
+
+PYTHON := python3
+VENV_DIR := scripts/.venv
+SCRIPT_DIR := scripts/food_tag_generation
+TAG_SCRIPT := $(SCRIPT_DIR)/generate_food_tags_bulk.py
+REQUIREMENTS := $(SCRIPT_DIR)/requirements.txt
+BATCH_SIZE ?= 10
+
+# Python environment setup
+tags-setup:
+	@echo "🔧 Setting up Python environment for tag generation..."
+	@if [ ! -d "$(VENV_DIR)" ]; then \
+		echo "Creating virtual environment..."; \
+		$(PYTHON) -m venv $(VENV_DIR); \
+	fi
+	@echo "Installing dependencies..."
+	@. $(VENV_DIR)/bin/activate && pip install --upgrade pip && pip install -r $(REQUIREMENTS)
+	@echo "✅ Setup complete!"
+	@echo ""
+	@echo "Next steps:"
+	@echo "  1. Test with: make tags-dry-run"
+	@echo "  2. Generate tags: make tags-generate"
+
+# Dry run (test without DB changes)
+tags-dry-run: tags-setup
+	@echo "🔍 Running tag generation in DRY RUN mode..."
+	@. $(VENV_DIR)/bin/activate && $(PYTHON) $(TAG_SCRIPT) --dry-run --limit 10 --batch-size 5
+
+# Generate tags (bulk processing)
+tags-generate: tags-setup
+	@echo "🚀 Generating tags in BULK mode..."
+	@if [ -n "$(LIMIT)" ]; then \
+		echo "   Limit: $(LIMIT) foods"; \
+		echo "   Batch Size: $(BATCH_SIZE) foods per API call"; \
+		. $(VENV_DIR)/bin/activate && $(PYTHON) $(TAG_SCRIPT) --limit $(LIMIT) --batch-size $(BATCH_SIZE); \
+	else \
+		echo "   Processing ALL foods"; \
+		echo "   Batch Size: $(BATCH_SIZE) foods per API call"; \
+		. $(VENV_DIR)/bin/activate && $(PYTHON) $(TAG_SCRIPT) --batch-size $(BATCH_SIZE); \
+	fi
+
+# Smart retry - only process foods without tags
+tags-retry: tags-setup
+	@echo "🔄 Retrying failed foods (skip already processed)..."
+	@. $(VENV_DIR)/bin/activate && $(PYTHON) $(TAG_SCRIPT) --skip-processed --batch-size $(BATCH_SIZE)
+
+# Retry with failure logging
+tags-retry-safe: tags-setup
+	@echo "🔄 Retrying with failure logging..."
+	@. $(VENV_DIR)/bin/activate && $(PYTHON) $(TAG_SCRIPT) --skip-processed --save-failed $(SCRIPT_DIR)/failed_foods.json --batch-size $(BATCH_SIZE)
+
+# Clean Python environment
+tags-clean:
+	@echo "🧹 Cleaning Python environment..."
+	@rm -rf $(VENV_DIR)
+	@echo "✅ Cleaned!"

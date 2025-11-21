@@ -1,0 +1,10 @@
+# Python dependencies for food tag generation script
+
+# Database
+psycopg2-binary==2.9.9
+
+# HTTP requests
+requests==2.31.0
+
+# Optional: Better formatting
+python-dotenv==1.0.0
